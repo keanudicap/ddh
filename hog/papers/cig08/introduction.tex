@@ -1,0 +1,19 @@
+\section{Introduction}
+Single-agent path planning is a well known and extensively studied problem in computer science.
+It has many applications such as logistics, robotics, and more recently, computer games. 
+Despite the large amount of progress that has been made in this area, to date, very little work has focused specifically on addressing planning for diverse-size agents in heterogeneous terrain environments. 
+\par \indent
+The problem is interesting because such diversity introduces much additional complexity when solving path planning problems.
+Modern real-time strategy or role-playing games (for example, EA's popular \emph{Red Alert 3} or Relic Entertainment's \emph{Company of Heroes}) often feature a wide array of units of differing shapes and abilities that must contend with navigating across environments with complex topographical features; many terrains, different elevations etc. 
+Thus, a route which might be valid for an infantry-solider may not be valid for a heavily armoured tank. 
+Likewise, a car and an off-road vehicle may be similar in size and shape but the paths preferred by each one could differ greatly. 
+\par \indent
+Unfortunately, the majority of current path planners, including recent hierarchical planners (\cite{botea04,sturtevant05,demyen07,geraerts07}), only perform well under certain ideal conditions. 
+They assume, for example, that all agents are equally capable of reaching most areas on a given map and any terrain which is not traversable by one agent is not traversable by any. 
+Further assumptions are often made about the size of each respective agent; a path computed for one is equally valid for any other because all agents are typically of uniform size. 
+Such assumptions limit the applicability of these techniques to solving a very narrow set of problems: homogeneous agents in a homogeneous environment. 
+We address the opposite case and show how efficient solutions can be calculated in situations where both the agent's size and terrain traversal capability are variable. 
+\par \indent
+First, we extend recent work on clearance-based pathfinding \cite{geraerts07} in order to measure obstacle distance at key locations in the environment (Section \ref{aha:computingclearance}) and show how this information helps agents plan appropriate paths (Section \ref{aha:aastar}). 
+Next, we draw on a successful cluster-based abstraction technique \cite{botea04} in order to produce compact yet information rich search abstractions (Section \ref{aha:mapabstraction}). 
+Finally, we introduce HAA*, a new clearance-based hierarchical path planner (Section \ref{aha:aha}) and provide a detailed empirical analysis of its performance on a wide range of problems involving multi-size agents in heterogeneous multi-terrain environments (Section \ref{aha:results}).

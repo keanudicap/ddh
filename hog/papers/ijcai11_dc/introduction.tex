@@ -1,0 +1,26 @@
+\section{Introduction}
+\label{sec:introduction}
+Pathfinding systems that operate on uniform-cost grid maps are common in the AI
+literature and application areas such as robotics and real-time
+video games.  Typical speed-up enhancements in such contexts include reducing
+the size of the search space using abstraction \cite{botea04} and developing new
+heuristics to more accurately guide search toward the goal \cite{sturtevant09}.
+Though effective each of these strategies has shortcomings.  For example,
+abstraction methods usually trade optimality for speed.  Meanwhile, improved
+heuristics usually require significant extra memory.
+\par 
+My research proposes to speed up grid-based pathfinding by identifying
+and eliminating symmetric path segments from the search space. 
+Two paths are said to be symmetric if they are identical save for the order
+in which the individual moves (or steps) occur. 
+To deal with path symmetries I decompose an arbitrary
+grid map into a set of empty rectangles and remove from each rectangle all
+interior nodes and possibly some from along the perimeter.  A series of macro
+edges are then added between selected pairs of remaining nodes in order to
+facilitate provably optimal traversal through each rectangle.  The new
+algorithm, Rectangular Symmetry Reduction (RSR), can speed up A* search by up to
+38 times on a range of uniform cost maps taken from the literature.  In addition
+to being fast and optimal, RSR requires no significant extra memory and is
+largely orthogonal all existing speedup techniques.  When compared to the state
+of the art, RSR often shows significant improvement across a range of
+benchmarks.

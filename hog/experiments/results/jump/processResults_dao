@@ -1,0 +1,94 @@
+tablenames <- c("id", "name", "ne", "nt", "ng", "st", "opl", "map")
+tableclasses <- c("integer", "character", "integer", "integer", "integer", "double", "double", "character")
+hpanames <- c("exp", "name", "ne", "nt", "pm", "st", "insne", "insnt", "inspm", "insst", "opl", "map")
+hpaclasses <- c("integer", "character", "integer", "integer", "integer", "double", "integer", "integer", "integer", "double", "double", "character")
+jastarnames <- c("id", "name", "ne", "nt", "ng", "st", "opl", "map")
+jastarclasses <- c("integer", "character", "integer", "integer", "integer", "double", "double", "character")
+
+### ASTAR ###
+dao_astar1 <- read.table("dao/results_FlexibleAStar.1",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+dao_astar2 <- read.table("dao/results_FlexibleAStar.2",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+dao_astar3 <- read.table("dao/results_FlexibleAStar.3",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+dao_astar <- dao_astar1;
+dao_astar$st <- rowMeans(cbind(dao_astar1$st, dao_astar2$st, dao_astar3$st))
+
+### RSR ###
+dao_rsr1 <- read.table("dao/results_HPAStar2RSR.1",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+dao_rsr2 <- read.table("dao/results_HPAStar2RSR.2",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+dao_rsr3 <- read.table("dao/results_HPAStar2RSR.3",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+dao_rsr <- dao_rsr1;
+dao_rsr$st <- rowMeans(cbind(dao_rsr1$st, dao_rsr2$st, dao_rsr3$st))
+dao_rsr$insst <- rowMeans(cbind(dao_rsr1$insst, dao_rsr2$insst, dao_rsr3$insst))
+include <- dao_rsr$ne > 1
+dao8rsr <- as.data.frame(ams(dao_astar$ne[include]/dao_rsr$ne[include], dao_astar$opl[include], 25))
+dao8rsr <- cbind(dao8rsr[,1:2], ams(dao_astar$st[include]/dao_rsr$st[include], dao_astar$opl[include],
+25)[,2:3])
+names(dao8rsr) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+
+### JUMP POINTS ###
+dao_jump1 <- read.table("dao/results_FlexibleAStarJump.1",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+dao_jump2 <- read.table("dao/results_FlexibleAStarJump.2",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+dao_jump3 <- read.table("dao/results_FlexibleAStarJump.3",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+dao_jump <- dao_jump1;
+dao_jump$st <- rowMeans(cbind(dao_jump1$st, dao_jump2$st, dao_jump3$st))
+dao8jump <- as.data.frame(ams(dao_astar$ne/dao_jump$ne, dao_astar$opl, 25))
+dao8jump <- cbind(dao8jump[,1:2], ams(dao_astar$st/dao_jump$st, dao_astar$opl,
+25)[,2:3])
+names(dao8jump) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+
+### HPA ###
+dao_hpa1 <- read.table("dao/results_HPAStar2.1",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+dao_hpa2 <- read.table("dao/results_HPAStar2.2",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+dao_hpa3 <- read.table("dao/results_HPAStar2.3",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+dao_hpa <- dao_hpa1;
+dao_hpa$st <- rowMeans(cbind(dao_hpa1$st, dao_hpa2$st, dao_hpa3$st))
+dao_hpa$insst <- rowMeans(cbind(dao_hpa1$insst, dao_hpa2$insst, dao_hpa3$insst))
+dao8hpa <- as.data.frame(ams(dao_astar$ne/dao_hpa$ne, dao_astar$opl, 25))
+dao8hpa <- cbind(dao8hpa[,1:2], ams(dao_astar$st/dao_hpa$st, dao_astar$opl,
+25)[,2:3])
+names(dao8hpa) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+
+### SWAMPS ###
+dao_swamps1 <- read.table("dao/results_AStarSwamps.1",
+col.names=jastarnames, colClasses=jastarclasses, header=FALSE, sep=",")
+dao_swamps1$map <- sub("\t([a-z])*/(([a-z])*/)*", "", dao_swamps1$map)
+dao_jastar1 <- read.table("dao/results_AStarRegular.1",
+col.names=jastarnames, colClasses=jastarclasses, header=FALSE, sep=",")
+dao_jastar1$map <- sub("\t([a-z])*/(([a-z])*/)*", "", dao_jastar1$map)
+dao_swamps2 <- read.table("dao/results_AStarSwamps.2",
+col.names=jastarnames, colClasses=jastarclasses, header=FALSE, sep=",")
+dao_swamps2$map <- sub("\t([a-z])*/(([a-z])*/)*", "", dao_swamps2$map)
+dao_jastar2 <- read.table("dao/results_AStarRegular.2",
+col.names=jastarnames, colClasses=jastarclasses, header=FALSE, sep=",")
+dao_jastar2$map <- sub("\t([a-z])*/(([a-z])*/)*", "", dao_jastar2$map)
+dao_swamps3 <- read.table("dao/results_AStarSwamps.3",
+col.names=jastarnames, colClasses=jastarclasses, header=FALSE, sep=",")
+dao_swamps3$map <- sub("\t([a-z])*/(([a-z])*/)*", "", dao_swamps3$map)
+dao_jastar3 <- read.table("dao/results_AStarRegular.3",
+col.names=jastarnames, colClasses=jastarclasses, header=FALSE, sep=",")
+dao_jastar3$map <- sub("\t([a-z])*/(([a-z])*/)*", "", dao_jastar3$map)
+
+dao_swamps <- dao_swamps1;
+dao_swamps$st <- rowMeans(cbind(dao_swamps1$st, dao_swamps2$st, dao_swamps3$st))
+dao_jastar <- dao_jastar1;
+dao_jastar$st <- rowMeans(cbind(dao_jastar1$st, dao_jastar2$st, dao_jastar3$st))
+dao8swamps <- as.data.frame(ams(dao_jastar$ne/dao_swamps$ne, dao_jastar$opl, 25))
+dao8swamps <- cbind(dao8swamps[,1:2], ams(dao_jastar$st/dao_swamps$st, dao_jastar$opl,
+25)[,2:3])
+names(dao8swamps) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+
+## JUMP POINTS ABSTRACTION ##
+dao_jpas <- loadResults("dao/results_JPAS", tablenames, tableclasses)
+dao8jpas <- speedup(dao_jpas, dao_astar, 25)

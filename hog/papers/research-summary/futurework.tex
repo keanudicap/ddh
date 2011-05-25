@@ -1,0 +1,23 @@
+\section{Future Work}
+\label{sec:futurework}
+Several directions are available for future work:
+\begin{itemize}
+\item{\textbf{Better decomposition methods:} the performance of RSR depends on the 
+topography of individual maps. In the presence of large rooms or wide open 
+areas RSR can often compute optimal paths much faster than searching on the original
+map. On less favourable map topographies we achieve more modest improvements.
+I would therefore like to explore alternative decomposition techniques, based
+for example on convex shapes, which would allow bigger empty regions to be
+identified and lead to better performance.}
+\item{\textbf{Pre-computing Jump Points: } The process of identifying jump points
+is an online procedure which often involves visiting (but not expanding) many
+nodes on a grid map. One interesting direction is to speed up this process by
+identifying jump points offline. } 
+\item{\textbf{Synthesis with other pruning methods:} Both RSR and JPS are 
+orthogonal to almost
+all existing techniques for speeding up pathfinding. 
+They could therefore be
+integrated as part of a larger framework involving specialised heuristics or
+other graph pruning and state space reduction techniques; for example as
+described in \cite{botea04,bjornsson06,pochter10}.}
+\end{itemize}

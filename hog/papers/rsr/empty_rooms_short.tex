@@ -1,0 +1,23 @@
+\section{Rectangular Symmetry Reduction}
+\label{sec:rsr}
+
+We define path symmetry in undirected uniform-cost grids as:
+\begin{definition}
+\label{def:symmetry}
+Two paths $\pi_{1}$ and $\pi_{2}$ are symmetric if they share the same start and
+goal node and one can be derived from the other by interchanging the order of the
+moves.
+\end{definition}
+
+To identify and eliminate path symmetries from the grid we will employ the high 
+level strategy in Algorithm \ref{alg:rsr}.
+
+\input alg_rsr_short
+
+Our approach has similarities with 4ERR~\cite{harabor10}, a symmetry breaking algorithm 
+limited to 4-connected grid maps.
+The main differences are: (i) we generalise 4ERR to 8-connected grid maps 
+(ii) we give a stronger offline pruning operator to eliminate more nodes from
+the grid (iii) we give a new online pruning operator that reduces a node's branching
+factor and further speeds up search.
+

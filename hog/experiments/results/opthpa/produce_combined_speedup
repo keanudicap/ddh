@@ -1,0 +1,41 @@
+pdf(width=15, height=10, file="speedup.pdf")
+par(mfrow=c(2,3))
+
+plot(ad_trend4$ne_speedup ~ ad_trend4$opl, type="l", lty=1,   
+main="Average Speedup: Adaptive Depth (4 connected) ", ylab="Speedup Factor", 
+xlab="Path Length", ylim=c(1,10), cex.main=1.5, cex.lab=1.25)
+lines(ad_trend4$st_speedup ~ ad_trend4$opl, type="l", lty=2)
+legend("topleft", c("Nodes Expanded", "Search Time"),  lty=c(1,2), cex=1.25)
+
+plot(bg_trend4$ne_speedup ~ bg_trend4$opl, type="l", lty=1,   
+main="Average Speedup: Baldur's Gate (4 connected)", ylab="Speedup Factor", 
+xlab="Path Length", ylim=c(1,10), cex.main=1.5, cex.lab=1.25)
+lines(bg_trend4$st_speedup ~ bg_trend4$opl, type="l", lty=2)
+legend("topleft", c("Nodes Expanded", "Search Time"),  lty=c(1,2), cex=1.25)
+
+plot(rooms_trend4$ne_speedup ~ rooms_trend4$opl, type="l", lty=1,   
+main="Average Speedup: Rooms (4 connected)", ylab="Speedup Factor", 
+xlab="Path Length", ylim=c(1,20), cex.main=1.5, cex.lab=1.25)
+lines(rooms_trend4$st_speedup ~ rooms_trend4$opl, type="l", lty=2)
+legend("topleft", c("Nodes Expanded", "Search Time"),  lty=c(1,2), cex=1.25)
+
+plot(ad_trend8$ne_speedup ~ ad_trend8$opl, type="l", lty=1,   
+main="Average Speedup: Adaptive Depth (8 connected)", ylab="Speedup Factor", 
+xlab="Path Length", ylim=c(1,10), cex.main=1.5, cex.lab=1.25)
+lines(ad_trend8$st_speedup ~ ad_trend8$opl, type="l", lty=2)
+legend("topleft", c("Nodes Expanded", "Search Time"),  lty=c(1,2), cex=1.25)
+
+plot(bg_trend8$ne_speedup ~ bg_trend8$opl, type="l", lty=1,   
+main="Average Speedup: Baldur's Gate (8 connected)", ylab="Speedup Factor", 
+xlab="Path Length", ylim=c(1,10), cex.main=1.5, cex.lab=1.25)
+lines(bg_trend8$st_speedup ~ bg_trend8$opl, type="l", lty=2)
+legend("topleft", c("Nodes Expanded", "Search Time"),  lty=c(1,2), cex=1.25)
+
+plot(rooms_trend8$ne_speedup ~ rooms_trend8$opl, type="l", lty=1,   
+main="Average Speedup: Rooms (8 connected)", ylab="Speedup Factor", 
+xlab="Path Length", ylim=c(1,20), cex.main=1.5, cex.lab=1.25)
+lines(rooms_trend8$st_speedup ~ rooms_trend8$opl, type="l", lty=2)
+legend("topleft", c("Nodes Expanded", "Search Time"),  lty=c(1,2), cex=1.25)
+
+dev.off()
+

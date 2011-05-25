@@ -1,0 +1,39 @@
+\section{Conclusion}
+We study the problem of symmetric path elimination in 4-connected grid maps.
+Though less popular than the 8-connected variant, 4-connected grid maps appear 
+regularly in modern video games and academic literature.
+\par
+We presented a novel offline method for breaking path symmetries which is simple
+to understand and requires no significant extra memory. 
+Our method involves decomposing a map into empty rectangular rooms, pruning all nodes
+appearing in the interior and replacing them with a set of \emph{macro edges}
+that facilitate optimal traversal from the perimeter of any room to the perimeter
+of any other.
+We also give an online node insertion technique that extends these guarantees
+ to arbitrary pairs of locations appearing in the original unmodified map.
+\par
+We evaluate the performance of our algorithm by running A* on a wide
+range of realistic game maps including one well known set from the game
+\emph{Baldur's Gate II}. 
+In many cases we are able to prune over 50\% of all nodes on a given map
+and improve the average search time performance of A* by a factor of up to 3.5.
+\par
+The performance of our method depends on the topography of individual maps: 
+in the presence of large rooms or wide open areas (both commonly seen in video games\footnote{For 
+example, Blizzard's popular multi-player game \emph{World of Warcraft}})
+we can often compute optimal paths much faster than searching on the original map. 
+On less favourable map topographies we achieve more modest improvements.
+However, since our method is orthogonal to existing search techniques, it could be integrated
+as part of a larger framework involving specialised heuristics or other speedup techniques; 
+for example as described in \cite{botea04,bjornsson05,bjornsson06}. 
+\par
+One direction for further work is to study breaking path symmetries
+in 8-connected grid maps. 
+This domain also exhibits a high degree of path symmetry but the problem is more
+challenging because each tile has a higher branching factor. 
+%%One approach involving macro edges has already been tried 
+%%\cite{bolanca09} but we believe a different method, that does not involve
+%%exploring the interior of empty rooms, could be promising.
+Another direction for future work is to investigate alternative decomposition
+algorithms which produce bigger rooms and improve the performance of the current
+method.

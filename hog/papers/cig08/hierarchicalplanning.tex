@@ -1,0 +1,15 @@
+\section{Hierarchical Planning}
+\label{aha:aha}
+Given a suitable graph abstraction, we can once more turn our attention back to agent planning. 
+In order to compute a hierarchical solution to a canonical problem, we employ a similar process to that described in \cite{botea04}.
+We provide a brief overview of their method here; for a more detailed description, we direct the reader to the original work.
+\par \indent
+We begin by using the $x,y$ coordinates of the start and goal  nodes to identify the local cluster each is located in. 
+Next, we insert two temporary nodes into the abstract graph (which we remove when finished) to represent the start and goal.
+Connecting the nodes to the rest of the graph involves attempting to find an intra-edge from each node to every other abstract node in the cluster using AA*. 
+This phase involves $i+j$ searches in total, corresponding to the number of combined abstract nodes in the start and goal clusters.
+\par \indent
+To compute a high-level plan we again use a variation on A* -- this time to evaluate the annotations of abstract edges before adding a node to the open list.
+Once the search terminates we can take the result, and, if immediate execution is not necessary, we are finished. 
+Otherwise, we refine the plan by performing a number of small searches in the original gridmap between each pair of nodes along the abstract optimal path. 
+We term this algorithm Hierarchical Annotated A* (HAA* for short).

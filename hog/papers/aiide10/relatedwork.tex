@@ -1,0 +1,67 @@
+\section{Related Work}
+%Symmetry arises in many problems in artificial intelligence; from planning and scheduling
+%domains to general constraint satisfaction and even pathfinding.
+%In almost all cases symmetry is undesirable as it increases the size of the search space
+%and wastes time that could be spent finding better solutions.
+%Our symmetry elimination technique bears some similarity to the work of Walsh \cite{walsh07}
+%which focuses on breaking variable assignment symmetries in constraint satisfaction problems.
+%By comparison, we study the much more specific problem of eliminating path symmetries that 
+%appear between pairs of nodes on a grid map. 
+%\par
+One recent result on the problem of eliminating unnecessary path fragments on grid maps is due to
+\citeauthor{pochter09}~\shortcite{pochter09}.
+They introduce \emph{swamps}, which are areas that don't have to be searched
+because crossing them would not improve the length of paths.
+The identification of swamps is quite different to our empty room decomposition.
+Additionally, swamps are shown to be most effective in areas featuring a large number of obstacles 
+and less effective on maps featuring wide open areas.
+By comparison, our algorithm is most effective when large empty rooms can be identified and less
+effective when this is not the case.
+Thus the two methods are in some sense complementary.
+%Another important difference is that swamps are identified online and thus introduce additional 
+%overhead to a running search.
+%By comparison, our pruning method is offline and has no such overhead.
+%Also, keeping track of swamps requires an additional memory overhead.
+%By comparison, our method can often reduce the amount of
+%memory required to store the map.
+\par
+Our work also bears some similarity to new heuristic methods aimed at improving the 
+performance of standard A* on grid maps \cite{bjornsson06}.
+In that work, like in ours, grid maps are decomposed into obstacle-free zones connected by entrances 
+and exits.
+A preliminary online search in the decomposed graph identifies zones that do not appear 
+on any path between the start and goal node, thus yielding the \emph{dead-end heuristic}.
+It can be seen as a technique for detecting areas that don't have to be searched
+in the instance at hand and, as before, is complementary to our work.
+%A highly informed (and memory intensive) \emph{gateway heuristic} is also developed which 
+%requires computing and storing exact costs between all pairs of entrances and exits.
+%Both heuristics are shown to be admissible and yield optimal length paths. 
+%Average running time improvements over standard A* are reported at between 10-40\% using a range of
+%realistic games maps.
+\par
+MSA* \cite{bolanca09} is a new optimality preserving search algorithm which attempts to speed up search 
+on 8-connected grid maps by exploiting path equivalence in empty rectangular rooms. 
+Rather than pruning nodes from the interior of an empty room however MSA* attempts to speed up 
+search by generating macro edges on the fly.
+An improvement over conventional A* is reported but the algorithm is also
+shown to expand a large number of nodes from the interior of empty rooms, which hampers its performance.
+It is also worth noting that MSA* uses a different empty room decomposition method
+from the one described in our work.
+\par
+Fringe Search \cite{bjornsson05} is a general purpose iterative deepening technique which also
+aims to improve on the performance of A*.
+This work is quite different from others we have discussed in that it does not
+rely on any specific decomposition technique nor on the development of any new heuristics
+to guide the search.
+It is provably optimal if maximum search depth is sufficiently large and 
+it has been shown to run between 25-40\% faster than A*.
+As our work is an offline graph-pruning technique, it could be combined with any search algorithm, including
+Fringe Search.
+\par
+Another effective method for solving path planning problems is to reformulate the original problem
+into an equivalent one in a much smaller abstract search space.
+Algorithms in this category are usually fast, memory-efficient and suboptimal.
+The HPA* algorithm \cite{botea04} uses a map decomposition approach,
+dividing a grid map into a series of fixed-size clusters connected 
+by entrances.
+As with Fringe Search, HPA* could be combined with our work on 4-connected grids. For example, first apply our pruning strategy and then apply HPA* to the resulting grid map.

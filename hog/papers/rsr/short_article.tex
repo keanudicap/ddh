@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{subfigure}
+\usepackage{aaai/aaai}
+\usepackage{times} 
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{amsmath, amsthm, amssymb, amsthm}
+\usepackage{algorithm}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[noend]{algorithmic}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+
+\renewcommand{\dblfloatpagefraction}{0.9}
+\renewcommand{\dbltopfraction}{0.9}     % fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}      % allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.9}  % require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.9}       % require fuller float pages
+
+
+\newcommand{\figref}[1]{\figurename~\ref{#1}}
+\sloppy
+
+\begin{document}
+
+\title{Path Symmetries in Undirected Uniform-Cost Grids
+\thanks{A longer version of this paper is currently under review. }
+}
+\author{Daniel Harabor \and Adi Botea \and Philip Kilby \\
+NICTA and The Australian National University \\
+Email: firstname.lastname@nicta.com.au}
+
+\maketitle
+
+\input abstract_short
+\input introduction_short
+\input relatedwork_short
+\input empty_rooms_short
+\input eight_connected_short
+\input branching_factor_short
+\input memory_short
+\input setup_short
+\input results_short
+\input conclusion_short
+
+%\input acknowledgements
+
+\bibliographystyle{aaai/aaai}
+\bibliography{references}
+\end{document}

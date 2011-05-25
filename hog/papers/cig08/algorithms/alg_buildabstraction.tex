@@ -1,0 +1,17 @@
+\begin{algorithm}
+\caption{Build map abstraction}
+\label{aha-alg:buildabstraction}
+\begin{algorithmic}
+\REQUIRE $map, clusterSz, AgentSizes_{all}, Capabilities_{all}$
+
+	\STATE clusters $\leftarrow$ buildClusters(map, clusteriSz)
+	\FORALL{$c \in clusters$} 
+		\FORALL{$size \in descendingOrder(AgentSizes_{all})$}
+			\FORALL{$cap \in order(Capabilities_{all})$}
+				\STATE connectToNeighbours(c, size, cap)
+				\STATE findClusterPaths(c, size, cap)
+			\ENDFOR
+		\ENDFOR
+	\ENDFOR
+\end{algorithmic}
+\end{algorithm}

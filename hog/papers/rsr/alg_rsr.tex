@@ -1,0 +1,21 @@
+\begin{algorithm}
+\caption{Graph reduction based on empty rectangles}
+\label{alg:rsr}
+\begin{algorithmic}
+\REQUIRE A grid map 
+\begin{enumerate}
+\item{\label{alg:rsr:1} Decompose the grid map into a series of disjoint rectangles that are free of any obstacles.
+As per \cite{harabor10}, the size and placement of the rectangles can vary across a
+map, depending on the positions of obstacles.}
+\item{\label{alg:rsr:2} Prune all tiles from the interior of each rectangle $R$
+and possibly some from the perimeter (border).}
+%, and any tiles from the
+%perimeter which have no neighbours in any adjacent room.} 
+\item{\label{alg:rsr:3} Add to each rectangle $R$ \emph{macro edges} between 
+selected pairs of tiles from the perimeter. The cost of each edge is equal to
+the Octile (or Manhattan, on 4-connected grids) distance between endpoints.}
+\item{\label{alg:rsr:4} During search, temporarily re-insert tiles back into the map to handle cases where the
+start or goal is a location which has been previously pruned.}
+\end{enumerate}
+\end{algorithmic}
+\end{algorithm}

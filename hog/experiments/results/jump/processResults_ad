@@ -1,0 +1,51 @@
+### ASTAR ###
+ad_astar <- loadResults("ad/results_FlexibleAStar.1", tablenames, tableclasses)
+ad_astar <- rbind(ad_astar,
+	loadResults("ad/results_FlexibleAStar.2", tablenames, tableclasses))
+ad_astar <- rbind(ad_astar,
+	loadResults("ad/results_FlexibleAStar.3", tablenames, tableclasses))
+
+### RSR ###
+ad_rsr1 <- read.table("ad/results_HPAStar2RSR.1",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+ad_rsr2 <- read.table("ad/results_HPAStar2RSR.2",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+ad_rsr3 <- read.table("ad/results_HPAStar2RSR.3",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+ad_rsr <- ad_rsr1;
+ad_rsr$st <- rowMeans(cbind(ad_rsr1$st, ad_rsr2$st, ad_rsr3$st))
+ad_rsr$insst <- rowMeans(cbind(ad_rsr1$insst, ad_rsr2$insst, ad_rsr3$insst))
+include <- ad_rsr$ne > 1
+ad8rsr <- as.data.frame(ams(ad_astar$ne[include]/ad_rsr$ne[include], ad_astar$opl[include], 15))
+ad8rsr <- cbind(ad8rsr[,1:2], ams(ad_astar$st[include]/ad_rsr$st[include], ad_astar$opl[include],
+15)[,2:3])
+names(ad8rsr) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+ad8rsr <- ad8rsr[ad8rsr$num_exp > 10,]
+
+### JUMP POINTS ###
+ad_jump <- loadResults("ad/results_FlexibleAStarJump.1", tablenames, tableclasses)
+ad_jump <- rbind(ad_jump,
+	loadResults("ad/results_FlexibleAStarJump.2", tablenames, tableclasses))
+ad_jump <- rbind(ad_jump,
+	loadResults("ad/results_FlexibleAStarJump.3", tablenames, tableclasses))
+ad8jump <- speedup(ad_jump, ad_astar, 15)
+
+### HPA ###
+ad_hpa1 <- read.table("ad/results_HPAStar2.1",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+ad_hpa2 <- read.table("ad/results_HPAStar2.2",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+ad_hpa3 <- read.table("ad/results_HPAStar2.3",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+ad_hpa <- ad_hpa1;
+ad_hpa$st <- rowMeans(cbind(ad_hpa1$st, ad_hpa2$st, ad_hpa3$st))
+ad_hpa$insst <- rowMeans(cbind(ad_hpa1$insst, ad_hpa2$insst, ad_hpa3$insst))
+ad8hpa <- as.data.frame(ams(ad_astar$ne/ad_hpa$ne, ad_astar$opl, 15))
+ad8hpa <- cbind(ad8hpa[,1:2], ams(ad_astar$st/ad_hpa$st, ad_astar$opl,
+15)[,2:3])
+names(ad8hpa) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+ad8hpa <- ad8hpa[ad8hpa$num_exp > 10,]
+
+## JUMP POINTS ABSTRACTION ##
+ad_jpas <- loadResults("ad/results_JPAS", tablenames, tableclasses)
+ad8jpas <- speedup(ad_jpas, ad_astar, 15)

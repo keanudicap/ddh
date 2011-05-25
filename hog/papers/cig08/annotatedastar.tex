@@ -1,0 +1,8 @@
+\section{Annotated A*}
+\label{aha:aastar}
+Low-level planning for our extended problem using clearance values is a straightforward application of the ideas thus far.
+To compute an optimal shortest path between a start and goal node we use a variation on the classical A* algorithm \cite{astar}, which we term Annotated A* (AA* for short). 
+Our approach differs from standard A* by requiring two additional parameters for each query: the agent's size and capability. 
+Recall that clearance can be computed on demand for each visited location. 
+Therefore, each atomic octile under consideration by the algorithm can be dynamically evaluated as either blocked or traversable.
+This allows us to map any query into a canonical problem as shown earlier.

@@ -1,0 +1,54 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Pathfinding on uniform-cost undirected grid maps is a problem commonly appearing in
+the literature: for example in application areas such as robotics \cite{lee09}
+artificial intelligence \cite{wang09} and video games \cite{davis00,sturtevant10}.  
+In such contexts it is often the
+case that queries sent to the pathfinding system need to be solved as quickly as
+possible.  Traditionally, this requirement is met through the application of
+hierarchical decomposition techniques that transform the search space into a
+much smaller approximate representation \cite{botea04,sturtevant10}.
+Such methods are very fast, particularly when compared to the classical A*
+algorithm, but have the disadvantage that solutions found in the abstract state
+space are often not optimal when mapped back to the original grid.  An
+alternative speedup method is to develop better heuristics to guide the
+search~\cite{bjornsson06,sturtevant09,goldenberg10}.  Though usually
+fast, optimal and more effective than the popular Manhattan or Octile heuristic (both
+analogous to Euclidean distance but optimised to 4 and 8-connected grids), they
+have the disadvantage of requiring significant memory overhead.
+\par
+In this paper we present Rectangular Symmetry Reduction (RSR): a graph pruning
+algorithm for undirected uniform-cost grid maps which is fast, memory efficient,
+optimality preserving and which can, in some cases, eliminate entirely the need
+to search.  The central idea that we will explore involves the identification
+and elimination of path symmetries from the search space. 
+%For our purposes, we will (informally for the moment) say that two paths are
+%symmetric if they are identical save for the order in which the individual moves
+%(or steps) occur.  
+To deal with path symmetries RSR makes use of an off-line
+empty rectangle decomposition \cite{harabor10} that converts an arbitrary
+undirected uniform-cost grid map into an equivalent one where only nodes
+from the perimeter of each empty rectangle need to be explored during search.
+We extend this approach in several directions: (i) we generalise the method
+from 4-connected grid maps to the 8-connected case where the increase in
+branching factor makes effective symmetry elimination more challenging; (ii) we
+develop a new offline pruning technique that reduces the number of nodes which
+need to be explored during search; (iii) we give a novel online pruning strategy
+which speeds up node expansion by selectively evaluating either all neighbours
+associated with a particular node or only a small subset.  We prove that in each
+case both optimality and completeness are preserved.
+\par
+We perform a thorough empirical analysis, comparing RSR with three similar
+state-of-the-art graph pruning algorithms on a
+number of synthetic and realistic benchmarks, including one well known set from
+the popular roleplaying game \emph{Baldur's Gate II}.  Compared to Harabor and
+Botea's method \cite{harabor10}, we both extend the applicability and improve
+the speed on the subset of instances where both algorithms are applicable.
+We also compare RSR to the recent Swamps-based pruning method of Pochter \emph{et
+al}~\cite{pochter10} and the enhanced Portal Heuristic of Goldenberg \emph{et
+al}~\cite{goldenberg10}. 
+We show that RSR has complementary strengths compared to both of these methods 
+and identify classes of instances where RSR is clearly the better choice, 
+dominating convincingly across a large number of instances.
+

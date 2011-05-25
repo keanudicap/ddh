@@ -1,0 +1,45 @@
+\section{Related Work}
+\label{sec:relatedwork}
+ Approaches for identifying and eliminating search-space symmetry have been
+proposed in areas including planning \cite{fox99}, constraint programming
+\cite{gent00}, and combinatorial optimization \cite{fukunaga08}. 
+Very few works however explicitly identify and deal with symmetry in pathfinding
+domains such as grid maps. 
+
+Empty Rectangular Rooms~\cite{harabor10} is an offline symmetry breaking technique
+which attempts to redress this oversight. 
+It decomposes grid maps into a series of obstacle-free rectangles and replaces all nodes 
+from the interior of each rectangle with 
+a set of macro edges that facilitate optimal travel. 
+Specific to 4-connected maps, this approach is less general than
+jump point pruning. It also requires offline pre-processing whereas our
+method is online.
+
+The \emph{dead-end heuristic} \cite{bjornsson06} and \emph{Swamps} \cite{pochter10}
+are two similar pruning techniques related to our work.
+Both decompose grid maps into a series of adjacent areas. Later, this decomposition
+is used to identify areas not relevant to optimally solving a particular
+pathfinding instance.
+This objective is similar yet orthogonal to our work where
+the aim is to reduce the effort required to explore any given area in the search
+space.
+
+A different method for pruning the search space is to identify \emph{dead} and
+\emph{redundant} cells~\cite{sturtevant10b}.  Developed in the context of
+learning-based heuristic search, this method speeds up search only after running
+multiple iterations of an iterative deepening algorithm.  Further, the
+identification of redundant cells requires additional memory overheads which
+jump points do not have.
+
+\emph{Fast expansion}~\cite{sun09} is another related work that speeds up
+optimal A* search. It avoids unnecessary open list operations when it finds a
+successor node just as good (or better) than the best node in the open list.
+Jump points are a similar yet fundamentally different idea: they allow us to
+identify large sets of nodes that would be ordinarily expanded but which can be
+skipped entirely.
+ 
+In cases where optimality is not required, hierarchical pathfinding methods
+are pervasive.  They improve performance by decomposing the
+search space, usually offline, into a much smaller approximation.  Algorithms
+of this type, such as HPA*~\cite{botea04}, are  fast and
+memory-efficient but also suboptimal.
