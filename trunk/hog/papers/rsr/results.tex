@@ -1,0 +1,130 @@
+\section{Results}
+\label{sec-results}
+To evaluate RSR we use a generic implementation of A* and discuss performance 
+in terms of search time speedup. That is, the relative improvement to the average 
+time A* needs to solve an instance when running on a pruned  vs. unpruned grid.
+For example, a speedup of 2.0 is twice as fast (higher is better).
+%
+%while
+%a node expansion speedup of 2.0 indicates half the number of nodes were expanded.
+%In each case higher is better.
+Note that on approximately 2\% of all instances the start and goal are located
+in the same rectangle and RSR computes the optimal solution without
+search.  We exclude these instances from our results on the basis that they are 
+outliers, even though RSR solves them in constant time.
+
+\par 
+\begin{figure*}[t]
+       \begin{center}
+                       \includegraphics[width=0.97\columnwidth, trim = 10mm 10mm 10mm 0mm]{diagrams/speedup.pdf}
+       \end{center}
+       \caption{Average A* speedup on each of our three benchmarks. 
+		Results are given in terms of relative improvement to A* search time (i.e. speedup).}
+\label{fig-speedup}
+\end{figure*}
+
+
+\textbf{Pre-processing Times: } 
+Table 1 presents a summary of average pre-processing times for
+each of our three (non-scaled) benchmarks. We also give the average number of
+nodes and edges as an indication of map size.
+We notice that RSR takes very little time to pre-process all input maps. 
+We did not encounter any that took longer than a second, and most required 
+significantly less than that. 
+An interesting implication from this result is that RSR appears well suited to
+pathfinding in dynamic environments as outlined in Section \ref{sec:memory}.
+
+\input table_preproc
+
+\textbf{Comparison to 4ERR: }
+We now compare the performance RSR against the 4ERR~\cite{harabor10} graph
+pruning algorithm.  As 4ERR works only on
+4-connected grids, here we restrict our attention to this type of maps.  To
+assess the individual impact of both perimeter reduction (PR) and online node
+pruning (OP) we also develop and compare two variant algorithms: 4ERR+PR and
+4ERR+OP. 
+\par
+Figure \ref{fig-speedup} (A to C) presents our main result.
+Note that RSR shows a convincing 
+speed improvement over 4ERR and all its variants across all input maps.
+This allows us to conclude that that RSR is the better choice on 4-connected maps.
+When analysing the impact of each enhancement, we note that 4ERR+PR yields the
+biggest improvement on all three benchmarks, speeding up A* by up to 20 times.
+%The most dramatic example can be seen on Rooms (Figure \ref{fig-speedup}C) 
+%where 4ERR+PR speeds up A* by 20 times.
+4ERR+OP compares well with 4ERR+PR on both Adaptive Depth and
+Baldur's Gate but is of little benefit on Rooms where perimeter pruning has
+already reduced the branching factor.
+%In an additional experiment, we evaluated the impact of OP on 8-connected
+%grids and observed that its contribution to speedup was more significant than in 
+%the 4-connected case.
+%This can be explained as follows: on 4-connected maps, 4ERR maintains a very low
+%branching factor, which is comparable (and even slightly better) than the branching
+%factor on the original map. 
+%On the other hand, 8ERR (i.e. RSR without OP and PR speedup enhancements) 
+%can introduce larger branching factors. Therefore, there are more opportunities for 
+%online pruning in the latter case. 
+%Other details (and charts) are left out because of rectangle limitations.
+\par
+The large performance variation from one benchmark to another can be attributed
+to how effectively we can decompose the map. A good decomposition forms large
+rectangles with few perimeter nodes after pruning. This is the case for Rooms.
+A poor decomposition builds small rectangles with many transitionary perimeter 
+nodes that cannot be pruned. This is the case for Baldur's Gate. 
+\par
+\textbf{Comparison to Swamps:}
+Next, we compare and contrast the performance of RSR with the Swamps
+algorithm~\cite{pochter10}.  To evaluate Swamps we used the authors' source
+code, including their own implementation of A*.  We then ran all experiments
+using their recommended running parameters: a swamp seed radius of 6 and ``no
+change limit'' of 2.
+Figure \ref{fig-speedup} (D to F) gives search time speedup results for both RSR
+and Swamps running on the 8-connected variants of our three benchmark problem
+sets. 
+On Adaptive Depth and Rooms, where the terrain can be naturally decomposed into
+rectangles, RSR achieves higher speedups and is shown consistently better than Swamps. 
+On Baldur's Gate, where this is not the case, Swamps-based pruning is more
+effective. 
+\par
+Next, we scaled every map in each benchmark by a factor of 3 and randomly
+generated a new set of 100 problem instances per map.  Scaling has the effect of
+producing larger open areas and allows us to measure the impact of this variable
+on search time speedup.  We present our findings in  Figure \ref{fig-speedup} (G
+to I).  We observe that while the maximum speedup achieved by both algorithms
+has increased, the gain for Swamps is very small while RSR shows dramatic
+improvement.  Infact, if we limit our attention to problems of similar length to
+those seen on the original maps we notice that the performance of Swamps
+actually decreases.
+\par
+The observed performance characteristics are not unexpected: Swamps prune out
+areas that can be avoided without introducing a detour while rectangle-based
+symmetry reduction allows for a faster exploration of areas that need to be
+searched.  Since it appears that the two algorithms are orthogonal, a natural
+extension of this work would be to combine the two: first, apply 4(or 8)ERR+PR
+(as appropriate) to a grid in order to eliminate as many interior nodes as
+possible; then, apply a Swamps-based decomposition to the resultant graph.
+
+\input table_portals
+
+\textbf{Comparison to Portal Heuristic:}
+We now compare RSR with PH-e -- the enhanced variant of the recent 
+Portal Heuristic algorithm \cite{goldenberg10}.
+Although we did not have access to a working implementation of this method we
+will discuss its performance vs. RSR based on published results obtained by the
+original authors. As in \cite{goldenberg10} we focus on the 4-connected variants 
+of the Baldur's Gate and Rooms benchmarks.
+Table 2 summarises the main result.
+\par
+PH-e performs well when it can decompose the map into areas of similar size with
+few transitionary nodes connecting them.
+RSR performs well when it can decompose the map into large rectangles with few
+perimeter nodes.
+On Rooms, both decomposition approaches are highly effective. 
+On Baldur's Gate both are comparatively less effective.
+Notice however that PH-e requires up to 7 times more memory than RSR to achieve
+similar results.
+As with Swamps, we believe PH-e is entirely orthogonal to RSR and the two can be 
+easily combined. For example, PH-e could be used to more accurately guide search
+on a map pruned by RSR. Alternatively, symmetry elimination could be used to 
+speed up pathfinding between successive pairs of portals during PH-e's refinement phase.
+

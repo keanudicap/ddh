@@ -1,0 +1,66 @@
+tablenames <- c("id", "name", "ne", "nt", "ng", "st", "opl", "map")
+tableclasses <- c("integer", "character", "integer", "integer", "integer", "double", "double", "character")
+hpanames <- c("exp", "name", "ne", "nt", "pm", "st", "insne", "insnt", "inspm", "insst", "opl", "map")
+hpaclasses <- c("integer", "character", "integer", "integer", "integer", "double", "integer", "integer", "integer", "double", "double", "character")
+
+### ASTAR ###
+rooms_astar1 <- read.table("rooms/results_FlexibleAStar.1",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+rooms_astar2 <- read.table("rooms/results_FlexibleAStar.2",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+rooms_astar3 <- read.table("rooms/results_FlexibleAStar.3",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+rooms_astar <- rooms_astar1;
+rooms_astar$st <- rowMeans(cbind(rooms_astar1$st, rooms_astar2$st, rooms_astar3$st))
+
+### RSR ###
+rooms_rsr1 <- read.table("rooms/results_HPAStar2RSR.1",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+rooms_rsr2 <- read.table("rooms/results_HPAStar2RSR.2",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+rooms_rsr3 <- read.table("rooms/results_HPAStar2RSR.3",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+rooms_rsr <- rooms_rsr1;
+rooms_rsr$st <- rowMeans(cbind(rooms_rsr1$st, rooms_rsr2$st, rooms_rsr3$st))
+rooms_rsr$insst <- rowMeans(cbind(rooms_rsr1$insst, rooms_rsr2$insst, rooms_rsr3$insst))
+include <- rooms_rsr$ne > 1
+rooms8rsr <- as.data.frame(ams(rooms_astar$ne[include]/rooms_rsr$ne[include], rooms_astar$opl[include], 25))
+rooms8rsr <- cbind(rooms8rsr[,1:2], ams(rooms_astar$st[include]/rooms_rsr$st[include], rooms_astar$opl[include],
+25)[,2:3])
+names(rooms8rsr) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+rooms8rsr <- rooms8rsr[rooms8rsr$num_exp > 10,]
+
+### JUMP POINTS ###
+rooms_jump1 <- read.table("rooms/results_FlexibleAStarJump.1",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+rooms_jump2 <- read.table("rooms/results_FlexibleAStarJump.2",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+rooms_jump3 <- read.table("rooms/results_FlexibleAStarJump.3",
+col.names=tablenames, colClasses=tableclasses, header=FALSE, sep=",")
+rooms_jump <- rooms_jump1;
+rooms_jump$st <- rowMeans(cbind(rooms_jump1$st, rooms_jump2$st, rooms_jump3$st))
+rooms8jump <- as.data.frame(ams(rooms_astar$ne/rooms_jump$ne, rooms_astar$opl, 25))
+rooms8jump <- cbind(rooms8jump[,1:2], ams(rooms_astar$st/rooms_jump$st, rooms_astar$opl,
+25)[,2:3])
+names(rooms8jump) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+rooms8jump <- rooms8jump[rooms8jump$num_exp > 10,]
+
+### HPA ###
+rooms_hpa1 <- read.table("rooms/results_HPAStar2.1",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+rooms_hpa2 <- read.table("rooms/results_HPAStar2.2",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+rooms_hpa3 <- read.table("rooms/results_HPAStar2.3",
+col.names=hpanames, colClasses=hpaclasses, header=FALSE, sep=",")
+rooms_hpa <- rooms_hpa1;
+rooms_hpa$st <- rowMeans(cbind(rooms_hpa1$st, rooms_hpa2$st, rooms_hpa3$st))
+rooms_hpa$insst <- rowMeans(cbind(rooms_hpa1$insst, rooms_hpa2$insst, rooms_hpa3$insst))
+rooms8hpa <- as.data.frame(ams(rooms_astar$ne/rooms_hpa$ne, rooms_astar$opl, 25))
+rooms8hpa <- cbind(rooms8hpa[,1:2], ams(rooms_astar$st/rooms_hpa$st, rooms_astar$opl,
+25)[,2:3])
+names(rooms8hpa) <- c("opl", "ne_speedup", "st_speedup", "num_exp")
+rooms8hpa <- rooms8hpa[rooms8hpa$num_exp > 10,]
+
+## JUMP POINTS ABSTRACTION ##
+rooms_jpas <- loadResults("rooms/results_JPAS", tablenames, tableclasses)
+rooms8jpas <- speedup(rooms_jpas, rooms_astar, 25)

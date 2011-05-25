@@ -1,0 +1,61 @@
+\section{Offline Symmetry Elimination}
+\label{algorithm}
+Pathfinding in modern video games often involves exploring highly regular 
+environments such as cities, sewers or dungeons (e.g Figure \ref{fig-bgmap}).
+Though these locales tend to be topographically simple (usually being comprised
+of empty rooms connected by corridors) they can also be highly symmetric 
+with many optimal length paths existing between arbitrary pairs of locations.
+Symmetry appears in many domains (e.g. constraint programming \cite{walsh07})
+and, unless it is handled properly, almost always increases the size of the search space
+and forces search algorithms to waste time.
+\par
+We propose the following offline strategy for identifying and eliminating symmetric paths in 
+4-connected grid maps:
+\begin{enumerate}
+\item{Decompose the grid map into a set of empty rooms, where each empty room is 
+rectangular in shape and free of any obstacles. 
+The size of the rooms can vary across a map, depending
+on the placement of the obstacles.}
+\item{Prune all nodes from the interior but not the perimeter of each empty
+room.}
+\item{Add a series of \emph{macro edges} that connect each node on the perimeter of an empty room
+with a node on the directly opposite side of the room 
+\footnote{Alternatively, macro edges could be generated on-the-fly during search. 
+This obviates the need to store them explicitly.}.
+The cost of each edge is equal to the Manhattan distance between its two endpoints.
+}
+\end{enumerate}
+Trivial rooms which contain no interior nodes (for example rooms with a width $w$ or height $h$ 
+$\leq 2$) are left unmodified by steps 2 and 3.
+Figure \ref{fig-overview} shows an example of this process.
+For each non-trivial room we prune $(w-2)\times(h-2)$ interior
+nodes and, in the process, eliminate a large number of symmetric paths between 
+nodes on the perimeter.
+We claim that this approach preserves optimality when traversing across any arbitrary room.
+
+\begin{lemma}
+\label{thm-roomtraversal}
+Let $R$ be an arbitrary rectangular room that is free of obstacles
+and $m, n$ be two locations on its perimeter.
+Then $m$ and $n$ can be connected optimally through a path that
+mentions only nodes on the perimeter of $R$ and possibly involves
+a macro edge.
+\end{lemma}
+\begin{proof}
+\par
+There are two distinct cases to consider.
+Case 1 is when $m$ and $n$ are placed on the same side of the perimeter, or
+on two orthogonal sides. 
+To obtain an optimal path we can simply travel along the perimeter from $m$ to $n$.
+Case 2 is when $m$ and $n$ are placed on opposite sides of the perimeter.
+To obtain an optimal path we can simply follow the macro edge at $m$ 
+and navigate directly to a node $m'$ located on
+the same side of the perimeter as $n$. Then, go from $m'$ to $n$ along the perimeter.
+The resultant path is optimal as its length is equal to the Manhattan distance between $m$ and $n$.
+\end{proof}
+
+A direct corollary to Lemma \ref{thm-roomtraversal} is that we can prune from consideration
+all nodes from the interior of $R$ and limit ourselves to only searching nodes appearing along its perimeter. 
+The only remaining consideration is how to deal with interior nodes that happen
+to be the start or goal location for the search at hand.
+We address this case in the following section.

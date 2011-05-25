@@ -1,0 +1,8 @@
+
+Here is one way to have all fonts embedded in the pdf file. I'm not sure if it's the best way.
+ps2pdf -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress ahastar.pdf embeded-ahastar.pdf
+
+
+
+Maybe this will work too if Daniel has root privilegies on his laptop:
+http://www.daniel-lemire.com/blog/archives/2005/08/29/getting-pdflatex-to-embed-all-fonts/

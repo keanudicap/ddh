@@ -1,0 +1,14 @@
+\begin{algorithm}
+\caption{Calculate Octile Clearance Value}
+\label{aha-alg:calculateclearance}
+\begin{algorithmic}
+\REQUIRE $t \in gridmap$ and $c \in C$ and $s \in S$
+	\STATE $square \leftarrow t$
+	\STATE $cv \leftarrow 0$
+	\WHILE{$traversable(square, c) \wedge area(square) \leq s^2$ }
+		\STATE $cv \leftarrow cv + 1$
+		\STATE $square \leftarrow expand(square)$
+	\ENDWHILE
+	\STATE \textbf{return} $cv$
+\end{algorithmic}
+\end{algorithm}

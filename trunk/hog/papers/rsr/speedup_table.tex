@@ -1,0 +1,42 @@
+% latex table generated in R 2.11.0 by xtable 1.5-6 package
+% Sun Aug 15 16:28:35 2010
+\begin{table}[tb]
+\caption{Average A* speedup on 4 and 8 connected maps.
+We compare the Empty Rectangular Rooms decomposition strategy with Swamps.
+%using Perimeter Search and Swamps \cite{pochter10}.
++PR and +FNE indicates which of Perimeter Reduction or Fast Node Expansion was
+also used (in addition to Empty Rooms).}
+\label{table-speedup}
+%For comparison also include results for the Swamps algorithm originally published in
+%\cite{pochter10}}
+
+
+\begin{center}
+\begin{tabular*}{\columnwidth}{p{1.8cm}m{0.62cm}m{0.62cm}m{0.62cm}m{0.62cm}m{0.62cm}m{0.62cm}}
+  \hline
+   & \multicolumn{2}{c}{BG} & \multicolumn{2}{c}{AD} & \multicolumn{2}{c}{Rooms}\\
+	& Nodes & Time & Nodes & Time & Nodes & Time \\
+  \hline
+%P. Search (4) & 2.1 & 2.0 & 3.1 & 3.0 & 2.0 & 2.1 \\ 
+%+PR & 2.4 & 2.2 & 4.4 & 4.1 & 12.7 & 16.5 \\ 
+%+BFR & 2.1 & 2.2 & 3.1 & 3.4 & 2.0 & 2.5 \\ 
+%+PR+BFR (4) & 2.4 & 2.5 & 4.4 & 4.6 & 12.7 & 16.0 \\ 
+%P. Search (8) & 2.6 & 1.6 & 3.7 & 1.9 & 2.0 & 1.5 \\ 
+%+PR & 2.7 & 1.7 & 4.6 & 3.0 & 5.8 & 6.6 \\ 
+%+BFR & 2.6 & 1.8 & 3.6 & 2.6 & 2.0 & 2.1 \\ 
+%+PR+BFR & 2.7 & 1.8 & 4.7 & 3.5 & 5.8 & 6.5 \\ 
+%Swamps & 2.9 & 2.4 & 0.0 & 0.0 & 6.5 & 7.4 \\ 
+
+	Rooms (4C) & 2.13 & 2.04 & 3.08 & 3.03 & 2.00 & 2.09 \\ 
+	+FNE  & 2.14 & 2.23 & 3.08 & 3.41 & 2.00 & 2.45 \\ 
+	+PR  & 2.40 & 2.23 & 4.41 & 4.09 & 12.72 & 16.46 \\ 
+	+PR+FNE & 2.41 & 2.45 & 4.41 & 4.56 & 12.72 & 15.95 \\  \\ 
+	Rooms (8C) & 2.64 & 1.59 & 3.69 & 1.95 & 2.01 & 1.47 \\ 
+	+FNE  & 2.61 & 1.80 & 3.61 & 2.63 & 2.01 & 2.13 \\ 
+	+PR  & 2.70 & 1.66 & 4.57 & 3.03 & 5.77 & 6.61 \\ 
+	+PR+FNE  & 2.67 & 1.83 & 4.68 & 3.49 & 5.77 & 6.51 \\  \\
+	Swamp (8C) & 2.89 & 2.43 & N/A & N/A & 6.55 & 7.39 \\ 
+   \hline
+\end{tabular*}
+\end{center}
+\end{table}

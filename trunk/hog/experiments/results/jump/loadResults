@@ -1,0 +1,17 @@
+tablenames <- c("id", "name", "ne", "nt", "ng", "st", "opl", "map")
+tableclasses <- c("integer", "character", "integer", "integer", "integer", "double", "double", "character")
+hpanames <- c("exp", "name", "ne", "nt", "pm", "st", "insne", "insnt", "inspm", "insst", "opl", "map")
+hpaclasses <- c("integer", "character", "integer", "integer", "integer", "double", "integer", "integer", "integer", "double", "double", "character")
+
+source("../Rscripts/Rhelpers.Rdata")
+source("processResults_ad")
+source("processResults_bg")
+source("processResults_bgm")
+source("processResults_dao")
+source("processResults_rooms")
+
+load("../opthpa/swamp_tables.RObject")
+rooms8swamps <- rooms8swamps_r6_nc2
+ad8swamps <- ad8swamps_r6_nc2
+bg8swamps <- bg8swamps_r6_nc2
+

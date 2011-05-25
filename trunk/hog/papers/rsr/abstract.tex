@@ -1,0 +1,12 @@
+\begin{abstract}
+In this paper we explore a symmetry-based search space reduction technique
+ which can speed up optimal pathfinding on undirected uniform-cost grid maps by
+ up to 38
+times.  Our technique decomposes grid maps into a set of empty rectangles,
+removing from each rectangle all interior nodes and possibly some from along the
+perimeter. We then add a series of macro-edges between selected pairs of
+remaining perimeter nodes to facilitate provably optimal traversal through each
+rectangle.  We also develop a novel online pruning technique to further speed up
+search.  Our algorithm is fast, memory efficient and retains the same optimality
+and completeness guarantees as searching on an unmodified grid map.
+\end{abstract}

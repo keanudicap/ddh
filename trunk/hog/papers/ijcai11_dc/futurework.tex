@@ -1,0 +1,29 @@
+\section{Future Work}
+\label{sec:futurework}
+There are several directions available for future work; I plan to pursue each
+of these during the remainder of my doctoral candidature:
+\begin{itemize}
+\item{\textbf{Alternative decomposition methods:} In the presence of large open 
+areas, RSR can often compute optimal paths much faster than searching on the original
+map. On less favourable map topographies we achieve more modest improvements.
+I would therefore like to explore alternative decomposition techniques, based
+for example on convex shapes, which would allow bigger empty regions to be
+identified and lead to better performance.}
+\item{\textbf{Stronger online pruning techniques:} RSR can produce map decompositions 
+in which individual nodes have a high branching factor. This is undesirable as 
+considering a large number of neighbours
+usually slows down search. I intend to address  
+this problem through the development of stronger pruning techniques 
+that can be applied during the online phase of a pathfinding search.}
+\item{\textbf{Synthesis with existing pruning methods:} RSR is orthogonal to almost
+all existing techniques for speeding up pathfinding. It could therefore be
+integrated as part of a larger framework involving specialised heuristics or
+other graph pruning and state space reduction techniques; for example as
+described in \cite{botea04,bjornsson06,pochter10}.}
+\item{\textbf{Generalisations to other domains:} I am currently investigating
+whether breaking symmetric paths can be applied to more general domains. For
+example: weighted grids or road networks. The former often appear in application
+areas such as robotics and video games while the latter are particularly
+important in GPS navigation.
+}
+\end{itemize}

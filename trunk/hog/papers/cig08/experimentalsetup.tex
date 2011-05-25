@@ -1,0 +1,11 @@
+\section{Experimental Setup}
+We evaluated the performance of AA* and HAA* on a set of 120 octile-based maps, ranging in size from 50x50 to 320x320, which we borrowed from a popular roleplaying game.
+The same maps were used in previous games-related research (e.g., \cite{botea04}).
+In their default configuration, the maps only featured one type of traversable terrain interspersed with hard obstacles. 
+We therefore created five derivative sets (making for a total of 720 maps) where each traversable tile on every map had one of $\lbrace 10\%, 20\%, 30\%, 40\%, 50\% \rbrace$ probability of being converted into a second type of traversable terrain. Octiles with this terrain type are called \emph{soft obstacles}, as they are not traversable by all agents.
+This allowed us to evaluate the algorithms in environments with both soft and hard obstacles.
+\par \indent
+For each map we generated 100 experiments by randomly creating valid problems between arbitrarily chosen pairs of locations and some random capability.
+We used two agent sizes in each experiment: small (occupying one tile) and large (occupying four tiles) resulting in 144,000 problem instances (720x200) overall.
+All experiments were conducted on a 2.4GHz Intel Core 2 Duo processor with 2GB RAM running OSX 10.5.2.
+To implement both planners we used the University of Alberta's freely available pathfinding library, HOG (\url{www.cs.ualberta.ca/~nathanst/hog.html}). 

@@ -1,0 +1,22 @@
+%Filename: T1tahoma.fd
+%Created by: tex winfonts
+%Created using fontinst v1.926
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{T1tahoma.fd}
+   [2006/01/21 Fontinst v1.926 font definitions for T1/tahoma.]
+
+\DeclareFontFamily{T1}{tahoma}{\hyphenchar \font ="7F}
+
+\DeclareFontShape{T1}{tahoma}{m}{n}{
+   <-> jthr8t
+}{}
+
+\DeclareFontShape{T1}{tahoma}{b}{n}{
+   <-> jthb8t
+}{}
+
+\DeclareFontShape{T1}{tahoma}{bx}{n}{<->ssub * tahoma/b/n}{}
+
+\endinput
