@@ -5,7 +5,7 @@
 include apps.mk
 VPATH = tests/:tests/objs
 
-CFLAGS += -I../hpa -I../tests/aha -I../tests/hpa -I/usr/local/include -I/opt/local/include
+CFLAGS += -I../hpa -I../tests/hpa -I/usr/local/include -I/opt/local/include
 
 tests_OBJS = RunTests.o
 
