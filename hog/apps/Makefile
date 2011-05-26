@@ -29,7 +29,7 @@ $($(strip TARGS)) : $(HDRS) Makefile
 #	@echo '	@ranlib libs/$(value DAT)' >> $(@)
 	@echo >> $(@)
 	@echo '$(value DLR)($(basename $(@))_OBJS)' \
- ' : %.o : %.cpp $(value DLR)(DRIVER_SRC:.cpp=.h) $(value DLR)(JUMP_SRC:.cpp=.h) $(value DLR)(OPTHPA_SRC:.cpp=.h) $(value DLR)(HPASTAR_SRC:.cpp=.h) $(value DLR)(SHARED_SRC:.cpp=.h) $(value DLR)(UTIL_SRC:.cpp=.h) $(value DLR)(SIMULATION_SRC:.cpp=.h) $(value DLR)(RTS_OBJS:.o=.h)' >> $(@)
+ ' : %.o : %.cpp $(value DLR)(DRIVER_SRC:.cpp=.h) $(value DLR)(JUMP_SRC:.cpp=.h) $(value DLR)(RSR_SRC:.cpp=.h) $(value DLR)(HPASTAR_SRC:.cpp=.h) $(value DLR)(SHARED_SRC:.cpp=.h) $(value DLR)(UTIL_SRC:.cpp=.h) $(value DLR)(SIMULATION_SRC:.cpp=.h) $(value DLR)(RTS_OBJS:.o=.h)' >> $(@)
 	@echo '	@if (! -d $(basename $(@))/objs) mkdir $(basename $(@))/objs' >> $(@)
 	@echo '	@-$(value DLR)(RM) libs/lib$(basename $(@)).a' >> $(@)
 	@echo '	$(value DLR)(CC) $(value VCFLG) -c -o $(basename $(@))/objs/$(value DLR)(notdir $(value DAT)) $(basename $(@))/$(value DLR)(patsubst %.o,%.cpp,$(value DAT))' >> $(@)
@@ -41,8 +41,8 @@ apps.mk : $(TARGS) Makefile
 	@echo "#auto-generated file, do not edit!" >! apps.mk
 	@echo "SHELL = /bin/tcsh" >> apps.mk
 	@echo "CC = g++" >> apps.mk
-#	@echo "CFLAGS = -Wall -g -ggdb -I../aha -I../hpa -I../opthpa -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
-	@echo "CFLAGS = -Wall -O3 -I../aha -I../hpa -I../opthpa -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
+#	@echo "CFLAGS = -Wall -g -ggdb -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
+	@echo "CFLAGS = -Wall -O3 -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
 	@echo >> $(@)
 
 	@echo 'ifeq ($(value DLR)(findstring "Darwin", "$(value DLR)(shell uname -s)"), "Darwin")' >> $(@)
@@ -71,7 +71,7 @@ apps.mk : $(TARGS) Makefile
 	@echo 'SIMULATION_SRC = $(value DLR)(wildcard ../simulation/*.cpp)' >> $(@)
 	@echo 'UTIL_SRC = $(value DLR)(wildcard ../util/*.cpp)' >> $(@)
 	@echo 'HPASTAR_SRC = $(value DLR)(wildcard ../hpa/*.cpp)' >> $(@)
-	@echo 'OPTHPA_SRC = $(value DLR)(wildcard ../opthpa/*.cpp)' >> $(@)
+	@echo 'RSR_SRC = $(value DLR)(wildcard ../rsr/*.cpp)' >> $(@)
 	@echo 'JUMP_SRC = $(value DLR)(wildcard ../jump/*.cpp)' >> $(@)
 
 clean:

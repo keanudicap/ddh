@@ -1,4 +1,4 @@
-VPATH = tests/util/:tests/hpa/:tests/aha/:jump/:opthpa/:hpa/:aha/:abstraction/:driver/:shared/:simulation/:util/:objs/:apps/libs:bin/
+VPATH = tests/util/:tests/hpa/:jump/:rsr/:hpa/:abstraction/:driver/:shared/:simulation/:util/:objs/:apps/libs:bin/
 
 # source targets
 ABSTRACTION_SRC = $(wildcard abstraction/*.cpp)
@@ -7,11 +7,11 @@ SHARED_SRC = $(wildcard shared/*.cpp)
 SIMULATION_SRC = $(wildcard simulation/*.cpp)
 UTIL_SRC = $(wildcard util/*.cpp)
 HPASTAR_SRC = $(wildcard hpa/*.cpp)
-OPTHPA_SRC = $(wildcard opthpa/*.cpp)
+RSR_SRC = $(wildcard rsr/*.cpp)
 JUMP_SRC = $(wildcard jump/*.cpp)
 UTILTESTS_SRC = $(wildcard tests/util/*.cpp)
 HPASTARTESTS_SRC = $(wildcard tests/hpa/*.cpp)
-OPTHPATESTS_SRC = $(wildcard tests/opthpa/*.cpp)
+RSRTESTS_SRC = $(wildcard tests/rsr/*.cpp)
 
 # object targets
 DRIVER_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(DRIVER_SRC))))
@@ -20,15 +20,15 @@ SHARED_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(SHARED_SRC))))
 SIMULATION_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(SIMULATION_SRC))))
 UTIL_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(UTIL_SRC))))
 HPASTAR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HPASTAR_SRC))))
-OPTHPA_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(OPTHPA_SRC))))
+RSR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(RSR_SRC))))
 JUMP_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(JUMP_SRC))))
 UTILTESTS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(UTILTESTS_SRC))))
 HPASTARTESTS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HPASTARTESTS_SRC))))
-OPTHPATESTS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(OPTHPATESTS_SRC))))
+RSRTESTS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(RSRTESTS_SRC))))
 
 # header file locations
-HOGINCLUDES = -I./jump -I./hpa -I./aha -I./opthpa -I./abstraction -I./driver -I./shared -I./simulation -I./util
-TESTINCLUDES = -I./tests/util -I./tests/aha -I./tests/hpa -I./tests/opthpa 
+HOGINCLUDES = -I./jump -I./hpa -I./rsr -I./abstraction -I./driver -I./shared -I./simulation -I./util
+TESTINCLUDES = -I./tests/util -I./tests/hpa -I./tests/rsr 
 
 # compiler flags
 CC = c++
@@ -78,7 +78,7 @@ targets: cleanapps $(TARGETS)
 $(TARGETS) : % : lib%.a hogcore
 	$(CC)	$(CFLAGS) $(LIBFLAGS) -o $(addprefix bin/,$(@)) \
 		$(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
-		$(HPASTAR_OBJ) $(OPTHPA_OBJ) $(JUMP_OBJ) \
+		$(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) \
 		-l$(@:.mk=)
 
 $(addprefix lib, $(addsuffix .a, $(TARGETS))) :
@@ -87,7 +87,7 @@ $(addprefix lib, $(addsuffix .a, $(TARGETS))) :
 
 .PHONY: hogcore
 hogcore : $(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
-	  $(HPASTAR_OBJ) $(OPTHPA_OBJ) $(JUMP_OBJ)
+	  $(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ)
 
 $(UTIL_OBJ) : $(UTIL_SRC) $(UTIL_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,util/,$(@)))
@@ -107,19 +107,19 @@ $(DRIVER_OBJ) : $(DRIVER_SRC) $(DRIVER_SRC:.cpp=.h)
 $(HPASTAR_OBJ) : $(HPASTAR_SRC) $(HPASTAR_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,hpa/,$(@)))
 
-$(OPTHPA_OBJ) : $(OPTHPA_SRC) $(OPTHPA_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,opthpa/,$(@)))
+$(RSR_OBJ) : $(RSR_SRC) $(RSR_SRC:.cpp=.h)
+	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,rsr/,$(@)))
 
 $(JUMP_OBJ) : $(JUMP_SRC) $(JUMP_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,jump/,$(@)))
 
 .PHONY: tests
 tests : hogcore $(UTILTESTS_OBJ) $(HPASTARTESTS_OBJ) \
-		$(OPTHPATESTS_OBJ) libtests.a
+		$(RSRTESTS_OBJ) libtests.a
 	$(CC)	$(CFLAGS) $(LIBFLAGS) ${TESTLIBFLAGS} -o $(addprefix bin/,$(@)) \
 		$(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
-		$(HPASTAR_OBJ) $(OPTHPA_OBJ) \
-		$(HPASTARTESTS_OBJ) $(OPTHPATESTS_OBJ) \
+		$(HPASTAR_OBJ) $(RSR_OBJ) \
+		$(HPASTARTESTS_OBJ) $(RSRTESTS_OBJ) \
 		-l$(@)
 
 # build this separately so we don't require *TEST_OBJ dependencies
@@ -135,9 +135,9 @@ $(HPASTARTESTS_OBJ) : $(HPASTARTESTS_SRC) $(HPASTARTESTS_SRC:.cpp=.h) \
 	$(HPASTAR_SRC) $(HPASTAR_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,tests/hpa/,$(@)))
 
-$(OPTHPATESTS_OBJ) : $(OPTHPATESTS_SRC) $(OPTHPATESTS_SRC:.cpp=.h) \
-	$(OPTHPA_SRC) $(OPTHPA_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,tests/opthpa/,$(@)))
+$(RSRTESTS_OBJ) : $(RSRTESTS_SRC) $(RSRTESTS_SRC:.cpp=.h) \
+	$(RSR_SRC) $(RSR_SRC:.cpp=.h)
+	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,tests/rsr/,$(@)))
 
 clean:
 	@-$(RM) objs/*.o
