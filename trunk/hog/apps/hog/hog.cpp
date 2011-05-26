@@ -57,6 +57,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <stdexcept>
 
@@ -618,7 +619,26 @@ myCLHandler(char *argument[], int maxNumArgs)
 {
 	if (maxNumArgs <= 1)
 		return 0;
-	strncpy(gDefaultMap, argument[1], 1024);
+	FILE* fMap = fopen(argument[1], "r");
+	if(!fMap)
+	{
+		strncpy(gDefaultMap, getHome(), 1024);
+		strcat(gDefaultMap, argument[1]);
+		fMap = fopen(gDefaultMap, "r");
+		if(!fMap)
+		{
+			std::cerr << "Err: could not read map file "<<gDefaultMap<<std::endl;
+			exit(1);
+		}
+		else
+			fclose(fMap);
+	}
+	else
+	{
+		fclose(fMap);
+		strncpy(gDefaultMap, argument[1], 1024);
+	}
+
 	return 2;
 }
 
@@ -671,7 +691,23 @@ myExecuteScenarioCLHandler(char *argument[], int maxNumArgs)
 		exit(1);
 	}
 
-	strncpy(gDefaultMap, scenariomgr.getNthExperiment(0)->getMapName(), 1024);
+	FILE* fMap = fopen(scenariomgr.getNthExperiment(0)->getMapName(), "r");
+	if(!fMap)
+	{
+		strncpy(gDefaultMap, getHome(), 1024);
+		strcat(gDefaultMap, scenariomgr.getNthExperiment(0)->getMapName());
+		fMap = fopen(gDefaultMap, "r");
+		if(!fMap)
+		{
+			std::cerr << "Err: could not read map file "<<gDefaultMap<<std::endl;
+			exit(1);
+		}
+	}
+	else
+	{
+		fclose(fMap);
+		strncpy(gDefaultMap, scenariomgr.getNthExperiment(0)->getMapName(), 1024);
+	}
 	
 	scenario=true;
 	return 2;
