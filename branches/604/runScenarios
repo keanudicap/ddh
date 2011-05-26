@@ -1,0 +1,22 @@
+#!/bin/bash
+echo "**** NEW RUN ****"
+echo "**** NEW RUN ****" >> log
+runs=3;
+for ((x=1;x<=$runs;x++)) ; do
+	for i in $(ls $1*.map.*);
+	do
+			stamp=`date "+%d/%m/%y %H:%M:%S"`
+			echo "$stamp $i"
+			echo "$stamp $i" >> log
+			./bin/opthpa -scenario $i -nogui $2 >> log
+			if [ "$?" -ne "0" ]
+			then
+				err="Failed while executing: ./bin/opthpa -scenario $i -nogui $2";
+				echo $err >> log
+				echo $err
+				exit 1
+			fi
+	done
+done
+mv results_HPAStar2 results_RSR
+

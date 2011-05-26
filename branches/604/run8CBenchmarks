@@ -1,0 +1,38 @@
+#!/bin/bash
+# 4C nopr nobfr
+for i in $(ls results_*); do
+	mv $i bak.$i;
+done
+
+for i in $(ls preproc_*); do
+	mv $i bak.$i;
+done
+./runScenarios experiments/scenarios/movingai/dao/ "-pr -bfr "
+mkdir dao
+rm dao/*
+mv results_* dao/
+mv preproc_* dao/
+
+./runScenarios experiments/scenarios/movingai/bgmaps/ "-pr -bfr "
+mkdir bgm
+rm bgm/*
+mv results_* bgm/
+mv preproc_* bgm/
+
+./runScenarios experiments/scenarios/movingai/rooms/ "-pr -bfr "
+mkdir rooms512
+rm rooms512/*
+mv results_* rooms512/
+mv preproc* rooms512/
+
+./runScenarios experiments/scenarios/movingai/mazes/ "-pr -bfr "
+mkdir mazes512
+rm mazes512/*
+mv results_* mazes512/
+mv preproc* mazes512/
+
+tar czf results_bgm_rsr.tgz bgm/
+tar czf results_dao_rsr.tgz dao/
+tar czf results_rooms512_rsr.tgz rooms512/
+tar czf results_mazes512_rsr.tgz mazes512/
+mv *rsr.tgz ~/src/ahastar/experiments/results

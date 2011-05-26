@@ -1,0 +1,13 @@
+#!/bin/bash
+# 4C nopr nobfr
+rm results_*
+mkdir bgmaps
+rm bgmaps/*
+./runScenarios experiments/scenarios/movingai/bgmaps/ "-pr -bfr"
+mv results_* bgmaps/
+
+mkdir dao
+rm dao/*
+./runScenarios experiments/scenarios/movingai/dao/ "-pr -bfr" 
+mv results_* dao/
+tar czf results8_pr_bfr_movingai_bgmaps_dao.tgz bgmaps dao

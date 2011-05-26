@@ -1,0 +1,16 @@
+#!/bin/bash
+rm results_*
+./runScenarios experiments/scenarios/e3x3/adaptive-depth/ "-pr -bfr"
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/e3x3/bgmaps/ "-pr -bfr"
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/e3x3/rooms/ "-pr -bfr"
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+
+
