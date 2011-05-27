@@ -32,13 +32,14 @@ TESTINCLUDES = -I./tests/util -I./tests/hpa -I./tests/rsr
 
 # compiler flags
 CC = c++
-CFLAGS = -Wall -Wno-long-long -g -ggdb -ansi -pedantic $(HOGINCLUDES) $(TESTINCLUDES)
-#CFLAGS = -O3 $(HOGINCLUDES) -ansi
+FAST_CFLAGS = -O3 $(HOGINCLUDES) -ansi
+DEV_CFLAGS = -Wall -Wno-long-long -g -ggdb -ansi -pedantic $(HOGINCLUDES) $(TESTINCLUDES)
+
 
 # locations of library files program depends on
 LIBFLAGS = -Lapps/libs 
 
-# platform specific header/library paths
+# headers for Darwin/OSX 
 ifeq ($(findstring "Darwin", "$(shell uname -s)"), "Darwin")
  TESTLIBFLAGS = -L/opt/local/lib -L/usr/local/lib -lcppunit -lmockpp
  CFLAGS += -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ -DUNITTEST
@@ -52,7 +53,7 @@ ifeq ($(findstring "Darwin", "$(shell uname -s)"), "Darwin")
   CFLAGS += -I/System/Library/Frameworks/Foundation.framework/Versions/A/Headers/
   CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/
  endif
-else # not darwin
+else # headers for Linux et al 
 LIBFLAGS = -Lapps/libs -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
  ifeq ("$(OPENGL)", "STUB")
   CFLAGS += -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL
@@ -71,9 +72,16 @@ endif
 # every directory in ./apps, except those filtered out, is a target for compilation
 TARGETS = $(filter-out %~ Makefile %.mk tests libs, $(notdir $(wildcard apps/*)))
 
-all: cleanapps $(TARGETS)
-
+all: cleanapps fast
 targets: cleanapps $(TARGETS)
+
+dev: CFLAGS += $(DEV_CFLAGS)
+dev: APPSTARGET = dev
+dev: cleanapps $(TARGETS)
+
+fast: CFLAGS += $(FAST_CFLAGS)
+fast: APPSTARGET = fast
+fast: cleanapps $(TARGETS)
 
 $(TARGETS) : % : lib%.a hogcore
 	$(CC)	$(CFLAGS) $(LIBFLAGS) -o $(addprefix bin/,$(@)) \
@@ -82,8 +90,9 @@ $(TARGETS) : % : lib%.a hogcore
 		-l$(@:.mk=)
 
 $(addprefix lib, $(addsuffix .a, $(TARGETS))) :
+	@echo "making app: "$(@)" ("$(APPSTARGET)")"
 	@echo $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
-	@cd apps; $(MAKE); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
+	@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 
 .PHONY: hogcore
 hogcore : $(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
@@ -145,6 +154,7 @@ clean:
 	@cd apps; $(MAKE) clean; cd ..
 
 cleanapps:
+	@echo cleaning ./apps
 	@cd apps; $(MAKE) clean; cd ..
 
 cleantests: 
