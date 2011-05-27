@@ -1,6 +1,7 @@
 #include "DebugUtility.h"
 
 #include "constants.h"
+#include "graph.h"
 #include "graphAbstraction.h"
 #include "Heuristic.h"
 #include "MacroNode.h"
@@ -64,6 +65,8 @@ void DebugUtility::printNode(std::string msg, node* n, node* goal)
 		double gcost = n->getLabelF(kTemporaryLabel) - hcost;
 		std::cout << " f: "<<gcost+hcost<<" g: "<<gcost<<" h: "<<hcost<<std::endl;
 	}
+	else 
+		std::cout << std::endl;
 }
 
 // a node is correctly closed only if its fCost is <= the cost of
@@ -92,3 +95,13 @@ void DebugUtility::debugClosedNode(node* c, node* n, double c_to_n_cost, node* g
 		std::cout << std::endl;
 	}
 }
+
+void DebugUtility::printGraph(graph* g)
+{
+	for(int i=0; i<g->getNumNodes(); i++)
+	{
+		node* n = g->getNode(i);
+		printNode("", n);
+	}
+}
+

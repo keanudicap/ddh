@@ -27,6 +27,7 @@
 #include "ClusterNodeFactory.h"
 #include "common.h"
 #include "hog.h"
+#include "DebugUtility.h"
 #include "DefaultInsertionPolicy.h"
 #include "DefaultRefinementPolicy.h"
 #include "EdgeFactory.h"
@@ -262,6 +263,15 @@ createSimulation(unitSimulation * &unitSim)
 		default:
 			aMap = new mapFlatAbstraction(map);
 			break;
+	}
+
+
+	if(verbose)
+	{
+		Heuristic* h = newHeuristic();
+		DebugUtility debug(aMap, h);
+		debug.printGraph(aMap->getAbstractGraph(1));
+		delete h;
 	}
 
 	graph* g = aMap->getAbstractGraph(0);
