@@ -208,7 +208,18 @@ void createSimulation(unitSimulation * &unitSim)
 	fprintf(f, "%s\n", map->getMapName());
 	fflush(f);
 	fclose(f);
-	
+
+	if(verbose)
+	{
+		for(int i=0;i<absg->getNumNodes(); i++)
+		{
+			node* n = absg->getNode(i);
+			std::cout << "addr: "<<&(*n)<<" num: "<<n->getUniqueID();
+			std::cout <<" ("<<n->getLabelL(kFirstData)<<","<<n->getLabelL(kFirstData+1)<<") ";
+			std::cout << std::endl;;
+		}
+	}
+
 	std::cout << "map: "<<gDefaultMap;
 	std::cout << "\noriginal map: nodes: "<<g->getNumNodes()<<" edges: "<<g->getNumEdges();
 	std::cout << " absnodes: "<<absg->getNumNodes()<<" absedges: "<<ecmap->getNumAbsEdges();
