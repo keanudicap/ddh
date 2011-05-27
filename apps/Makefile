@@ -11,7 +11,14 @@ TARGS = $(foreach x, $(APPS), $(addsuffix .mk, $(x)))
 
 HDRS = $(foreach T, $(APPS), $(wildcard $(T)/*.h))
 
-all : apps.mk
+fast : CFLAGS = -Wall -O3
+fast : clean apps.mk
+
+dev : CFLAGS = -Wall -g -ggdb
+dev : clean apps.mk
+
+all : fast
+
 
 $($(strip TARGS)) : $(HDRS) Makefile
 	@echo '#' >! $(@)
@@ -38,11 +45,12 @@ $($(strip TARGS)) : $(HDRS) Makefile
 
 
 apps.mk : $(TARGS) Makefile
+	@echo "CFLAGS="$(CFLAGS)
 	@echo "#auto-generated file, do not edit!" >! apps.mk
 	@echo "SHELL = /bin/tcsh" >> apps.mk
 	@echo "CC = g++" >> apps.mk
-#	@echo "CFLAGS = -Wall -g -ggdb -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
-	@echo "CFLAGS = -Wall -O3 -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
+	@echo "CFLAGS = " $(CFLAGS) >> apps.mk
+	@echo "CFLAGS += -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
 	@echo >> $(@)
 
 	@echo 'ifeq ($(value DLR)(findstring "Darwin", "$(value DLR)(shell uname -s)"), "Darwin")' >> $(@)
