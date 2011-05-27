@@ -1,0 +1,110 @@
+#!/bin/bash
+# 4C nopr nobfr
+for i in $(ls results_*); do
+	mv $i bak.$i;
+done
+
+for i in $(ls preproc_*); do
+	mv $i bak.$i;
+done
+
+#./runScenarios4ERR experiments/scenarios/movingai/dao/ "-cardinal "
+#mkdir dao
+#rm dao/*
+#mv results_* dao/
+#./runScenarios4ERR experiments/scenarios/movingai/bgmaps/ "-cardinal "
+#mkdir bgm
+#rm bgm/*
+#mv results_* bgm/
+#./runScenarios4ERR experiments/scenarios/movingai/rooms/ "-cardinal "
+#mkdir rooms512
+#rm rooms512/*
+#mv results_* rooms512/
+./runScenarios4ERR experiments/scenarios/movingai/mazes/ "-cardinal "
+mkdir mazes512
+rm mazes512/*
+mv results_* mazes512/
+
+#tar czf results_bgm_4err.tgz bgm/results*
+#tar czf results_dao_4err.tgz dao/results*
+#tar czf results_rooms512_4err.tgz rooms512/results*
+tar czf results_mazes512_4err.tgz mazes512/results*
+mv *4err.tgz ~/src/ahastar/experiments/results
+
+./runScenarios4ERR experiments/scenarios/movingai/dao/ "-cardinal -pr"
+mkdir dao
+rm dao/*
+mv results_* dao/
+
+./runScenarios4ERR experiments/scenarios/movingai/bgmaps/ "-cardinal -pr"
+mkdir bgm
+rm bgm/*
+mv results_* bgm/
+
+./runScenarios4ERR experiments/scenarios/movingai/rooms/ "-cardinal -pr"
+mkdir rooms512
+rm rooms512/*
+mv results_* rooms512/
+
+./runScenarios4ERR experiments/scenarios/movingai/mazes/ "-cardinal -pr"
+mkdir mazes512
+rm mazes512/*
+mv results_* mazes512/
+
+tar czf results_bgm_4err_pr.tgz bgm/results*
+tar czf results_dao_4err_pr.tgz dao/results*
+tar czf results_rooms512_4err_pr.tgz rooms512/results*
+tar czf results_mazes512_4err_pr.tgz mazes512/results*
+mv *4err_pr.tgz ~/src/ahastar/experiments/results
+
+./runScenarios4ERR experiments/scenarios/movingai/dao/ "-cardinal -bfr"
+mkdir dao
+rm dao/*
+mv results_* dao/
+
+./runScenarios4ERR experiments/scenarios/movingai/bgmaps/ "-cardinal -bfr"
+mkdir bgm
+rm bgm/*
+mv results_* bgm/
+
+./runScenarios4ERR experiments/scenarios/movingai/rooms/ "-cardinal -bfr"
+mkdir rooms512
+rm rooms512/*
+mv results_* rooms512/
+
+./runScenarios4ERR experiments/scenarios/movingai/mazes/ "-cardinal -bfr"
+mkdir mazes512
+rm mazes512/*
+mv results_* mazes512/
+
+tar czf results_bgm_4err_bfr.tgz bgm/results*
+tar czf results_dao_4err_bfr.tgz dao/results*
+tar czf results_rooms512_4err_bfr.tgz rooms512/results*
+tar czf results_mazes512_4err_bfr.tgz mazes512/results*
+mv *4err_bfr.tgz ~/src/ahastar/experiments/results
+
+./runScenarios4ERR experiments/scenarios/movingai/dao/ "-cardinal -pr -bfr"
+mkdir dao
+rm dao/*
+mv results_* dao/
+
+#./runScenarios4ERR experiments/scenarios/movingai/bgmaps/ "-cardinal -pr -bfr"
+#mkdir bgm
+#rm bgm/*
+#mv results_* bgm/
+
+./runScenarios4ERR experiments/scenarios/movingai/rooms/ "-cardinal -pr -bfr"
+mkdir rooms512
+rm rooms512/*
+mv results_* rooms512/
+
+./runScenarios4ERR experiments/scenarios/movingai/mazes/ "-cardinal -pr -bfr"
+mkdir mazes512
+rm mazes512/*
+mv results_* mazes512/
+
+#tar czf results_bgm_4err_pr_bfr.tgz bgm/results*
+tar czf results_dao_4err_pr_bfr.tgz dao/results*
+tar czf results_rooms512_4err_pr_bfr.tgz rooms512/results*
+tar czf results_mazes512_4err_pr_bfr.tgz mazes512/results*
+mv *4err_pr_bfr.tgz ~/src/ahastar/experiments/results

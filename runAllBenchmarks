@@ -1,0 +1,138 @@
+#!/bin/bash
+# 4C nopr nobfr
+rm log
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-cardinal " > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-cardinal " > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-cardinal " > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results4_nopr_nobfr.tgz adaptive-depth bgmaps rooms
+scp results4_nopr_nobfr.tgz login.nicta.com.au:~/ 
+
+# 4C pr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-cardinal -pr" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-cardinal -pr" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-cardinal -pr" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results4_pr.tgz adaptive-depth bgmaps rooms
+scp results4_pr.tgz login.nicta.com.au:~/ 
+
+# 4C bfr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-cardinal -bfr" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-cardinal -bfr" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-cardinal -bfr" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results4_bfr.tgz adaptive-depth bgmaps rooms
+scp results4_bfr.tgz login.nicta.com.au:~/
+
+# 4C pr bfr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-cardinal -pr -bfr" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-cardinal -pr -bfr" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-cardinal -pr -bfr" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results4_pr_bfr.tgz adaptive-depth bgmaps rooms
+scp results4_pr_bfr.tgz login.nicta.com.au:~/ 
+
+# 8C pr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-pr" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-pr" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-pr" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results8_pr.tgz adaptive-depth bgmaps rooms
+scp results8_pr.tgz login.nicta.com.au:~/
+
+# 8C bfr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-bfr" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-bfr" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-bfr" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results8_bfr.tgz adaptive-depth bgmaps rooms
+scp results8_bfr.tgz login.nicta.com.au:~/
+
+# 8C pr bfr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "-pr -bfr" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "-pr -bfr" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "-pr -bfr" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results8_pr_bfr.tgz adaptive-depth bgmaps rooms
+scp results8_pr_bfr.tgz login.nicta.com.au:~/
+
+# 8C nopr nobfr
+rm results_*
+./runScenarios experiments/scenarios/adaptive-depth/ "" > log
+mkdir adaptive-depth
+rm adaptive-depth/*
+mv results_* adaptive-depth/
+./runScenarios experiments/scenarios/bgmaps/ "" > log
+mkdir bgmaps
+rm bgmaps/*
+mv results_* bgmaps/
+./runScenarios experiments/scenarios/rooms/ "" > log
+mkdir rooms
+rm rooms/*
+mv results_* rooms/
+tar czf results8_nopr_nobfr.tgz adaptive-depth bgmaps rooms
+scp results8_nopr_nobfr.tgz login.nicta.com.au:~/
+
