@@ -11,7 +11,7 @@ TARGS = $(foreach x, $(APPS), $(addsuffix .mk, $(x)))
 
 HDRS = $(foreach T, $(APPS), $(wildcard $(T)/*.h))
 
-fast : CFLAGS = -Wall -O3
+fast : CFLAGS = -Wall -O3 -DNDEBUG
 fast : clean apps.mk
 
 dev : CFLAGS = -Wall -g -ggdb

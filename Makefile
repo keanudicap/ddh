@@ -32,8 +32,8 @@ TESTINCLUDES = -I./tests/util -I./tests/hpa -I./tests/rsr
 
 # compiler flags
 CC = c++
-FAST_CFLAGS = -O3 $(HOGINCLUDES) -ansi
-DEV_CFLAGS = -Wall -Wno-long-long -g -ggdb -ansi -pedantic $(HOGINCLUDES) $(TESTINCLUDES)
+FAST_CFLAGS = -O3 -ansi -DNDEBUG $(HOGINCLUDES)
+DEV_CFLAGS = -Wall -Wno-long-long -g -ggdb -ansi -pedantic -DUNITTEST $(HOGINCLUDES) $(TESTINCLUDES) 
 
 
 # locations of library files program depends on
@@ -42,7 +42,7 @@ LIBFLAGS = -Lapps/libs
 # headers for Darwin/OSX 
 ifeq ($(findstring "Darwin", "$(shell uname -s)"), "Darwin")
  TESTLIBFLAGS = -L/opt/local/lib -L/usr/local/lib -lcppunit -lmockpp
- CFLAGS += -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ -DUNITTEST
+ CFLAGS += -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ 
  ifeq ("$(OPENGL)", "STUB")
   CFLAGS = -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL
  else
