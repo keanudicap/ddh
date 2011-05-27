@@ -1,0 +1,5 @@
+#!/bin/bash
+for i in $(ls $1*.map.scen*);
+do
+	   ./bin/opthpa -scenario $i -nogui $2
+done
