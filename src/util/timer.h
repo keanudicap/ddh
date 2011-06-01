@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <fstream>
+#include <string.h>
 #ifdef OS_MAC
 #include <Carbon/Carbon.h>
 #undef check

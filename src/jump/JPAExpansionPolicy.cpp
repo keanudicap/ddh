@@ -5,6 +5,9 @@
 #include "mapAbstraction.h"
 #include "ProblemInstance.h"
 
+#include <cstdlib>
+#include <limits.h>
+
 JPAExpansionPolicy::JPAExpansionPolicy()
 	: ExpansionPolicy()
 {

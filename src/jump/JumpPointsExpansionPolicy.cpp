@@ -5,6 +5,8 @@
 #include "mapAbstraction.h"
 #include "ProblemInstance.h"
 
+#include <limits.h>
+
 JumpPointsExpansionPolicy::JumpPointsExpansionPolicy()
 	: ExpansionPolicy()
 {
