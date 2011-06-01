@@ -26,6 +26,7 @@
 
 #include "path.h"
 #include "constants.h"
+#include <stdio.h>
 
 int path::ref = 0;
 path::path(node* _n, path* _next) : n(_n), next(_next)
