@@ -51,7 +51,7 @@
 #include "statCollection.h"
 #include <cstdlib>
 #include <sstream>
-#include "Timer.h"
+#include "timer.h"
 
 bool mouseTracking;
 int px1, py1, px2, py2;

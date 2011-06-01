@@ -30,6 +30,7 @@ using namespace std;
 #include "graphAbstraction.h"
 #include <math.h>
 #include <assert.h>
+#include <stdio.h>
 
 enum {
 	kQuiet = 0x00,
