@@ -5,6 +5,7 @@
 #include "graph.h"
 #include "map.h"
 #include "OctileHeuristic.h"
+#include <limits.h>
 
 JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf, 
 		IEdgeFactory* _ef, bool _verbose) : mapAbstraction(_m), 
