@@ -1,5 +1,5 @@
 VPATH = libs/
-SHELL = /bin/tcsh
+SHELL = /bin/bash
 DAT = $(@)
 VCC = $(CC)
 VCFLG = $(CFLAGS)
@@ -21,7 +21,7 @@ all : fast
 
 
 $($(strip TARGS)) : $(HDRS) Makefile
-	@echo '#' >! $(@)
+	@echo '#' > $(@)
 	@echo '# --- Auto-generated file for target $(basename $(@)) --- ' >> $(@)
 	@echo '#' >> $(@)
 	@echo >> $(@)
@@ -31,13 +31,13 @@ $($(strip TARGS)) : $(HDRS) Makefile
 	@echo $(basename $(@))_OBJS = $(notdir $(patsubst %.cpp, %.o, $(wildcard $(basename $(@))/*.cpp))) >> $(@)
 	@echo >> $(@)
 	@echo 'lib$(basename $(@)).a : $(value DLR)($(basename $(@))_OBJS)' >> $(@)
-	@echo '	@if (! -d libs) mkdir libs' >> $(@)
+	@echo '	@if [[ ! -d libs ]]; then mkdir libs; fi;' >> $(@)
 	@echo '	@ar -crs libs/$(value DAT) $(basename $(@))/objs/*.o' >> $(@)
 #	@echo '	@ranlib libs/$(value DAT)' >> $(@)
 	@echo >> $(@)
 	@echo '$(value DLR)($(basename $(@))_OBJS)' \
  ' : %.o : %.cpp $(value DLR)(DRIVER_SRC:.cpp=.h) $(value DLR)(JUMP_SRC:.cpp=.h) $(value DLR)(RSR_SRC:.cpp=.h) $(value DLR)(HPASTAR_SRC:.cpp=.h) $(value DLR)(SHARED_SRC:.cpp=.h) $(value DLR)(UTIL_SRC:.cpp=.h) $(value DLR)(SIMULATION_SRC:.cpp=.h) $(value DLR)(RTS_OBJS:.o=.h)' >> $(@)
-	@echo '	@if (! -d $(basename $(@))/objs) mkdir $(basename $(@))/objs' >> $(@)
+	@echo '	@if [[ ! -d $(basename $(@))/objs ]]; then mkdir $(basename $(@))/objs; fi;' >> $(@)
 	@echo '	@-$(value DLR)(RM) libs/lib$(basename $(@)).a' >> $(@)
 	@echo '	$(value DLR)(CC) $(value VCFLG) -c -o $(basename $(@))/objs/$(value DLR)(notdir $(value DAT)) $(basename $(@))/$(value DLR)(patsubst %.o,%.cpp,$(value DAT))' >> $(@)
 	@echo >> $(@)
@@ -46,8 +46,8 @@ $($(strip TARGS)) : $(HDRS) Makefile
 
 apps.mk : $(TARGS) Makefile
 	@echo "CFLAGS="$(CFLAGS)
-	@echo "#auto-generated file, do not edit!" >! apps.mk
-	@echo "SHELL = /bin/tcsh" >> apps.mk
+	@echo "#auto-generated file, do not edit!" > apps.mk
+	@echo "SHELL = /bin/bash" >> apps.mk
 	@echo "CC = g++" >> apps.mk
 	@echo "CFLAGS = " $(CFLAGS) >> apps.mk
 	@echo "CFLAGS += -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk

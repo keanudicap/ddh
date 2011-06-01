@@ -37,6 +37,7 @@ using namespace std;
 #include <memory>
 #include <vector>
 #include <assert.h>
+#include <stdio.h>
 
 enum {
 	kQuiet = 0x00,
