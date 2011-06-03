@@ -112,7 +112,7 @@ bool RRExpansionPolicy::hasNext()
 {
 	if(primary->hasNext())
 		return true;
-	if(0 <= whichSecondary < numSecondary)
+	if(0 <= whichSecondary && whichSecondary < numSecondary)
 		return true;
 	return false;
 }
