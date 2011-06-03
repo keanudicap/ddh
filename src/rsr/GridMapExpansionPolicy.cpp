@@ -44,7 +44,7 @@ node* GridMapExpansionPolicy::next()
 
 bool GridMapExpansionPolicy::hasNext()
 {
-	if(0<= which < max)
+	if(0 <= which  && which < max)
 		return true;
 	return false;
 }
