@@ -51,6 +51,7 @@ unitSimulation::unitSimulation(mapAbstraction *_aMap, bool keepStats)
 	map = aMap->getMap();
 	which_map = kUnitSimulationMap;
 	currTime = 0;
+	viewTime = 0;
 	map_height = map->getMapHeight();
 	map_width = map->getMapWidth();
 	bv = new bitVector(map_height*map_width);

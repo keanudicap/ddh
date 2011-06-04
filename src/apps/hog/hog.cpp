@@ -37,6 +37,7 @@
 #include "FlexibleAStar.h"
 #include "fpUtil.h"
 #include "HierarchicalSearch.h"
+#include "HierarchicalSearchRSR.h"
 #include "HPAClusterAbstraction.h"
 #include "HPAClusterFactory.h"
 #include "IncidentEdgesExpansionPolicy.h"
@@ -705,7 +706,16 @@ myExecuteScenarioCLHandler(char *argument[], int maxNumArgs)
 	if(!fMap)
 	{
 		strncpy(gDefaultMap, getHome(), 1024);
-		strcat(gDefaultMap, "/");
+		char* hoghome = getHome();
+		for(int i=0; hoghome[i] != '\0'; i++)
+		{
+			if(hoghome[i] != '/' && 
+					hoghome[i+1] == '\0')
+			{
+				strcat(gDefaultMap, "/");
+				break;
+			}
+		}
 		strcat(gDefaultMap, scenariomgr.getNthExperiment(0)->getMapName());
 		fMap = fopen(gDefaultMap, "r");
 		if(!fMap)
@@ -929,10 +939,10 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		{
 			EmptyClusterAbstraction* map = 
 				dynamic_cast<EmptyClusterAbstraction*>(aMap);
-			alg = new HierarchicalSearch(new EmptyClusterInsertionPolicy(map),
-					new FlexibleAStar(newExpansionPolicy(map), 
-						newHeuristic()),
-					new OctileDistanceRefinementPolicy(map));
+			alg = new HierarchicalSearchRSR(
+					map, new FlexibleAStar(
+						newExpansionPolicy(map),
+						newHeuristic()));
 			((HierarchicalSearch*)alg)->setName("RSR");
 			alg->verbose = verbose;
 			break;

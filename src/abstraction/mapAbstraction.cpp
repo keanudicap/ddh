@@ -114,6 +114,7 @@ void mapAbstraction::openGLDraw()
 			{
 				graph* absg = getAbstractGraph(level+1);
 				node* parent = absg->getNode(cur->getLabelL(kParent));
+				assert(parent);
 				if(parent->drawColor > cur->drawColor)
 					cur = parent;
 			}

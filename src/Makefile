@@ -33,7 +33,7 @@ TESTINCLUDES = -I./tests/util -I./tests/hpa -I./tests/rsr
 # compiler flags
 CC = c++
 FAST_CFLAGS = -O3 -ansi -DNDEBUG $(HOGINCLUDES)
-DEV_CFLAGS = -Wall -Wno-long-long -g -ggdb -ansi -pedantic -DUNITTEST $(HOGINCLUDES) $(TESTINCLUDES) 
+DEV_CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic -DUNITTEST $(HOGINCLUDES) $(TESTINCLUDES) 
 
 
 # locations of library files program depends on

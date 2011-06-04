@@ -34,19 +34,18 @@ class HierarchicalSearch : public searchAlgorithm
 		double getInsertSearchTime();
 		virtual void logFinalStats(statCollection* sc);
 
-	private:
-		bool checkParameters(node* from, node* to);
+	protected:
 		void resetMetrics();
-
-		searchAlgorithm* alg;
-		InsertionPolicy* insertPolicy;
-		RefinementPolicy* refinePolicy;
-
 		long insertNodesExpanded;
 		long insertNodesTouched;
 		long insertNodesGenerated;
 		double insertSearchTime;
+		searchAlgorithm* alg;
+		InsertionPolicy* insertPolicy;
+		RefinementPolicy* refinePolicy;
 
+	private:
+		bool checkParameters(node* from, node* to);
 		std::string name;
 };
 

@@ -340,6 +340,7 @@ EmptyCluster::buildEntrances()
 		addCardinalMacroEdges();
 }
 
+// Not implemented. See Issue 34 at http://ddh.googlecode.com
 void 
 EmptyCluster::connectParent(node* n) 
 	throw(std::invalid_argument)
@@ -351,7 +352,7 @@ bool
 EmptyCluster::isIncidentWithInterEdge(node* n_)
 {
 	bool retVal = false;
-	MacroNode* n = static_cast<MacroNode*>(n_);
+	MacroNode* n = dynamic_cast<MacroNode*>(n_);
 	assert(n);
 
 	int nx = n->getLabelL(kFirstData);
@@ -359,7 +360,7 @@ EmptyCluster::isIncidentWithInterEdge(node* n_)
 	for(int nbx = nx-1; nbx < nx+2; nbx++)
 		for(int nby = ny-1; nby < ny+2; nby++)
 		{
-			MacroNode* nb = static_cast<MacroNode*>(
+			MacroNode* nb = dynamic_cast<MacroNode*>(
 					map->getNodeFromMap(nbx, nby));
 			if(!map->getAllowDiagonals() && nbx != nx && nby != ny)
 				continue;
@@ -380,34 +381,34 @@ EmptyCluster::addSingleMacroEdge(node* from_, node* to_, double weight,
 	assert(from_ && to_);
 	assert(from_->getUniqueID() != to_->getUniqueID());
 
-	MacroNode* from = static_cast<MacroNode*>(from_);
-	MacroNode* to = static_cast<MacroNode*>(to_);
+	MacroNode* from = dynamic_cast<MacroNode*>(from_);
+	MacroNode* to = dynamic_cast<MacroNode*>(to_);
 
 	assert(from && to);
-	assert(from->getParentClusterId() == to->getParentClusterId());
+	if(from->getParentClusterId() != to->getParentClusterId())
+	{
+		std::cerr << "warning: adding macro edge between nodes from different"
+			" clusters" << std::endl;
+	}
 
-	MacroEdge* e = static_cast<MacroEdge*>(
-			absg->findEdge(from->getNum(), to->getNum()));
-	if(e == 0 && from->getParentClusterId() == to->getParentClusterId())
+	edge* e = absg->findEdge(from->getNum(), to->getNum());
+	if(e == 0) 
 	{
 		if(secondaryEdge && bfReduction)
 		{
-			e = static_cast<MacroEdge*>(
-					findSecondaryEdge(from->getNum(), to->getNum()));
+			e = findSecondaryEdge(from->getNum(), to->getNum());
 			if(e == 0)
 			{
-				e = new MacroEdge(from->getNum(), to->getNum(), weight);
+				e = map->getEdgeFactory()->newEdge(from->getNum(), to->getNum(), weight);
 				from->addSecondaryEdge(e);
 				to->addSecondaryEdge(e);
 				secondaryEdges.push_back(e);
 				macro++;
 			}
-			else
-				e = 0;
 		}
 		else
 		{
-			e = new MacroEdge(from->getNum(), to->getNum(), weight);
+			e = map->getEdgeFactory()->newEdge(from->getNum(), to->getNum(), weight);
 			absg->addEdge(e);
 			macro++;
 		}
@@ -424,10 +425,6 @@ EmptyCluster::addSingleMacroEdge(node* from_, node* to_, double weight,
 			std::cout <<") wt: "<<weight<< " ] "<<std::endl;
 		}
 	}
-	else
-	{
-		e->setSecondary(secondaryEdge);
-	}
 }
 
 // Connects abstract nodes in this cluster to any abstract neighbours in 
@@ -441,10 +438,10 @@ EmptyCluster::addInterEdges()
 	for(HPAUtil::nodeTable::iterator it = 	parents.begin(); 
 			it != parents.end(); it++)
 	{
-		ClusterNode* parent = static_cast<ClusterNode*>((*it).second);
+		ClusterNode* parent = dynamic_cast<ClusterNode*>((*it).second);
 		assert(parent);
 
-		ClusterNode *n = static_cast<ClusterNode*>(
+		ClusterNode *n = dynamic_cast<ClusterNode*>(
 						map->getNodeFromMap(
 								parent->getLabelL(kFirstData),
 								parent->getLabelL(kFirstData+1)));
