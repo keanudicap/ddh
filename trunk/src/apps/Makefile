@@ -14,7 +14,7 @@ HDRS = $(foreach T, $(APPS), $(wildcard $(T)/*.h))
 fast : CFLAGS = -Wall -O3 -DNDEBUG
 fast : clean apps.mk
 
-dev : CFLAGS = -Wall -g -ggdb
+dev : CFLAGS = -Wall -Wno-deprecated -g -ggdb
 dev : clean apps.mk
 
 all : fast
