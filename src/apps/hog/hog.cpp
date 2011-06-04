@@ -705,6 +705,7 @@ myExecuteScenarioCLHandler(char *argument[], int maxNumArgs)
 	if(!fMap)
 	{
 		strncpy(gDefaultMap, getHome(), 1024);
+		strcat(gDefaultMap, "/");
 		strcat(gDefaultMap, scenariomgr.getNthExperiment(0)->getMapName());
 		fMap = fopen(gDefaultMap, "r");
 		if(!fMap)
