@@ -98,6 +98,13 @@ void DebugUtility::debugClosedNode(node* c, node* n, double c_to_n_cost, node* g
 
 void DebugUtility::printGraph(graph* g)
 {
+	if(g == 0)
+	{
+		std::cout << "DebugUtility::printGraph: "
+			"cannot print graph (non-null argument required)"<<std::endl;
+		return;
+	}
+
 	for(int i=0; i<g->getNumNodes(); i++)
 	{
 		node* n = g->getNode(i);
