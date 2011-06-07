@@ -11,10 +11,9 @@
 // An extension of this idea is to generate jump nodes located in the
 // same direction as the remaining neighbours. 
 //
-// TODO: Jump nodes need to be better explained. Perhaps a reference
-// to a draft paper.
-//
-// Based on an idea suggsted by Alban Grastien and Adi Botea.
+// Theoretical details:
+// [Harabor D. and Grastien A., 2011, Online Node Pruning for Pathfinding
+// On Grid Maps, AAAI] 
 //
 // @author: dharabor
 // @created: 06/01/2010
@@ -24,11 +23,12 @@
 #include <vector>
 #include <stdexcept>
 
+class JumpPointLocator;
 class JumpPointsExpansionPolicy : public ExpansionPolicy
 {
 
 	public:
-		JumpPointsExpansionPolicy();
+		JumpPointsExpansionPolicy(JumpPointLocator* jpl);
 		virtual ~JumpPointsExpansionPolicy();
 
 		virtual void expand(node* t) throw(std::logic_error);
@@ -47,6 +47,7 @@ class JumpPointsExpansionPolicy : public ExpansionPolicy
 
 		std::vector<node*> neighbours;
 		unsigned int neighbourIndex; 
+		JumpPointLocator* jpl;
 };
 
 #endif
