@@ -2,6 +2,7 @@
 
 #include "IEdgeFactory.h"
 #include "INodeFactory.h"
+#include "OnlineJumpPointLocator.h"
 #include "graph.h"
 #include "map.h"
 #include "OctileHeuristic.h"
@@ -118,12 +119,17 @@ JumpPointAbstraction::repairAbstraction()
 	makeJumpPointGraph();
 }
 
+// Finds jump point successors for each neighbour in the grid.
+// Searches in the direction of each traversable neighbour.
+// If there is no jump point successor in a particular direction,
+// the array of neighbours is padded with an edge to the current node itself.
 void
 JumpPointAbstraction::makeJumpPointGraph()
 {
 	// compute the set of nodes in the graph
 	graph* g = makeMapNodes(this->getMap(), nf);
 	abstractions.push_back(g);
+	OnlineJumpPointLocator jpl(this); 
 
 	// compute jump point neighbours of each node 
 	OctileHeuristic heuristic;
@@ -140,49 +146,33 @@ JumpPointAbstraction::makeJumpPointGraph()
 			switch(j)
 			{
 				case 1:
-					neighbour = findJumpNode(Jump::N, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::N, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::N, nx, ny, -1, -1);
 					break;
 				case 2:
-					neighbour = findJumpNode(Jump::NE, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::NE, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::NE, nx, ny, -1, -1);
 					break;
 				case 3:
-					neighbour = findJumpNode(Jump::E, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::E, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::E, nx, ny, -1, -1);
 					break;
 				case 4:
-					neighbour = findJumpNode(Jump::SE, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::SE, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::SE, nx, ny, -1, -1);
 					break;
 				case 5:
-					neighbour = findJumpNode(Jump::S, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::S, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::S, nx, ny, -1, -1);
 					break;
 				case 6:
-					neighbour = findJumpNode(Jump::SW, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::SW, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::SW, nx, ny, -1, -1);
 					break;
 				case 7:
-					neighbour = findJumpNode(Jump::W, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::W, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::W, nx, ny, -1, -1);
 					break;
 				case 8:
-					neighbour = findJumpNode(Jump::NW, nx, ny);
-					if(!neighbour)
-						neighbour = findObstacleJumpNode(Jump::NW, nx, ny);
+					neighbour = jpl.findJumpNode(Jump::NW, nx, ny, -1, -1);
 					break;
 			}
 
 			edge* e = 0;
-			if(neighbour && neighbour->getNum() != n->getNum())
+			if(neighbour) 
 			{
 				e = new edge(n->getNum(), neighbour->getNum(),
 						heuristic.h(n, neighbour));
@@ -197,431 +187,15 @@ JumpPointAbstraction::makeJumpPointGraph()
 			g->addDirectedEdge(e);
 			if(verbose)
 			{
-				std::cout << "jpa edge: ("<< n->getLabelL(kFirstData) << ", "
-					<<n->getLabelL(kFirstData+1) << ") -> ("<<
-					neighbour->getLabelL(kFirstData)<<","<<
-					neighbour->getLabelL(kFirstData+1)<<")"<<
-					" cost: "<<heuristic.h(n, neighbour)<<std::endl;
+				node* from = g->getNode(e->getFrom());
+				node* to = g->getNode(e->getTo());
+				std::cout << "jpa edge: ("<< from->getLabelL(kFirstData) << ", "
+					<< from->getLabelL(kFirstData+1) << ") -> ("<<
+					to->getLabelL(kFirstData)<<","<<
+					to->getLabelL(kFirstData+1)<<")"<<
+					" cost: "<< e->getWeight() <<std::endl;
 			}
 		}
 	}
-}
-
-node* 
-JumpPointAbstraction::findJumpNode(Jump::Direction d, int x, int y)
-{
-	const int jumplimit = INT_MAX;
-
-	node* n = this->getNodeFromMap(x, y);
-
-	switch(d)
-	{
-		case Jump::N:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int ny = y-steps;
-				n = this->getNodeFromMap(x, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				// n is a jump node if we cannot prove a shorter path to 
-				// a diagonal neighbour exists
-				if(!this->getNodeFromMap(x-1, ny) && 
-						this->getNodeFromMap(x-1, ny-1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(x+1, ny) &&
-						this->getNodeFromMap(x+1, ny-1))
-				{
-					break;
-				}
-				
-			}
-			break;
-		}
-
-		case Jump::S:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int ny = y+steps;
-				n = this->getNodeFromMap(x, ny);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				if(!this->getNodeFromMap(x-1, ny) && 
-						this->getNodeFromMap(x-1, ny+1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(x+1, ny) &&
-						this->getNodeFromMap(x+1, ny+1))
-				{
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::E:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				n = this->getNodeFromMap(nx, y);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				if(!this->getNodeFromMap(nx, y-1) && 
-						this->getNodeFromMap(nx+1, y-1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(nx, y+1) &&
-						this->getNodeFromMap(nx+1, y+1))
-				{
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::W:
-		{
-
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps;
-				n = this->getNodeFromMap(nx, y);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-				
-				if(!this->getNodeFromMap(nx, y-1) && 
-						this->getNodeFromMap(nx-1, y-1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(nx, y+1) &&
-						this->getNodeFromMap(nx-1, y+1))
-				{
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::NE:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				int ny = y-steps;
-				n = this->getNodeFromMap(nx, ny);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				// n is a jump node if a SE neighbour exists which cannot be
-				// reached by a shorter path than one involving n.
-				if(!this->getNodeFromMap(nx, ny+1) && 
-						this->getNodeFromMap(nx+1, ny+1))
-				{
-					break;
-				}
-
-				// n is a jump node if a NW neighbour exists which cannot be
-				// reached by a shorter path than one involving n.
-				if(!this->getNodeFromMap(nx-1, ny) && 
-						this->getNodeFromMap(nx-1, ny-1))
-				{
-					break;
-				}
-			
-				// n is a jump node if we can reach other jump nodes by
-				// travelling vertically or horizontally 
-				if(findJumpNode(Jump::N, nx, ny) || 
-						findJumpNode(Jump::E, nx, ny))
-					break;
-			}
-			break;
-		}
-
-		case Jump::SE:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				int ny = y+steps;
-				n = this->getNodeFromMap(nx, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				if(!this->getNodeFromMap(nx, ny-1) && 
-						this->getNodeFromMap(nx+1, ny-1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(nx-1, ny) && 
-						this->getNodeFromMap(nx-1, ny+1))
-				{
-					break;
-				}
-
-				if(findJumpNode(Jump::S, nx, ny) || 
-						findJumpNode(Jump::E, nx, ny))
-					break;
-			}
-			break;
-		}
-
-		case Jump::NW:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps; 
-				int ny = y-steps;
-				n = this->getNodeFromMap(nx, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				if(!this->getNodeFromMap(nx, ny+1) && 
-						this->getNodeFromMap(nx-1, ny+1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(nx+1, ny) && 
-						this->getNodeFromMap(nx+1, ny-1))
-				{
-					break;
-				}
-
-				if(findJumpNode(Jump::N, nx, ny) || 
-						findJumpNode(Jump::W, nx, ny))
-					break;
-			}
-			break;
-		}
-
-		case Jump::SW:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps;
-				int ny = y+steps;
-				n = this->getNodeFromMap(nx, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-					break;
-
-				if(!this->getNodeFromMap(nx, ny-1) && 
-						this->getNodeFromMap(nx-1, ny-1))
-				{
-					break;
-				}
-
-				if(!this->getNodeFromMap(nx+1, ny) && 
-						this->getNodeFromMap(nx+1, ny+1))
-				{
-					break;
-				}
-
-				if(findJumpNode(Jump::S, nx, ny) || 
-						findJumpNode(Jump::W, nx, ny))
-					break;
-			}
-			break;
-		}
-
-		default:
-			break;
-	}
-
-	return n;
-}
-
-
-// Sometimes ::findJumpNode fails to return a jump node because it reaches
-// an obstacle. This method returns the node immediately prior to the
-// obstacle and designates it a jump point.
-node*
-JumpPointAbstraction::findObstacleJumpNode(Jump::Direction d, int x, int y)
-{
-	const int jumplimit = INT_MAX;
-	node* n = 0; 
-
-	switch(d)
-	{
-		case Jump::N:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int ny = y-steps;
-				n = this->getNodeFromMap(x, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x, y-(steps-1));
-					break;
-					
-				}
-			}
-			break;
-		}
-
-		case Jump::S:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int ny = y+steps;
-				n = this->getNodeFromMap(x, ny);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x, y+(steps-1));
-					break;
-					
-				}
-			}
-			break;
-		}
-
-		case Jump::E:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				n = this->getNodeFromMap(nx, y);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x+(steps-1), y);
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::W:
-		{
-
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps;
-				n = this->getNodeFromMap(nx, y);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x-(steps-1), y);
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::NE:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				int ny = y-steps;
-				n = this->getNodeFromMap(nx, ny);
-				
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x+(steps-1), y-(steps-1));
-					break;
-					
-				}
-			}
-			break;
-		}
-
-		case Jump::SE:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				int ny = y+steps;
-				n = this->getNodeFromMap(nx, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x+(steps-1), y+(steps-1));
-					break;
-					
-				}
-			}
-			break;
-		}
-
-		case Jump::NW:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps; 
-				int ny = y-steps;
-				n = this->getNodeFromMap(nx, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x-(steps-1), y-(steps-1));
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::SW:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps;
-				int ny = y+steps;
-				n = this->getNodeFromMap(nx, ny);
-
-				// the node just before an obstacle is a jump point
-				if(n == 0)
-				{
-					n = this->getNodeFromMap(x-(steps-1), y+(steps-1));
-					break;
-				}
-			}
-			break;
-		}
-
-		default:
-			break;
-	}
-
-	return n;
 }
 
