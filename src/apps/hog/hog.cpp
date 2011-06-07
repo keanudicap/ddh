@@ -26,22 +26,22 @@
 #include "ClusterAStarFactory.h"
 #include "ClusterNodeFactory.h"
 #include "common.h"
-#include "hog.h"
 #include "DebugUtility.h"
 #include "DefaultInsertionPolicy.h"
 #include "DefaultRefinementPolicy.h"
 #include "EdgeFactory.h"
 #include "EmptyCluster.h"
-#include "EmptyClusterInsertionPolicy.h"
 #include "EmptyClusterAbstraction.h"
+#include "EmptyClusterFactory.h"
+#include "EmptyClusterInsertionPolicy.h"
 #include "FlexibleAStar.h"
 #include "fpUtil.h"
 #include "HierarchicalSearch.h"
 #include "HierarchicalSearchRSR.h"
 #include "HPAClusterAbstraction.h"
 #include "HPAClusterFactory.h"
+#include "hog.h"
 #include "IncidentEdgesExpansionPolicy.h"
-#include "JPAExpansionPolicy.h"
 #include "JumpPointAbstraction.h"
 #include "JumpPointsExpansionPolicy.h"
 #include "mapFlatAbstraction.h"
@@ -51,7 +51,8 @@
 #include "NoInsertionPolicy.h"
 #include "OctileDistanceRefinementPolicy.h"
 #include "OctileHeuristic.h"
-#include "EmptyClusterFactory.h"
+#include "OfflineJumpPointLocator.h"
+#include "OnlineJumpPointLocator.h"
 #include "RRExpansionPolicy.h"
 #include "ScenarioManager.h"
 #include "searchUnit.h"
@@ -77,6 +78,7 @@ bool bfReduction = false;
 bool checkOptimality = false;
 char* algName;
 HOG::AbstractionType absType = HOG::FLAT;
+bool runNext = false;
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -357,8 +359,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 	{
 		expnum = i;
 		nextExperiment = (Experiment*)scenariomgr.getNthExperiment(i);
-		nextExperiment->print(std::cout);
-		std::cout << std::endl;
 
 		node* from = aMap->getNodeFromMap(nextExperiment->getStartX(), 
 				nextExperiment->getStartY());
@@ -366,7 +366,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 				nextExperiment->getGoalY());
 		
 
-		//std::cout << "HPA*"<<std::endl;
 		algName = (char*)alg->getName();
 		alg->verbose = verbose;
 		path* p = alg->getPath(aMap, from, to);
@@ -376,7 +375,12 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		processStats(&stats);
 		stats.clearAllStats();
 		delete p;
-		//std::cout << "Fin HPA*"<<std::endl;
+
+		std::cout << alg->getName() << ": ";
+		std::cout << "exp "<<expnum<<" ";
+		nextExperiment->print(std::cout);
+		std::cout << " " << distanceTravelled;
+		std::cout << std::endl;
 
 		if(checkOptimality)
 		{
@@ -494,6 +498,9 @@ initializeHandlers()
 
 	installKeyboardHandler(myNewUnitKeyHandler, "Add fast A* Unit", 
 			"Deploys an A* unit performing abstract search", kShiftDown, 'a');
+
+	installKeyboardHandler(myNewUnitKeyHandler, "Add fast A* Unit", 
+			"Run Next Experiment", kNoModifier, 'n');
 
 	installCommandLineHandler(myCLHandler, "-map", "-map filename", 
 			"Selects the default map to be loaded.");
@@ -776,8 +783,17 @@ myDisplayHandler(unitSimulation *unitSim, tKeyboardModifier mod, char key)
 }
 
 void 
-myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char)
+myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 {
+
+	if(c == 'n' && mod == kNoModifier)
+	{
+		runNext = true;
+		runNextExperiment(unitSim);
+		runNext = false;
+		return;
+	}
+
 	mapAbstraction* aMap = unitSim->getMapAbstraction();
 	aMap->clearColours();
 
@@ -858,6 +874,9 @@ myClickHandler(unitSimulation *unitSim, int, int, point3d loc,
 void 
 runNextExperiment(unitSimulation *unitSim)
 {	
+	if(!runNext)
+		return;
+
 	if(expnum == scenariomgr.getNumExperiments()) 
 	{
 		processStats(unitSim->getStats());
@@ -888,10 +907,13 @@ runNextExperiment(unitSimulation *unitSim)
 	unitSim->clearAllUnits();
 	unitSim->addUnit(nextTarget);
 	unitSim->addUnit(nextUnit);
+
 	std::cout << alg->getName() << ": ";
 	std::cout << "exp "<<expnum<<" ";
 	nextExperiment->print(std::cout);
+	//std::cout << " " << distanceTravelled;
 	std::cout << std::endl;
+
 	expnum++;
 }
 
@@ -899,10 +921,36 @@ ExpansionPolicy*
 newExpansionPolicy(mapAbstraction* map)
 {
 	ExpansionPolicy* policy;
-	if(bfReduction)
-		policy = new RRExpansionPolicy(map);
-	else
-		policy = new IncidentEdgesExpansionPolicy(map);
+	switch(absType)
+	{
+		case HOG::ERR:
+		{
+			if(bfReduction)
+				policy = new RRExpansionPolicy(map);
+			else
+				policy = new IncidentEdgesExpansionPolicy(map);
+			break;
+		}
+		case HOG::FLATJUMP:
+		{
+			policy = new JumpPointsExpansionPolicy(
+					new OnlineJumpPointLocator(map));
+			break;
+		}
+		case HOG::JPA:
+		{
+			JumpPointAbstraction* _map = 
+				dynamic_cast<JumpPointAbstraction*>(map);
+			policy = new JumpPointsExpansionPolicy(
+					new OfflineJumpPointLocator(_map));
+			break;
+		}
+		default:
+		{
+			policy = new IncidentEdgesExpansionPolicy(map);
+			break;
+		}
+	}
 	return policy;
 }
 
@@ -928,7 +976,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 			GenericClusterAbstraction* map = 
 				dynamic_cast<GenericClusterAbstraction*>(aMap);
 			alg = new HierarchicalSearch(new DefaultInsertionPolicy(map),
-					new FlexibleAStar(newExpansionPolicy(map), 
+					new FlexibleAStar(
+						newExpansionPolicy(map), 
 						newHeuristic()),
 					new DefaultRefinementPolicy(map));
 			((HierarchicalSearch*)alg)->setName("HPA");
@@ -940,7 +989,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 			EmptyClusterAbstraction* map = 
 				dynamic_cast<EmptyClusterAbstraction*>(aMap);
 			alg = new HierarchicalSearchRSR(
-					map, new FlexibleAStar(
+					map, 
+					new FlexibleAStar(
 						newExpansionPolicy(map),
 						newHeuristic()));
 			((HierarchicalSearch*)alg)->setName("RSR");
@@ -952,8 +1002,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		{
 			alg = new HierarchicalSearch(new NoInsertionPolicy(),
 						new FlexibleAStar(
-							new JumpPointsExpansionPolicy(), 
-								newHeuristic()),
+							newExpansionPolicy(aMap),			
+							newHeuristic()),
 						new OctileDistanceRefinementPolicy(aMap));
 			((HierarchicalSearch*)alg)->setName("JPS");
 			alg->verbose = verbose;
@@ -963,8 +1013,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		{
 			alg = new HierarchicalSearch(new NoInsertionPolicy(),
 						new FlexibleAStar(
-							new JPAExpansionPolicy(), 
-								newHeuristic()),
+							newExpansionPolicy(aMap),	
+							newHeuristic()),
 						new OctileDistanceRefinementPolicy(aMap));
 			((HierarchicalSearch*)alg)->setName("JPAS");
 			alg->verbose = verbose;
