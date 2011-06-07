@@ -32,11 +32,11 @@ class MacroNode : public ClusterNode
 		void addSecondaryEdge(edge* e); 
 		
 		// get an edge using its index in the secondaryEdges collection
-		edge* getSecondaryEdge(int index);
+		edge* getSecondaryEdge(unsigned int index);
 
 		// find an edge with id = edgeNum and remove it from secondaryEdges
 		// NB: edgeNum != index of edge in collection
-		void removeSecondaryEdge(int edgeNum);
+		void removeSecondaryEdge(unsigned int edgeNum);
 
 		unsigned int numSecondaryEdges() { return secondaryEdges.size(); }
 		void clearSecondaryEdges() { secondaryEdges.clear(); }

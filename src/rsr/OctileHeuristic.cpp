@@ -18,7 +18,7 @@ OctileHeuristic::~OctileHeuristic()
 double OctileHeuristic::h(node* a, node* b) const
 {
 	if(a == NULL || b == NULL) 
-		throw std::invalid_argument("null node");
+		throw std::invalid_argument("OctileHeuristic::h node parameter cannot be null");
 
 	int x1 = a->getLabelL(kFirstData);
 	int x2 = b->getLabelL(kFirstData);
