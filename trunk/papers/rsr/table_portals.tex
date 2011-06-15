@@ -1,14 +1,14 @@
 \begin{table}[tb]
 \begin{center}
-\begin{tabular}{|c|c|c|c|}
+\begin{tabular}{cccc}
 \hline
 \textbf{Algorithm} & \textbf{Extra Memory} & \textbf{Baldur's Gate} & \textbf{Rooms}  \\ \hline
-PH-e & $O(2|V|)$ & 3.16 &  11.9 \\ \hline
-PH-e & $O(8|V|)$ & 3.07 &  17.54 \\ \hline
-RSR & $O(|V|)$ & 2.8 & 18.2 \\ \hline
+PH-e & $2|V|$ & 3.16 &  11.9 \\ 
+PH-e & $8|V|$ & 3.07 &  17.54 \\ 
+RSR & $|V|$ & 2.8 & 18.2 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Avg. A* search time speedup: RSR vs Portal Heuristic (PH-e).
+\caption{Avg. A* search time speedup: RSR vs PH-e. 
 RSR figures are across all maps on each benchmark. 
 PH-e figures are for a small subset selected by its authors (1 of 120 from
 Baldur's Gate and 5 of 300 from Rooms). }

@@ -7,7 +7,7 @@
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGraffle</string>
-		<string>138.17.0.133677</string>
+		<string>138.12.0.121252</string>
 	</array>
 	<key>AutoAdjust</key>
 	<true/>
@@ -49,6 +49,226 @@
 	<integer>6</integer>
 	<key>GraphicsList</key>
 	<array>
+		<dict>
+			<key>Bounds</key>
+			<string>{{771.768, 2839.59}, {31, 29}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica-Bold</string>
+				<key>Size</key>
+				<real>24</real>
+			</dict>
+			<key>ID</key>
+			<integer>11255</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
+
+\f0\b\fs48 \cf0 (b)}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{272.081, 2839.59}, {30, 29}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica-Bold</string>
+				<key>Size</key>
+				<real>24</real>
+			</dict>
+			<key>ID</key>
+			<integer>11254</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
+
+\f0\b\fs48 \cf0 (a)}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{782.936, 1935.5}, {31, 29}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica-Bold</string>
+				<key>Size</key>
+				<real>24</real>
+			</dict>
+			<key>ID</key>
+			<integer>11253</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
+
+\f0\b\fs48 \cf0 (b)}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{283.249, 1935.5}, {30, 29}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica-Bold</string>
+				<key>Size</key>
+				<real>24</real>
+			</dict>
+			<key>ID</key>
+			<integer>11252</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
+
+\f0\b\fs48 \cf0 (a)}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
 		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
@@ -17162,7 +17382,7 @@
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{201.327, 3002.89}, {13, 15}}</string>
+					<string>{{681.017, 2794.8}, {13, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -17190,7 +17410,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{166.788, 3002.56}, {13, 15}}</string>
+					<string>{{646.477, 2794.47}, {13, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -17218,7 +17438,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{131.25, 3002.89}, {14, 15}}</string>
+					<string>{{610.94, 2794.8}, {14, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -17246,7 +17466,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{341.25, 2862.69}, {14, 16}}</string>
+					<string>{{820.94, 2654.6}, {14, 16}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -17276,7 +17496,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{236.25, 2862.69}, {14, 15}}</string>
+					<string>{{715.94, 2654.6}, {14, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -17318,8 +17538,8 @@
 					<integer>9172</integer>
 					<key>Points</key>
 					<array>
-						<string>{103.25, 2992.69}</string>
-						<string>{243.25, 2887.69}</string>
+						<string>{582.94, 2784.6}</string>
+						<string>{722.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17359,8 +17579,8 @@
 					<integer>9171</integer>
 					<key>Points</key>
 					<array>
-						<string>{103.25, 2992.69}</string>
-						<string>{208.25, 2887.69}</string>
+						<string>{582.94, 2784.6}</string>
+						<string>{687.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17400,8 +17620,8 @@
 					<integer>9170</integer>
 					<key>Points</key>
 					<array>
-						<string>{103.25, 2992.69}</string>
-						<string>{173.25, 2887.69}</string>
+						<string>{582.94, 2784.6}</string>
+						<string>{652.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17439,8 +17659,8 @@
 					<integer>9169</integer>
 					<key>Points</key>
 					<array>
-						<string>{103.25, 2992.69}</string>
-						<string>{138.25, 2887.69}</string>
+						<string>{582.94, 2784.6}</string>
+						<string>{617.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17476,8 +17696,8 @@
 					<integer>9168</integer>
 					<key>Points</key>
 					<array>
-						<string>{103.25, 2992.69}</string>
-						<string>{103.25, 2888.69}</string>
+						<string>{582.94, 2784.1}</string>
+						<string>{582.94, 2680.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17515,8 +17735,8 @@
 					<integer>9167</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{348.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{827.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17565,8 +17785,8 @@
 					<integer>9166</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{313.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{792.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17615,8 +17835,8 @@
 					<integer>9165</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{278.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{757.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17665,8 +17885,8 @@
 					<integer>9164</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{243.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{722.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17715,8 +17935,8 @@
 					<integer>9163</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{208.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{687.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17765,8 +17985,8 @@
 					<integer>9162</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{173.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{652.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17815,8 +18035,8 @@
 					<integer>9161</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{138.25, 2887.69}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{617.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17865,8 +18085,8 @@
 					<integer>9160</integer>
 					<key>Points</key>
 					<array>
-						<string>{208.25, 2992.69}</string>
-						<string>{120.75, 2905.19}</string>
+						<string>{687.94, 2784.6}</string>
+						<string>{600.44, 2697.1}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17915,8 +18135,8 @@
 					<integer>9159</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{313.25, 2887.69}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{792.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -17965,8 +18185,8 @@
 					<integer>9158</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{278.25, 2887.69}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{757.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18015,8 +18235,8 @@
 					<integer>9157</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{243.25, 2887.69}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{722.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18065,8 +18285,8 @@
 					<integer>9156</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{208.25, 2887.69}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{687.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18113,8 +18333,8 @@
 					<integer>9155</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{138.25, 2887.69}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{617.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18163,8 +18383,8 @@
 					<integer>9154</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{173.25, 2887.69}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{652.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18213,8 +18433,8 @@
 					<integer>9153</integer>
 					<key>Points</key>
 					<array>
-						<string>{173.288, 2992.69}</string>
-						<string>{120.75, 2940.19}</string>
+						<string>{652.978, 2784.6}</string>
+						<string>{600.44, 2732.1}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18261,8 +18481,8 @@
 					<integer>9152</integer>
 					<key>Points</key>
 					<array>
-						<string>{138.25, 2992.69}</string>
-						<string>{120.75, 2975.19}</string>
+						<string>{617.94, 2784.6}</string>
+						<string>{600.44, 2767.1}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18311,8 +18531,8 @@
 					<integer>9151</integer>
 					<key>Points</key>
 					<array>
-						<string>{138.25, 2992.69}</string>
-						<string>{278.25, 2887.69}</string>
+						<string>{617.94, 2784.6}</string>
+						<string>{757.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18361,8 +18581,8 @@
 					<integer>9150</integer>
 					<key>Points</key>
 					<array>
-						<string>{138.25, 2992.69}</string>
-						<string>{243.25, 2887.69}</string>
+						<string>{617.94, 2784.6}</string>
+						<string>{722.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18411,8 +18631,8 @@
 					<integer>9149</integer>
 					<key>Points</key>
 					<array>
-						<string>{138.25, 2992.69}</string>
-						<string>{208.25, 2887.69}</string>
+						<string>{617.94, 2784.6}</string>
+						<string>{687.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18459,8 +18679,8 @@
 					<integer>9148</integer>
 					<key>Points</key>
 					<array>
-						<string>{138.25, 2992.69}</string>
-						<string>{173.25, 2887.69}</string>
+						<string>{617.94, 2784.6}</string>
+						<string>{652.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18507,8 +18727,8 @@
 					<integer>9147</integer>
 					<key>Points</key>
 					<array>
-						<string>{138.25, 2992.69}</string>
-						<string>{138.25, 2887.69}</string>
+						<string>{617.94, 2784.6}</string>
+						<string>{617.94, 2679.6}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18545,7 +18765,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{97.25, 3002.56}, {13, 15}}</string>
+					<string>{{576.94, 2794.47}, {13, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18586,7 +18806,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{155.75, 2992.69}, {35.0768, 35.3999}}</string>
+					<string>{{635.44, 2784.6}, {35.0768, 35.3999}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18627,7 +18847,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{120.75, 2992.69}, {35, 35}}</string>
+					<string>{{600.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18668,7 +18888,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{85.75, 2992.69}, {35, 35}}</string>
+					<string>{{565.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18709,7 +18929,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{85.75, 2957.69}, {35, 35}}</string>
+					<string>{{565.44, 2749.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18750,7 +18970,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{85.75, 2922.69}, {35, 35}}</string>
+					<string>{{565.44, 2714.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18791,7 +19011,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{85.75, 2887.69}, {35, 35}}</string>
+					<string>{{565.44, 2679.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18832,7 +19052,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{155.75, 2852.69}, {35, 35}}</string>
+					<string>{{635.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18873,7 +19093,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{120.75, 2852.69}, {35, 35}}</string>
+					<string>{{600.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18914,7 +19134,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{85.75, 2852.69}, {35, 36.0002}}</string>
+					<string>{{565.44, 2644.6}, {35, 36.0002}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18955,7 +19175,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{504.75, 2992.69}, {35, 35}}</string>
+					<string>{{984.439, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -18996,7 +19216,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{469.75, 2992.69}, {35, 35}}</string>
+					<string>{{949.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19037,7 +19257,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{434.75, 2992.69}, {35, 35}}</string>
+					<string>{{914.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19078,7 +19298,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{400.75, 2992.69}, {35, 35}}</string>
+					<string>{{880.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19119,7 +19339,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{365.75, 2992.69}, {35, 35}}</string>
+					<string>{{845.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19160,7 +19380,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{330.75, 2992.69}, {35, 35}}</string>
+					<string>{{810.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19201,7 +19421,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{295.75, 2992.69}, {35, 35}}</string>
+					<string>{{775.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19242,7 +19462,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{260.75, 2992.69}, {35, 35}}</string>
+					<string>{{740.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19283,7 +19503,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{225.75, 2992.69}, {35, 35}}</string>
+					<string>{{705.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19324,7 +19544,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{190.75, 2992.69}, {35, 35}}</string>
+					<string>{{670.44, 2784.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19365,7 +19585,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{504.75, 2957.69}, {35, 35}}</string>
+					<string>{{984.439, 2749.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19406,7 +19626,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{504.75, 2922.69}, {35, 35}}</string>
+					<string>{{984.439, 2714.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19447,7 +19667,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{504.75, 2887.69}, {35, 35}}</string>
+					<string>{{984.439, 2679.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19488,7 +19708,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{504.75, 2852.69}, {35, 35}}</string>
+					<string>{{984.439, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19529,7 +19749,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{470.75, 2852.69}, {35, 35}}</string>
+					<string>{{950.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19570,7 +19790,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{435.75, 2852.69}, {35, 35}}</string>
+					<string>{{915.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19611,7 +19831,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{400.75, 2852.69}, {35, 35}}</string>
+					<string>{{880.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19652,7 +19872,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{365.75, 2852.69}, {35, 35}}</string>
+					<string>{{845.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19693,7 +19913,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{330.75, 2852.69}, {35, 35}}</string>
+					<string>{{810.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19734,7 +19954,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{295.75, 2852.69}, {35, 35}}</string>
+					<string>{{775.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19775,7 +19995,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{260.75, 2852.69}, {35, 35}}</string>
+					<string>{{740.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19816,7 +20036,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{225.75, 2852.69}, {35, 35}}</string>
+					<string>{{705.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -19857,7 +20077,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{190.75, 2852.69}, {35, 35}}</string>
+					<string>{{670.44, 2644.6}, {35, 35}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -20811,11 +21031,11 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{95.5, 1961}, {14, 16}}</string>
+			<string>{{571.436, 1761.72}, {14, 16}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>7612</integer>
+			<integer>11250</integer>
 			<key>ImageID</key>
 			<integer>74</integer>
 			<key>Shape</key>
@@ -20841,11 +21061,11 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{165.75, 1960.38}, {14, 15}}</string>
+			<string>{{641.686, 1761.1}, {14, 15}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>7613</integer>
+			<integer>11251</integer>
 			<key>ImageID</key>
 			<integer>67</integer>
 			<key>Shape</key>
@@ -20883,8 +21103,8 @@
 			<integer>8403</integer>
 			<key>Points</key>
 			<array>
-				<string>{454, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{929.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -20924,8 +21144,8 @@
 			<integer>8402</integer>
 			<key>Points</key>
 			<array>
-				<string>{419, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{894.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -20965,8 +21185,8 @@
 			<integer>8401</integer>
 			<key>Points</key>
 			<array>
-				<string>{384, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{859.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21004,8 +21224,8 @@
 			<integer>8400</integer>
 			<key>Points</key>
 			<array>
-				<string>{349, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{824.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21043,8 +21263,8 @@
 			<integer>8399</integer>
 			<key>Points</key>
 			<array>
-				<string>{314, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{789.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21080,8 +21300,8 @@
 			<integer>8398</integer>
 			<key>Points</key>
 			<array>
-				<string>{279, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{754.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21119,8 +21339,8 @@
 			<integer>8397</integer>
 			<key>Points</key>
 			<array>
-				<string>{244, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{719.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21160,8 +21380,8 @@
 			<integer>8396</integer>
 			<key>Points</key>
 			<array>
-				<string>{209, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{684.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21201,8 +21421,8 @@
 			<integer>8395</integer>
 			<key>Points</key>
 			<array>
-				<string>{174, 1985.38}</string>
-				<string>{314, 2090.38}</string>
+				<string>{649.936, 1786.1}</string>
+				<string>{789.936, 1891.1}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -21230,7 +21450,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{307, 2100.38}, {13, 15}}</string>
+			<string>{{782.936, 1901.1}, {13, 15}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21260,7 +21480,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{156.5, 2090.38}, {35, 34.7334}}</string>
+			<string>{{632.436, 1891.1}, {35, 34.7334}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21301,7 +21521,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{121.5, 2090.38}, {35, 35}}</string>
+			<string>{{597.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21331,7 +21551,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{86.5, 2090.38}, {35, 35}}</string>
+			<string>{{562.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21361,7 +21581,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{86.5, 2055.38}, {35, 35}}</string>
+			<string>{{562.436, 1856.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21391,7 +21611,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{86.5, 2020.38}, {35, 35}}</string>
+			<string>{{562.436, 1821.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21432,7 +21652,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{86.5, 1985.38}, {35, 35}}</string>
+			<string>{{562.436, 1786.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21462,7 +21682,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{156.5, 1950.38}, {35, 35}}</string>
+			<string>{{632.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21503,7 +21723,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{121.5, 1950.38}, {35, 35}}</string>
+			<string>{{597.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21533,7 +21753,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{86.5, 1950.38}, {35, 36.0002}}</string>
+			<string>{{562.436, 1751.1}, {35, 36.0002}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21563,7 +21783,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{505.5, 2090.38}, {35, 35}}</string>
+			<string>{{981.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21593,7 +21813,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{470.5, 2090.38}, {35, 35}}</string>
+			<string>{{946.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21623,7 +21843,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{435.5, 2090.38}, {35, 35}}</string>
+			<string>{{911.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21653,7 +21873,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{401.5, 2090.38}, {35, 35}}</string>
+			<string>{{877.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21683,7 +21903,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{366.5, 2090.38}, {35, 35}}</string>
+			<string>{{842.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21713,7 +21933,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{331.5, 2090.38}, {35, 35}}</string>
+			<string>{{807.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21743,7 +21963,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{296.5, 2090.38}, {35, 35}}</string>
+			<string>{{772.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21784,7 +22004,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{261.5, 2090.38}, {35, 35}}</string>
+			<string>{{737.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21814,7 +22034,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{226.5, 2090.38}, {35, 35}}</string>
+			<string>{{702.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21844,7 +22064,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{191.5, 2090.38}, {35, 35}}</string>
+			<string>{{667.436, 1891.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21874,7 +22094,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{505.5, 2055.38}, {35, 35}}</string>
+			<string>{{981.436, 1856.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21904,7 +22124,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{505.5, 2020.38}, {35, 35}}</string>
+			<string>{{981.436, 1821.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21934,7 +22154,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{505.5, 1985.38}, {35, 35}}</string>
+			<string>{{981.436, 1786.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21964,7 +22184,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{505.5, 1950.38}, {35, 35}}</string>
+			<string>{{981.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -21994,7 +22214,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{471.5, 1950.38}, {35, 35}}</string>
+			<string>{{947.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22024,7 +22244,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{436.5, 1950.38}, {35, 35}}</string>
+			<string>{{912.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22065,7 +22285,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{401.5, 1950.38}, {35, 35}}</string>
+			<string>{{877.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22106,7 +22326,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{366.5, 1950.38}, {35, 35}}</string>
+			<string>{{842.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22147,7 +22367,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{331.5, 1950.38}, {35, 35}}</string>
+			<string>{{807.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22188,7 +22408,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{296.5, 1950.38}, {35, 35}}</string>
+			<string>{{772.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22229,7 +22449,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{261.5, 1950.38}, {35, 35}}</string>
+			<string>{{737.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22270,7 +22490,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{226.5, 1950.38}, {35, 35}}</string>
+			<string>{{702.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -22311,7 +22531,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{191.5, 1950.38}, {35, 35}}</string>
+			<string>{{667.436, 1751.1}, {35, 35}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -27087,66 +27307,6 @@
 					</dict>
 				</dict>
 				<key>shadow</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-			</dict>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{768, 2031}, {14, 15}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>ID</key>
-			<integer>7595</integer>
-			<key>ImageID</key>
-			<integer>76</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Style</key>
-			<dict>
-				<key>fill</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-				<key>shadow</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-				<key>stroke</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-			</dict>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{717, 1961}, {13, 15}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>ID</key>
-			<integer>7614</integer>
-			<key>ImageID</key>
-			<integer>66</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Style</key>
-			<dict>
-				<key>fill</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-				<key>shadow</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-				<key>stroke</key>
 				<dict>
 					<key>Draws</key>
 					<string>NO</string>
@@ -38778,445 +38938,6 @@
 	<integer>80</integer>
 	<key>ImageLinkBack</key>
 	<array>
-		<dict>
-			<key>ApplicationURL</key>
-			<string>http://pierre.chachatelier.fr/programmation/latexit.php</string>
-			<key>appData</key>
-			<data>
-			YnBsaXN0MDDUAQIDBAUGeXpYJHZlcnNpb25YJG9iamVjdHNZJGFy
-			Y2hpdmVyVCR0b3ASAAGGoK8QGQcIDiYnKzI4OUBBSUpNUFRYWV9i
-			ZmltcXZVJG51bGzSCQoLDFYkY2xhc3NaTlMub2JqZWN0c4AYoQ2A
-			AtwPEBESExQVFhcYGQkaGxwdHh8gISIjJCVXcGRmRGF0YVpzb3Vy
-			Y2VUZXh0V3ZlcnNpb25YcHJlYW1ibGVZcG9pbnRTaXplWGJhc2Vs
-			aW5lXxAPYmFja2dyb3VuZENvbG9yVWNvbG9yVXRpdGxlVGRhdGVU
-			bW9kZYAEgA+AA4AGI0AyAAAAAAAAIwAAAAAAAAAAgACAEYAVgBMQ
-			A4AXVTIuMC4x0gkoKSpXTlMuZGF0YYAFTxE7BCVQREYtMS40CiXQ
-			1MXYCjUgMCBvYmogPDwKL0xlbmd0aCAyOSAgICAgICAgCi9GaWx0
-			ZXIgL0ZsYXRlRGVjb2RlCj4+CnN0cmVhbQp42ivkMlQwAEIImZzL
-			pe+Wa6jgks8VyAUASiwFgwplbmRzdHJlYW0KZW5kb2JqCjQgMCBv
-			YmogPDwKL1R5cGUgL1BhZ2UKL0NvbnRlbnRzIDUgMCBSCi9SZXNv
-			dXJjZXMgMyAwIFIKL01lZGlhQm94IFswIDAgMTQgMTVdCi9QYXJl
-			bnQgNiAwIFIKPj4gZW5kb2JqCjIgMCBvYmogPDwKL1R5cGUgL1hP
-			YmplY3QKL1N1YnR5cGUgL0Zvcm0KL0JCb3ggWzAgMCAxNCAxNV0K
-			L0Zvcm1UeXBlIDEKL01hdHJpeCBbMSAwIDAgMSAwIDBdCi9SZXNv
-			dXJjZXMgNyAwIFIKL0xlbmd0aCAzOCAgICAgICAgCi9GaWx0ZXIg
-			L0ZsYXRlRGVjb2RlCj4+CnN0cmVhbQp42ivkMlQwAEJDBV1DMyA2
-			NDFUSM7l0vfMNVRwyecK5AIAbBMGrgplbmRzdHJlYW0KZW5kb2Jq
-			CjEgMCBvYmogPDwKL1R5cGUgL1hPYmplY3QKL1N1YnR5cGUgL0Zv
-			cm0KL0Zvcm1UeXBlIDEKL1BURVguRmlsZU5hbWUgKC92YXIvZm9s
-			ZGVycy9UNi9UNmNZVzAxUEdhU0tNc0J3aXQwWEgrKysrVEkvLVRt
-			cC0vTGFUZVhpVC0yLjAuMS9sYXRleGl0LTItMi5wZGYpCi9QVEVY
-			LlBhZ2VOdW1iZXIgMQovUFRFWC5JbmZvRGljdCA4IDAgUgovQkJv
-			eCBbMCAwIDU0MCAxMTU2XQovUmVzb3VyY2VzIDw8Ci9YT2JqZWN0
-			IDw8Ci9GbTEgOSAwIFIKPj4vUHJvY1NldCBbIC9QREYgXQo+Pgov
-			TGVuZ3RoIDU5Ci9GaWx0ZXIgL0ZsYXRlRGVjb2RlCj4+CnN0cmVh
-			bQp42jNUMABCQwVDEz1LExMFQ0NjSz0LheRcrkIuQz0LAxCAqEDm
-			QKShOqEC+m65hgou+VyBQAgAthYQhQplbmRzdHJlYW0KZW5kb2Jq
-			CjggMCBvYmoKPDwKL1Byb2R1Y2VyIChwZGZUZVgtMS40MC4zKQov
-			Q3JlYXRvciAoVGVYKQovQ3JlYXRpb25EYXRlIChEOjIwMTAwODA0
-			MTIzMzQ1KzEwJzAwJykKL01vZERhdGUgKEQ6MjAxMDA4MDQxMjMz
-			NDUrMTAnMDAnKQovVHJhcHBlZCAvRmFsc2UKL1BURVguRnVsbGJh
-			bm5lciAoVGhpcyBpcyBwZGZUZVgsIFZlcnNpb24gMy4xNDE1OTIt
-			MS40MC4zLTIuMiBcKFdlYjJDIDcuNS42XCkga3BhdGhzZWEgdmVy
-			c2lvbiAzLjUuNikKPj4KZW5kb2JqCjkgMCBvYmoKPDwKL1R5cGUg
-			L1hPYmplY3QKL1N1YnR5cGUgL0Zvcm0KL0JCb3ggWyAwIDAgOSA5
-			XQovRm9ybVR5cGUgMQovTWF0cml4IFsgMSAwIDAgMSAwIDBdCi9S
-			ZXNvdXJjZXMgMTAgMCBSCi9MZW5ndGggNDYKL0ZpbHRlciAvRmxh
-			dGVEZWNvZGUKPj4Kc3RyZWFtCnjaK+QyVDAAQkMFXSNLAz1LS0sF
-			XTNjIyDDQiE5l0vfM9dQwSWfK5ALAKf3CGcKZW5kc3RyZWFtCmVu
-			ZG9iagoxMCAwIG9iago8PAovWE9iamVjdCA8PAovSW0xIDExIDAg
-			Ugo+PgovUHJvY1NldCBbL1BERl0KPj4KZW5kb2JqCjExIDAgb2Jq
-			Cjw8Ci9UeXBlIC9YT2JqZWN0Ci9TdWJ0eXBlIC9Gb3JtCi9Gb3Jt
-			VHlwZSAxCi9QVEVYLkZpbGVOYW1lICguL2xhdGV4aXQtMi5wZGYp
-			Ci9QVEVYLlBhZ2VOdW1iZXIgMQovUFRFWC5JbmZvRGljdCAxMiAw
-			IFIKL0JCb3ggWyAwIDAgNjEyIDc5Ml0KL1Jlc291cmNlcyA8PAov
-			Rm9udCA8PAovRjExIDEzIDAgUgovRjcgMTQgMCBSCj4+Ci9Qcm9j
-			U2V0IFsvUERGL1RleHRdCj4+Ci9MZW5ndGggMTE1Ci9GaWx0ZXIg
-			L0ZsYXRlRGVjb2RlCj4+CnN0cmVhbQp42jPQMzAwUDBAIovSUbgQ
-			Msidy0ABKKEApInW4RTCpe9maKhgqWdpZmSmEJKmYGRpqGdmZKFg
-			ZmyqZ2xooRCSohCtUaIZG+Kl72auYKZnaW5sAVJnrGdqaa6ga6hn
-			YmkKUWQCUkSC3cSrdA3hAgBzjjPmCmVuZHN0cmVhbQplbmRvYmoK
-			MTIgMCBvYmoKPDwKL1Byb2R1Y2VyIChwZGZUZVgtMS40MC4zKQov
-			Q3JlYXRvciAoVGVYKQovQ3JlYXRpb25EYXRlIChEOjIwMTAwODA0
-			MTIzMzQ0KzEwJzAwJykKL01vZERhdGUgKEQ6MjAxMDA4MDQxMjMz
-			NDQrMTAnMDAnKQovVHJhcHBlZCAvRmFsc2UKL1BURVguRnVsbGJh
-			bm5lciAoVGhpcyBpcyBwZGZUZVgsIFZlcnNpb24gMy4xNDE1OTIt
-			MS40MC4zLTIuMiBcKFdlYjJDIDcuNS42XCkga3BhdGhzZWEgdmVy
-			c2lvbiAzLjUuNikKPj4KZW5kb2JqCjEzIDAgb2JqCjw8Ci9UeXBl
-			IC9Gb250Ci9TdWJ0eXBlIC9UeXBlMQovRmlyc3RDaGFyIDExNgov
-			TGFzdENoYXIgMTE2Ci9XaWR0aHMgMTUgMCBSCi9Gb250RGVzY3Jp
-			cHRvciAxNiAwIFIKL0Jhc2VGb250IDE3IDAgUgovRW5jb2Rpbmcg
-			MTggMCBSCj4+CmVuZG9iagoxNCAwIG9iago8PAovVHlwZSAvRm9u
-			dAovU3VidHlwZSAvVHlwZTEKL0ZpcnN0Q2hhciA1MgovTGFzdENo
-			YXIgNTIKL1dpZHRocyAxOSAwIFIKL0ZvbnREZXNjcmlwdG9yIDIw
-			IDAgUgovQmFzZUZvbnQgMjEgMCBSCi9FbmNvZGluZyAyMiAwIFIK
-			Pj4KZW5kb2JqCjE1IDAgb2JqClsgMzYxLjFdCmVuZG9iagoxNiAw
-			IG9iago8PAovVHlwZSAvRm9udERlc2NyaXB0b3IKL0ZvbnROYW1l
-			IC9JS1FLTFgjMkJDTU1JMTAKL0ZsYWdzIDQKL0ZvbnRCQm94IFsg
-			LTMyIC0yNTAgMTA0OCA3NTBdCi9JdGFsaWNBbmdsZSAtMTQKL1N0
-			ZW1WIDcyCi9DaGFyU2V0ICgvdCkKL0ZvbnRGaWxlIDIzIDAgUgo+
-			PgplbmRvYmoKMTcgMCBvYmoKL0lLUUtMWCMyQkNNTUkxMAplbmRv
-			YmoKMTggMCBvYmoKPDwKL1R5cGUgL0VuY29kaW5nCi9EaWZmZXJl
-			bmNlcyBbIDExNi90XQo+PgplbmRvYmoKMTkgMCBvYmoKWyA1Njku
-			NV0KZW5kb2JqCjIwIDAgb2JqCjw8Ci9UeXBlIC9Gb250RGVzY3Jp
-			cHRvcgovRm9udE5hbWUgL0lXTUJSWiMyQkNNUjcKL0ZsYWdzIDQK
-			L0ZvbnRCQm94IFsgLTI3IC0yNTAgMTEyMiA3NTBdCi9JdGFsaWNB
-			bmdsZSAwCi9TdGVtViA3OQovQ2hhclNldCAoL2ZvdXIpCi9Gb250
-			RmlsZSAyNCAwIFIKPj4KZW5kb2JqCjIxIDAgb2JqCi9JV01CUloj
-			MkJDTVI3CmVuZG9iagoyMiAwIG9iago8PAovVHlwZSAvRW5jb2Rp
-			bmcKL0RpZmZlcmVuY2VzIFsgNTIvZm91cl0KPj4KZW5kb2JqCjIz
-			IDAgb2JqCjw8Ci9MZW5ndGgxIDc0OQovTGVuZ3RoMiAxMDY5Ci9M
-			ZW5ndGgzIDAKL0xlbmd0aCAxNTkzCi9GaWx0ZXIgL0ZsYXRlRGVj
-			b2RlCj4+CnN0cmVhbQp42q2Sa1ATVxTHLeJUg21FaCX1waUYJWLC
-			biSBhPIICBIhFXkoIighewMryS6z2TDB8LDUR4WWUq3ByFgQVESo
-			OvUBtCCWWkKttoCipMqrwFgr+KCKAlK7oE6n9GvnfrnnnP8953f/
-			93KcwiJ4UoxMgEEkQfNQPioBAXK5DEUAs0cQFocTQEEFjZPESgUN
-			JQAVi0VgtU4NBCsA4iERrpAIPVgcEECmpFF4YhINXAK4EyIPINVA
-			ClcqCCBX0ElQw/RQKtQgglTikE7jA6laDcInTmhBONRCKhVifBaK
-			AgxX0iABJuIEy22CSUaoSODxIo3pUl6VUiGlZaCAyyQmFzCQGEmo
-			0wAGVSy3D0hmGmRY/g+sqc2DdGr1BwrNRPtJp/5TV2hwddpLBalJ
-			0dGQAnISgxQxVboevoCTQwzXaaZWZbRCjSulRKIaAh7qzkfcX+Rx
-			bRCuh1gYTiuTgEqh1sLJPCSwqSSMf5McbrKQtSGh0a4vn3ayGKbA
-			CToyLQUC5B/1ZIz+EzMmUbgebET4CIIyQma92sVNGRZIKEkMJxKB
-			QCgCCopSpLGYT8REQmBAAU5gUA+gniF24xMkzRwBjDMZQEVSrIl3
-			RVERcKMncqz/XsLfn9QbeCsEgCcQMk0Rd0/gIUQy/iVU6igKEvTk
-			R2GseBWrcMY9CPVQybJcJ5Ve27cUnNtZnhlY2nx8Ble7wFS2/fL5
-			HWdMXvy7nV5zr1FVv0TCRUO2O2y34BVzjIMhX7lhKmE3+5w03WyI
-			cNvRbmt+w5576EDE6/eVd2M3WTUVNTa8pTm4+7bFsS+lyvX+r86P
-			u1LPzzgZegf1KGEP5liX37g+/mdmctaVbovNfsy538iKK/o2dB9c
-			93tX/k+jA6vIUtJypGle7IHHdn9Z2A0drcm33jCJc4vk09tM3s9m
-			IVy9qucKCy1MdrREfyleHSGZuUB0bV2xCUx719vJFO1TUx0ivzez
-			t4Ur7nUyzW6VZWcYg9fLoobnHz80V1k+X+296gj7NXiqIaZe40N8
-			t6vv1NrsucmnmgXeX6ApVfs44fEj45yhxZ9aP4obG+t88jyXXX9f
-			aXCa5nDCar2rZ6FvqovrXe5lhD3j6sdmpw2KpL23aalvcKeNX26j
-			5mffnvSap3IQLW7bZn/92MfOFgHrjmREU1C8XB7j+nW1eU9soH6a
-			eMNF4v2ekgd/XKzPLRRsCgrY2BlfG3nDtany7IXSlXaVu6zjzNVB
-			QaWLq2eS7b3+85x87BZ4vT1HGtsXCZLyLN+16vMHkurS5wpHRxZW
-			SEQHW5959f9ijDJXDZaJFmbO6P9ofnIefyBymcHz3vTzIZXxac2e
-			lafNP76ztACLTOetLUiuKA8p36lJeyiete+4+NQDdHpxet0jafUP
-			qiIqH5x0Ccl6vIzbyNl8qfIhPSc/bKwknk9t8K2tbyAoou/EiCFV
-			ULtms9ArNvGvVp+y8MNHDJ9l3X94w33h7s0siU1Pe6+YnRK41Zj5
-			fPtw+yqdjW1g9eWNFuL2cVPHj924uPejusO2Omfv6K+W+NSzT174
-			7anfWp7AVhVpQNQbXHNe6xnlYDUlmkp7Dmbf1+SvSHSxOJjldt/L
-			HjkQ5pqU3J1BNOfo+OlS4zq3zL52vzMiJzr0aYmEiFgiO6deNs2q
-			w/rpn0aHvsfUhwevBnucLc7DfG8dCosZPjTq3dUyqttmd2kw58rN
-			b1fIVfLnGyP2xc9TpVZUza97sz859OKeC3Bp2HvpA0nZ3Q0lMji0
-			Z3dr19bsrKiru5StVdaOJnMbNYsl8eh+m+8S3/Ls3v4hh98zi793
-			jHDKil62tGMk3/mWtjlYtWnQDzl29AIlWL1Lskm0pOR8EbIlISfm
-			Frm6gONp9c0T/8LBPXl1i1vJSwlWwU155p6bgn6vDzXl2umfLzLE
-			ba9BZgeUfFlbpg14i+tq5HHKG9dk3ekKyPH8vNKe7bUkM/b0SZCw
-			9+5YztYnY4U3U58smr3jbM4nyk66eVxUmFU4TIQvDwre7F4RPNp2
-			o3HVnQMrH8yZ6Vhms3J5VHQnZ9s244kzxrYDHS0NMQN+6GfX0qXj
-			GZfKFrT98JNW6TiUMZzIq33/eWV8vJ+PWC+BlvSolozbxfN+e93T
-			Jnvn3zLE/VcKZW5kc3RyZWFtCmVuZG9iagoyNCAwIG9iago8PAov
-			TGVuZ3RoMSA3MzYKL0xlbmd0aDIgMTA3MwovTGVuZ3RoMyAwCi9M
-			ZW5ndGggMTU4OAovRmlsdGVyIC9GbGF0ZURlY29kZQo+PgpzdHJl
-			YW0KeNqtUmlUU0cYlVYLjZRFrHVDhmBkk2wSIuAWltCogYCsgkJI
-			HvAwvJeEl5CgIktYxEoBpVrUg0TUw6qAxwVFwAVBQERBEAuVRdTC
-			QUBFS4X2gbU9xb8982e+7965c+fORzLmbbNiCdFgiI0imBWNTLMD
-			jlwPJqCRqQQSyVEK8TEYRZz4GGQHaLa2NMCShQI6FdBs7NbY2tFp
-			BBJwRMVKKRwahgEzR/NpEhOwIiApLOAjgMvHwqAIXEPAF4FtqACG
-			MCUZsEQi4DF9IhJ4QJGQVA4JyQQaDQhhAQaCoVAYIVCm/XCQEBQw
-			P7aFMvEnSA5JI3FTwAw3aQ5wi0IUESmBEAohUFxR/C4Id/J/mJot
-			zpaJRK78iGl5PKPPUH4ELFL+jaMRYhkGSQEXFUJSZDbVB/pojQsJ
-			YVnEbJSD8UWwgIWEiiBA/diCI9mwAhLyYEwQBkL4okhopg8hwtkm
-			8NhmLFA4PlwHj+2WM785A/H4MIJ5KsX/iE5zZ2ravzWejRRWAH8q
-			mUql4UR8fdrtmHWVMyJAhTCCjwPDBvClUr6SgM8FXjHAbhqAESGk
-			AJAC90shIyiGHwF4JHtBCColTH8mgw4oIahMOt0lfP4IBwdUsduK
-			zgRWdAYuS6PTAZNB3fsfokAmlUIINjMfeBSf6hAYDw6CFJCA8PgR
-			KrBXhR+5mJQf43zqfsE8Cw2H0EvpruXVDyvnJ3RkaIjO3N0isegu
-			850ozDbQGZg3YBT1YVlk6rU97k3sV3GS9KNtUwPyoIHs6CvLfMey
-			ucpnYuK7hEHdqxdb3wwxNNwedDfkH/bLu31ipHYwl2fm5Plc8xfj
-			OTX+8gs1x1Q2TF92tsgrObFs1RpjD72jkvwU6+SuKL3DmXO7mhNi
-			wpO1Lls+GUWvyRZMnNI6eWgq4O3lu1dzPohujr4soY9ZDwZN7e3j
-			ZJUW/enhkKbWTmudjOw7FDDYqqNTLK5OiXZesWxpnUtJNyuj8ckB
-			vnXgffEk9dZrWQfrYJezi7navXzcsGRPSvxah/jJR3oWL4anuoUu
-			PuETi41M8+IX5d9tp3ovhPsVZUljJmZjJapXi9f36x/fZCpRcwpq
-			JjwZMMGs5QKWpBdUN+ebjT1Vzgbr3ruot7iphGfW/aYxpCogTs7Z
-			ialiNBx2haVnLd3b8pYQSE/s+d131OjOiE4vOrxH8HNaLv1AvWq5
-			T93X7Ac3PsRZB3POCIf+0FLf0+TZ3DvLyLm7Ir16POnmVdPhCee2
-			799Vam4d0AkOd0uozXlpt22lgZ3ChkJNO9gY26XN6WE21RdpVfRl
-			xveGR3N/+PZY1phppVoddy6/c/C1Ec8xtkxrgVq/OWdQn3wje2N5
-			5Ya42Jxac+vks847yy8rH1yoZB+2LF259qdVLsQGv4WijVCl35Vw
-			rNSyLNvA89x3HLqxNrJkynfLsoXVOljQ/obSmDDVjt0bTrrPG+7n
-			98H7mhMCrkew73iZuKTJw+iy5eOPkZtrK4t92uw93lrrFuU8dQ5v
-			oWnEO1iXBRdpF+bZBw922ir9S0RTR7zteAU9o1kpybZjoUFJ+XEr
-			ArI3x8x/7baB5L2fWvxed35Xkb1gc2tFuJ9UJw/LtGnWVRbmSUTW
-			ukfd96FfPS6M6XiD1iQdCFxvo/hVUhC1evRdF3H1rtETaSPNl86i
-			tS2EhyY1cgOOZiEzEDQ3hUSfP9x7p8FYectsjXl9P+N53oq5Fvcr
-			TvqVvw824ceWczfe61jjQoqqaHKx4Pb1jRMp0SRLhXaSk8LP53jY
-			ULy5Uj/g3DZ56MrY+raMkSVSv9z9T53IaNb2q8GAqBDn5eYVbzrt
-			rb/LXZVyHLG43sJWHfKldGd1GTLJTo3Qs8XPgwzJBZvaBakGOxKY
-			dfneVYlMzmbN2z8aW6VGNTafd3WXFBNh7sqoLwpztEkUkj0ZS6x2
-			0mtqV1wLMSJKmgyFcp64n9379Ow9ns2qRQov19OTTTsfRLOGeOzO
-			KR01ZbsXtcXUk/2q0ErTn2MYpxHaLltcfXDk+osP+clZdSXHJW7e
-			0dm5N1ZxL7bf9p+UrKcescopcTzk10v7svSLTCtxlW9D6Va+wrCk
-			Mam7qFPOMq/ipZSOEX0uNWfsaCNT76cuj/4LBtf+mQplbmRzdHJl
-			YW0KZW5kb2JqCjcgMCBvYmogPDwKL1hPYmplY3QgPDwgL0ltMSAx
-			IDAgUiA+PgovUHJvY1NldCBbIC9QREYgXQo+PiBlbmRvYmoKMyAw
-			IG9iaiA8PAovWE9iamVjdCA8PCAvRm0xIDIgMCBSID4+Ci9Qcm9j
-			U2V0IFsgL1BERiBdCj4+IGVuZG9iago2IDAgb2JqIDw8Ci9UeXBl
-			IC9QYWdlcwovQ291bnQgMQovS2lkcyBbNCAwIFJdCj4+IGVuZG9i
-			agoyNSAwIG9iaiA8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgNiAw
-			IFIKPj4gZW5kb2JqCjI2IDAgb2JqIDw8Ci9Qcm9kdWNlciAocGRm
-			VGVYLTEuNDAuMykKL0NyZWF0b3IgKFRlWCkKL0NyZWF0aW9uRGF0
-			ZSAoRDoyMDEwMDgwNDEyMzM0NSsxMCcwMCcpCi9Nb2REYXRlIChE
-			OjIwMTAwODA0MTIzMzQ1KzEwJzAwJykKL1RyYXBwZWQgL0ZhbHNl
-			Ci9QVEVYLkZ1bGxiYW5uZXIgKFRoaXMgaXMgcGRmVGVYLCBWZXJz
-			aW9uIDMuMTQxNTkyLTEuNDAuMy0yLjIgKFdlYjJDIDcuNS42KSBr
-			cGF0aHNlYSB2ZXJzaW9uIDMuNS42KQo+PiBlbmRvYmoKb2JqCjw8
-			Ci9FbmNvZGluZyAvTWFjUm9tYW5FbmNvZGluZwovUHJlYW1ibGUg
-			KEVTYW5ub3BFU3NsYXNoZG9jdW1lbnRjbGFzc1sxMHB0XUVTbGVm
-			dGJyYWNrYXJ0aWNsZUVTcmlnaHRicmFjawpFU3NsYXNodXNlcGFj
-			a2FnZVt1c2VuYW1lc11FU2xlZnRicmFja2NvbG9yRVNyaWdodGJy
-			YWNrICV1c2VkIGZvciBmb250IGNvbG9yCkVTc2xhc2h1c2VwYWNr
-			YWdlRVNsZWZ0YnJhY2thbXNzeW1iRVNyaWdodGJyYWNrICVtYXRo
-			cwpFU3NsYXNodXNlcGFja2FnZUVTbGVmdGJyYWNrYW1zbWF0aEVT
-			cmlnaHRicmFjayAlbWF0aHMKRVNzbGFzaHVzZXBhY2thZ2VbdXRm
-			OF1FU2xlZnRicmFja2lucHV0ZW5jRVNyaWdodGJyYWNrICV1c2Vm
-			dWwgdG8gdHlwZSBkaXJlY3RseSBkaWFjcml0aWMgY2hhcmFjdGVy
-			cwpFU2Fubm9wZW5kKQovRXNjYXBlZFByZWFtYmxlIChFU2Fubm9l
-			cCU1Q2RvY3VtZW50Y2xhc3MlNUIxMHB0JTVEJTdCYXJ0aWNsZSU3
-			RCUwQSU1Q3VzZXBhY2thZ2UlNUJ1c2VuYW1lcyU1RCU3QmNvbG9y
-			JTdEJTIwJTI1dXNlZCUyMGZvciUyMGZvbnQlMjBjb2xvciUwQSU1
-			Q3VzZXBhY2thZ2UlN0JhbXNzeW1iJTdEJTIwJTI1bWF0aHMlMEEl
-			NUN1c2VwYWNrYWdlJTdCYW1zbWF0aCU3RCUyMCUyNW1hdGhzJTBB
-			JTVDdXNlcGFja2FnZSU1QnV0ZjglNUQlN0JpbnB1dGVuYyU3RCUy
-			MCUyNXVzZWZ1bCUyMHRvJTIwdHlwZSUyMGRpcmVjdGx5JTIwZGlh
-			Y3JpdGljJTIwY2hhcmFjdGVycyUwQUVTYW5ub2VwZW5kKQovU3Vi
-			amVjdCAoRVNhbm5vdHRfRVNsZWZ0YnJhY2s0RVNyaWdodGJyYWNr
-			RVNhbm5vdGVuZCkKL0VzY2FwZWRTdWJqZWN0IChFU2Fubm9lc3Rf
-			JTdCNCU3REVTYW5ub2VzZW5kKQovVHlwZSAoRUV0eXBlM0VFdHlw
-			ZWVuZCkKL0NvbG9yIChFRWNvbDAuMDAwMDAwIDAuMDAwMDAwIDAu
-			MDAwMDAwIDEuMDAwMDAwRUVjb2xlbmQpCi9CS0NvbG9yIChFRWJr
-			YzEuMDAwMDAwIDEuMDAwMDAwIDEuMDAwMDAwIDEuMDAwMDAwRUVi
-			a2NlbmQpCi9UaXRsZSAoRUV0aXRsZUVFdGl0bGVlbmQpCi9NYWdu
-			aWZpY2F0aW9uIChFRW1hZzE4LjAwMDAwMEVFbWFnZW5kKQovQmFz
-			ZWxpbmUgKEVFYmFzMC4wMDAwMDBFRWJhc2VuZCkKPj4KZW5kb2Jq
-			Cm9iago8PAovRW5jb2RpbmcgL01hY1JvbWFuRW5jb2RpbmcKL1By
-			ZWFtYmxlIChFU2Fubm9wRVNzbGFzaGRvY3VtZW50Y2xhc3NbMTBw
-			dF1FU2xlZnRicmFja2FydGljbGVFU3JpZ2h0YnJhY2sKRVNzbGFz
-			aHVzZXBhY2thZ2VbdXNlbmFtZXNdRVNsZWZ0YnJhY2tjb2xvckVT
-			cmlnaHRicmFjayAldXNlZCBmb3IgZm9udCBjb2xvcgpFU3NsYXNo
-			dXNlcGFja2FnZUVTbGVmdGJyYWNrYW1zc3ltYkVTcmlnaHRicmFj
-			ayAlbWF0aHMKRVNzbGFzaHVzZXBhY2thZ2VFU2xlZnRicmFja2Ft
-			c21hdGhFU3JpZ2h0YnJhY2sgJW1hdGhzCkVTc2xhc2h1c2VwYWNr
-			YWdlW3V0ZjhdRVNsZWZ0YnJhY2tpbnB1dGVuY0VTcmlnaHRicmFj
-			ayAldXNlZnVsIHRvIHR5cGUgZGlyZWN0bHkgZGlhY3JpdGljIGNo
-			YXJhY3RlcnMKRVNhbm5vcGVuZCkKL0VzY2FwZWRQcmVhbWJsZSAo
-			RVNhbm5vZXAlNUNkb2N1bWVudGNsYXNzJTVCMTBwdCU1RCU3QmFy
-			dGljbGUlN0QlMEElNUN1c2VwYWNrYWdlJTVCdXNlbmFtZXMlNUQl
-			N0Jjb2xvciU3RCUyMCUyNXVzZWQlMjBmb3IlMjBmb250JTIwY29s
-			b3IlMEElNUN1c2VwYWNrYWdlJTdCYW1zc3ltYiU3RCUyMCUyNW1h
-			dGhzJTBBJTVDdXNlcGFja2FnZSU3QmFtc21hdGglN0QlMjAlMjVt
-			YXRocyUwQSU1Q3VzZXBhY2thZ2UlNUJ1dGY4JTVEJTdCaW5wdXRl
-			bmMlN0QlMjAlMjV1c2VmdWwlMjB0byUyMHR5cGUlMjBkaXJlY3Rs
-			eSUyMGRpYWNyaXRpYyUyMGNoYXJhY3RlcnMlMEFFU2Fubm9lcGVu
-			ZCkKL1N1YmplY3QgKEVTYW5ub3RFU2Fubm90ZW5kKQovRXNjYXBl
-			ZFN1YmplY3QgKEVTYW5ub2VzRVNhbm5vZXNlbmQpCi9UeXBlIChF
-			RXR5cGUwRUV0eXBlZW5kKQovQ29sb3IgKEVFY29sMC4wMDAwMDAg
-			MC4wMDAwMDAgMC4wMDAwMDAgMS4wMDAwMDBFRWNvbGVuZCkKL0JL
-			Q29sb3IgKEVFYmtjMS4wMDAwMDAgMS4wMDAwMDAgMS4wMDAwMDAg
-			MS4wMDAwMDBFRWJrY2VuZCkKL1RpdGxlIChFRXRpdGxlRUV0aXRs
-			ZWVuZCkKL01hZ25pZmljYXRpb24gKEVFbWFnMC4wMDAwMDBFRW1h
-			Z2VuZCkKL0Jhc2VsaW5lIChFRWJhczAuMDAwMDAwRUViYXNlbmQp
-			Cj4+CmVuZG9iagpvYmoKPDwKL0VuY29kaW5nIC9NYWNSb21hbkVu
-			Y29kaW5nCi9QcmVhbWJsZSAoRVNhbm5vcEVTc2xhc2hkb2N1bWVu
-			dGNsYXNzWzEwcHRdRVNsZWZ0YnJhY2thcnRpY2xlRVNyaWdodGJy
-			YWNrCkVTc2xhc2h1c2VwYWNrYWdlW3VzZW5hbWVzXUVTbGVmdGJy
-			YWNrY29sb3JFU3JpZ2h0YnJhY2sgJXVzZWQgZm9yIGZvbnQgY29s
-			b3IKRVNzbGFzaHVzZXBhY2thZ2VFU2xlZnRicmFja2Ftc3N5bWJF
-			U3JpZ2h0YnJhY2sgJW1hdGhzCkVTc2xhc2h1c2VwYWNrYWdlRVNs
-			ZWZ0YnJhY2thbXNtYXRoRVNyaWdodGJyYWNrICVtYXRocwpFU3Ns
-			YXNodXNlcGFja2FnZVt1dGY4XUVTbGVmdGJyYWNraW5wdXRlbmNF
-			U3JpZ2h0YnJhY2sgJXVzZWZ1bCB0byB0eXBlIGRpcmVjdGx5IGRp
-			YWNyaXRpYyBjaGFyYWN0ZXJzCkVTYW5ub3BlbmQpCi9Fc2NhcGVk
-			UHJlYW1ibGUgKEVTYW5ub2VwJTVDZG9jdW1lbnRjbGFzcyU1QjEw
-			cHQlNUQlN0JhcnRpY2xlJTdEJTBBJTVDdXNlcGFja2FnZSU1QnVz
-			ZW5hbWVzJTVEJTdCY29sb3IlN0QlMjAlMjV1c2VkJTIwZm9yJTIw
-			Zm9udCUyMGNvbG9yJTBBJTVDdXNlcGFja2FnZSU3QmFtc3N5bWIl
-			N0QlMjAlMjVtYXRocyUwQSU1Q3VzZXBhY2thZ2UlN0JhbXNtYXRo
-			JTdEJTIwJTI1bWF0aHMlMEElNUN1c2VwYWNrYWdlJTVCdXRmOCU1
-			RCU3QmlucHV0ZW5jJTdEJTIwJTI1dXNlZnVsJTIwdG8lMjB0eXBl
-			JTIwZGlyZWN0bHklMjBkaWFjcml0aWMlMjBjaGFyYWN0ZXJzJTBB
-			RVNhbm5vZXBlbmQpCi9TdWJqZWN0IChFU2Fubm90dF9FU2xlZnRi
-			cmFjazRFU3JpZ2h0YnJhY2tFU2Fubm90ZW5kKQovRXNjYXBlZFN1
-			YmplY3QgKEVTYW5ub2VzdF8lN0I0JTdERVNhbm5vZXNlbmQpCi9U
-			eXBlIChFRXR5cGUzRUV0eXBlZW5kKQovQ29sb3IgKEVFY29sMC4w
-			MDAwMDAgMC4wMDAwMDAgMC4wMDAwMDAgMS4wMDAwMDBFRWNvbGVu
-			ZCkKL0JLQ29sb3IgKEVFYmtjMS4wMDAwMDAgMS4wMDAwMDAgMS4w
-			MDAwMDAgMS4wMDAwMDBFRWJrY2VuZCkKL1RpdGxlIChFRXRpdGxl
-			RUV0aXRsZWVuZCkKL01hZ25pZmljYXRpb24gKEVFbWFnMTguMDAw
-			MDAwRUVtYWdlbmQpCi9CYXNlbGluZSAoRUViYXMwLjAwMDAwMEVF
-			YmFzZW5kKQo+PgplbmRvYmoKb2JqCjw8Ci9FbmNvZGluZyAvTWFj
-			Um9tYW5FbmNvZGluZwovUHJlYW1ibGUgKEVTYW5ub3BFU3NsYXNo
-			ZG9jdW1lbnRjbGFzc1sxMHB0XUVTbGVmdGJyYWNrYXJ0aWNsZUVT
-			cmlnaHRicmFjawpFU3NsYXNodXNlcGFja2FnZVt1c2VuYW1lc11F
-			U2xlZnRicmFja2NvbG9yRVNyaWdodGJyYWNrICV1c2VkIGZvciBm
-			b250IGNvbG9yCkVTc2xhc2h1c2VwYWNrYWdlRVNsZWZ0YnJhY2th
-			bXNzeW1iRVNyaWdodGJyYWNrICVtYXRocwpFU3NsYXNodXNlcGFj
-			a2FnZUVTbGVmdGJyYWNrYW1zbWF0aEVTcmlnaHRicmFjayAlbWF0
-			aHMKRVNzbGFzaHVzZXBhY2thZ2VbdXRmOF1FU2xlZnRicmFja2lu
-			cHV0ZW5jRVNyaWdodGJyYWNrICV1c2VmdWwgdG8gdHlwZSBkaXJl
-			Y3RseSBkaWFjcml0aWMgY2hhcmFjdGVycwpFU2Fubm9wZW5kKQov
-			RXNjYXBlZFByZWFtYmxlIChFU2Fubm9lcCU1Q2RvY3VtZW50Y2xh
-			c3MlNUIxMHB0JTVEJTdCYXJ0aWNsZSU3RCUwQSU1Q3VzZXBhY2th
-			Z2UlNUJ1c2VuYW1lcyU1RCU3QmNvbG9yJTdEJTIwJTI1dXNlZCUy
-			MGZvciUyMGZvbnQlMjBjb2xvciUwQSU1Q3VzZXBhY2thZ2UlN0Jh
-			bXNzeW1iJTdEJTIwJTI1bWF0aHMlMEElNUN1c2VwYWNrYWdlJTdC
-			YW1zbWF0aCU3RCUyMCUyNW1hdGhzJTBBJTVDdXNlcGFja2FnZSU1
-			QnV0ZjglNUQlN0JpbnB1dGVuYyU3RCUyMCUyNXVzZWZ1bCUyMHRv
-			JTIwdHlwZSUyMGRpcmVjdGx5JTIwZGlhY3JpdGljJTIwY2hhcmFj
-			dGVycyUwQUVTYW5ub2VwZW5kKQovU3ViamVjdCAoRVNhbm5vdHRf
-			RVNsZWZ0YnJhY2s0RVNyaWdodGJyYWNrRVNhbm5vdGVuZCkKL0Vz
-			Y2FwZWRTdWJqZWN0IChFU2Fubm9lc3RfJTdCNCU3REVTYW5ub2Vz
-			ZW5kKQovVHlwZSAoRUV0eXBlM0VFdHlwZWVuZCkKL0NvbG9yIChF
-			RWNvbDAuMDAwMDAwIDAuMDAwMDAwIDAuMDAwMDAwIDEuMDAwMDAw
-			RUVjb2xlbmQpCi9CS0NvbG9yIChFRWJrYzEuMDAwMDAwIDEuMDAw
-			MDAwIDEuMDAwMDAwIDEuMDAwMDAwRUVia2NlbmQpCi9UaXRsZSAo
-			RUV0aXRsZUVFdGl0bGVlbmQpCi9NYWduaWZpY2F0aW9uIChFRW1h
-			ZzE4LjAwMDAwMEVFbWFnZW5kKQovQmFzZWxpbmUgKEVFYmFzMC4w
-			MDAwMDBFRWJhc2VuZCkKPj4KZW5kb2JqCm9iago8PAovRW5jb2Rp
-			bmcgL01hY1JvbWFuRW5jb2RpbmcKL1ByZWFtYmxlIChFU2Fubm9w
-			RVNzbGFzaGRvY3VtZW50Y2xhc3NbMTBwdF1FU2xlZnRicmFja2Fy
-			dGljbGVFU3JpZ2h0YnJhY2sKRVNzbGFzaHVzZXBhY2thZ2VbdXNl
-			bmFtZXNdRVNsZWZ0YnJhY2tjb2xvckVTcmlnaHRicmFjayAldXNl
-			ZCBmb3IgZm9udCBjb2xvcgpFU3NsYXNodXNlcGFja2FnZUVTbGVm
-			dGJyYWNrYW1zc3ltYkVTcmlnaHRicmFjayAlbWF0aHMKRVNzbGFz
-			aHVzZXBhY2thZ2VFU2xlZnRicmFja2Ftc21hdGhFU3JpZ2h0YnJh
-			Y2sgJW1hdGhzCkVTc2xhc2h1c2VwYWNrYWdlW3V0ZjhdRVNsZWZ0
-			YnJhY2tpbnB1dGVuY0VTcmlnaHRicmFjayAldXNlZnVsIHRvIHR5
-			cGUgZGlyZWN0bHkgZGlhY3JpdGljIGNoYXJhY3RlcnMKRVNhbm5v
-			cGVuZCkKL0VzY2FwZWRQcmVhbWJsZSAoRVNhbm5vZXAlNUNkb2N1
-			bWVudGNsYXNzJTVCMTBwdCU1RCU3QmFydGljbGUlN0QlMEElNUN1
-			c2VwYWNrYWdlJTVCdXNlbmFtZXMlNUQlN0Jjb2xvciU3RCUyMCUy
-			NXVzZWQlMjBmb3IlMjBmb250JTIwY29sb3IlMEElNUN1c2VwYWNr
-			YWdlJTdCYW1zc3ltYiU3RCUyMCUyNW1hdGhzJTBBJTVDdXNlcGFj
-			a2FnZSU3QmFtc21hdGglN0QlMjAlMjVtYXRocyUwQSU1Q3VzZXBh
-			Y2thZ2UlNUJ1dGY4JTVEJTdCaW5wdXRlbmMlN0QlMjAlMjV1c2Vm
-			dWwlMjB0byUyMHR5cGUlMjBkaXJlY3RseSUyMGRpYWNyaXRpYyUy
-			MGNoYXJhY3RlcnMlMEFFU2Fubm9lcGVuZCkKL1N1YmplY3QgKEVT
-			YW5ub3RFU2Fubm90ZW5kKQovRXNjYXBlZFN1YmplY3QgKEVTYW5u
-			b2VzRVNhbm5vZXNlbmQpCi9UeXBlIChFRXR5cGUwRUV0eXBlZW5k
-			KQovQ29sb3IgKEVFY29sMC4wMDAwMDAgMC4wMDAwMDAgMC4wMDAw
-			MDAgMS4wMDAwMDBFRWNvbGVuZCkKL0JLQ29sb3IgKEVFYmtjMS4w
-			MDAwMDAgMS4wMDAwMDAgMS4wMDAwMDAgMS4wMDAwMDBFRWJrY2Vu
-			ZCkKL1RpdGxlIChFRXRpdGxlRUV0aXRsZWVuZCkKL01hZ25pZmlj
-			YXRpb24gKEVFbWFnMC4wMDAwMDBFRW1hZ2VuZCkKL0Jhc2VsaW5l
-			IChFRWJhczAuMDAwMDAwRUViYXNlbmQpCj4+CmVuZG9iagpvYmoK
-			PDwKL0VuY29kaW5nIC9NYWNSb21hbkVuY29kaW5nCi9QcmVhbWJs
-			ZSAoRVNhbm5vcEVTc2xhc2hkb2N1bWVudGNsYXNzWzEwcHRdRVNs
-			ZWZ0YnJhY2thcnRpY2xlRVNyaWdodGJyYWNrCkVTc2xhc2h1c2Vw
-			YWNrYWdlW3VzZW5hbWVzXUVTbGVmdGJyYWNrY29sb3JFU3JpZ2h0
-			YnJhY2sgJXVzZWQgZm9yIGZvbnQgY29sb3IKRVNzbGFzaHVzZXBh
-			Y2thZ2VFU2xlZnRicmFja2Ftc3N5bWJFU3JpZ2h0YnJhY2sgJW1h
-			dGhzCkVTc2xhc2h1c2VwYWNrYWdlRVNsZWZ0YnJhY2thbXNtYXRo
-			RVNyaWdodGJyYWNrICVtYXRocwpFU3NsYXNodXNlcGFja2FnZVt1
-			dGY4XUVTbGVmdGJyYWNraW5wdXRlbmNFU3JpZ2h0YnJhY2sgJXVz
-			ZWZ1bCB0byB0eXBlIGRpcmVjdGx5IGRpYWNyaXRpYyBjaGFyYWN0
-			ZXJzCkVTYW5ub3BlbmQpCi9Fc2NhcGVkUHJlYW1ibGUgKEVTYW5u
-			b2VwJTVDZG9jdW1lbnRjbGFzcyU1QjEwcHQlNUQlN0JhcnRpY2xl
-			JTdEJTBBJTVDdXNlcGFja2FnZSU1QnVzZW5hbWVzJTVEJTdCY29s
-			b3IlN0QlMjAlMjV1c2VkJTIwZm9yJTIwZm9udCUyMGNvbG9yJTBB
-			JTVDdXNlcGFja2FnZSU3QmFtc3N5bWIlN0QlMjAlMjVtYXRocyUw
-			QSU1Q3VzZXBhY2thZ2UlN0JhbXNtYXRoJTdEJTIwJTI1bWF0aHMl
-			MEElNUN1c2VwYWNrYWdlJTVCdXRmOCU1RCU3QmlucHV0ZW5jJTdE
-			JTIwJTI1dXNlZnVsJTIwdG8lMjB0eXBlJTIwZGlyZWN0bHklMjBk
-			aWFjcml0aWMlMjBjaGFyYWN0ZXJzJTBBRVNhbm5vZXBlbmQpCi9T
-			dWJqZWN0IChFU2Fubm90dF9FU2xlZnRicmFjazRFU3JpZ2h0YnJh
-			Y2tFU2Fubm90ZW5kKQovRXNjYXBlZFN1YmplY3QgKEVTYW5ub2Vz
-			dF8lN0I0JTdERVNhbm5vZXNlbmQpCi9UeXBlIChFRXR5cGUzRUV0
-			eXBlZW5kKQovQ29sb3IgKEVFY29sMC4wMDAwMDAgMC4wMDAwMDAg
-			MC4wMDAwMDAgMS4wMDAwMDBFRWNvbGVuZCkKL0JLQ29sb3IgKEVF
-			YmtjMS4wMDAwMDAgMS4wMDAwMDAgMS4wMDAwMDAgMS4wMDAwMDBF
-			RWJrY2VuZCkKL1RpdGxlIChFRXRpdGxlRUV0aXRsZWVuZCkKL01h
-			Z25pZmljYXRpb24gKEVFbWFnMTguMDAwMDAwRUVtYWdlbmQpCi9C
-			YXNlbGluZSAoRUViYXMwLjAwMDAwMEVFYmFzZW5kKQo+PgplbmRv
-			YmoKb2JqCjw8Ci9FbmNvZGluZyAvTWFjUm9tYW5FbmNvZGluZwov
-			UHJlYW1ibGUgKEVTYW5ub3BFU3NsYXNoZG9jdW1lbnRjbGFzc1sx
-			MHB0XUVTbGVmdGJyYWNrYXJ0aWNsZUVTcmlnaHRicmFjawpFU3Ns
-			YXNodXNlcGFja2FnZVt1c2VuYW1lc11FU2xlZnRicmFja2NvbG9y
-			RVNyaWdodGJyYWNrICV1c2VkIGZvciBmb250IGNvbG9yCkVTc2xh
-			c2h1c2VwYWNrYWdlRVNsZWZ0YnJhY2thbXNzeW1iRVNyaWdodGJy
-			YWNrICVtYXRocwpFU3NsYXNodXNlcGFja2FnZUVTbGVmdGJyYWNr
-			YW1zbWF0aEVTcmlnaHRicmFjayAlbWF0aHMKRVNzbGFzaHVzZXBh
-			Y2thZ2VbdXRmOF1FU2xlZnRicmFja2lucHV0ZW5jRVNyaWdodGJy
-			YWNrICV1c2VmdWwgdG8gdHlwZSBkaXJlY3RseSBkaWFjcml0aWMg
-			Y2hhcmFjdGVycwpFU2Fubm9wZW5kKQovRXNjYXBlZFByZWFtYmxl
-			IChFU2Fubm9lcCU1Q2RvY3VtZW50Y2xhc3MlNUIxMHB0JTVEJTdC
-			YXJ0aWNsZSU3RCUwQSU1Q3VzZXBhY2thZ2UlNUJ1c2VuYW1lcyU1
-			RCU3QmNvbG9yJTdEJTIwJTI1dXNlZCUyMGZvciUyMGZvbnQlMjBj
-			b2xvciUwQSU1Q3VzZXBhY2thZ2UlN0JhbXNzeW1iJTdEJTIwJTI1
-			bWF0aHMlMEElNUN1c2VwYWNrYWdlJTdCYW1zbWF0aCU3RCUyMCUy
-			NW1hdGhzJTBBJTVDdXNlcGFja2FnZSU1QnV0ZjglNUQlN0JpbnB1
-			dGVuYyU3RCUyMCUyNXVzZWZ1bCUyMHRvJTIwdHlwZSUyMGRpcmVj
-			dGx5JTIwZGlhY3JpdGljJTIwY2hhcmFjdGVycyUwQUVTYW5ub2Vw
-			ZW5kKQovU3ViamVjdCAoRVNhbm5vdHRfRVNsZWZ0YnJhY2s0RVNy
-			aWdodGJyYWNrRVNhbm5vdGVuZCkKL0VzY2FwZWRTdWJqZWN0IChF
-			U2Fubm9lc3RfJTdCNCU3REVTYW5ub2VzZW5kKQovVHlwZSAoRUV0
-			eXBlM0VFdHlwZWVuZCkKL0NvbG9yIChFRWNvbDAuMDAwMDAwIDAu
-			MDAwMDAwIDAuMDAwMDAwIDEuMDAwMDAwRUVjb2xlbmQpCi9CS0Nv
-			bG9yIChFRWJrYzEuMDAwMDAwIDEuMDAwMDAwIDEuMDAwMDAwIDEu
-			MDAwMDAwRUVia2NlbmQpCi9UaXRsZSAoRUV0aXRsZUVFdGl0bGVl
-			bmQpCi9NYWduaWZpY2F0aW9uIChFRW1hZzE4LjAwMDAwMEVFbWFn
-			ZW5kKQovQmFzZWxpbmUgKEVFYmFzMC4wMDAwMDBFRWJhc2VuZCkK
-			Pj4KZW5kb2JqCnhyZWYKMCAyNwowMDAwMDAwMDAwIDY1NTM1IGYg
-			CjAwMDAwMDA0NDEgMDAwMDAgbiAKMDAwMDAwMDIyNSAwMDAwMCBu
-			IAowMDAwMDA2MzY1IDAwMDAwIG4gCjAwMDAwMDAxMjMgMDAwMDAg
-			biAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDA2NDMwIDAwMDAw
-			IG4gCjAwMDAwMDYzMDAgMDAwMDAgbiAKMDAwMDAwMDgzMSAwMDAw
-			MCBuIAowMDAwMDAxMDg2IDAwMDAwIG4gCjAwMDAwMDEzMDMgMDAw
-			MDAgbiAKMDAwMDAwMTM2OCAwMDAwMCBuIAowMDAwMDAxNzY2IDAw
-			MDAwIG4gCjAwMDAwMDIwMjIgMDAwMDAgbiAKMDAwMDAwMjE3MyAw
-			MDAwMCBuIAowMDAwMDAyMzIyIDAwMDAwIG4gCjAwMDAwMDIzNDcg
-			MDAwMDAgbiAKMDAwMDAwMjUxNiAwMDAwMCBuIAowMDAwMDAyNTQ5
-			IDAwMDAwIG4gCjAwMDAwMDI2MDkgMDAwMDAgbiAKMDAwMDAwMjYz
-			NCAwMDAwMCBuIAowMDAwMDAyODAyIDAwMDAwIG4gCjAwMDAwMDI4
-			MzMgMDAwMDAgbiAKMDAwMDAwMjg5NSAwMDAwMCBuIAowMDAwMDA0
-			NjAwIDAwMDAwIG4gCjAwMDAwMDY0ODcgMDAwMDAgbiAKMDAwMDAw
-			NjUzNyAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDI3Ci9Sb290
-			IDI1IDAgUgovSW5mbyAyNiAwIFIKL0lEIFs8OTUwRTdFQTUwOERD
-			MDE0REJDMzI4QzE1MDgzMEQzRjk+IDw5NTBFN0VBNTA4REMwMTRE
-			QkMzMjhDMTUwODMwRDNGOT5dID4+CnN0YXJ0eHJlZgoxNDQxMgol
-			JUVPRtIsLS4vWiRjbGFzc25hbWVYJGNsYXNzZXNdTlNNdXRhYmxl
-			RGF0YaMuMDFWTlNEYXRhWE5TT2JqZWN00zMJNDU2N1xOU0F0dHJp
-			YnV0ZXNYTlNTdHJpbmeACIAOgAdfENJcZG9jdW1lbnRjbGFzc1sx
-			MHB0XXthcnRpY2xlfQpcdXNlcGFja2FnZVt1c2VuYW1lc117Y29s
-			b3J9ICV1c2VkIGZvciBmb250IGNvbG9yClx1c2VwYWNrYWdle2Ft
-			c3N5bWJ9ICVtYXRocwpcdXNlcGFja2FnZXthbXNtYXRofSAlbWF0
-			aHMKXHVzZXBhY2thZ2VbdXRmOF17aW5wdXRlbmN9ICV1c2VmdWwg
-			dG8gdHlwZSBkaXJlY3RseSBkaWFjcml0aWMgY2hhcmFjdGVycwrT
-			CToKOzw+V05TLmtleXOADaE9gAmhP4AKVk5TRm9udNQJQkNERUZH
-			SFZOU05hbWVWTlNTaXplWE5TZkZsYWdzgAyACyNALAAAAAAAABAQ
-			WUhlbHZldGljYdIsLUtMVk5TRm9udKJLMdIsLU5PXE5TRGljdGlv
-			bmFyeaJOMdIsLVFSXxASTlNBdHRyaWJ1dGVkU3RyaW5nolMxXxAS
-			TlNBdHRyaWJ1dGVkU3RyaW5n0zMJNDU2V4AIgA6AEFV0X3s0fdMJ
-			WltcXV5cTlNDb2xvclNwYWNlVU5TUkdCgBIQAUYwIDAgMADSLC1g
-			YVdOU0NvbG9yomAx0mMJZGVXTlMudGltZSNBsgkJN8noDIAU0iwt
-			Z2hWTlNEYXRlomcx0glqa2xZTlMuc3RyaW5ngBZQ0iwtbm9fEA9O
-			U011dGFibGVTdHJpbmejbnAxWE5TU3RyaW5n0iwtcnNfEA9MYXRl
-			eGl0RXF1YXRpb26jdHUxXxAPTGF0ZXhpdEVxdWF0aW9uXxAPTlNN
-			YW5hZ2VkT2JqZWN00iwtd3hXTlNBcnJheaJ3MV8QD05TS2V5ZWRB
-			cmNoaXZlctF7fFRyb290gAEACAARABoAIwAtADIANwBTAFkAXgBl
-			AHAAcgB0AHYAjwCXAKIAqgCzAL0AxgDYAN4A5ADpAO4A8ADyAPQA
-			9gD/AQgBCgEMAQ4BEAESARQBGgEfAScBKTwxPDY8QTxKPFg8XDxj
-			PGw8czyAPIk8izyNPI89ZD1rPXM9dT13PXk9ez19PYQ9jT2UPZs9
-			pD2mPag9sT2zPb09wj3JPcw90T3ePeE95j37Pf4+Ez4aPhw+Hj4g
-			PiY+LT46PkA+Qj5EPks+UD5YPls+YD5oPnE+cz54Pn8+gj6HPpE+
-			kz6UPpk+qz6vPrg+vT7PPtM+5T73Pvw/BD8HPxk/HD8hAAAAAAAA
-			AgEAAAAAAAAAfQAAAAAAAAAAAAAAAAAAPyM=
-			</data>
-			<key>bundleId</key>
-			<string>fr.chachatelier.pierre.LaTeXiT</string>
-			<key>refresh</key>
-			<real>0.0</real>
-			<key>serverAppName</key>
-			<string>LaTeXiT</string>
-			<key>serverName</key>
-			<string>LaTeXiT</string>
-			<key>version</key>
-			<string>A</string>
-		</dict>
 		<dict>
 			<key>ApplicationURL</key>
 			<string>http://pierre.chachatelier.fr/programmation/latexit.php</string>
@@ -64075,7 +63796,6 @@
 	</array>
 	<key>ImageList</key>
 	<array>
-		<string>image76.pdf</string>
 		<string>image74.pdf</string>
 		<string>image67.pdf</string>
 		<string>image66.pdf</string>
@@ -64174,7 +63894,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2011-01-24 02:39:48 +1100</string>
+	<string>2011-06-15 13:56:37 +1000</string>
 	<key>Modifier</key>
 	<string>Daniel Harabor</string>
 	<key>NotesVisible</key>
@@ -64196,6 +63916,11 @@
 		<array>
 			<string>float</string>
 			<string>18</string>
+		</array>
+		<key>NSPaperName</key>
+		<array>
+			<string>string</string>
+			<string>A4</string>
 		</array>
 		<key>NSPaperSize</key>
 		<array>
@@ -64245,7 +63970,7 @@
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{52, 2}, {2405, 1401}}</string>
+		<string>{{4, 0}, {1916, 1178}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -64259,15 +63984,15 @@
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{531.472, 115.736}, {1145.18, 625.381}}</string>
+		<string>{{-58, 2301.52}, {1793.91, 1039.59}}</string>
 		<key>Zoom</key>
-		<real>1.9700000286102295</real>
+		<real>0.98500001430511475</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
 				<string>Canvas 1</string>
-				<real>1.9700000286102295</real>
-				<real>2</real>
+				<real>0.98500001430511475</real>
+				<real>0.49250000715255737</real>
 			</array>
 		</array>
 	</dict>
