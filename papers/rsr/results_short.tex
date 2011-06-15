@@ -4,10 +4,6 @@ To evaluate RSR we use a generic implementation of A* and discuss performance
 in terms of search time speedup. That is, the relative improvement to the average 
 time A* needs to solve an instance when running on a pruned  vs. unpruned grid.
 For example, a speedup of 2.0 is twice as fast (higher is better).
-%
-%while
-%a node expansion speedup of 2.0 indicates half the number of nodes were expanded.
-%In each case higher is better.
 Note that on approximately 2\% of all instances the start and goal are located
 in the same rectangle and RSR computes the optimal solution without
 search.  We exclude these instances from our results on the basis that they are 
@@ -16,12 +12,11 @@ outliers, even though RSR solves them in constant time.
 \input table_results
 
 \textbf{Pre-processing Times: } 
-RSR takes very little time to pre-process maps from each of the 3
-benchmark sets.
-None took longer than a second; most required half a second or less.
-Thus RSR appears well suited to
-pathfinding in dynamic environments (as previously outlined in an earlier
-section).
+RSR took very little time to pre-process each map from our three
+benchmark sets. Adaptive Depth required 0.1
+seconds per map on average; Rooms and Baldur's Gate required 0.39 and 0.65 seconds
+respectively.
+
 
 \textbf{Comparison to 4ERR: }
 We now compare the performance of RSR against the 4ERR~\cite{harabor10} symmetry-breaking
@@ -35,6 +30,9 @@ choice on 4-connected maps.
 Of the variants, 4ERR+PR yields the biggest improvement, speeding up A* by up to 20 times.
 4ERR+OP compares well on Adaptive Depth and Baldur's Gate but is of little benefit on 
 Rooms where perimeter pruning has already reduced the branching factor.
+
+%\input graphsize
+
 \par
 \textbf{Comparison to Swamps:}
 Next, we compare RSR with Swamps~\cite{pochter10}.  
@@ -58,7 +56,6 @@ Since the two ideas are orthogonal, a natural extension would be to combine them
 first, apply symmetry reduction to a grid; then, apply a Swamps-based 
 decomposition to the resultant graph.
 
-\input table_portals
 
 \textbf{Comparison to Portal Heuristic:}
 Table \ref{table-phspeedup} compares RSR against published results for PH-e: the enhanced 
@@ -77,4 +74,6 @@ similar results.
 As with Swamps, we believe PH-e is entirely orthogonal to RSR: e.g.
 it could be used to guide search on a map pruned by RSR. Alternatively, 
 symmetry elimination could be used to speed up pathfinding during PH-e's refinement phase.
+
+\input table_portals
 

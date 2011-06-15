@@ -1,20 +1,16 @@
-\section{Memory Requirements and Dynamic Maps}
+\section{Memory Requirements}
 \label{sec:memory}
-\textbf{Memory Requirements: }
-In the most straightforward implementation, RSR requires storing only the id of the
-parent rectangle for each node in the original grid. 
-Given the simple geometric nature of empty rectangles, the set of macro-edges
-for each perimeter node can be computed on-the-fly in constant time. 
-This equates to an $O(|V|)$ memory overhead, where $V$ is the set of nodes
-in the underlying graph.
-\newline \noindent
-\textbf{Dynamic Environments: }
-In many application areas, most notably video games, the assumption of a static 
-environment is sometimes unreasonable.
-For example: obstacles may appear on the grid or existing obstacles may be
-destroyed as the game progresses.
-In such cases the underlying graph representing the world must be updated.
-If a new obstacle appears, or an existing one is destroyed,
-we can simply invalidate the affected rectangles and recompute new ones.
-The repair operation must be very fast as most such applications run in real
-time. As we will show, RSR appears particularly well suited for this task.
+In the most straightforward implementation, RSR requires a memory overhead which
+is linear in the number of nodes in the search graph: i.e. $O(|V|)$.
+In our implementation we stored the id of the parent rectangle for each node in 
+the original grid. We also stored, for each identified rectangle, its height, width 
+and the coordinates of its origin in the grid. 
+Further overheads, such as storing the set of macro-edges for each perimeter
+node, can be avoided by exploiting the simple geometric nature of empty
+rectangles. 
+During node expansion we calculate, on-the-fly, and in constant time, the exact position of 
+the two nodes at the edge of each ``fan'' of neighbours from the opposite side of the perimeter. 
+We can then simply travel along the perimeter, from one edge of
+the fan to the other, and generate each non-pruned node we encounter.
+Other neighbours, from the same side of the perimeter as the current node, or an orthogonal side, 
+can be similarly identified on-the-fly and in constant time.

@@ -1,12 +1,20 @@
 \section{Rectangular Symmetry Reduction}
 \label{sec:rsr}
+A path in a uniform-cost grid 
+$< s, \vec{d_1}, \ldots, \vec{d_i}, t >$ 
+is a series of ordered actions that are executed by an agent located at 
+at a starting node $s$ and which must navigate to a target node $t$.
+Each action $\vec{d_i}$ is a vector representing a direction of travel for
+the agent. The effect of each action is to move the agent from the node it currently
+occupies on the grid to one the eight immediately neighbouring nodes.
+We will say that a path is valid if none of its constituent actions results
+in the agent moving to a location which is an obstacle.
 
-We define path symmetry in undirected uniform-cost grids as:
 \begin{definition}
 \label{def:symmetry}
-Two paths $\pi_{1}$ and $\pi_{2}$ are symmetric if they share the same start and
-goal node and one can be derived from the other by interchanging the order of the
-moves.
+Two valid paths $\pi_{1}$ and $\pi_{2}$ are symmetric if they share the same start and
+target node and one can be derived from the other by interchanging the order of
+two or more actions.
 \end{definition}
 
 To identify and eliminate path symmetries from the grid we will employ the high 
@@ -20,4 +28,3 @@ The main differences are: (i) we generalise 4ERR to 8-connected grid maps
 (ii) we give a stronger offline pruning operator to eliminate more nodes from
 the grid (iii) we give a new online pruning operator that reduces a node's branching
 factor and further speeds up search.
-
