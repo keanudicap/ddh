@@ -1,20 +1,21 @@
 \section{Rectangular Symmetry Reduction}
 \label{sec:rsr}
-A path in a uniform-cost grid 
-$< s, \vec{d_1}, \ldots, \vec{d_i}, t >$ 
-is a series of ordered actions that are executed by an agent located at 
-at a starting node $s$ and which must navigate to a target node $t$.
-Each action $\vec{d_i}$ is a vector representing a direction of travel for
-the agent. The effect of each action is to move the agent from the node it currently
-occupies on the grid to one the eight immediately neighbouring nodes.
-We will say that a path is valid if none of its constituent actions results
+In the AI literature a path in a graph is usually written as: $\langle v_0,\ldots,v_n\rangle$. 
+Here $v_0$ is the initial (or start) node, $v_n$ is the target (or goal) node and 
+each pair of adjacent nodes represents an edge in the graph.
+In the context of grid maps, it is sometimes helpful to equivalently describe a path as an ordered sequence
+of actions $\langle \vec{d_0}, \ldots, \vec{d_n}\rangle$ where each action $\vec{d_i}$ is a vector representing 
+a direction of travel. 
+When executed by an agent, the effect of each action is to move the agent from the node it currently
+occupies on the grid (initially $v_0$) to one of the eight immediately neighbouring nodes. The last action 
+results in the agent occupying the target node $v_n$.
+Using this formulation, a path is valid if no action results
 in the agent moving to a location which is an obstacle.
 
 \begin{definition}
 \label{def:symmetry}
 Two valid paths $\pi_{1}$ and $\pi_{2}$ are symmetric if they share the same start and
-target node and one can be derived from the other by interchanging the order of
-two or more actions.
+goal node and one can be derived from the other by swapping the order of the actions.
 \end{definition}
 
 To identify and eliminate path symmetries from the grid we will employ the high 
@@ -22,9 +23,8 @@ level strategy in Algorithm \ref{alg:rsr}.
 
 \input alg_rsr_short
 
-Our approach has similarities with 4ERR~\cite{harabor10}, a symmetry breaking algorithm 
+RSR is similar to 4ERR~\cite{harabor10}, a symmetry breaking algorithm 
 limited to 4-connected grid maps.
 The main differences are: (i) we generalise 4ERR to 8-connected grid maps 
 (ii) we give a stronger offline pruning operator to eliminate more nodes from
-the grid (iii) we give a new online pruning operator that reduces a node's branching
-factor and further speeds up search.
+the grid (iii) we give a new online pruning operator that further speeds up search.
