@@ -1,36 +1,25 @@
 \section{Optimal Travel via Macro-Edges}
-
 After interior nodes are eliminated, macro-edges have to be added between perimeter
 nodes to ensure rectangles are traversed optimally.
-A straightforward approach is to add a macro-edge between any
-two nodes on the perimeter of a rectangle. This strategy is optimal but creates
-an unnecessarily large branching factor. 
-We will do better by adding only \emph{non-dominated} macro edges; i.e. edges whose 
-lengths are strictly less than any other edge between the same pair of nodes.
-%By definition, all non-dominated edges are necessary to ensure optimality.
-\par
+We will describe a strategy that adds only \emph{non-dominated} macro edges; i.e. edges whose 
+lengths are strictly less than the length of any alternative path between the same pair of nodes.
 There are three cases to discuss. In each case the length of each added macro-edge 
-is equal to the heuristic distance between its two endpoints -- as measured
-using Octile distance.
-\par \noindent
-\textbf{Case 1:} nodes on the same side of the perimeter. These are connected
+is equal to the heuristic (or Octile) distance between its two endpoints.
+\par 
+\textbf{Case 1:} nodes on the same side of the perimeter are connected
 just as in the original grid.
-\par \noindent
-\textbf{Case 2:} nodes on orthogonal sides of the perimeter.
-These are connected \emph{iff} the shortest path between them is a diagonal
-(45-degree) line; this is illustrated in Figure \ref{fig-macroedges} (Left).
-\par \noindent
+\textbf{Case 2:} nodes on orthogonal sides of the perimeter are connected \emph{iff} the shortest path between them is a diagonal
+(45-degree) line; this is illustrated in Figure \ref{fig-macroedges} (a).
 \textbf{Case 3:} nodes on opposite sides of the perimeter. 
 For each such node we generate a ``fan'' of neighbours from the opposite side; this is shown in Figure
-\ref{fig-macroedges} (Right).
+\ref{fig-macroedges} (b).
 Starting from a node such as $t_{1}$ we step to the closest
 neighbour from the opposite side and extend the fan away
 from the middle, adding each node we encounter.  The last node
 on either side of the fan is placed diagonally, at 45 degrees, from $t_{1}$
 (such as $t_{2}$) or located in the corner of the perimeter (whichever is encountered first).  
-We do not add further nodes, such as $t_{3}$, as
-these can be reached optimally via the path $< t_1, t_2, \dots,
-t_3 > $.
+Other nodes, such as $t_{3}$, can be reached optimally via the path $\langle t_1, t_2, \dots,
+t_3 \rangle $.
 
 \begin{lemma} \label{lemma-rooms} Let $R$ be an empty rectangle in
 an 8-connected grid map. Let $m$ and $n$ be two perimeter locations.
@@ -45,7 +34,7 @@ optimality of this path is immediate. In the second and third case
 the two nodes can be connected through an optimal path that has one diagonal macro-edge
 (at one end of the path) and zero or more straight macro-edges.
 See again the example of travelling from $t_1$ to $t_3$ in Figure
-\ref{fig-macroedges} (Right).
+\ref{fig-macroedges} (b).
 \end{proof}
 
 \begin{figure}[tb]
@@ -62,20 +51,18 @@ See again the example of travelling from $t_1$ to $t_3$ in Figure
 
 \noindent
 \textbf{Node Insertion:}
-When the start or goal is a node from the interior of an empty rectangle we
-will use a procedure that temporarily re-inserts nodes back into the 
-graph for the duration of a search.
-{If the start and goal are interior nodes
-in the same room no insertion is necessary; an optimal path is trivially
+When the start or goal is located in the interior of an empty rectangle
+we will temporarily re-insert them into the graph for the duration of a search.
+{If the start and goal are from the same room no insertion is necessary; an optimal path is trivially
 available. } {Otherwise, we add four ``fans'' (collections) of macro edges.  Each fan connects
 the start (goal) node to a set of nodes on one side of the rectangle's
 perimeter.  Fans are built as shown earlier.}
-To prove optimality is retained we run the argument given
+To prove optimality we run the argument given
 for Case 3 of Lemma \ref{lemma-rooms}, substituting $m$ for the newly inserted node.
-\par
-Given the simple geometry of rectangles, it is possible to identify in constant
-time the set of nodes which the start or goal must be connected to.  Further,
-these successors could be generated on-the-fly.
+%\par
+%Given the simple geometry of rectangles, it is possible to identify in constant
+%time the set of nodes which the start or goal must be connected to.  Further,
+%these successors could be generated on-the-fly.
 
 %We claim that using the temporary macro edges added by this algorithm it is possible to travel optimally from the start or goal 
 %location to any node on the perimeter of the start or goal rectangle. 
@@ -87,14 +74,14 @@ $\pi'$ on the reformulated grid such that $\pi$ and $\pi'$ have the
 same cost.
 \end{theorem}
 \begin{proof}
-Consider an optimal path $\pi$ on the original map and a rectangle $R$ that is
-crossed by $\pi$.  Let $m$ and $n$ be the two perimeter points along $\pi$.
+Consider a rectangle R that is crossed by an optimal path $\pi$ in the original grid.
+Let $m$ and $n$ be the two perimeter points along $\pi$.
 According to Lemma~\ref{lemma-rooms}, there is a way to connect $m$ and $n$
-optimally in the modified graph. Thus, we can replace the original segment $[m
-\dots n]$ in $\pi$ with the cost-wise equivalent segment that corresponds to the
-modified graph.  The case when $m$ (or $n$) is the start or goal node is
+optimally in the modified graph. Thus, we replace the original path segment $\langle m,
+\dots, n\rangle$ in $\pi$ with a cost-wise equivalent from the
+modified grid.  The case when $m$ (or $n$) is the start or goal node is
 addressed similarly.  By performing such a
-path segment replacement for all rectangles intersected by $\pi$, we obtain a
+replacement for all rectangles intersected by $\pi$, we obtain a
 path $\pi'$ that satisfies the desired properties.
 \end{proof}
 

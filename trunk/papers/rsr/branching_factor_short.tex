@@ -1,17 +1,15 @@
 \section{Reducing The Branching Factor Further}
-In this section we study two branching factor reduction methods: the first
-is an offline perimeter pruning technique; the second is 
-applied during individual node expansions.
-Both retain the optimality of computed solutions (proofs omitted).
+In this section we discuss an offline perimeter pruning technique
+and an online branching factor reduction strategy.
+Both retain solution optimality (proofs omitted).
 
 \noindent
 \textbf{Perimeter Reduction:}
-To speed up search we will prune all intermediate perimeter nodes: that is, nodes
-which have no neighbours from any adjacent rectangle.
-To preserve optimality, we will
-connect the neighbours of each pruned node directly to each other.  The weight
-of each new edge is set appropriately to the octile distance between the two
-neighbours.  Figure \ref{fig-branching} (Left) shows an example.  
+To speed up search we will prune all perimeter nodes which have no 
+neighbours in any adjacent rectangle.
+To preserve optimality, we connect the neighbours of each pruned node directly to each other.  The weight
+of each new edge is equal to the octile distance between the two
+neighbours.  Figure \ref{fig-branching} (a) shows an example.  
 
 \begin{figure}[t]
 	\begin{center}
@@ -19,8 +17,8 @@ neighbours.  Figure \ref{fig-branching} (Left) shows an example.
 	{diagrams/branching_wide.png}
 	\end{center}
 	\vspace{-3pt}
-	\caption{(a) From each empty rectangle (left) we prune all (dark grey) nodes which
-	have no neighbours in any adjacent rectangle.
+	\caption{(a) We prune all (dark grey) nodes which
+	have no neighbours in any adjacent rectangle (left). 
 	Remaining nodes (right) are then connected directly.
 	(b) Assume $t_{1}$ is the parent of $t_2$. When $t_2$
 	is expanded, we do not generate neighbors from the opposite side.
@@ -31,8 +29,8 @@ neighbours.  Figure \ref{fig-branching} (Left) shows an example.
 
 \noindent
 \textbf{Online Node Pruning:}
-When expanding a node during pathfinding search we observe that if the current
-node, and its parent, both belong to the same rectangle, then it is not
+When expanding a node during search we observe that if the current
+node, and its parent, belong to the same rectangle then it is not
 necessary to consider any successors from the opposite side of the rectangle.
 Figure \ref{fig-branching} (Right) shows an example of such a situation. 
 When the current node has no parent, or the parent belongs to a different rectangle, 

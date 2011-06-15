@@ -1,16 +1,16 @@
 \section{Memory Requirements}
 \label{sec:memory}
-In the most straightforward implementation, RSR requires a memory overhead which
-is linear in the number of nodes in the search graph: i.e. $O(|V|)$.
+RSR requires a memory overhead which
+is linear in the size of the search graph: i.e. $O(|V|)$.
 In our implementation we stored the id of the parent rectangle for each node in 
 the original grid. We also stored, for each identified rectangle, its height, width 
 and the coordinates of its origin in the grid. 
 Further overheads, such as storing the set of macro-edges for each perimeter
 node, can be avoided by exploiting the simple geometric nature of empty
 rectangles. 
-During node expansion we calculate, on-the-fly, and in constant time, the exact position of 
+During node expansion we calculate, on-the-fly and in constant time, the exact position of 
 the two nodes at the edge of each ``fan'' of neighbours from the opposite side of the perimeter. 
-We can then simply travel along the perimeter, from one edge of
+We can then simply travel along the perimeter, from one end of
 the fan to the other, and generate each non-pruned node we encounter.
 Other neighbours, from the same side of the perimeter as the current node, or an orthogonal side, 
 can be similarly identified on-the-fly and in constant time.
