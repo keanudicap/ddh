@@ -3,7 +3,7 @@ We introduce Rectangular Symmetry Reduction (RSR), a new symmetry-breaking algor
 applicable to pathfinding on undirected uniform-cost grid maps. RSR is fast,
 memory efficient, optimality preserving and can, in some cases, eliminate
 entirely the need to search.  After symmetry elimination A* can
-search some grids over 30 times faster than before.
+search some grids over 30 times faster.
 \par
 Compared to the 4ERR~\cite{harabor10} pruning algorithm, on which it is based,
 RSR's performance dominates convincingly.
@@ -13,7 +13,7 @@ We find that Swamps are more useful on maps with small open areas
 while RSR becomes more effective as larger open areas are available on a map. 
 When compared to the enhanced Portal Heuristic~\cite{goldenberg10}, we find that 
 RSR has similar or improved performance but requires up to 7 times less memory.
-As with Swamps, we find this method is easily combined with RSR.
+As with Swamps, this method can also be combined with RSR.
 \par
 An interesting direction for future work is applying RSR in settings involving 
 dynamic environments: for example real-time strategy games where existing obstacles 
