@@ -12,13 +12,6 @@ disadvantage of creating up a large branching factor and slowing down search
 perimeter nodes).  We
 introduce an alternative strategy, that creates much fewer macro-edges, by
 defining a \emph{dominance} relation between macro-edges.
-%As we prove later, optimality is preserved.
-%
-%Successfully applying Algorithm \ref{alg:rsr} to 8-connected grid maps 
-%involves adding a set of macro-edges between selected pairs of 
-%nodes on the perimeter of each empty rectangle. 
-%We outline this process in two steps: 
-%\par
 
 \begin{definition}
 \label{def:dominance}
@@ -79,7 +72,6 @@ between its end nodes in a perimeter clique. Therefore, dropping $e$ would
 result in losing path optimality in the perimeter clique.  
 \end{proof}
 
-%We claim this method preserves optimality when traversing arbitrary empty rectangles in an 8-connected grid map.
 \begin{lemma} \label{lemma-rooms} Let $R$ be an empty rectangle in
 an 8-connected grid map. Let $m$ and $n$ be two perimeter locations.
 Then, $m$ and $n$ can be connected optimally through a path that
@@ -117,7 +109,6 @@ Given the simple geometry of rectangles, it is possible to identify in constant
 time the set of nodes which the start or goal must be connected to.  Further,
 these neighbours could be generated on the fly.
 
-%This means the time complexity associated with insertion can be as low as $O(1)$.
 \begin{lemma}
 \label{lemma-insertion}
 Let $R$ be an empty rectangle in an 8-connected grid map.  For any
@@ -134,10 +125,6 @@ node on the perimeter of $R$, in each case substituting $m$ for the newly
 inserted node.
 \end{proof}
 
-%We claim that using the temporary macro edges added by this algorithm it is possible to travel optimally from the start or goal 
-%location to any node on the perimeter of the start or goal rectangle. 
-%\par \noindent
-%\newline
 We claim that eliminating symmetries as outlined earlier
 preserves the completeness and the solution optimality:
 \begin{theorem}
@@ -156,11 +143,4 @@ addressed similarly using Lemma~\ref{lemma-insertion}.  By performing such a
 path segment replacement for all rectangles intersected by $\pi$, we obtain a
 path $\pi'$ that satisfies the desired properties.
 \end{proof}
-
-%\textbf{Optimality:} We claim the symmetry elimination procedure outlined in this section is sufficient to guarantee
-%that A*, running on a modified 8-connected grid map, will always find an optimal length solution if one exists.
-%Our argument follows from Lemma \ref{lemma-rooms} and Lemma \ref{lemma-insertion}.
-%It is based on the observation that for every segment of an optimal length path, which enters a rectangle at some node $m$,
-%traverses through the interior of the rectangle and exits at some node $n$, there is an equivalent length path that mentions only 
-%nodes from the perimeter of that rectangle and possibly one macro edge.
 

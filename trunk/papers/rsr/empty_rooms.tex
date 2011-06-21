@@ -1,17 +1,6 @@
 \section{Rectangular Symmetry Reduction}
 \label{sec:rsr}
 
-%\begin{figure}[]
-%       \begin{center}
-%                       \includegraphics[scale=0.36]{diagrams/symmetry_example.png}
-%       \end{center}
-%       \caption{A pathfinding instance with high symmetry. We highlight the
-%eventual solution returned by A* (strong line) and a number of symmetric 
-%alternatives (dashed lines).}
-%       \label{fig-symmetry}
-%		\vspace{-0.5em}
-%\end{figure}
-
 We begin by making precise the notion of a symmetric relationship between paths
 in a uniform cost graph:
 \begin{definition}
@@ -21,10 +10,6 @@ goal node and one can be derived from the other by interchanging the order of th
 moves.
 \end{definition}
 
-%Consider the pathfinding instance illustrated in Figure \ref{fig-symmetry}.
-%There are many symmetrical paths, some of which are marked in the figure.  With
-%the popular Octile heuristic in use (which is analogous to Manhattan distance,
-%but optimised for 8-connected grids) 
 When applying Definition \ref{def:symmetry} to an undirected uniform cost grid 
 \footnote{We say uniform but infact straight moves cost 1 and diagonal
 moves cost approx. $\sqrt{2}$.} we notice that each node expanded can
