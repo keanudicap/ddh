@@ -93,31 +93,5 @@ possible to check in each case that taking a detour through $m$ does not improve
 the shortest path from $p$ to $n$.
 \end{proof}
 
-%Let $R$ be an empty rectangle in an 8-connected grid map.
-%Further, let $m$ and $n$ be two arbitrarily selected nodes from the perimeter of $R$.
-%There are three cases to consider when searching for an optimal path between $m$ and $n$:
-%\begin{enumerate}
-%\item{$m$ and $n$ are on the same side of the rectangle.}
-%\item{$m$ and $n$ are on orthogonal sides of the rectangle.}
-%\item{$m$ and $n$ are on opposite sides of the rectangle.}
-%\end{enumerate}
-%In all cases we begin by expanding $m$ and process all its primary and secondary neighbours.
-%In the first and second case the optimal path from $m$ to $n$ involves no nodes from the opposite side of the rectangle;
-%the decision to ignore all secondary neighbours has no effect on the optimality of the solution.
-%In the third case we argue as follows:
-%when we expand $m$ we generate a node $n'$ on the same side of the perimeter as $n$.
-%The edge $(m, n')$ represents a path that crosses the rectangle from $m$ to $n'$
-%using a maximum number of diagonal steps. 
-%From this it is trivial to derive that the path $\lbrace m, n', n \rbrace$ is itself optimal.
-%Thus we can ignore all secondary neighbours of nodes descended from $m$ in the search tree
-%(evaluating them could not possibly improve the length of any path from $m$ to $n$).
-%\end{proof}
-%%It is worth noting that on 4-connected maps the branching factor of each node on
-%%the perimeter is already constant. 
-%%Applying Fast Node Expansion in this case often results in an average branching
-%%factor smaller than 4. 
-%%On 8-connected maps the effectiveness of this approach is dependent on how well
-%%we can decomposde the grid map into large rectangular rectangles.
-
 
 

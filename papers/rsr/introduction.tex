@@ -23,9 +23,7 @@ algorithm for undirected uniform-cost grid maps which is fast, memory efficient,
 optimality preserving and which can, in some cases, eliminate entirely the need
 to search.  The central idea that we will explore involves the identification
 and elimination of path symmetries from the search space. 
-%For our purposes, we will (informally for the moment) say that two paths are
-%symmetric if they are identical save for the order in which the individual moves
-%(or steps) occur.  
+
 To deal with path symmetries RSR makes use of an off-line
 empty rectangle decomposition \cite{harabor10} that converts an arbitrary
 undirected uniform-cost grid map into an equivalent one where only nodes

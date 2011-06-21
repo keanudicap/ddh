@@ -4,10 +4,6 @@ To evaluate RSR we use a generic implementation of A* and discuss performance
 in terms of search time speedup. That is, the relative improvement to the average 
 time A* needs to solve an instance when running on a pruned  vs. unpruned grid.
 For example, a speedup of 2.0 is twice as fast (higher is better).
-%
-%while
-%a node expansion speedup of 2.0 indicates half the number of nodes were expanded.
-%In each case higher is better.
 Note that on approximately 2\% of all instances the start and goal are located
 in the same rectangle and RSR computes the optimal solution without
 search.  We exclude these instances from our results on the basis that they are 
@@ -50,21 +46,9 @@ speed improvement over 4ERR and all its variants across all input maps.
 This allows us to conclude that that RSR is the better choice on 4-connected maps.
 When analysing the impact of each enhancement, we note that 4ERR+PR yields the
 biggest improvement on all three benchmarks, speeding up A* by up to 20 times.
-%The most dramatic example can be seen on Rooms (Figure \ref{fig-speedup}C) 
-%where 4ERR+PR speeds up A* by 20 times.
 4ERR+OP compares well with 4ERR+PR on both Adaptive Depth and
 Baldur's Gate but is of little benefit on Rooms where perimeter pruning has
 already reduced the branching factor.
-%In an additional experiment, we evaluated the impact of OP on 8-connected
-%grids and observed that its contribution to speedup was more significant than in 
-%the 4-connected case.
-%This can be explained as follows: on 4-connected maps, 4ERR maintains a very low
-%branching factor, which is comparable (and even slightly better) than the branching
-%factor on the original map. 
-%On the other hand, 8ERR (i.e. RSR without OP and PR speedup enhancements) 
-%can introduce larger branching factors. Therefore, there are more opportunities for 
-%online pruning in the latter case. 
-%Other details (and charts) are left out because of rectangle limitations.
 \par
 The large performance variation from one benchmark to another can be attributed
 to how effectively we can decompose the map. A good decomposition forms large
