@@ -1,6 +1,7 @@
 #include "OfflineJumpPointLocator.h"
-
 #include "JumpPointAbstraction.h"
+#include <cstdlib>
+#include <climits>
 
 OfflineJumpPointLocator::OfflineJumpPointLocator(JumpPointAbstraction* _map)
 	: JumpPointLocator(_map)

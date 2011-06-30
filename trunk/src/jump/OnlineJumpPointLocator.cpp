@@ -2,6 +2,8 @@
 #include "graph.h"
 #include "mapAbstraction.h"
 
+#include <climits>
+
 
 OnlineJumpPointLocator::OnlineJumpPointLocator(mapAbstraction* _map) 
 	: JumpPointLocator(_map)
@@ -13,11 +15,19 @@ OnlineJumpPointLocator::~OnlineJumpPointLocator()
 {
 }
 
-
-// Finds a jump point successor of node (x, y) in Direction d.
-// Also given is the location of the goal node (goalx, goaly) for a particular
-// search instance. If encountered, the goal node is always returned as a 
-// jump point successor.
+// Finds a jump point successor of node (x, y) in Direction d. There a number
+// of conditions that identify a particular node in the grid as a jump point:
+// 	1. The node being evaluated is the goal node.
+// 	2. The node being evaluated has at least 1 forced neighbour.
+// 	3. The direction of travel is diagonal and the node being evaluated has a
+// 	jump point successor in a straight direction.
+//
+// 	The function can also terminate if an obstacle is reached before a jump
+// 	point is found.
+// 	 
+// @param d: the direction to search in
+// @param x,y: the coordinates of the node to begin the search at
+// @param goalx,goaly: the coordinates of the goal node
 //
 // @return: a jump point successor or 0 if no such jump point exists.
 node*
@@ -25,259 +35,196 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 		int goalx, int goaly)
 {
 	node* n = 0;
-	switch(d)
+	int nx = x;
+	int ny = y;
+	for(int steps=1; steps <= jumplimit ; steps++)
 	{
-		case Jump::N:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int ny = y-steps;
-				n = map->getNodeFromMap(x, ny);
-				if(n == 0)
-					break;
+		// step to the next node in direction d 
+		computeNextStepCoords(d, nx, ny);
+		n = map->getNodeFromMap(nx, ny);
 
-				if(x == goalx && ny == goaly)
-					break;
-
-				// n is a jump node if we cannot prove a shorter path to 
-				// a diagonal neighbour exists
-				if(!map->getNodeFromMap(x-1, ny) && 
-						map->getNodeFromMap(x-1, ny-1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(x+1, ny) &&
-						map->getNodeFromMap(x+1, ny-1))
-				{
-					break;
-				}
-				
-			}
+		// stop if we hit an obstacle (no jump node exists)
+		if(n == 0)
 			break;
-		}
 
-		case Jump::S:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int ny = y+steps;
-				n = map->getNodeFromMap(x, ny);
-				if(n == 0)
-					break;
-
-				if(x == goalx && ny == goaly)
-					break;
-
-				if(!map->getNodeFromMap(x-1, ny) && 
-						map->getNodeFromMap(x-1, ny+1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(x+1, ny) &&
-						map->getNodeFromMap(x+1, ny+1))
-				{
-					break;
-				}
-			}
+		// stop if (nx, ny) is the goal
+		if(nx == goalx && ny == goaly)
 			break;
-		}
 
-		case Jump::E:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				n = map->getNodeFromMap(nx, y);
-				if(n == 0)
-					break;
-
-				if(nx == goalx && y == goaly)
-					break;
-
-				if(!map->getNodeFromMap(nx, y-1) && 
-						map->getNodeFromMap(nx+1, y-1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(nx, y+1) &&
-						map->getNodeFromMap(nx+1, y+1))
-				{
-					break;
-				}
-			}
+		// stop if (nx, ny) has a forced neighbour
+		if(computeForced(d, nx, ny))
 			break;
-		}
-
-		case Jump::W:
-		{
-
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps;
-				n = map->getNodeFromMap(nx, y);
-				if(n == 0)
-					break;
-
-				if(nx == goalx && y == goaly)
-					break;
-
-				if(!map->getNodeFromMap(nx, y-1) && 
-						map->getNodeFromMap(nx-1, y-1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(nx, y+1) &&
-						map->getNodeFromMap(nx-1, y+1))
-				{
-					break;
-				}
-			}
-			break;
-		}
-
-		case Jump::NE:
-		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				int ny = y-steps;
-				n = map->getNodeFromMap(nx, ny);
-
-				// stop if we hit an obstacle (no jump node exists)
-				if(n == 0)
-					break;
-
-				// n is jump node if it share a row or column with the goal 
-				if(nx == goalx && ny == goaly)
-					break;
-
-				// n is a jump node if a SE neighbour exists which cannot be
-				// reached by a shorter path than one involving n.
-				if(!map->getNodeFromMap(nx, ny+1) && 
-						map->getNodeFromMap(nx+1, ny+1))
-				{
-					break;
-				}
-
-				// n is a jump node if a NW neighbour exists which cannot be
-				// reached by a shorter path than one involving n.
-				if(!map->getNodeFromMap(nx-1, ny) && 
-						map->getNodeFromMap(nx-1, ny-1))
-				{
-					break;
-				}
 			
-				// n is a jump node if we can reach other jump nodes by
-				// travelling vertically or horizontally 
-				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::E, nx, ny, goalx, goaly))
-					break;
-			}
-			break;
-		}
-
-		case Jump::SE:
+		// if travelling in a diagonal direction, stop if n has a jump node
+		// successor reachanble by travelling vertically or horizontally
+		if(d == Jump::NE)
 		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x+steps;
-				int ny = y+steps;
-				n = map->getNodeFromMap(nx, ny);
-				if(n == 0)
-					break;
-
-				if(nx == goalx && ny == goaly)
-					break;
-				
-				if(!map->getNodeFromMap(nx, ny-1) && 
-						map->getNodeFromMap(nx+1, ny-1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(nx-1, ny) && 
-						map->getNodeFromMap(nx-1, ny+1))
-				{
-					break;
-				}
-
-				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::E, nx, ny, goalx, goaly))
-					break;
-			}
-			break;
+			if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::E, nx, ny, goalx, goaly))
+				break;
 		}
-
-		case Jump::NW:
+		if(d == Jump::SE)
 		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps; 
-				int ny = y-steps;
-				n = map->getNodeFromMap(nx, ny);
-				if(n == 0)
-					break;
-
-				if(nx == goalx && ny == goaly)
-					break;
-
-				if(!map->getNodeFromMap(nx, ny+1) && 
-						map->getNodeFromMap(nx-1, ny+1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(nx+1, ny) && 
-						map->getNodeFromMap(nx+1, ny-1))
-				{
-					break;
-				}
-
-				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::W, nx, ny, goalx, goaly))
-					break;
-			}
-			break;
+			if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::E, nx, ny, goalx, goaly))
+				break;
 		}
-
-		case Jump::SW:
+		if(d == Jump::NW)
 		{
-			for(int steps=1; steps <= jumplimit ; steps++)
-			{
-				int nx = x-steps;
-				int ny = y+steps;
-				n = map->getNodeFromMap(nx, ny);
-				if(n == 0)
-					break;
-
-				if(nx == goalx && ny == goaly)
-					break;
-
-				if(!map->getNodeFromMap(nx, ny-1) && 
-						map->getNodeFromMap(nx-1, ny-1))
-				{
-					break;
-				}
-
-				if(!map->getNodeFromMap(nx+1, ny) && 
-						map->getNodeFromMap(nx+1, ny+1))
-				{
-					break;
-				}
-
-				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::W, nx, ny, goalx, goaly))
-					break;
-			}
-			break;
+			if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::W, nx, ny, goalx, goaly))
+				break;
 		}
-		default:
-			break;
+		if(d == Jump::SW)
+		{
+			if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::W, nx, ny, goalx, goaly))
+				break;
+		}
 	}
 	return n;
 }
 
+// Determine if there are any forced neighbours for the node (x, y) when
+// stepping in direction d.
+// When (x, y) has a forced neighbour, the first 8 bits of the returned value
+// (if set) indicates which direction it lies in relative to (x, y). The
+// following table outlines which bits correspond to which direction:
+//	
+//	Bit: Direction
+//	---------------
+//	1: Jump::N
+//	2: Jump::S
+//	3: Jump::E
+//	4: Jump::W
+//	5: Jump::NE
+//	6: Jump::NW
+//	7: Jump::NE
+//	8: Jump::SW
+//
+//	NB: For straight moves, up to two forced neighbours can exist. For diagonal
+//	moves, only one forced neighbour can exist.
+//
+// @return an integer indicating which (if any) neighbours of n are forced.
+//	If (x,y) has no forced neighbours, 0 is returned. 
+int
+OnlineJumpPointLocator::computeForced(Jump::Direction d, int x, int y)
+{
+	int retVal = 0;
+	switch(d)
+	{
+		case Jump::N:
+			if(!map->getNodeFromMap(x-1, y) &&
+					map->getNodeFromMap(x-1, y-1))
+				retVal |= Jump::NW;
+			if(!map->getNodeFromMap(x+1, y) &&
+					map->getNodeFromMap(x+1, y-1))
+				retVal |= Jump::NE;
+			break;
+		case Jump::S:
+			if(!map->getNodeFromMap(x-1, y) &&
+					map->getNodeFromMap(x-1,y+1))
+				retVal |= Jump::SW;
+			if(!map->getNodeFromMap(x+1, y) &&
+					map->getNodeFromMap(x+1, y+1))
+				retVal |= Jump::SE;
+			break;
+		case Jump::E:
+			if(!map->getNodeFromMap(x, y-1) &&
+					map->getNodeFromMap(x+1, y-1))
+				retVal |= Jump::NE;
+			if(!map->getNodeFromMap(x, y+1) &&
+					map->getNodeFromMap(x+1, y+1))
+				retVal |= Jump::SE;
+			break;
+		case Jump::W:
+			if(!map->getNodeFromMap(x, y-1) && 
+					map->getNodeFromMap(x-1, y-1))
+				retVal |= Jump::NW;
+			if(!map->getNodeFromMap(x, y+1) &&
+					map->getNodeFromMap(x-1, y+1))
+				retVal |= Jump::SW;
+			break;
+		case Jump::NE:
+			if(!map->getNodeFromMap(x-1, y) &&
+					map->getNodeFromMap(x-1, y-1))
+				retVal |= Jump::NW;
+			else if(!map->getNodeFromMap(x, y+1) &&
+					map->getNodeFromMap(x+1, y+1))
+				retVal |= Jump::SE;
+			break;
+		case Jump::NW:
+			if(!map->getNodeFromMap(x+1, y) &&
+					map->getNodeFromMap(x+1, y-1))
+				retVal |= Jump::NE;
+			else if(!map->getNodeFromMap(x, y+1) && 
+					map->getNodeFromMap(x-1, y+1))
+				retVal |= Jump::SW;
+			break;	
+		case Jump::SE:
+			if(!map->getNodeFromMap(x, y-1) &&
+					map->getNodeFromMap(x+1, y-1))
+				retVal |= Jump::NE;
+			else if(!map->getNodeFromMap(x-1, y) &&
+					map->getNodeFromMap(x-1, y+1))
+				retVal |= Jump::SW;
+			break;
+		case Jump::SW:
+			if(!map->getNodeFromMap(x, y-1) &&
+					map->getNodeFromMap(x-1, y-1))
+				retVal |= Jump::NW;
+			else if(!map->getNodeFromMap(x+1, y) &&
+					map->getNodeFromMap(x+1, y+1))
+				retVal |= Jump::SE;
+			break;
+		case Jump::NONE:
+			break; // can't have any forced neighbours in this case
+	}
+	return retVal;
+}
+
+// Calculate the coordinates of the next node to evaluate along the way
+// to identifying a jump point.
+//
+// @param d: the direction of travel
+// @param x: in/out variable. in: the current x-coordinate; out: the
+// x-coordinate of the next node to evaluate
+// @param y: in/out variable. in: the current y-coordinate; out: the
+// y-coordinate of the next node to evaluate
+void
+OnlineJumpPointLocator::computeNextStepCoords(Jump::Direction d, int& x, int& y)
+{
+	switch(d)
+	{
+		case Jump::N:
+			y--;
+			break;
+		case Jump::S:
+			y++;
+			break;
+		case Jump::E:
+			x++;
+			break;
+		case Jump::W:
+			x--;
+			break;
+		case Jump::NE:
+			x++;
+			y--;
+			break;
+		case Jump::SE:
+			x++;
+			y++;
+			break;
+		case Jump::SW:
+			x--;
+			y++;
+			break;
+		case Jump::NW:
+			x--;
+			y--;
+			break;
+		default:
+			break;
+	}
+}

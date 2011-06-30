@@ -5,6 +5,7 @@
 // 
 // Almost identical to the standard HierarchicalSearch class,
 // this variant is hardcoded to use:
+//  - a FlexibleAStar search algorithm
 // 	- a EmptyClusterInsertionPolicy
 //  - a OctileDistanceRefinementPolicy.
 //
