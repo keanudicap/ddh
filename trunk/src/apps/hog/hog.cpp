@@ -37,13 +37,14 @@
 #include "FlexibleAStar.h"
 #include "fpUtil.h"
 #include "HierarchicalSearch.h"
-#include "HierarchicalSearchRSR.h"
+#include "RSRSearch.h"
 #include "HPAClusterAbstraction.h"
 #include "HPAClusterFactory.h"
 #include "hog.h"
 #include "IncidentEdgesExpansionPolicy.h"
 #include "JumpPointAbstraction.h"
 #include "JumpPointsExpansionPolicy.h"
+#include "JumpPointRefinementPolicy.h"
 #include "mapFlatAbstraction.h"
 #include "MacroNodeFactory.h"
 #include "ManhattanHeuristic.h"
@@ -988,7 +989,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		{
 			EmptyClusterAbstraction* map = 
 				dynamic_cast<EmptyClusterAbstraction*>(aMap);
-			alg = new HierarchicalSearchRSR(
+			alg = new RSRSearch(
 					map, 
 					new FlexibleAStar(
 						newExpansionPolicy(map),
@@ -1004,7 +1005,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 						new FlexibleAStar(
 							newExpansionPolicy(aMap),			
 							newHeuristic()),
-						new OctileDistanceRefinementPolicy(aMap));
+						new JumpPointRefinementPolicy(aMap, 5));
 			((HierarchicalSearch*)alg)->setName("JPS");
 			alg->verbose = verbose;
 			break;

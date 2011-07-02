@@ -1,7 +1,7 @@
-#ifndef HIERARCHICALSEARCHRSR_H
-#define HIERARCHICALSEARCHRSR_H
+#ifndef RSRSEARCH_H
+#define RSRSEARCH_H
 
-// HierarchicalSearchRSR.h
+// RSRSearch.h
 // 
 // Almost identical to the standard HierarchicalSearch class,
 // this variant is hardcoded to use:
@@ -25,12 +25,12 @@ class node;
 class path;
 class reservationProvider;
 
-class HierarchicalSearchRSR : public HierarchicalSearch
+class RSRSearch : public HierarchicalSearch
 {
 	public: 
-		HierarchicalSearchRSR(EmptyClusterAbstraction* _map, 
+		RSRSearch(EmptyClusterAbstraction* _map, 
 				FlexibleAStar* alg);
-		virtual ~HierarchicalSearchRSR();
+		virtual ~RSRSearch();
 
 		virtual path *getPath(graphAbstraction *aMap, node *from, node *to, 
 				reservationProvider *rp = 0);	
