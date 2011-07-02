@@ -41,8 +41,9 @@ class JumpPointsExpansionPolicy : public ExpansionPolicy
 		int jumplimit; 
 
 	private:
-		Jump::Direction directionToParent();
+		Jump::Direction computeDirection(int px, int py, int x, int y);
 		void computeNeighbourSet();
+		void computeNeighbours(Jump::Direction which, int x, int y);
 		node* findJumpNode(Jump::Direction d, int x, int y);
 
 		std::vector<node*> neighbours;
