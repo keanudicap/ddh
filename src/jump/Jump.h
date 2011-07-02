@@ -22,7 +22,7 @@ namespace Jump
 		NW = 32, 
 		SE = 64, 
 		SW = 128, 
-		NONE = 256,
+		NONE = 256
 	} Direction;
 }
 
