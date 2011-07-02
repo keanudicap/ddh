@@ -1,4 +1,4 @@
-#include "HierarchicalSearchRSR.h"
+#include "RSRSearch.h"
 
 #include "EmptyClusterAbstraction.h"
 #include "EmptyClusterInsertionPolicy.h"
@@ -9,7 +9,7 @@
 #include "OctileHeuristic.h"
 
 
-HierarchicalSearchRSR::HierarchicalSearchRSR(EmptyClusterAbstraction* _map, 
+RSRSearch::RSRSearch(EmptyClusterAbstraction* _map, 
 		FlexibleAStar* alg)	
 	: HierarchicalSearch(
 			new EmptyClusterInsertionPolicy(_map), 
@@ -19,12 +19,12 @@ HierarchicalSearchRSR::HierarchicalSearchRSR(EmptyClusterAbstraction* _map,
 
 }
 
-HierarchicalSearchRSR::~HierarchicalSearchRSR()
+RSRSearch::~RSRSearch()
 {
 }
 
 path*
-HierarchicalSearchRSR::getClusterPath(node* _from, node* _to)
+RSRSearch::getClusterPath(node* _from, node* _to)
 {
 	ClusterNode* from = dynamic_cast<ClusterNode*>(_from);
 	ClusterNode* to = dynamic_cast<ClusterNode*>(_to);
@@ -42,7 +42,7 @@ HierarchicalSearchRSR::getClusterPath(node* _from, node* _to)
 }
 
 path*
-HierarchicalSearchRSR::getPath(graphAbstraction* aMap, node* from, node* to, 
+RSRSearch::getPath(graphAbstraction* aMap, node* from, node* to, 
 		reservationProvider *rp)
 {
 	path* retVal = getClusterPath(from, to);
