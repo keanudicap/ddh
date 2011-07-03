@@ -25,11 +25,14 @@ class RefinementPolicy
 		virtual path* refine(path* abspath) = 0;
 		
 		// metrics
-		long getNodesExpanded() { return nodesExpanded; }
-		long getNodesTouched() { return nodesTouched; }
-		long getNodesGenerated() { return nodesGenerated; }
-		double getSearchTime() { return searchTime; }
+		inline long getNodesExpanded() { return nodesExpanded; }
+		inline long getNodesTouched() { return nodesTouched; }
+		inline long getNodesGenerated() { return nodesGenerated; }
+		inline double getSearchTime() { return searchTime; }
 		void resetMetrics();
+
+		inline bool getVerbose() { return verbose; }
+		inline bool setVerbose(bool _verbose) { this->verbose = _verbose; }
 
 	protected:
 		mapAbstraction* map;
@@ -38,6 +41,7 @@ class RefinementPolicy
 		long nodesTouched;
 		long nodesGenerated;
 		double searchTime;
+		bool verbose;
 };
 
 #endif
