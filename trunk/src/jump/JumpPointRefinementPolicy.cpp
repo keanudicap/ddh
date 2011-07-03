@@ -4,6 +4,7 @@
 #include "JumpPointsExpansionPolicy.h"
 #include "mapAbstraction.h"
 #include "OnlineJumpPointLocator.h"
+#include "OctileDistanceRefinementPolicy.h"
 #include "path.h"
 
 #include <cstdlib>
@@ -26,6 +27,12 @@ JumpPointRefinementPolicy::refine(path* abspath)
 	if(!abspath && !abspath->next)
 		return 0;
 
+	if(verbose)
+	{
+		std::cout << "refining abstract jump point path. maxdepth: "<<
+			maxdepth<<std::endl;
+	}
+
 	Jump::Direction which = Jump::NONE;
 	path* retVal = recurse(&which, abspath->n, abspath->next->n, 0);
 	if(retVal == 0)
@@ -38,6 +45,15 @@ JumpPointRefinementPolicy::refine(path* abspath)
 	abspath = abspath->next;
 	while(abspath->next)
 	{
+		if(verbose)
+		{
+			std::cout << "refining segment ("<<
+				abspath->n->getLabelL(kFirstData)<<", "<<
+				abspath->n->getLabelL(kFirstData+1)<<") (";
+			std::cout << abspath->next->n->getLabelL(kFirstData)<<", "<<
+				abspath->next->n->getLabelL(kFirstData+1)<<")" <<std::endl;
+		}
+
 		path *segment = recurse(&which, abspath->n, abspath->next->n, 0);
 		if(segment == 0)
 		{
@@ -55,16 +71,33 @@ JumpPointRefinementPolicy::refine(path* abspath)
 		abspath = abspath->next;
 	}
 
+	// Now that we have a path of jump points that are reachanble by travelling
+	// straight from one to the next, refine that path
+	path* tmp = retVal;
+	OctileDistanceRefinementPolicy rpol(map);
+	retVal = rpol.refine(retVal);
+	delete tmp;
 	return retVal;
 }
+
 
 path*
 JumpPointRefinementPolicy::recurse(Jump::Direction* d, node* current, 
 		node* target, int depth)
 {
+	if(verbose)
+	{
+		std::cout << "current: ("<<current->getLabelL(kFirstData)<<", "<<
+			current->getLabelL(kFirstData+1)<<")"<<std::endl;
+	}
+
 	depth++;
 	if(depth == maxdepth)
+	{
+		if(verbose)
+			std::cout << "not expanding this node; max depth reached.\n";
 		return 0;
+	}
 
 	int x = current->getLabelL(kFirstData);
 	int y = current->getLabelL(kFirstData+1);
@@ -83,7 +116,11 @@ JumpPointRefinementPolicy::recurse(Jump::Direction* d, node* current,
 				continue;
 
 			if(jp_next->getNum() == target->getNum())
-				return new path(jp_next, 0);
+			{
+				if(verbose)
+					std::cout << "target node found!\n"<<std::endl;
+				return new path(current, new path(jp_next, 0));
+			}
 
 			path* p = recurse(d, jp_next, target, depth);
 			if(p)
@@ -92,6 +129,13 @@ JumpPointRefinementPolicy::recurse(Jump::Direction* d, node* current,
 				return p;
 			}
 		}
+	}
+
+	if(verbose)
+	{
+		std::cout << "node ("<<current->getLabelL(kFirstData)<<", "<<
+			current->getLabelL(kFirstData+1)<<")"<<std::endl;
+		std::cout << "is a dead end."<<std::endl;
 	}
 	return 0;
 }

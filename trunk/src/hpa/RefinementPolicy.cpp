@@ -5,6 +5,7 @@
 RefinementPolicy::RefinementPolicy(mapAbstraction* _map)
 {
 	map = _map;
+	verbose = false;
 }
 
 RefinementPolicy::~RefinementPolicy()
