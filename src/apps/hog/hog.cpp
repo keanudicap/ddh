@@ -269,8 +269,7 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 	}
 
-
-	if(verbose)
+	if(verbose && aMap->getNumAbstractGraphs() > 1)
 	{
 		Heuristic* h = newHeuristic();
 		DebugUtility debug(aMap, h);
