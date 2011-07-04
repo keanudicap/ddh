@@ -32,7 +32,7 @@ class RefinementPolicy
 		void resetMetrics();
 
 		inline bool getVerbose() { return verbose; }
-		inline bool setVerbose(bool _verbose) { this->verbose = _verbose; }
+		inline void setVerbose(bool _verbose) { this->verbose = _verbose; }
 
 	protected:
 		mapAbstraction* map;
