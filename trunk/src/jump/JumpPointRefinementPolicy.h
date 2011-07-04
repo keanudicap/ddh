@@ -29,7 +29,7 @@ class JumpPointRefinementPolicy : public RefinementPolicy
 		virtual path* refine(path* abspath);
 
 	private:
-		path* recurse(Jump::Direction* d, node* current, node* next, int depth);
+		path* recurse(Jump::Direction d, node* current, node* next, int depth);
 		int computeSuccessors(Jump::Direction d, int x, int y);
 
 		OnlineJumpPointLocator* jpl;

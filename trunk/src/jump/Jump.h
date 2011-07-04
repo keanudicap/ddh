@@ -14,6 +14,7 @@ namespace Jump
 {
 	typedef enum 
 	{
+		NONE = 0,
 		N = 1, 
 		S = 2, 
 		E = 4, 
@@ -21,8 +22,7 @@ namespace Jump
 		NE = 16, 
 		NW = 32, 
 		SE = 64, 
-		SW = 128, 
-		NONE = 256
+		SW = 128
 	} Direction;
 }
 
