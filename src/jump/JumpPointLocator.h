@@ -26,6 +26,10 @@ class JumpPointLocator
 		virtual node* findJumpNode(Jump::Direction d, int x, int y, 
 				int goalx, int goaly) = 0;
 
+		int computeSuccessors(Jump::Direction d, int x, int y);
+		int computeNatural(Jump::Direction d, int x, int y);
+		int computeForced(Jump::Direction d, int x, int y);
+
 		inline int getLimit() { return jumplimit; }
 		inline void setLimit(int lim) { jumplimit = lim; }
 

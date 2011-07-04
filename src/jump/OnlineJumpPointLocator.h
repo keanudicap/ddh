@@ -30,7 +30,6 @@ class OnlineJumpPointLocator : public JumpPointLocator
 
 	private:
 		void computeNextStepCoords(Jump::Direction d, int& x, int& y);
-		int computeForced(Jump::Direction d, int x, int y);
 };
 
 #endif

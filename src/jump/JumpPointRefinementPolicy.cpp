@@ -34,7 +34,7 @@ JumpPointRefinementPolicy::refine(path* abspath)
 	}
 
 	Jump::Direction which = Jump::NONE;
-	path* retVal = recurse(&which, abspath->n, abspath->next->n, 0);
+	path* retVal = recurse(which, abspath->n, abspath->next->n, 0);
 	if(retVal == 0)
 	{
 		std::cerr << "couldn't refine segment. cannot continue.\n";
@@ -54,7 +54,7 @@ JumpPointRefinementPolicy::refine(path* abspath)
 				abspath->next->n->getLabelL(kFirstData+1)<<")" <<std::endl;
 		}
 
-		path *segment = recurse(&which, abspath->n, abspath->next->n, 0);
+		path *segment = recurse(which, abspath->n, abspath->next->n, 1);
 		if(segment == 0)
 		{
 			std::cerr << "couldn't refine segment. cannot continue.\n";
@@ -82,20 +82,20 @@ JumpPointRefinementPolicy::refine(path* abspath)
 
 
 path*
-JumpPointRefinementPolicy::recurse(Jump::Direction* d, node* current, 
+JumpPointRefinementPolicy::recurse(Jump::Direction d, node* current, 
 		node* target, int depth)
 {
 	if(verbose)
 	{
 		std::cout << "current: ("<<current->getLabelL(kFirstData)<<", "<<
-			current->getLabelL(kFirstData+1)<<")"<<std::endl;
+			current->getLabelL(kFirstData+1)<<") direction: "<<d 
+			<< " depth: "<<depth<<std::endl;
 	}
 
-	depth++;
 	if(depth == maxdepth)
 	{
 		if(verbose)
-			std::cout << "not expanding this node; max depth reached.\n";
+			std::cout << "not expanding; max depth reached.\n";
 		return 0;
 	}
 
@@ -104,149 +104,59 @@ JumpPointRefinementPolicy::recurse(Jump::Direction* d, node* current,
 	int nx = target->getLabelL(kFirstData);
 	int ny = target->getLabelL(kFirstData+1);
 
-	int successors = computeSuccessors(*d, x, y);
+	// generate the set of immediately adjacent jump points
+	// (we branch on these)
+	int branching = 0;
+	std::vector<node*> jplist;
+	int successors = jpl->computeSuccessors(d, x, y);
 	for(int i=1; i <= 128; i*=2)
 	{
 		if(i & successors)
 		{
-			*d = (Jump::Direction) i;
-			node* jp_next = jpl->findJumpNode(*d, x, y, nx, ny);
-
-			if(jp_next == 0)
-				continue;
-
-			if(jp_next->getNum() == target->getNum())
+			node* jp_next = jpl->findJumpNode((Jump::Direction)i, x, y, nx, ny);
+			
+			if(jp_next)
 			{
-				if(verbose)
-					std::cout << "target node found!\n"<<std::endl;
-				return new path(current, new path(jp_next, 0));
-			}
-
-			path* p = recurse(d, jp_next, target, depth);
-			if(p)
-			{
-				p = new path(current, p);
-				return p;
+				jplist.push_back(jp_next);
+				branching |= i;
 			}
 		}
+	}
+
+	if(jplist.size() > 1)
+		depth++;
+
+	// recurse over each adjacent jump point until the target node
+	// (or maximum depth) is reached.
+	int j = 0;
+	for(int i=1; i <= 128; i*=2)
+	{
+		if(!(i & branching))
+			continue;
+
+		node* jp_next = jplist.at(j);
+		if(jp_next->getNum() == target->getNum())
+		{
+			if(verbose)
+				std::cout << "target node found!\n"<<std::endl;
+			return new path(current, new path(jp_next, 0));
+		}
+
+		path* p = recurse((Jump::Direction)i, jp_next, target, depth);
+		if(p)
+		{
+			p = new path(current, p);
+			return p;
+		}
+		j++;
 	}
 
 	if(verbose)
 	{
 		std::cout << "node ("<<current->getLabelL(kFirstData)<<", "<<
-			current->getLabelL(kFirstData+1)<<")"<<std::endl;
-		std::cout << "is a dead end."<<std::endl;
+			current->getLabelL(kFirstData+1)<<") is a dead end."<<std::endl;
 	}
 	return 0;
 }
 
-int
-JumpPointRefinementPolicy::computeSuccessors(Jump::Direction d, int x, int y)
-{
-	int retVal = 0;
-	switch(d)
-	{
-		case Jump::S:
-		{
-			retVal |= Jump::S;
-			if(!map->getNodeFromMap(x+1, y))
-				retVal |= Jump::SE;
-			if(!map->getNodeFromMap(x-1, y))
-				retVal |= Jump::SW;
-			break;
-		}
-
-		case Jump::SW:
-		{
-			retVal |= Jump::SW;
-			retVal |= Jump::S;
-			retVal |= Jump::W;
-
-			if(!map->getNodeFromMap(x, y-1))
-				retVal |= Jump::NW;
-			if(!map->getNodeFromMap(x+1, y))
-				retVal |= Jump::SE;
-			break;
-		}
-
-		case Jump::W:
-		{
-			retVal |= Jump::W;
-			if(!map->getNodeFromMap(x, y-1))
-				retVal |= Jump::NW;
-			if(!map->getNodeFromMap(x, y+1))
-				retVal |= Jump::SW;
-			break;
-		}
-
-		case Jump::NW:
-		{
-			retVal |= Jump::NW;
-			retVal |= Jump::N;
-			retVal |= Jump::W;
-
-			if(!map->getNodeFromMap(x, y+1))
-				retVal |= Jump::SW;
-			if(!map->getNodeFromMap(x+1, y))
-				retVal |= Jump::NE;
-			break;
-		}
-
-		case Jump::N:
-		{
-			retVal |= Jump::N;
-
-			if(!map->getNodeFromMap(x+1, y))
-				retVal |= Jump::NE;
-			if(!map->getNodeFromMap(x-1, y))
-				retVal |= Jump::NW;
-			break;
-		}
-
-		case Jump::NE:
-		{
-			retVal |= Jump::NE;
-			retVal |= Jump::E;
-			retVal |= Jump::N;
-
-			if(!map->getNodeFromMap(x, y+1))
-				retVal |= Jump::SE;
-			if(!map->getNodeFromMap(x-1, y))
-				retVal |= Jump::NW;
-			break;
-		}
-
-		case Jump::E:
-		{
-			retVal |= Jump::E;
-			retVal |= Jump::SE;
-
-			if(!map->getNodeFromMap(x, y-1))
-				retVal |= Jump::NE;
-			if(!map->getNodeFromMap(x, y+1))
-				retVal |= Jump::SE;
-			break;
-		}
-
-		case Jump::SE:
-		{
-			retVal |= Jump::SE;
-			retVal |= Jump::S;
-			retVal |= Jump::E;
-
-			if(!map->getNodeFromMap(x, y-1))
-				retVal |= Jump::NE;
-			if(!map->getNodeFromMap(x-1, y))
-				retVal |= Jump::SW;
-			break;
-		}
-		case Jump::NONE:
-		{
-			// when a node has no parent (usually only the start node)
-			// we generate jump point successors in every traversable direction
-			retVal = 0xFF;
-		}
-	}
-	return retVal;
-}
 

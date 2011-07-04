@@ -13,6 +13,7 @@ JumpPointsExpansionPolicy::JumpPointsExpansionPolicy(JumpPointLocator* _jpl)
 {
 	neighbourIndex = 0;
 	jpl = _jpl; 
+	maxdepth = 1;
 }
 
 JumpPointsExpansionPolicy::~JumpPointsExpansionPolicy()
