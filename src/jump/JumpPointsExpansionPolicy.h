@@ -38,21 +38,16 @@ class JumpPointsExpansionPolicy : public ExpansionPolicy
 		virtual double cost_to_n();
 		virtual bool hasNext();
 
-		inline void setMaxDepth(int _maxdepth) { this->maxdepth = _maxdepth; }
-		inline int getMaxDepth() { return maxdepth; }
-
 		int jumplimit; 
 
 	private:
-		Jump::Direction computeDirection(int px, int py, int x, int y);
+		Jump::Direction directionToParent();
 		void computeNeighbourSet();
-		void computeNeighbours(Jump::Direction which, int x, int y);
 		node* findJumpNode(Jump::Direction d, int x, int y);
 
 		std::vector<node*> neighbours;
 		unsigned int neighbourIndex; 
 		JumpPointLocator* jpl;
-		int maxdepth;
 };
 
 #endif
