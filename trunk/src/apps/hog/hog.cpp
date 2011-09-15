@@ -50,6 +50,7 @@
 #include "ManhattanHeuristic.h"
 #include "NodeFactory.h"
 #include "NoInsertionPolicy.h"
+#include "NoRefinementPolicy.h"
 #include "OctileDistanceRefinementPolicy.h"
 #include "OctileHeuristic.h"
 #include "OfflineJumpPointLocator.h"
@@ -369,7 +370,8 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		algName = (char*)alg->getName();
 		alg->verbose = verbose;
 		path* p = alg->getPath(aMap, from, to);
-		double distanceTravelled = aMap->distance(p);
+//		double distanceTravelled = aMap->distance(p);	
+		double distanceTravelled = to->getLabelF(kTemporaryLabel);
 		stats.addStat("distanceMoved", algName, distanceTravelled);
 		alg->logFinalStats(&stats);
 		processStats(&stats);
@@ -415,8 +417,8 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 
 					std::cout << "\n optimal: "<<tmp;
 					std::cout << " computed: "<<tmp2<<std::endl;
-					exitVal = 1;
 				}
+				exitVal = 1;
 				break;
 			}
 		}
@@ -979,7 +981,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 					new FlexibleAStar(
 						newExpansionPolicy(map), 
 						newHeuristic()),
-					new DefaultRefinementPolicy(map));
+						//newRefinementPolicy(map, refineAbsPath));
+						newRefinementPolicy(map, true));
 			((HierarchicalSearch*)alg)->setName("HPA");
 			alg->verbose = verbose;
 			break;
@@ -1004,7 +1007,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 						new FlexibleAStar(
 							newExpansionPolicy(aMap),			
 							newHeuristic()),
-						new JumpPointRefinementPolicy(aMap, 5));
+							newRefinementPolicy(aMap, refineAbsPath));
 			((HierarchicalSearch*)alg)->setName("JPS");
 			alg->verbose = verbose;
 			break;
@@ -1015,7 +1018,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 						new FlexibleAStar(
 							newExpansionPolicy(aMap),	
 							newHeuristic()),
-						new OctileDistanceRefinementPolicy(aMap));
+							newRefinementPolicy(aMap, refineAbsPath));
 			((HierarchicalSearch*)alg)->setName("JPAS");
 			alg->verbose = verbose;
 			break;
@@ -1029,4 +1032,38 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		}
 	}
 	return alg;
+}
+
+RefinementPolicy*
+newRefinementPolicy(mapAbstraction* map, bool refine)
+{
+	if(!refine)
+		return new NoRefinementPolicy();
+
+	RefinementPolicy* refPol = 0;
+	switch(absType)
+	{
+		case HOG::HPA:
+		{
+			GenericClusterAbstraction* gcaMap = 
+				dynamic_cast<GenericClusterAbstraction*>(map);
+
+			refPol = new DefaultRefinementPolicy(gcaMap);
+			break;
+		}
+
+		case HOG::FLATJUMP:
+		case HOG::JPA:
+		{
+			refPol = new OctileDistanceRefinementPolicy(map);
+			break;
+		}
+
+		default:
+		{
+			refPol = new NoRefinementPolicy();
+		}
+	}
+
+	return refPol;
 }

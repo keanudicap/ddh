@@ -136,6 +136,7 @@ HPACluster::connectParent(node* absStart) throw(std::invalid_argument)
 	if(absStart == 0)
 		throw std::invalid_argument("HPACluster::connectParent null argument");
 
+	nodesExpanded = nodesGenerated = nodesTouched = 0;
 	for(HPAUtil::nodeTable::iterator nodeIter = parents.begin(); 
 		nodeIter != parents.end(); 
 		nodeIter++)
@@ -157,7 +158,7 @@ HPACluster::connectParent(node* absStart) throw(std::invalid_argument)
 		path* solution = alg->getPath(map, from, to);
 		if(solution != 0)
 		{
-			double dist = map->distance(solution);
+			double dist = to->getLabelF(kTemporaryLabel); // == g(to)
 			edge* e = new edge(absStart->getNum(), absGoal->getNum(), dist);
 			absg->addEdge(e);
 			map->addPathToCache(e, solution);				

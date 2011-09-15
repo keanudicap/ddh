@@ -23,10 +23,9 @@ node*
 DefaultInsertionPolicy::insert(node* n)
 	throw(std::invalid_argument)
 {
-	node* retVal = 0;
-	resetMetrics();
 
-	//assert(insertedStartNode == 0 && insertedGoalNode == 0);
+	node* retVal = 0;
+
 	if(n->getLabelL(kParent) == -1)
 	{
 		ClusterNode* target = dynamic_cast<ClusterNode*>(n);
@@ -45,12 +44,12 @@ DefaultInsertionPolicy::insert(node* n)
 		graph* absg = map->getAbstractGraph(1);
 		retVal = absg->getNode(target->getLabelL(kParent));
 		addNode(retVal);
-		//assert(retVal);
+		assert(retVal);
 		
-		searchTime = cluster->getSearchTime();
-		nodesExpanded = cluster->getNodesExpanded();
-		nodesGenerated = cluster->getNodesGenerated();
-		nodesTouched = cluster->getNodesTouched();
+		searchTime += cluster->getSearchTime(); 
+		nodesExpanded += cluster->getNodesExpanded();
+		nodesGenerated += cluster->getNodesGenerated();
+		nodesTouched += cluster->getNodesTouched();
 	}
 	else
 	{
@@ -67,6 +66,9 @@ DefaultInsertionPolicy::remove(node* _n)
 {
 	if(removeNode(_n))
 	{
+		Timer t;
+		t.startTimer();
+
 		// then remove it from the abstract graph and its parent cluster
 		graph* g = map->getAbstractGraph(1);
 		ClusterNode* n = dynamic_cast<ClusterNode*>(g->getNode(_n->getNum()));
@@ -94,6 +96,8 @@ DefaultInsertionPolicy::remove(node* _n)
 			delete n;
 			n = 0;
 		}
+		searchTime += t.endTimer();
+
 	}
 }
 

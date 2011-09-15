@@ -13,12 +13,15 @@
 
 #include "searchAlgorithm.h"
 #include <map>
+#include <ext/hash_map>
 #include <string>
 
 class DebugUtility;
 class ExpansionPolicy;
 class altheap;
 class Heuristic;
+
+typedef __gnu_cxx::hash_map<int,  node*> ClosedList; 
 class FlexibleAStar : public searchAlgorithm
 {
 	public:
@@ -40,11 +43,11 @@ class FlexibleAStar : public searchAlgorithm
 		void relaxNode(node* from, node* to, node* goal, double cost, 
 			altheap* openList);
 		void expand(node* current, node* goal, altheap* openList,
-				std::map<int, node*>* closedList);
+				ClosedList* closedList);
 		path* extractBestPath(node* goal);
 
 	private:
-		void closeNode(node* current, std::map<int, node*>* closedList);
+		void closeNode(node* current, ClosedList* closedList);
 		bool checkParameters(node* from, node* to);
 		DebugUtility* debug;
 };
