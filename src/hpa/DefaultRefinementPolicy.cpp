@@ -29,8 +29,6 @@ DefaultRefinementPolicy::~DefaultRefinementPolicy()
 path*
 DefaultRefinementPolicy::refine(path* abspath)
 {
-	resetMetrics();
-
 	ReverseClusterFilter *cf = new ReverseClusterFilter();
 	IncidentEdgesExpansionPolicy* policy = new IncidentEdgesExpansionPolicy(map);
 	policy->addFilter(cf);

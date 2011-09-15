@@ -40,8 +40,6 @@ HierarchicalSearch::getPath(graphAbstraction *aMap, node *from,
 {
 	resetMetrics();
 	alg->verbose = verbose;
-	refinePolicy->setVerbose(verbose);
-	insertPolicy->setVerbose(verbose);
 
 	node* start = insertPolicy->insert(from);
 	node* goal = insertPolicy->insert(to);
@@ -81,6 +79,8 @@ HierarchicalSearch::resetMetrics()
 {
 	if(insertPolicy)
 		insertPolicy->resetMetrics();
+	if(refinePolicy)
+		refinePolicy->resetMetrics();
 
 	nodesExpanded = 0;
 	nodesTouched = 0;
