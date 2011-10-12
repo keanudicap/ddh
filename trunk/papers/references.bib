@@ -1014,3 +1014,17 @@ annote = {Exceedingly similar to HAA* }
 	annote = {Quickly replan paths after changes to the environment. Propagates cost changes and only re-expands
 		affected nodes. Efficient. }
 }
+
+@article{koenig05,
+	author    = {Sven Koenig and
+		 Maxim Likhachev},
+	title     = {Fast replanning for navigation in unknown terrain},
+	journal   = {IEEE Transactions on Robotics},
+	volume    = {21},
+	number    = {3},
+	year      = {2005},
+	pages     = {354-363},
+	annote = {Describes D* Lite, an extension of LPA* that keeps costs from the goal vertex rather than the start. This allows a robot to execute a
+		plan then replan if the environment changes and the path becomes blocked. Like LPA*, the replanning is efficient
+			because distances from the goal are kept between searches.}
+}
