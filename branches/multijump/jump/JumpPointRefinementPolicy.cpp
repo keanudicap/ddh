@@ -24,7 +24,7 @@ JumpPointRefinementPolicy::~JumpPointRefinementPolicy()
 path*
 JumpPointRefinementPolicy::refine(path* abspath)
 {
-	if(!abspath && !abspath->next)
+	if(!abspath || !abspath->next)
 		return 0;
 
 	if(verbose)

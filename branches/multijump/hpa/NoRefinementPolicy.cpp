@@ -13,6 +13,9 @@ NoRefinementPolicy::~NoRefinementPolicy()
 // @return: a copy of parameter abspath
 path* NoRefinementPolicy::refine(path* abspath)
 {
+	if(!abspath || !abspath->next)
+		return 0;
+
 	path* thepath = 0;
 	path* last = 0;
 	for(path* mypath = abspath; mypath->next != 0; mypath = mypath->next)
