@@ -20,6 +20,7 @@
 class Heuristic;
 class ExpansionPolicy;
 class mapAbstraction;
+class RefinementPolicy;
 
 namespace HOG
 {
@@ -43,4 +44,4 @@ void gogoGadgetNOGUIScenario(mapAbstraction* ecmap);
 ExpansionPolicy* newExpansionPolicy(mapAbstraction* map);
 Heuristic* newHeuristic();
 searchAlgorithm* newSearchAlgorithm(mapAbstraction* aMap, bool refine=true);
-
+RefinementPolicy* newRefinementPolicy(mapAbstraction* map, bool refine);

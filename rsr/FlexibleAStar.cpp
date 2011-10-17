@@ -67,7 +67,7 @@ FlexibleAStar::search(node* start, node* goal)
 	start->backpointer = 0;
 	
 	altheap openList(heuristic, goal, 30);
-	std::map<int, node*> closedList;
+	ClosedList closedList;
 	
 	openList.add(start);
 	path *p = NULL;
@@ -76,15 +76,24 @@ FlexibleAStar::search(node* start, node* goal)
 	t.startTimer();
 	while(1) 
 	{
+		// expand the current node
 		node* current = ((node*)openList.remove()); 
+
+		if(verbose) 
+		{
+			double fVal = current->getLabelF(kTemporaryLabel);
+			double gVal = fVal - heuristic->h(current, goal);
+			debug->printNode(std::string("expanding... "), current);
+			std::cout << " g: "<<gVal<<" f: "<<fVal<<std::endl;
+		}
 
 		// check if the current node is the goal (early termination)
 		if(current == goal)
 		{
-			closeNode(current, &closedList);
-			p = extractBestPath(current);
 			if(verbose)
 				debug->printNode(std::string("goal found! "), current);
+			closeNode(current, &closedList);
+			p = extractBestPath(current);
 			break;
 		}
 		
@@ -115,7 +124,7 @@ FlexibleAStar::search(node* start, node* goal)
 }
 
 void 
-FlexibleAStar::closeNode(node* current, std::map<int, node*>* closedList)
+FlexibleAStar::closeNode(node* current, ClosedList* closedList)
 {
 	if(markForVis)
 		current->drawColor = 2; // visualise expanded
@@ -132,16 +141,8 @@ FlexibleAStar::closeNode(node* current, std::map<int, node*>* closedList)
 
 void 
 FlexibleAStar::expand(node* current, node* goal, altheap* openList,
-		std::map<int, node*>* closedList)
+		ClosedList* closedList)
 {
-	// expand the current node
-	if(verbose) 
-	{
-		double fVal = current->getLabelF(kTemporaryLabel);
-		double gVal = fVal - heuristic->h(current, goal);
-		debug->printNode(std::string("expanding... "), current);
-		std::cout << " g: "<<gVal<<" f: "<<fVal<<std::endl;
-	}
 
 	nodesExpanded++;
 	nodesTouched++;
@@ -262,7 +263,9 @@ FlexibleAStar::extractBestPath(node* goal)
 	{
 		p = new path(n, p);
 		if(markForVis)
+		{
 			assert(n->drawColor == 2);
+		}
 	}
 
 	return p;
