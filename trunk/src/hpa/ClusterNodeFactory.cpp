@@ -24,3 +24,4 @@ node* ClusterNodeFactory::newNode(const node* _n) throw(std::invalid_argument)
 	return new ClusterNode(n);
 
 }
+

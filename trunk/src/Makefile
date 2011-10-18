@@ -32,36 +32,30 @@ TESTINCLUDES = -I./tests/util -I./tests/hpa -I./tests/rsr
 
 # compiler flags
 CC = c++
-FAST_CFLAGS = -O3 -ansi -DNDEBUG $(HOGINCLUDES)
-DEV_CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic -DUNITTEST $(HOGINCLUDES) $(TESTINCLUDES) 
-
+FAST_CFLAGS = -O3 -ansi -DNDEBUG
+DEV_CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic
 
 # locations of library files program depends on
-LIBFLAGS = -Lapps/libs 
-
-# headers for Darwin/OSX 
-ifeq ($(findstring "Darwin", "$(shell uname -s)"), "Darwin")
- TESTLIBFLAGS = -L/opt/local/lib -L/usr/local/lib -lcppunit -lmockpp
- CFLAGS += -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ 
- ifeq ("$(OPENGL)", "STUB")
-  CFLAGS = -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL
- else
-  LIBFLAGS += -framework GLUT -framework OpenGL -framework AppKit -framework Foundation
-  CFLAGS += -I/System/Library/Frameworks/GLUT.framework/Versions/A/Headers/
-  CFLAGS += -I/System/Library/Frameworks/OpenGL.framework/Versions/A/Headers/
-  CFLAGS += -I/System/Library/Frameworks/AGL.framework/Versions/A/Headers/
-  CFLAGS += -I/System/Library/Frameworks/Foundation.framework/Versions/A/Headers/
-  CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/
- endif
-else # headers for Linux et al 
-LIBFLAGS = -Lapps/libs -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
- ifeq ("$(OPENGL)", "STUB")
-  CFLAGS += -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL
- else
-  CFLAGS += -I/usr/include/GL 
-  LIBFLAGS +=  -lGL -lGLU -lglut -lXi -lXmu  
- endif
- CFLAGS += -Dlinux
+ifeq ("$(OPENGL)", "STUB") 
+  SYS_CFLAGS = -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL
+else # OSX
+ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
+  SYS_CFLAGS = -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ 
+  SYS_CFLAGS += -I/System/Library/Frameworks/GLUT.framework/Versions/A/Headers/
+  SYS_CFLAGS += -I/System/Library/Frameworks/OpenGL.framework/Versions/A/Headers/
+  SYS_CFLAGS += -I/System/Library/Frameworks/AGL.framework/Versions/A/Headers/
+  SYS_CFLAGS += -I/System/Library/Frameworks/Foundation.framework/Versions/A/Headers/
+  SYS_CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/
+  LIBFLAGS = -framework GLUT -framework OpenGL -framework AppKit -framework Foundation
+else # Cygwin/Windows
+ifeq ("$(findstring CYGWIN, $(shell uname -s))", "CYGWIN")
+  SYS_CFLAGS = -Dlinux -I/usr/include/opengl/ 
+  LIBFLAGS = -Lapps/libs -lopengl32 -lglu32 -lglut32 -L/lib/w32api
+else # Linux et al 
+ LIBFLAGS = -Lapps/libs -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
+ SYS_CFLAGS = -Dlinux -I/usr/include/GL 
+endif
+endif
 endif
 
 ifeq ("$(CPU)", "G5")
@@ -70,24 +64,24 @@ ifeq ("$(CPU)", "G5")
 endif
 
 # every directory in ./apps, except those filtered out, is a target for compilation
-TARGETS = $(filter-out %~ Makefile %.mk tests libs, $(notdir $(wildcard apps/*)))
+TARGETS = $(filter-out %~ tests Makefile %.mk libs, $(notdir $(wildcard apps/*)))
 
-all: cleanapps fast
-targets: cleanapps $(TARGETS)
+all: fast
+targets: $(TARGETS)
 
-dev: CFLAGS += $(DEV_CFLAGS)
+dev: CFLAGS = $(DEV_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES) 
 dev: APPSTARGET = dev
-dev: cleanapps $(TARGETS)
+dev: $(TARGETS)
 
-fast: CFLAGS += $(FAST_CFLAGS)
+fast: CFLAGS = $(FAST_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES)
 fast: APPSTARGET = fast
-fast: cleanapps $(TARGETS)
+fast: $(TARGETS)
 
 $(TARGETS) : % : lib%.a hogcore
-	$(CC)	$(CFLAGS) $(LIBFLAGS) -o $(addprefix bin/,$(@)) \
+	$(CC) -o $(addprefix bin/,$(@)) \
 		$(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
 		$(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) \
-		-l$(@:.mk=)
+		-l$(@:.mk=) $(LIBFLAGS)
 
 $(addprefix lib, $(addsuffix .a, $(TARGETS))) :
 	@echo "making app: "$(@)" ("$(APPSTARGET)")"
@@ -148,10 +142,9 @@ $(RSRTESTS_OBJ) : $(RSRTESTS_SRC) $(RSRTESTS_SRC:.cpp=.h) \
 	$(RSR_SRC) $(RSR_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,tests/rsr/,$(@)))
 
-clean:
+clean: cleanapps
 	@-$(RM) objs/*.o
 	@-$(RM) bin/*
-	@cd apps; $(MAKE) clean; cd ..
 
 cleanapps:
 	@echo cleaning ./apps

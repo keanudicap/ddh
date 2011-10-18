@@ -15,3 +15,4 @@ edge* EdgeFactory::newEdge(unsigned int fromId, unsigned int toId, double weight
 	edge* e = new edge(fromId, toId, weight);
 	return e;
 }
+
