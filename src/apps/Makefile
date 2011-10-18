@@ -11,7 +11,7 @@ TARGS = $(foreach x, $(APPS), $(addsuffix .mk, $(x)))
 
 HDRS = $(foreach T, $(APPS), $(wildcard $(T)/*.h))
 
-fast : CFLAGS = -Wall -O3 -DNDEBUG
+fast : CFLAGS = -O3 -ansi -DNDEBUG
 fast : clean apps.mk
 
 dev : CFLAGS = -Wall -Wno-deprecated -g -ggdb
@@ -50,28 +50,33 @@ apps.mk : $(TARGS) Makefile
 	@echo "SHELL = /bin/bash" >> apps.mk
 	@echo "CC = g++" >> apps.mk
 	@echo "CFLAGS = " $(CFLAGS) >> apps.mk
-	@echo "CFLAGS += -I../hpa -I../rsr -I../jump -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
 	@echo >> $(@)
 
-	@echo 'ifeq ($(value DLR)(findstring "Darwin", "$(value DLR)(shell uname -s)"), "Darwin")' >> $(@)
+	@echo '# locations of library files program depends on' >> apps.mk
 	@echo 'ifeq ("$(value DLR)(OPENGL)", "STUB")' >> apps.mk
-	@echo "CFLAGS += -I../driver/STUB/ -I../driver/STUB/GL/ -DNO_OPENGL" >> apps.mk
-	@echo "else" >> apps.mk
-	@echo "CFLAGS += -DOS_MAC" >> apps.mk
-	@echo "CFLAGS += -I/System/Library/Frameworks/GLUT.framework/Versions/A/Headers/" >> apps.mk
-	@echo "CFLAGS += -I/System/Library/Frameworks/OpenGL.framework/Versions/A/Headers/" >> apps.mk
-	@echo 'endif' >> apps.mk
-	@echo 'else # not darwin' >> apps.mk
-	@echo 'ifeq ("$(value DLR)(OPENGL)", "STUB")' >> apps.mk
-	@echo "CFLAGS += -I../driver/STUB/ -I../driver/STUB/GL/ -DNO_OPENGL" >> apps.mk
-	@echo "else" >> apps.mk
-	@echo "CFLAGS += -I/usr/include/GL" >> apps.mk
+	@echo "  CFLAGS += -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL" >> apps.mk
+	@echo "else # OSX" >> apps.mk
+	@echo 'ifeq ("$(value DLR)(findstring Darwin, "$(value DLR)(shell uname -s)")", "Darwin")' >> apps.mk
+	@echo "  CFLAGS += -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ " >> apps.mk
+	@echo "  CFLAGS += -I/System/Library/Frameworks/GLUT.framework/Versions/A/Headers/" >> apps.mk
+	@echo "  CFLAGS += -I/System/Library/Frameworks/OpenGL.framework/Versions/A/Headers/" >> apps.mk
+	@echo "  CFLAGS += -I/System/Library/Frameworks/AGL.framework/Versions/A/Headers/" >> apps.mk
+	@echo "  CFLAGS += -I/System/Library/Frameworks/Foundation.framework/Versions/A/Headers/" >> apps.mk
+	@echo "  CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/" >> apps.mk
+	@echo "  LIBFLAGS = -framework GLUT -framework OpenGL -framework AppKit -framework Foundation" >> apps.mk
+	@echo "else # Cygwin/Windows" >> apps.mk
+	@echo 'ifeq ("$(value DLR)(findstring CYGWIN, $(value DLR)(shell uname -s))", "CYGWIN")' >> apps.mk
+	@echo "  CFLAGS += -Dlinux -I/usr/include/opengl/ " >> apps.mk
+	@echo "  LIBFLAGS = -Lapps/libs -lopengl32 -lglu32 -lglut32 -L/lib/w32api" >> apps.mk
+	@echo "else # Linux et al " >> apps.mk
+	@echo ' LIBFLAGS = -Lapps/libs -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(value DLR)(HOME)/lib -L/opt/local/lib -L/usr/local/lib' >> apps.mk
+	@echo " CFLAGS += -Dlinux -I/usr/include/GL " >> apps.mk
+	@echo "endif" >> apps.mk
 	@echo "endif" >> apps.mk
 	@echo "endif" >> apps.mk
 
-#	@echo 'else' >> $(@)
-#	@echo '  CFLAGS += -I/usr/include/GL' >> $(@)
-#	@echo 'endif' >> $(@)
+	@echo "CFLAGS += -I../jump -I../hpa -I../rsr -I../abstraction -I../driver -I../shared -I../simulation -I../util" >> apps.mk
+
 	@echo >> $(@)
 	@echo 'ABSTRACTION_SRC = $(value DLR)(wildcard ../abstraction/*.cpp)' >> $(@)
 	@echo 'DRIVER_SRC = $(value DLR)(wildcard ../driver/*.cpp)' >> $(@)

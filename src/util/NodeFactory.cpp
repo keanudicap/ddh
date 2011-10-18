@@ -21,3 +21,4 @@ node* NodeFactory::newNode(const node* _n) throw(std::invalid_argument)
 	node* n = new node(_n);
 	return n;
 }
+
