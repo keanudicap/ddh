@@ -58,6 +58,7 @@ pRecContext getCurrentContext()
 
 void cleanup (void)
 {
+	return; // ignore this for now. let the OS clean things up
 	delete pContextInfo->unitLayer;
 	delete pContextInfo;
 	assert(graph_object::gobjCount == 0);

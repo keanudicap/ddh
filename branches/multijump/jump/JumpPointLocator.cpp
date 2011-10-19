@@ -10,6 +10,7 @@ JumpPointLocator::JumpPointLocator(mapAbstraction* _map)
 
 JumpPointLocator::~JumpPointLocator()
 {
+	fringe.clear();
 }
 
 // Computes the set of directions (both forced and natural) in which to search 
@@ -238,4 +239,18 @@ JumpPointLocator::computeForced(Jump::Direction d, int x, int y)
 		}
 	}
 	return retVal;
+}
+
+unsigned int
+JumpPointLocator::numFringeNodes()
+{
+	return fringe.size();
+}
+
+node*
+JumpPointLocator::getFringeNode(unsigned int index)
+{
+	if(index < fringe.size())
+		return fringe.at(index);
+	return 0;
 }

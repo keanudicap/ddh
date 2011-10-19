@@ -95,9 +95,9 @@ void MapLineAbstraction::addNodes(graph *g)
 {
 	int count = abstractions.back()->getNumNodes();
 	//printf("Initial count: %d\n", count);
-	int xstep = pow(lineDistance,((abstractions.size()+1)/2));
-	int ystep = pow(lineDistance,((abstractions.size())/2));
-	int zstep = pow(lineDistance,((abstractions.size()-1)/2));
+	int xstep = (int)pow(lineDistance,((abstractions.size()+1)/2));
+	int ystep = (int)pow(lineDistance,((abstractions.size())/2));
+	int zstep = (int)pow(lineDistance,((abstractions.size()-1)/2));
 	graph *toAbstract = abstractions.back();
 	//printf("Size: %d.[%d] XStep: %d, YStep: %d, ZStep %d\n", abstractions.size(), lineDistance, xstep, ystep, zstep);
 
