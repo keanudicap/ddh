@@ -11,9 +11,10 @@
 // 	- OfflineJumpPointLocator
 //
 // @author: dharabor
-// @created: 
+// @created: 7/06/2011
 
 #include "Jump.h"
+#include <vector>
 
 class node;
 class mapAbstraction;
@@ -30,10 +31,16 @@ class JumpPointLocator
 		int computeNatural(Jump::Direction d, int x, int y);
 		int computeForced(Jump::Direction d, int x, int y);
 
+		// fringe nodes are forced neighbours or jump point successors
+		// of the node last returned by findJumpNode.
+		unsigned int numFringeNodes();
+		node* getFringeNode(unsigned int index);
+
 		inline int getLimit() { return jumplimit; }
 		inline void setLimit(int lim) { jumplimit = lim; }
 
 	protected:
+		std::vector<node*> fringe;
 		mapAbstraction* map;
 		int jumplimit; // max # of steps to take before giving up (default=inf)
 };
