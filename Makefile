@@ -46,7 +46,7 @@ ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
   SYS_CFLAGS += -I/System/Library/Frameworks/AGL.framework/Versions/A/Headers/
   SYS_CFLAGS += -I/System/Library/Frameworks/Foundation.framework/Versions/A/Headers/
   SYS_CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/
-  LIBFLAGS = -framework GLUT -framework OpenGL -framework AppKit -framework Foundation
+  LIBFLAGS = -Lapps/libs -framework GLUT -framework OpenGL -framework AppKit -framework Foundation
 else # Cygwin/Windows
 ifeq ("$(findstring CYGWIN, $(shell uname -s))", "CYGWIN")
   SYS_CFLAGS = -Dlinux -I/usr/include/opengl
