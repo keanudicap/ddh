@@ -1,7 +1,7 @@
-#ifndef JUMPPOINTSEXPANSIONPOLICY_H
-#define JUMPPOINTSEXPANSIONPOLICY_H
+#ifndef JUMPPOINTEXPANSIONPOLICY_H
+#define JUMPPOINTEXPANSIONPOLICY_H
 
-// JumpPointsExpansionPolicy.h
+// JumpPointExpansionPolicy.h
 //
 // This expansion policy reduces the branching factor
 // of a node n during search by ignoring any neighbours which
@@ -24,12 +24,12 @@
 #include <stdexcept>
 
 class JumpPointLocator;
-class JumpPointsExpansionPolicy : public ExpansionPolicy
+class JumpPointExpansionPolicy : public ExpansionPolicy
 {
 
 	public:
-		JumpPointsExpansionPolicy(JumpPointLocator* jpl);
-		virtual ~JumpPointsExpansionPolicy();
+		JumpPointExpansionPolicy(JumpPointLocator* jpl);
+		virtual ~JumpPointExpansionPolicy();
 
 		virtual void expand(node* t) throw(std::logic_error);
 		virtual node* first();
