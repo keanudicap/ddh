@@ -30,6 +30,8 @@ class JumpPointLocator
 		int computeSuccessors(Jump::Direction d, int x, int y);
 		int computeNatural(Jump::Direction d, int x, int y);
 		int computeForced(Jump::Direction d, int x, int y);
+		unsigned int numForcedNeighbours();
+		node* getForcedNeighbour(unsigned int i);
 
 		// fringe nodes are forced neighbours or jump point successors
 		// of the node last returned by findJumpNode.

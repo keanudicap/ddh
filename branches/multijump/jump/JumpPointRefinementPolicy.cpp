@@ -1,7 +1,7 @@
 #include "JumpPointRefinementPolicy.h"
 
 #include "graph.h"
-#include "JumpPointsExpansionPolicy.h"
+#include "JumpPointExpansionPolicy.h"
 #include "mapAbstraction.h"
 #include "OnlineJumpPointLocator.h"
 #include "OctileDistanceRefinementPolicy.h"

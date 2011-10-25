@@ -43,7 +43,7 @@
 #include "hog.h"
 #include "IncidentEdgesExpansionPolicy.h"
 #include "JumpPointAbstraction.h"
-#include "JumpPointsExpansionPolicy.h"
+#include "JumpPointExpansionPolicy.h"
 #include "JumpPointRefinementPolicy.h"
 #include "mapFlatAbstraction.h"
 #include "MacroNodeFactory.h"
@@ -935,7 +935,7 @@ newExpansionPolicy(mapAbstraction* map)
 		}
 		case HOG::FLATJUMP:
 		{
-			policy = new JumpPointsExpansionPolicy(
+			policy = new JumpPointExpansionPolicy(
 					new OnlineJumpPointLocator(map));
 			break;
 		}
@@ -943,7 +943,7 @@ newExpansionPolicy(mapAbstraction* map)
 		{
 			JumpPointAbstraction* _map = 
 				dynamic_cast<JumpPointAbstraction*>(map);
-			policy = new JumpPointsExpansionPolicy(
+			policy = new JumpPointExpansionPolicy(
 					new OfflineJumpPointLocator(_map));
 			break;
 		}
