@@ -10,6 +10,7 @@
 // @created: 17/03/2011
 //
 
+class node;
 namespace Jump
 {
 	typedef enum 
@@ -24,6 +25,8 @@ namespace Jump
 		SE = 64, 
 		SW = 128
 	} Direction;
+
+	Jump::Direction computeDirection(node* cur, node* succ);
 }
 
 #endif
