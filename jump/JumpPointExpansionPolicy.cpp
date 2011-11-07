@@ -93,10 +93,13 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 	int x = target->getLabelL(kFirstData);
 	int y = target->getLabelL(kFirstData+1);
 
-	Jump::Direction which = directionToParent();
+	// Compute the direction of travel used to reach the current node.
+	// We look for successors in this same direction as well as in the direction of
+	// any forced neighbours.
+	Jump::Direction which = Jump::computeDirection(target->backpointer, target);
 	switch(which)
 	{
-		case Jump::N:
+		case Jump::S:
 		{
 			node* n = findJumpNode(Jump::S, x, y);
 			if(n)
@@ -119,7 +122,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::NE:
+		case Jump::SW:
 		{
 			node* n = findJumpNode(Jump::SW, x, y);
 			if(n)
@@ -151,7 +154,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::E:
+		case Jump::W:
 		{
 			node* n = findJumpNode(Jump::W, x, y);
 			if(n)
@@ -174,7 +177,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::SE:
+		case Jump::NW:
 		{
 			node* n = findJumpNode(Jump::NW, x, y); 
 			if(n)
@@ -206,7 +209,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::S:
+		case Jump::N:
 		{
 			node* n = findJumpNode(Jump::N, x, y);
 			if(n)
@@ -229,7 +232,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::SW:
+		case Jump::NE:
 		{
 			node* n = findJumpNode(Jump::NE, x, y); 
 			if(n)
@@ -261,7 +264,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::W:
+		case Jump::E:
 		{
 			node* n = findJumpNode(Jump::E, x, y);
 			if(n)
@@ -284,7 +287,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			break;
 		}
 
-		case Jump::NW:
+		case Jump::SE:
 		{
 			node* n = findJumpNode(Jump::SE, x, y);
 			if(n)
@@ -405,51 +408,6 @@ JumpPointExpansionPolicy::hasNext()
 }
 
 
-// direction from the target (=node being expanded) to its parent
-Jump::Direction 
-JumpPointExpansionPolicy::directionToParent()
-{
-	node* parent = target->backpointer;	
-	if(!parent)
-		return Jump::NONE;
-
-	int x = target->getLabelL(kFirstData);
-	int y = target->getLabelL(kFirstData+1);
-	int px = parent->getLabelL(kFirstData);
-	int py = parent->getLabelL(kFirstData+1);
-	
-	if(py == y)
-	{
-		if(px > x)
-			return Jump::E;
-		else
-			return Jump::W;
-	}
-
-	if(py < y)
-	{
-		if(px < x)
-			return Jump::NW;
-		else if(px > x)
-			return Jump::NE;
-		else
-			return Jump::N;
-
-	}
-
-	if(py > y)
-	{
-		if(px < x)
-			return Jump::SW;
-		else if(px > x)
-			return Jump::SE;
-		else
-			return Jump::S;
-	}
-
-	throw std::logic_error("JumpPointExpansionPolicy::directionToParent"
-			" failed to determine direction to parent!");
-}
 
 // Finds the nearest jump node neighbour (if any) for the target node
 // in a given direction.

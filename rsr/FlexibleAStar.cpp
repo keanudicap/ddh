@@ -247,7 +247,8 @@ FlexibleAStar::relaxNode(node* from, node* to, node* goal, double cost,
 	double g_from = from->getLabelF(kTemporaryLabel) - heuristic->h(from, goal);
 	double f_to = g_from + cost + heuristic->h(to, goal);
 	
-	if(fless(f_to, to->getLabelF(kTemporaryLabel)))
+	if(!fequal(f_to, to->getLabelF(kTemporaryLabel)) &&
+			fless(f_to, to->getLabelF(kTemporaryLabel)))
 	{
 		to->setLabelF(kTemporaryLabel, f_to);
 		to->backpointer = from;
