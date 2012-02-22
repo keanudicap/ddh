@@ -55,6 +55,8 @@
 #include "OctileHeuristic.h"
 #include "OfflineJumpPointLocator.h"
 #include "OnlineJumpPointLocator.h"
+#include "RecursiveJumpPointExpansionPolicy.h"
+#include "RecursiveJumpPointRefinementPolicy.h"
 #include "RRExpansionPolicy.h"
 #include "ScenarioManager.h"
 #include "searchUnit.h"
@@ -207,6 +209,9 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 		case HOG::FLATJUMP:
 			std::cout << "FLATJUMP";
+			break;
+		case HOG::MULTIJUMP:
+			std::cout << "MULTIJUMP";
 			break;
 		case HOG::JPA:
 			std::cout << "JPA";
@@ -612,6 +617,11 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 			argsParsed++;
 			absType = HOG::FLATJUMP;
 		}
+		else if(strcmp(argument[1], "multijump") == 0)
+		{
+			argsParsed++;
+			absType = HOG::MULTIJUMP;
+		}
 		else if(strcmp(argument[1], "jpa") == 0)
 		{
 			argsParsed++;
@@ -939,6 +949,12 @@ newExpansionPolicy(mapAbstraction* map)
 					new OnlineJumpPointLocator(map));
 			break;
 		}
+		case HOG::MULTIJUMP:
+		{
+			policy = new RecursiveJumpPointExpansionPolicy(
+						new OnlineJumpPointLocator(map));
+			break;
+		}
 		case HOG::JPA:
 		{
 			JumpPointAbstraction* _map = 
@@ -1012,6 +1028,19 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 			alg->verbose = verbose;
 			break;
 		}
+
+		case HOG::MULTIJUMP:
+		{
+			alg = new HierarchicalSearch(new NoInsertionPolicy(),
+						new FlexibleAStar(
+							newExpansionPolicy(aMap),			
+							newHeuristic()),
+							newRefinementPolicy(aMap, refineAbsPath));
+			((HierarchicalSearch*)alg)->setName("RJPS");
+			alg->verbose = verbose;
+			break;
+		}
+
 		case HOG::JPA:
 		{
 			alg = new HierarchicalSearch(new NoInsertionPolicy(),
@@ -1053,6 +1082,7 @@ newRefinementPolicy(mapAbstraction* map, bool refine)
 		}
 
 		case HOG::FLATJUMP:
+		case HOG::MULTIJUMP:
 		case HOG::JPA:
 		{
 			refPol = new OctileDistanceRefinementPolicy(map);
