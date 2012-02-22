@@ -9,10 +9,9 @@
 #include "path.h"
 #include "timer.h"
 
-DefaultRefinementPolicy::DefaultRefinementPolicy(mapAbstraction* _map)
-		: RefinementPolicy(_map)
+DefaultRefinementPolicy::DefaultRefinementPolicy(mapAbstraction* map)
+		: RefinementPolicy(), map_(map), verbose(false)
 {
-	verbose = false;
 }
 
 DefaultRefinementPolicy::~DefaultRefinementPolicy()
@@ -30,7 +29,7 @@ path*
 DefaultRefinementPolicy::refine(path* abspath)
 {
 	ReverseClusterFilter *cf = new ReverseClusterFilter();
-	IncidentEdgesExpansionPolicy* policy = new IncidentEdgesExpansionPolicy(map);
+	IncidentEdgesExpansionPolicy* policy = new IncidentEdgesExpansionPolicy(map_);
 	policy->addFilter(cf);
 	FlexibleAStar *astar = new FlexibleAStar(policy, new OctileHeuristic());
 	astar->verbose = false; 
@@ -39,7 +38,7 @@ DefaultRefinementPolicy::refine(path* abspath)
 	Timer t;
 	t.startTimer();
 	//std::cout << "refining path: \n";
-	//DebugUtility debuug(map, astar->getHeuristic());
+	//DebugUtility debuug(map_, astar->getHeuristic());
 	//debuug.printPath(abspath); 
 	//std::cout << std::endl;
 	if(abspath == 0)
@@ -49,10 +48,10 @@ DefaultRefinementPolicy::refine(path* abspath)
 	path* tail = 0;
 	for(path* current = abspath; current->next != 0; current = current->next)
 	{
-		node* start = map->getNodeFromMap(
+		node* start = map_->getNodeFromMap(
 				current->n->getLabelL(kFirstData), 
 				current->n->getLabelL(kFirstData+1));
-		node* goal =  map->getNodeFromMap(
+		node* goal =  map_->getNodeFromMap(
 				current->next->n->getLabelL(kFirstData), 
 				current->next->n->getLabelL(kFirstData+1));
 
@@ -70,7 +69,7 @@ DefaultRefinementPolicy::refine(path* abspath)
 				cf->addTargetCluster(parentClusterId);
 		}
 
-		path* segment = astar->getPath(map, start, goal); 
+		path* segment = astar->getPath(map_, start, goal); 
 
 		nodesExpanded += astar->getNodesExpanded();
 		nodesTouched += astar->getNodesTouched();
@@ -79,9 +78,9 @@ DefaultRefinementPolicy::refine(path* abspath)
 		if(verbose) 
 		{
 			std::cout << "refined segment: "<<std::endl; 
-			DebugUtility debug(map, astar->getHeuristic());
+			DebugUtility debug(map_, astar->getHeuristic());
 			debug.printPath(segment); 
-			std::cout << " distance: "<<map->distance(segment)<<std::endl; 
+			std::cout << " distance: "<<map_->distance(segment)<<std::endl; 
 		}
 
 		// append segment to refined path

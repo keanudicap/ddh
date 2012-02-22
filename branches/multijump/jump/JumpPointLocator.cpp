@@ -35,18 +35,7 @@ JumpPointLocator::computeSuccessors(Jump::Direction d, int x, int y)
 //
 // @return an integer representing the set of natural directions.
 // Each of the first 8 bits of the returned value corresponds to a direction, as
-// described in the following table:
-//
-//	Bit: Direction
-//	---------------
-//	1: Jump::N
-//	2: Jump::S
-//	3: Jump::E
-//	4: Jump::W
-//	5: Jump::NE
-//	6: Jump::NW
-//	7: Jump::NE
-//	8: Jump::SW
+// defined in Jump::Direction
 int
 JumpPointLocator::computeNatural(Jump::Direction d, int x, int y)
 {
@@ -127,19 +116,9 @@ JumpPointLocator::computeNatural(Jump::Direction d, int x, int y)
 // @param y: y-coordinate of the current location
 //
 // @return an integer representing the set of forced directions.
-// Each of the first 8 bits of the returned value corresponds to a direction, as
-// described in the following table:
+// Each of the first 8 bits of the returned value, when set, correspond to a direction, 
+// as defined in Jump::Direction
 //
-//	Bit: Direction
-//	---------------
-//	1: Jump::N
-//	2: Jump::S
-//	3: Jump::E
-//	4: Jump::W
-//	5: Jump::NE
-//	6: Jump::NW
-//	7: Jump::NE
-//	8: Jump::SW
 int
 JumpPointLocator::computeForced(Jump::Direction d, int x, int y)
 {

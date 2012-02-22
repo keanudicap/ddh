@@ -70,3 +70,11 @@ IncidentEdgesExpansionPolicy::cost_to_n()
 	edge* e = target->getEdge(which);
 	return e->getWeight();
 }
+
+void
+IncidentEdgesExpansionPolicy::label_n()
+{
+	node* tmp = this->n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}

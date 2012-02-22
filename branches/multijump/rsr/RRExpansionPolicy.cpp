@@ -121,3 +121,12 @@ double RRExpansionPolicy::cost_to_n()
 {
 	return cost;	
 }
+
+void
+RRExpansionPolicy::label_n()
+{
+	node* tmp = n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}
+

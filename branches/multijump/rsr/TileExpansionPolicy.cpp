@@ -45,4 +45,11 @@ node* TileExpansionPolicy::n()
 }
 
 
+void TileExpansionPolicy::label_n()
+{
+
+	node* tmp = this->n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}
 

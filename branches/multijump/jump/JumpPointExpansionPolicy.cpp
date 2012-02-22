@@ -421,3 +421,10 @@ JumpPointExpansionPolicy::findJumpNode(Jump::Direction d, int x, int y)
 	return jpl->findJumpNode(d, x, y, goalx, goaly);
 }
 
+void
+JumpPointExpansionPolicy::label_n()
+{
+	node* tmp = this->n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}
