@@ -126,7 +126,17 @@ double FCRRExpansionPolicy::cost_to_n() const
 	return 0;
 }
 
-bool FCRRExpansionPolicy::hasNext()
+bool 
+FCRRExpansionPolicy::hasNext()
 {
 	return false;
 }
+
+void FCRRExpansionPolicy::label_n()
+{
+
+	node* tmp = this->n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}
+

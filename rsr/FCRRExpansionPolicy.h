@@ -29,6 +29,7 @@ class FCRRExpansionPolicy : public ExpansionPolicy
 		virtual node* first(); 
 		virtual node* next();
 		virtual bool hasNext();
+		virtual void label_n();
 
 	private:
 		int which_macro;

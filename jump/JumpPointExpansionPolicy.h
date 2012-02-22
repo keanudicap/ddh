@@ -37,6 +37,7 @@ class JumpPointExpansionPolicy : public ExpansionPolicy
 		virtual node* n();
 		virtual double cost_to_n();
 		virtual bool hasNext();
+		virtual void label_n();
 
 		int jumplimit; 
 

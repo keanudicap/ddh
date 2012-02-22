@@ -2,7 +2,7 @@
 
 #include "path.h"
 
-NoRefinementPolicy::NoRefinementPolicy() : RefinementPolicy(0)
+NoRefinementPolicy::NoRefinementPolicy() : RefinementPolicy()
 {
 }
 

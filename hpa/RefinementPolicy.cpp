@@ -2,9 +2,8 @@
 
 #include "mapAbstraction.h"
 
-RefinementPolicy::RefinementPolicy(mapAbstraction* _map)
+RefinementPolicy::RefinementPolicy()
 {
-	map = _map;
 	verbose = false;
 }
 
