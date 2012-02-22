@@ -10,7 +10,7 @@
 #include <cstdlib>
 
 JumpPointRefinementPolicy::JumpPointRefinementPolicy(mapAbstraction* _map,
-		int _maxdepth) : RefinementPolicy(_map)
+		int _maxdepth) : RefinementPolicy(), map(_map), maxdepth(_maxdepth)
 {
 	this->jpl = new OnlineJumpPointLocator(_map);
 	this->maxdepth = _maxdepth;
