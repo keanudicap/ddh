@@ -537,10 +537,11 @@ initializeHandlers()
 			"(default = false)");
 
 	installCommandLineHandler(myAllPurposeCLHandler, "-abs", 
-			"-abs [flat | flatjump | hpa | err | err_pr | err_bfr | err_pr_bfr]", 
+			"-abs [flat | flatjump | multijump | hpa | err | err_pr | err_bfr | err_pr_bfr]", 
 			"Abstraction Type:\n"
 			"\tflat = no abstraction (default)\n"
 			"\tflatjump = like flat but use jump points to speed search\n"
+			"\tmultijump = recursive flatjump (default depth=3) \n"
 			"\thpa = hpa cluster abstraction (cluster size = 10x10)\n"
 			"\terr = empty rectangular rooms abstraction\n"
 			"\terr_pr = err with perimeter reduction\n"
