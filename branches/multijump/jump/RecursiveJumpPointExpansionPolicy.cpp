@@ -1,5 +1,6 @@
 #include "RecursiveJumpPointExpansionPolicy.h"
 
+#include "JumpInfo.h"
 #include "JumpPointLocator.h"
 #include "fpUtil.h"
 #include "Heuristic.h"
@@ -8,46 +9,11 @@
 
 #include <limits.h>
 
-RecursiveJumpPointExpansionPolicy::JumpParams::JumpParams() : 
-	origin(0), first_dir(Jump::NONE), last_dir(Jump::NONE), succ(0),
-	jumpcost(0), depth(0)
-{ 
-}
-
-RecursiveJumpPointExpansionPolicy::JumpParams::~JumpParams()  
-{ 
-}
-
-RecursiveJumpPointExpansionPolicy::JumpParams::JumpParams(
-		JumpParams& other)
-{
-	this->origin = other.origin;
-	this->first_dir = other.first_dir;
-	this->last_dir = other.last_dir;
-	this->succ = other.succ;
-	this->jumpcost = other.jumpcost;
-	this->depth = other.depth;
-}
-
 RecursiveJumpPointExpansionPolicy::RecursiveJumpPointExpansionPolicy(
-		JumpPointLocator* _jpl) : ExpansionPolicy()
-{
-	neighbourIndex = 0;
-	jpl = _jpl; 
+		JumpPointLocator* _jpl, unsigned int _maxdepth) 
+	: ExpansionPolicy(), neighbourIndex(0), jpl(_jpl), MAX_DEPTH(_maxdepth) 
 
-	// some values to limit recursion
-	MAX_NEIS = 8;
-	MAX_DEPTH = 3;
-	MAX_NODES = pow(MAX_NEIS, MAX_DEPTH);
-	ONE_OVER_MAX_NEIS = 1/((double)MAX_NEIS);
-	
-	// all_dirs is an array of bitfields packed as follows:
-	// 0-7: the set of directions in which to search for jump point successors.
-	// 8-15: the set of directions in which a jump point successor was found.
-	// 16-23: travel direction (immediately preceeding jump point to here).
-	all_dirs = new int[MAX_NODES]; 
-	all_nodes = new node*[MAX_NODES]; // all nodes up to depth [MAX_DEPTH]
-	all_costs = new double[MAX_NODES]; // gcosts to all nodes
+{
 }
 
 RecursiveJumpPointExpansionPolicy::~RecursiveJumpPointExpansionPolicy()
@@ -57,9 +23,6 @@ RecursiveJumpPointExpansionPolicy::~RecursiveJumpPointExpansionPolicy()
 		delete neighbours.at(i);
 	}
 	neighbours.clear();
-	delete all_dirs;
-	delete all_nodes;
-	delete all_costs;
 	delete jpl;
 }
 
@@ -108,252 +71,252 @@ RecursiveJumpPointExpansionPolicy::computeNeighbourSet()
 	{
 		case Jump::S:
 		{
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			// add SE neighbour only if E neighbour is null 
 			if(!map->getNodeFromMap(x+1, y))
 			{
 				which = Jump::SE;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			// add SW neighbour only if W neighbour is null
 			if(!map->getNodeFromMap(x-1, y))
 			{
 				which = Jump::SW;	
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::SW:
 		{
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::S;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::W;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			// add NW neighbour only if N neighbour is null
 			if(!map->getNodeFromMap(x, y-1))
 			{
 				which = Jump::NW;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 
 			// add SE neighbour only if E neighbour is null
 			if(!map->getNodeFromMap(x+1, y))
 			{
 				which = Jump::SE;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::W:
 		{
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 		 	// add NW neighbour only if N neighbour is null	
 			if(!map->getNodeFromMap(x, y-1))
 			{
 				which = Jump::NW;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			// add SW neighbour only if S neighbour is null
 			if(!map->getNodeFromMap(x, y+1))
 			{
 				which = Jump::SW;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::NW:
 		{
-			JumpParams params;
-			findJumpNode(which, params); 
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result); 
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::N;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::W;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			// add SW neighbour only if S neighbour is null
 			if(!map->getNodeFromMap(x, y+1))
 			{
 				which = Jump::SW;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 
 			// add NE neighbour only if E neighbour is null
 			if(!map->getNodeFromMap(x+1, y))
 			{
 				which = Jump::NE;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::N:
 		{
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			// add NE neighbour only if E neighbour is null 
 			if(!map->getNodeFromMap(x+1, y))
 			{
 				which = Jump::NE;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			// add NW neighbour only if W neighbour is null
 			if(!map->getNodeFromMap(x-1, y))
 			{
 				which = Jump::NW;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::NE:
 		{
-			JumpParams params;
-			findJumpNode(which, params); 
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result); 
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::N;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::E;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			// add SE neighbour only if S neighbour is null
 			if(!map->getNodeFromMap(x, y+1))
 			{
 				which = Jump::SE;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 
 			// add NW neighbour only if W neighbour is null
 			if(!map->getNodeFromMap(x-1, y))
 			{
 				which = Jump::NW;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::E:
 		{
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 		 	// add NE neighbour only if N neighbour is null 
 			if(!map->getNodeFromMap(x, y-1))
 			{
 				which = Jump::NE;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			// add SE neighbour only if S neighbour is null
 			if(!map->getNodeFromMap(x, y+1))
 			{
 				which = Jump::SE;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
 
 		case Jump::SE:
 		{
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::S;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::E;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			// add NE neighbour only if N neighbour is null
 			if(!map->getNodeFromMap(x, y-1))
 			{
 				which = Jump::NE;
-				findJumpNode(which, params); 
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result); 
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 
 			// add SW neighbour only if W neighbour is null
 			if(!map->getNodeFromMap(x-1, y))
 			{
 				which = Jump::SW;
-				findJumpNode(which, params);
-				if(params.succ)
-					addNeighbour(params);
+				findJumpNode(which, result);
+				if(result.nodecount() > 0)
+					addNeighbour(result);
 			}
 			break;
 		}
@@ -362,45 +325,45 @@ RecursiveJumpPointExpansionPolicy::computeNeighbourSet()
 			// when a node has no parent (usually only the start node)
 			// we generate jump point successors in every traversable direction
 			which = Jump::N;
-			JumpParams params;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			JumpInfo result;
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::S;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::E;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::W;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::NE;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::NW;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::SE;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 
 			which = Jump::SW;
-			findJumpNode(which, params);
-			if(params.succ)
-				addNeighbour(params);
+			findJumpNode(which, result);
+			if(result.nodecount() > 0)
+				addNeighbour(result);
 		}
 	}
 }
@@ -425,10 +388,11 @@ RecursiveJumpPointExpansionPolicy::next()
 node* 
 RecursiveJumpPointExpansionPolicy::n()
 {
-	unsigned int numNeighbours = neighbours.size();
-	if(neighbourIndex < numNeighbours)
+	node* n_ = 0;
+	if(neighbourIndex < neighbours.size())
 	{
-		n_ = neighbours.at(neighbourIndex)->succ;
+		JumpInfo* info = neighbours.at(neighbourIndex);
+		n_ = info->getNode(info->nodecount() - 1);
 		assert(n_);
 	}
 	else
@@ -444,7 +408,8 @@ RecursiveJumpPointExpansionPolicy::cost_to_n()
 	double retVal = DBL_MAX;
 	if(neighbourIndex < neighbours.size())
 	{
-		retVal = neighbours.at(neighbourIndex)->jumpcost;
+		JumpInfo* info = neighbours.at(neighbourIndex);
+		retVal = info->getCost(info->nodecount() - 1);
 	}
 	return retVal;
 }
@@ -481,212 +446,175 @@ RecursiveJumpPointExpansionPolicy::hasNext()
 // node successor of ::target (if any such node was found).
 //
 void
-RecursiveJumpPointExpansionPolicy::findJumpNode(Jump::Direction dir, JumpParams& out)
+RecursiveJumpPointExpansionPolicy::findJumpNode(
+		Jump::Direction dir, JumpInfo& out)
 {
-	// initialise the return value
-	out.origin = this->target;
-	out.first_dir = dir;
-	out.last_dir = dir;
-	out.jumpcost = 0;
-	out.succ = 0;
-	out.depth = 0;
-
-	// can't jump past the goal node
-	if(this->target->getUniqueID() == 
-			problem->getGoalNode()->getUniqueID())
-		return;
-
-	// clear all junk from last time
-	for(int i=0; i < MAX_NODES; i++)
-	{
-		all_nodes[i] = 0;
-		all_dirs[i] = 0;
-		all_costs[i] = DBL_MAX;
-	}
-
-	// generate the root node
-	all_nodes[0] = this->target;
-	if(MAX_DEPTH > 0)
-	{
-		all_dirs[0] = jpl->computeSuccessors(dir, 
-				this->target->getLabelL(kFirstData), 
-				this->target->getLabelL(kFirstData+1));
-	}
-	all_dirs[0] |= (dir << 16);
-
-	// perform a depth-limited search to identify the first branching jump point
-	// after ::target in travel direction 'dir'
+	// jump in the given direction
+	node* from = this->target;
 	node* goal = problem->getGoalNode();
+	int fromx = from->getLabelL(kFirstData);
+	int fromy = from->getLabelL(kFirstData+1);
 	int goalx = goal->getLabelL(kFirstData);
 	int goaly = goal->getLabelL(kFirstData+1);
 	int goalid = goal->getUniqueID();
-	int cindex = 0;
-	int depth = 0; 
-	while(all_dirs[0] & 255) // while root has unexplored subtrees
+	node* succ = jpl->findJumpNode(dir, fromx, fromy, goalx, goaly);
+
+	if(!succ)
 	{
-		assert(depth >= 0);
-		assert(current);
-		node* current = all_nodes[cindex];
-
-		// backtrack; maximum depth reached or goal node reached
-		if( depth == this->MAX_DEPTH || 
-			current->getUniqueID() == goalid)
-		{
-			// add this node to the list of found jump points for the parent.
-			int pindex = ((cindex-1)*ONE_OVER_MAX_NEIS); 
-			int travel_dir = all_dirs[cindex] >> 16;
-			all_dirs[pindex] |= (travel_dir << 8);
-			assert( !(travel_dir & (travel_dir-1)) );  // single direction only
-
-			cindex = pindex;
-			depth--;
-			continue;
-		}
-
-		// count number of jump point successors reached from the current node
-		// (pointless exploring subtree further if branching factor > 1)
-		int num_found = 0;
-		const int found_dirs = (all_dirs[cindex] >>8) & 255;
-		if(found_dirs)
-		{
-			for(int i=1; i < 256; i = i << 1)
-			{
-				if(i & found_dirs)
-					num_found++;
-			}
-		}
-
-		// backtrack; explored the entire subtree or reached a branching node 
-		if(!(all_dirs[cindex] & 255) || num_found > 1)
-		{
-			// if we found a jump point in the subtree, add this node as
-			// a jump point of the parent
-			int pindex = ((cindex-1)*ONE_OVER_MAX_NEIS); 
-			int travel_dir = all_dirs[cindex] >> 16;
-			assert( !(travel_dir & (travel_dir-1)) );  // single direction only
-			if(found_dirs)
-			{
-				all_dirs[pindex] |= (travel_dir << 8);
-			}
-
-			cindex = pindex;
-			depth--;
-			continue;
-		}
-
-		// branch; search for jump points reachable from the current node
-		int search_dirs = all_dirs[cindex] & 255;
-		int nextdir = 1;
-		int next_index = 0;
-		node* next = 0;
-		while(search_dirs && !next)
-		{
-			// get one of the remaining search directions
-			if(nextdir & search_dirs)
-			{
-				int offset = -1;
-				if(nextdir == Jump::N)
-					offset = 0;
-				else if(nextdir == Jump::S)
-					offset = 1;
-				else if(nextdir == Jump::E)
-					offset = 2;
-				else if(nextdir == Jump::W)
-					offset = 3;
-				else if(nextdir == Jump::NE)
-					offset = 4;
-				else if(nextdir == Jump::SE)
-					offset = 5;
-				else if(nextdir == Jump::SW)
-					offset = 6;
-				else if(nextdir == Jump::NW)
-					offset = 7;
-				assert(offset != -1);
-
-				// try to find a jump point
-				int cx = current->getLabelL(kFirstData);
-				int cy = current->getLabelL(kFirstData+1);	
-				next = jpl->findJumpNode((Jump::Direction)nextdir, cx, cy, goalx, goaly);
-				next_index = cindex*MAX_NEIS + offset + 1;
-				assert(!all_nodes[next_index]);
-				all_nodes[next_index] = next;
-
-				// remove nextdir from remaining search directions
-				all_dirs[cindex] &= !nextdir; 
-			}
-			nextdir  = nextdir << 1;
-		}
-
-		// branch; found a jump point successor
-		if(next)
-		{
-			// record travel direction to new successor
-			all_dirs[next_index] = nextdir << 16;
-
-			// record directions to successor's forced and natural neighbours
-			all_dirs[next_index] |= jpl->computeSuccessors((Jump::Direction)nextdir,
-					next->getLabelL(kFirstData),
-					next->getLabelL(kFirstData+1));
-
-			cindex = next_index;
-			depth++;
-		}
+		// terminate; no jump point in direction @param dir
+		out.clear();
+		return;
+	}
+	else
+	{
+		// record some details about this latest jump
+		out.addJump(succ, dir, problem->getHeuristic()->h(from, succ));
 	}
 
-	// extract a path from the root to the first node with > 1 found_dirs
-	cindex  = 0;
-	node* succ = 0;
-	double cost = 0;
-	int found_dirs = (all_dirs[cindex] >> 8) & 255;
-	while(found_dirs)
+	// determine if succ is a branching node or if it can be jumped over
+	JumpInfo* branch = findBranchingNode(succ, dir, 0);
+
+	if(!branch)
 	{
-		// found_dirs represents only a single successor; jump further
-		if(!(found_dirs & (found_dirs-1))) 
+		// all nodes after succ lead to dead-ends; don't bother to generate it
+		out.clear();
+		return;
+	}
+
+	while(branch)
+	{
+		if(branch->nodecount() == 1)
 		{
-			int offset = -1;
-			if(found_dirs == Jump::N)
-				offset = 0;
-			else if(found_dirs == Jump::S)
-				offset = 1;
-			else if(found_dirs == Jump::E)
-				offset = 2;
-			else if(found_dirs == Jump::W)
-				offset = 3;
-			else if(found_dirs == Jump::NE)
-				offset = 4;
-			else if(found_dirs == Jump::SE)
-				offset = 5;
-			else if(found_dirs == Jump::SW)
-				offset = 6;
-			else if(found_dirs == Jump::NW)
-				offset = 7;
-			assert(offset != -1);
-			int next_index = cindex*MAX_NEIS + offset + 1;
-			cost += problem->getHeuristic()->h(
-					all_nodes[cindex], all_nodes[next_index]);
-			cindex = next_index;
-			found_dirs = (all_dirs[cindex] >> 8) & 255;
-		}
-		// found_dirs represents multiple successors; stop here
-		else
-		{
-			succ = all_nodes[cindex];
+			// can't jump further; last jump point was a branching node
 			break;
 		}
+		else
+		{
+			// last jump point was not a branching node;
+			// store the intermediate nodes we jumped-over to reach it 
+			// NB: start at index 1 to avoid duplicates b/w out and branch
+			for(int i=1; i < branch->nodecount(); i++)
+			{
+				out.addJump( branch->getNode(i), branch->getDirection(i),
+							 branch->getCost(i) );
+			}
+		}
+
+		// keep jumping only if all of the following conditions are met:
+		// 	1. maxdepth > 0
+		// 	2. we hit the depth limit on the way to the last branching node
+		// 	3. the last branching node is not the goal 
+		int idx_last = branch->nodecount() - 1;
+		node* last_node = branch->getNode(idx_last);
+		Jump::Direction last_dir = branch->getDirection(idx_last);
+		if(		this->MAX_DEPTH > 0 && 
+				branch->edgecount() == this->MAX_DEPTH && 
+				&*(last_node) != &*(problem->getGoalNode())	)
+		{
+			delete branch;
+			branch = findBranchingNode(last_node, last_dir, 0);	
+		}
 	}
 
-	if(succ)
+	delete branch;
+}
+
+// Performs a limited depth-first search for jump points with a branching
+// factor > 1. 
+//
+// NB: If the depth limit is reached, the node at maximum depth is taken to
+// be a branching node. Further, the goal node is always considered a
+// branching node (we do not want to jump past it. ever.)
+//
+// @param from: the jump point at the root of the search. 
+// @param last_dir: the last direction of travel taken to reach @param from
+// @param depth: the maximum depth to recurse to. 
+//
+// @return a JumpInfo description of any branching nodes found and null if no
+// such node could be found.
+JumpInfo*
+RecursiveJumpPointExpansionPolicy::findBranchingNode(
+		node* from, Jump::Direction last_dir, unsigned int depth)
+{
+	if(!from)
+		return 0;
+
+	// @param from is designated a branching node if we reach
+	// maximum recursion depth
+	if(depth >= this->MAX_DEPTH)
 	{
-		out.origin = this->target;
-		out.first_dir = dir;
-		out.last_dir = (Jump::Direction)(all_dirs[cindex] >> 16);
-		out.jumpcost = cost;
-		out.depth = depth;
-		assert(!(out.last_dir & (out.last_dir-1)) && out.last_dir < 256);
+		JumpInfo* branch = new JumpInfo();
+		branch->addJump(from, last_dir, 0);
+		return branch;
 	}
 	
-	return;
-} 
+	// @param from is designated a branching node if its identity is the goal
+	if(&*from == &*(problem->getGoalNode()))
+	{
+		JumpInfo* branch = new JumpInfo();
+		branch->addJump(from, last_dir, 0);
+		return branch;
+	}
+
+	int fromx = from->getLabelL(kFirstData);
+	int fromy = from->getLabelL(kFirstData+1);
+	int goalx = problem->getGoalNode()->getLabelL(kFirstData);
+	int goaly = problem->getGoalNode()->getLabelL(kFirstData+1);
+
+	std::vector<JumpInfo*> branches;
+	int nei_dirs = jpl->computeSuccessors(last_dir, fromx, fromy);
+	for(int nextdir = 1; nextdir < 256; nextdir = nextdir << 1)
+	{
+		if(branches.size() > 1)
+			break; // early termination: branching node identified
+
+		// recurse only in the direction of forced and natural neighbours
+		if(!(nextdir & nei_dirs)) 
+			continue;
+
+		node* succ = jpl->findJumpNode((Jump::Direction)nextdir, 
+				fromx, fromy, goalx, goaly);
+		if(succ)
+		{
+			JumpInfo* branch = findBranchingNode(succ, 
+					(Jump::Direction)nextdir, depth+1);
+			if(branch)
+			{
+				// don't forget the jumpcost to reach succ
+				branch->setCost(0, problem->getHeuristic()->h(from, succ));
+				branches.push_back(branch);
+			}
+		}
+	}
+
+	JumpInfo* retVal = 0;
+	switch(branches.size())
+	{
+		case 0:
+			break;
+
+		// @param from is an intermediate node on the way to a branching node
+		case 1:
+			retVal = branches.back();
+			branches.pop_back();
+			break;
+
+		// @param from is a braching node 
+		default:
+			retVal = new JumpInfo();
+			retVal->addJump(from, last_dir, 0);
+		
+			// cleanup explored branches
+			while(branches.size() > 0)
+			{
+				delete branches.back();
+				branches.pop_back();
+			}
+			break;
+	}
+
+	return retVal;
+}
 
 // Updates the direction and parent labels the current neighbour 
 // (as returned by ::n()). This operation is called by an external search 
@@ -696,10 +624,13 @@ void
 RecursiveJumpPointExpansionPolicy::label_n()
 {
 	assert(neighbourIndex < neighbours.size());
-	JumpParams* nparams = neighbours.at(neighbourIndex);
-	nparams->succ = this->target; // ::n() == nparams->succ
-	directions[nparams->succ->getUniqueID()] = nparams->last_dir;
-	nparams->succ->backpointer = this->target;
+	JumpInfo* info = neighbours.at(neighbourIndex);
+
+	node* n_ = info->getNode(info->nodecount() - 1);
+	Jump::Direction last_dir = info->getDirection(info->nodecount() - 1);
+
+	directions[n_->getUniqueID()] = last_dir;
+	n_->backpointer = this->target;
 }
 
 // Returns the travel direction used to reach a given node n. If
@@ -718,58 +649,21 @@ RecursiveJumpPointExpansionPolicy::getDirection(node* n)
 }
 
 void
-RecursiveJumpPointExpansionPolicy::addNeighbour(JumpParams& out)
+RecursiveJumpPointExpansionPolicy::addNeighbour(JumpInfo& out)
 {
 	// NB: no need to track best parent; let the search do that and change
 	// direction labels only on ::label_n()
-	assert(out.succ);
+	assert(out.jumpnode);
 	assert(out.jumpcost > 0);
-	JumpParams* myparams = new JumpParams(out);
+	JumpInfo* myparams = new JumpInfo(out);
 	neighbours.push_back(myparams);
 }
 
-// Returns all intermediate jump nodes between ::target and ::n(). 
-// @param out: node* array where pointers to each intermediate node are stored
-// @param size: the number of intermediate nodes that should be stored.
-// 				set this to ::MAX_DEPTH to guarantee all nodes are written.
-//
-// 	NB: Neither ::target nor ::n() are written to @param out.
-void
-RecursiveJumpPointExpansionPolicy::getIntermediateNodes(node** out, int size)
+// get the JumpInfo entry for the node being returned by ::n()
+JumpInfo* 
+RecursiveJumpPointExpansionPolicy::getJumpInfo()
 {
-	int cindex  = 0;  
-	for(int i=0; i < size && i < MAX_DEPTH; i++)
-	{
-		int found_dirs = (all_dirs[cindex] >> 8) & 255;
-		if(!(found_dirs & (found_dirs-1))) 
-		{ 
-			int offset = -1;
-			if(found_dirs == Jump::N)
-				offset = 0;
-			else if(found_dirs == Jump::S)
-				offset = 1;
-			else if(found_dirs == Jump::E)
-				offset = 2;
-			else if(found_dirs == Jump::W)
-				offset = 3;
-			else if(found_dirs == Jump::NE)
-				offset = 4;
-			else if(found_dirs == Jump::SE)
-				offset = 5;
-			else if(found_dirs == Jump::SW)
-				offset = 6;
-			else if(found_dirs == Jump::NW)
-				offset = 7;
-			assert(offset != -1);
-
-			int next_index = cindex*MAX_NEIS + offset + 1;
-			out[i] = all_nodes[next_index];
-			cindex = next_index;
-		}
-		else // reached ::n() at some level before MAX_DEPTH; stop looping.
-		{
-			assert(all_nodes[cindex]->getUniqueID() == n()->getUniqueID());
-			break;
-		}
-	}
+	if(neighbourIndex < neighbours.size())
+		return neighbours.at(neighbourIndex);
+	return 0;
 }
