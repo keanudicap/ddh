@@ -32,28 +32,28 @@ RecursiveJumpPointRefinementPolicy::refine(path* abspath)
 	{
 		// expand thepath->n 
 		expander->expand(thepath->n);
-		node* succ = 0;
-		for(succ = expander->first(); expander->hasNext(); expander->next())
+
+		// iterater over all neighbours until we find thepath->next->n
+		for( 	node* succ = expander->first(); 
+				expander->hasNext(); 
+				expander->next()	)
 		{
-			if(succ->getUniqueID() == thepath->next->n->getUniqueID())
+			if(&*succ == &*(thepath->next->n))
 				break;	
 		}
-		assert(succ);
+		assert(expander->n());
 
 		// get the intermediate nodes that were skipped on the way to
 		// thepath->next->n because their branching factor equaled 1.
-		for(int i=0; i < maxdepth; i++)
-			intermediates[i] = 0;
-		expander->getIntermediateNodes(intermediates, maxdepth);
+		JumpInfo* info = expander->getJumpInfo();
 
 		// insert each intermediate jump point into the path
-		int cindex = 0;
-		while(intermediates[cindex])
+		// (the last node == thepath->n, so skip it)
+		for(int i=0; i < info->nodecount() - 1; i++)
 		{
-			path* newnext = new path(intermediates[cindex], thepath->next);
+			path* newnext = new path(info->getNode(i), thepath->next);
 			thepath->next = newnext;
 			thepath = newnext;
-			cindex++;
 		}
 	}
 	delete intermediates;

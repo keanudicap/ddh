@@ -25,6 +25,7 @@
 
 #include "ExpansionPolicy.h"
 #include "Jump.h"
+#include "JumpInfo.h"
 
 #include <ext/hash_map>
 #include <vector>
@@ -37,28 +38,12 @@ class RecursiveJumpPointExpansionPolicy :
 	// a container for storing last_dir values of generated nodes
 	typedef __gnu_cxx::hash_map<int, Jump::Direction> DirectionList;
 
-	// A structure for describing jump point search operations.
-	class JumpParams
-	{
-		public:
-			JumpParams();
-			virtual ~JumpParams();
-			JumpParams(JumpParams& other);
-
-			node* origin; // the starting node from which to begin
-			node* succ; // a jump point successor of ::origin
-			Jump::Direction first_dir; // direction in which to search
-			Jump::Direction last_dir; // the last direction of travel before ::succ
-			double jumpcost; // cumulative cost of reaching ::succ
-			unsigned int depth; // recursion depth at which ::succ was found.
-	};
-
-
 	public:
-		RecursiveJumpPointExpansionPolicy(JumpPointLocator* jpl);
+		RecursiveJumpPointExpansionPolicy(JumpPointLocator* jpl, 
+				unsigned int maxdepth=3);
 		virtual ~RecursiveJumpPointExpansionPolicy();
 
-		void getIntermediateNodes(node** out, int size); 
+		JumpInfo* getJumpInfo();
 		int getMaxDepth() { return MAX_DEPTH; } 
 
 		// ExpansionPolicy stuff
@@ -72,31 +57,21 @@ class RecursiveJumpPointExpansionPolicy :
 
 	private:
 		void computeNeighbourSet();
-		void findJumpNode(Jump::Direction dir, JumpParams& out);
-		void addNeighbour(JumpParams& out);
+		void findJumpNode(Jump::Direction dir, JumpInfo& out);
+		JumpInfo* findBranchingNode(node* from, Jump::Direction last_dir, 
+				unsigned int depth);
+		void addNeighbour(JumpInfo& out);
 		void label_n();
 		Jump::Direction getDirection(node* n);
 
 		// the set of reachable jump points from ::target (and their costs)
-		std::vector<JumpParams*> neighbours; // jump point successors for ::target
+		std::vector<JumpInfo*> neighbours; // jump point successors for ::target
 		DirectionList directions; // last_dir labels for every generated node
 
 		unsigned int neighbourIndex; // index of the neighbour returned by ::n()
+		int MAX_DEPTH; // maximum recursion depth
 		JumpPointLocator* jpl;
 
-		int MAX_NEIS;
-		int MAX_NODES;
-		int MAX_DEPTH; 
-		double ONE_OVER_MAX_NEIS;
-
-		// bookkeeping structures used during expansion operations
-		// NB: all_dirs is a bitfield packed as follows:
-		// bits 0-7: directions of all forced and natural neighbours
-		// bits 8-15: directions in which we've located a jump point successor
-		// bits: 16-23: most recent travel direction to reach the current node
-		int* all_dirs;
-		node** all_nodes;
-		double* all_costs; 
 };
 
 #endif
