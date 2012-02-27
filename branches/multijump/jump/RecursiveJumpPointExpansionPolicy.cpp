@@ -482,21 +482,19 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 
 	while(branch)
 	{
-		if(branch->nodecount() == 1)
+		// store the jump points to the last branching node. 
+		// NB: start at index 1 to avoid duplicates b/w out and branch
+		for(unsigned int i=1; i < branch->nodecount(); i++)
 		{
-			// can't jump further; last jump point was a branching node
-			break;
+			out.addJump( branch->getNode(i), branch->getDirection(i),
+						 branch->getCost(i) );
 		}
-		else
+
+		// keep jumping only if the last branching node was identified
+		// as such due to hitting the depth limit. 
+		if(branch->edgecount() < this->MAX_DEPTH)
 		{
-			// last jump point was not a branching node;
-			// store the intermediate nodes we jumped-over to reach it 
-			// NB: start at index 1 to avoid duplicates b/w out and branch
-			for(unsigned int i=1; i < branch->nodecount(); i++)
-			{
-				out.addJump( branch->getNode(i), branch->getDirection(i),
-							 branch->getCost(i) );
-			}
+			break;
 		}
 
 		// keep jumping only if all of the following conditions are met:
@@ -594,24 +592,35 @@ RecursiveJumpPointExpansionPolicy::findBranchingNode(
 
 		// @param from is an intermediate node on the way to a branching node
 		case 1:
-			retVal = branches.back();
-			branches.pop_back();
+		{
+			retVal = new JumpInfo();
+			retVal->addJump(from, last_dir, 0);
+
+			// append all the jumps we took while recursing
+			JumpInfo* branch = branches.back();
+			for(unsigned int i=0; i < branch->nodecount(); i++)
+			{
+				retVal->addJump(
+						branch->getNode(i), 
+						branch->getDirection(i), 
+						branch->getCost(i)	);
+			}
 			break;
+		}
 
 		// @param from is a braching node 
 		default:
 			retVal = new JumpInfo();
 			retVal->addJump(from, last_dir, 0);
-		
-			// cleanup explored branches
-			while(branches.size() > 0)
-			{
-				delete branches.back();
-				branches.pop_back();
-			}
 			break;
 	}
-
+	
+	// cleanup explored branches
+	while(branches.size() > 0)
+	{
+		delete branches.back();
+		branches.pop_back();
+	}
 	return retVal;
 }
 
