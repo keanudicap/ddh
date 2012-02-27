@@ -44,28 +44,28 @@ class JumpInfo
 			jumpcosts.push_back(cost);
 		}
 
-		inline node* getNode(int index) 
+		inline node* getNode(unsigned int index) 
 		{ 
 			if(index < jumpnodes.size()) 
 				return jumpnodes.at(index);
 			return 0;
 		}
 
-		inline Jump::Direction getDirection(int index)
+		inline Jump::Direction getDirection(unsigned int index)
 		{
 			if(index < jumpdirs.size()) 
 				return jumpdirs.at(index);
 			return Jump::NONE;
 		}
 
-		inline double getCost(int index)
+		inline double getCost(unsigned int index)
 		{
 			if(index < jumpcosts.size()) 
 				return jumpcosts.at(index);
 			return 0;
 		}
 
-		inline void setCost(int index, double cost)
+		inline void setCost(unsigned int index, double cost)
 		{
 			if(index < jumpcosts.size()) 
 				jumpcosts[index] = cost;

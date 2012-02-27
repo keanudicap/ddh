@@ -29,7 +29,7 @@ namespace Jump
 	Jump::Direction computeDirection(node* cur, node* succ);
 	Jump::Direction computeDirection(int, int, int, int);
 	
-};
+}
 
 #endif
 
