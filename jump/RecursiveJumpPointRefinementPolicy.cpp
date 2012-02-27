@@ -49,7 +49,7 @@ RecursiveJumpPointRefinementPolicy::refine(path* abspath)
 
 		// insert each intermediate jump point into the path
 		// (the last node == thepath->n, so skip it)
-		for(int i=0; i < info->nodecount() - 1; i++)
+		for(unsigned int i=0; i < info->nodecount() - 1; i++)
 		{
 			path* newnext = new path(info->getNode(i), thepath->next);
 			thepath->next = newnext;

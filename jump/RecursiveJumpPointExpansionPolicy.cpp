@@ -18,7 +18,7 @@ RecursiveJumpPointExpansionPolicy::RecursiveJumpPointExpansionPolicy(
 
 RecursiveJumpPointExpansionPolicy::~RecursiveJumpPointExpansionPolicy()
 {
-	for(int i=0; i < neighbours.size(); i++)
+	for(unsigned int i=0; i < neighbours.size(); i++)
 	{
 		delete neighbours.at(i);
 	}
@@ -31,7 +31,7 @@ void
 RecursiveJumpPointExpansionPolicy::expand(node* t) throw(std::logic_error)
 {
 	// clear any data from previous expansion operations
-	for(int i=0; i < neighbours.size(); i++)
+	for(unsigned int i=0; i < neighbours.size(); i++)
 	{
 		delete neighbours.at(i);
 	}
@@ -456,7 +456,6 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 	int fromy = from->getLabelL(kFirstData+1);
 	int goalx = goal->getLabelL(kFirstData);
 	int goaly = goal->getLabelL(kFirstData+1);
-	int goalid = goal->getUniqueID();
 	node* succ = jpl->findJumpNode(dir, fromx, fromy, goalx, goaly);
 
 	if(!succ)
@@ -493,7 +492,7 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 			// last jump point was not a branching node;
 			// store the intermediate nodes we jumped-over to reach it 
 			// NB: start at index 1 to avoid duplicates b/w out and branch
-			for(int i=1; i < branch->nodecount(); i++)
+			for(unsigned int i=1; i < branch->nodecount(); i++)
 			{
 				out.addJump( branch->getNode(i), branch->getDirection(i),
 							 branch->getCost(i) );
@@ -653,8 +652,6 @@ RecursiveJumpPointExpansionPolicy::addNeighbour(JumpInfo& out)
 {
 	// NB: no need to track best parent; let the search do that and change
 	// direction labels only on ::label_n()
-	assert(out.jumpnode);
-	assert(out.jumpcost > 0);
 	JumpInfo* myparams = new JumpInfo(out);
 	neighbours.push_back(myparams);
 }

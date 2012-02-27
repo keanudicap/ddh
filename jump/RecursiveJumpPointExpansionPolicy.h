@@ -69,8 +69,8 @@ class RecursiveJumpPointExpansionPolicy :
 		DirectionList directions; // last_dir labels for every generated node
 
 		unsigned int neighbourIndex; // index of the neighbour returned by ::n()
-		int MAX_DEPTH; // maximum recursion depth
 		JumpPointLocator* jpl;
+		unsigned int MAX_DEPTH; // maximum recursion depth
 
 };
 
