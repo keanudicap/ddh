@@ -416,7 +416,7 @@ RecursiveJumpPointExpansionPolicy::cost_to_n()
 	if(neighbourIndex < neighbours.size())
 	{
 		JumpInfo* info = neighbours.at(neighbourIndex);
-		retVal = info->getCost(info->nodecount() - 1);
+		retVal = info->totalCost();
 	}
 	return retVal;
 }
