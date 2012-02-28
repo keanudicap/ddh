@@ -53,6 +53,7 @@ class RecursiveJumpPointExpansionPolicy :
 		virtual node* n();
 		virtual double cost_to_n();
 		virtual bool hasNext();
+		virtual void setProblemInstance(ProblemInstance* p);
 		int jumplimit; 
 
 	private:

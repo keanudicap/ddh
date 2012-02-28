@@ -28,6 +28,13 @@ RecursiveJumpPointExpansionPolicy::~RecursiveJumpPointExpansionPolicy()
 
 
 void 
+RecursiveJumpPointExpansionPolicy::setProblemInstance(ProblemInstance* p)
+{
+	ExpansionPolicy::setProblemInstance(p);
+	directions.clear();
+}
+
+void 
 RecursiveJumpPointExpansionPolicy::expand(node* t) throw(std::logic_error)
 {
 	// clear any data from previous expansion operations
@@ -449,6 +456,8 @@ void
 RecursiveJumpPointExpansionPolicy::findJumpNode(
 		Jump::Direction dir, JumpInfo& out)
 {
+	out.clear();
+
 	// jump in the given direction
 	node* from = this->target;
 	node* goal = problem->getGoalNode();
@@ -490,27 +499,22 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 						 branch->getCost(i) );
 		}
 
-		// keep jumping only if the last branching node was identified
-		// as such due to hitting the depth limit. 
-		if(branch->edgecount() < this->MAX_DEPTH)
+		// stop jumping if any of the following conditions are met:
+		// 	1. maxdepth == 0 (can't go any further)
+		// 	2. we found the last branching node before hitting the depth limit
+		// 	3. the last branching is the goal node
+		int idx_last = branch->nodecount() - 1;
+		node* last_node = branch->getNode(idx_last);
+		Jump::Direction last_dir = branch->getDirection(idx_last);
+		if(		this->MAX_DEPTH == 0 ||
+				branch->edgecount() != this->MAX_DEPTH || 
+				&*(last_node) == &*(problem->getGoalNode())	)
 		{
 			break;
 		}
 
-		// keep jumping only if all of the following conditions are met:
-		// 	1. maxdepth > 0
-		// 	2. we hit the depth limit on the way to the last branching node
-		// 	3. the last branching node is not the goal 
-		int idx_last = branch->nodecount() - 1;
-		node* last_node = branch->getNode(idx_last);
-		Jump::Direction last_dir = branch->getDirection(idx_last);
-		if(		this->MAX_DEPTH > 0 && 
-				branch->edgecount() == this->MAX_DEPTH && 
-				&*(last_node) != &*(problem->getGoalNode())	)
-		{
-			delete branch;
-			branch = findBranchingNode(last_node, last_dir, 0);	
-		}
+		delete branch;
+		branch = findBranchingNode(last_node, last_dir, 0);	
 	}
 
 	delete branch;
