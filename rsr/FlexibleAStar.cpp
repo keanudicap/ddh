@@ -185,7 +185,7 @@ FlexibleAStar::expand(node* current, node* goal, altheap* openList,
 
 				neighbour->setLabelF(kTemporaryLabel, MAXINT); // initial fCost 
 				neighbour->setKeyLabel(kTemporaryLabel); // store priority here 
-				neighbour->backpointer = 0;  // reset any marked edges 
+				//neighbour->backpointer = 0;  // reset any marked edges 
 				openList->add(neighbour);
 				relaxNode(current, neighbour, goal, policy->cost_to_n(), openList); 
 				nodesGenerated++;
@@ -251,7 +251,8 @@ FlexibleAStar::relaxNode(node* from, node* to, node* goal, double cost,
 			fless(f_to, to->getLabelF(kTemporaryLabel)))
 	{
 		to->setLabelF(kTemporaryLabel, f_to);
-		to->backpointer = from;
+		//to->backpointer = from;
+		policy->label_n();
 		openList->decreaseKey(to);
 	}
 }
