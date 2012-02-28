@@ -36,6 +36,16 @@ class JumpInfo
 			this->jumpcosts.clear();
 		}
 
+		inline double totalCost()
+		{
+			double retVal = 0;
+			for(unsigned int i=0; i < jumpcosts.size(); i++)
+			{
+				retVal += jumpcosts.at(i);
+			}
+			return retVal;
+		}
+
 		inline void addJump(node* n, Jump::Direction lastdir, double cost)
 		{
 			if(!n || lastdir == Jump::NONE)
