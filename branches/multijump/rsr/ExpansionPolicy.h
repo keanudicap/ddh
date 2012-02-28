@@ -47,6 +47,8 @@ class ExpansionPolicy
 		void setProblemInstance(ProblemInstance* p);
 		ProblemInstance* getProblemInstance(); 
 
+		bool verbose;
+
 	protected:
 		node* n_;
 		node* target;

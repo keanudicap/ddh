@@ -33,6 +33,7 @@ class FlexibleAStar : public searchAlgorithm
 				reservationProvider *rp = 0);
 
 		Heuristic* getHeuristic() { return heuristic; }
+		ExpansionPolicy* getExpander() { return policy; }
 		bool markForVis;	
 
 	protected:
