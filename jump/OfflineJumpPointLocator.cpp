@@ -6,7 +6,7 @@
 OfflineJumpPointLocator::OfflineJumpPointLocator(JumpPointAbstraction* _map)
 	: JumpPointLocator(_map)
 {
-
+	assert(_map);
 }
 
 OfflineJumpPointLocator::~OfflineJumpPointLocator()

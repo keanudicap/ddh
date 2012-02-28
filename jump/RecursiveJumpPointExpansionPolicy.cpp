@@ -477,6 +477,11 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 	{
 		// record some details about this latest jump
 		out.addJump(succ, dir, problem->getHeuristic()->h(from, succ));
+		if(verbose)
+		{
+			std::cout << "jumped to (" << succ->getLabelL(kFirstData) <<", "
+				<< succ->getLabelL(kFirstData+1) << ")" << std::endl;
+		}
 	}
 
 	// determine if succ is a branching node or if it can be jumped over
@@ -539,6 +544,12 @@ RecursiveJumpPointExpansionPolicy::findBranchingNode(
 {
 	if(!from)
 		return 0;
+
+	if(verbose)
+	{
+		std::cout << "branching (" << from->getLabelL(kFirstData) <<", "
+			<< from->getLabelL(kFirstData+1) << ") depth: "<< depth << std::endl;
+	}
 
 	// @param from is designated a branching node if we reach
 	// maximum recursion depth

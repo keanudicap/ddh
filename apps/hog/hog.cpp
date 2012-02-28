@@ -45,6 +45,7 @@
 #include "JumpPointAbstraction.h"
 #include "JumpPointExpansionPolicy.h"
 #include "JumpPointRefinementPolicy.h"
+#include "JumpPointSearch.h"
 #include "mapFlatAbstraction.h"
 #include "MacroNodeFactory.h"
 #include "ManhattanHeuristic.h"
@@ -56,7 +57,6 @@
 #include "OfflineJumpPointLocator.h"
 #include "OnlineJumpPointLocator.h"
 #include "RecursiveJumpPointExpansionPolicy.h"
-#include "RecursiveJumpPointRefinementPolicy.h"
 #include "RRExpansionPolicy.h"
 #include "ScenarioManager.h"
 #include "searchUnit.h"
@@ -833,27 +833,33 @@ myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 	
 	unitSim->addUnit(targ = new unit(x1, y1));
 
-	switch (mod)
-	{
-		case kShiftDown: 
-		{
-			astar = newSearchAlgorithm(aMap); 
-			astar->verbose = verbose;
-			unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
-			u->setColor(0.3,0.7,0.3);
-			targ->setColor(0.3,0.7,0.3);
-			break;
-		}
-		default:
-		{
-			astar = new FlexibleAStar(newExpansionPolicy(aMap), newHeuristic());	
-			astar->verbose = verbose;
-			unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
-			u->setColor(1,1,0);
-			targ->setColor(1,1,0);
-			break;
-		}
-	}
+	//switch (mod)
+	//{
+	//	case kShiftDown: 
+	//	{
+	//		astar = newSearchAlgorithm(aMap); 
+	//		astar->verbose = verbose;
+	//		unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
+	//		u->setColor(0.3,0.7,0.3);
+	//		targ->setColor(0.3,0.7,0.3);
+	//		break;
+	//	}
+	//	default:
+	//	{
+	//		astar = new FlexibleAStar(newExpansionPolicy(aMap), newHeuristic());	
+	//		astar->verbose = verbose;
+	//		unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
+	//		u->setColor(1,1,0);
+	//		targ->setColor(1,1,0);
+	//		break;
+	//	}
+	//}
+	astar = newSearchAlgorithm(aMap); 
+	astar->verbose = verbose;
+	unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
+	u->setColor(1,1,0);
+	targ->setColor(1,1,0);
+
 	algName = (char*)u->getName();
 	u->setSpeed(0.12);
 }
@@ -909,6 +915,17 @@ runNextExperiment(unitSimulation *unitSim)
 			nextExperiment->getGoalY());
 
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, true); 
+	if(absType == HOG::FLATJUMP || absType == HOG::MULTIJUMP ||
+		   absType == HOG::JPA)
+	{
+		std::string algname(alg->getName());
+		alg = new HierarchicalSearch(
+				new NoInsertionPolicy(),
+				alg, 
+				new OctileDistanceRefinementPolicy(aMap));
+		((HierarchicalSearch*)alg)->setName(algname.c_str());
+	}	
+
 	alg->verbose = verbose;
 	algName = (char*)alg->getName();
 	nextUnit = new searchUnit(nextExperiment->getStartX(), 
@@ -942,26 +959,6 @@ newExpansionPolicy(mapAbstraction* map)
 				policy = new RRExpansionPolicy(map);
 			else
 				policy = new IncidentEdgesExpansionPolicy(map);
-			break;
-		}
-		case HOG::FLATJUMP:
-		{
-			policy = new JumpPointExpansionPolicy(
-					new OnlineJumpPointLocator(map));
-			break;
-		}
-		case HOG::MULTIJUMP:
-		{
-			policy = new RecursiveJumpPointExpansionPolicy(
-						new OnlineJumpPointLocator(map));
-			break;
-		}
-		case HOG::JPA:
-		{
-			JumpPointAbstraction* _map = 
-				dynamic_cast<JumpPointAbstraction*>(map);
-			policy = new JumpPointExpansionPolicy(
-					new OfflineJumpPointLocator(_map));
 			break;
 		}
 		default:
@@ -998,8 +995,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 					new FlexibleAStar(
 						newExpansionPolicy(map), 
 						newHeuristic()),
-						//newRefinementPolicy(map, refineAbsPath));
-						newRefinementPolicy(map, true));
+						newRefinementPolicy(0, map, true));
 			((HierarchicalSearch*)alg)->setName("HPA");
 			alg->verbose = verbose;
 			break;
@@ -1020,36 +1016,21 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 
 		case HOG::FLATJUMP:
 		{
-			alg = new HierarchicalSearch(new NoInsertionPolicy(),
-						new FlexibleAStar(
-							newExpansionPolicy(aMap),			
-							newHeuristic()),
-							newRefinementPolicy(aMap, refineAbsPath));
-			((HierarchicalSearch*)alg)->setName("JPS");
+			alg = new JumpPointSearch(true, 0, newHeuristic(), aMap);
 			alg->verbose = verbose;
 			break;
 		}
 
 		case HOG::MULTIJUMP:
 		{
-			alg = new HierarchicalSearch(new NoInsertionPolicy(),
-						new FlexibleAStar(
-							newExpansionPolicy(aMap),			
-							newHeuristic()),
-							newRefinementPolicy(aMap, refineAbsPath));
-			((HierarchicalSearch*)alg)->setName("RJPS");
+			alg = new JumpPointSearch(true, 3, newHeuristic(), aMap);
 			alg->verbose = verbose;
 			break;
 		}
 
 		case HOG::JPA:
 		{
-			alg = new HierarchicalSearch(new NoInsertionPolicy(),
-						new FlexibleAStar(
-							newExpansionPolicy(aMap),	
-							newHeuristic()),
-							newRefinementPolicy(aMap, refineAbsPath));
-			((HierarchicalSearch*)alg)->setName("JPAS");
+			alg = new JumpPointSearch(false, 0, newHeuristic(), aMap);
 			alg->verbose = verbose;
 			break;
 		}
@@ -1065,7 +1046,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 }
 
 RefinementPolicy*
-newRefinementPolicy(mapAbstraction* map, bool refine)
+newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 {
 	if(!refine)
 		return new NoRefinementPolicy();
@@ -1082,8 +1063,8 @@ newRefinementPolicy(mapAbstraction* map, bool refine)
 			break;
 		}
 
-		case HOG::FLATJUMP:
 		case HOG::MULTIJUMP:
+		case HOG::FLATJUMP:
 		case HOG::JPA:
 		{
 			refPol = new OctileDistanceRefinementPolicy(map);
@@ -1093,6 +1074,7 @@ newRefinementPolicy(mapAbstraction* map, bool refine)
 		default:
 		{
 			refPol = new NoRefinementPolicy();
+			break;
 		}
 	}
 
