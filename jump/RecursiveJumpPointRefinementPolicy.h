@@ -4,18 +4,20 @@
 #include "RefinementPolicy.h"
 
 class path;
-class JumpPointLocator;
+class OctileDistanceRefinementPolicy;
 class RecursiveJumpPointExpansionPolicy;
 class RecursiveJumpPointRefinementPolicy : public RefinementPolicy
 {
 	public:
-		RecursiveJumpPointRefinementPolicy(JumpPointLocator*);
+		RecursiveJumpPointRefinementPolicy(
+				const RecursiveJumpPointExpansionPolicy*);
 		virtual ~RecursiveJumpPointRefinementPolicy();
 
 		virtual path* refine(path* abspath);
 	
 	private:
-		RecursiveJumpPointExpansionPolicy* expander;
+		const RecursiveJumpPointExpansionPolicy* expander;
+		OctileDistanceRefinementPolicy* again;
 };
 
 #endif
