@@ -18,6 +18,7 @@
 #include "graph.h"
 #include "Jump.h"
 
+#include <ostream>
 #include <vector>
 
 class JumpInfo
@@ -26,6 +27,7 @@ class JumpInfo
 		JumpInfo();
 		virtual ~JumpInfo();
 		JumpInfo(JumpInfo& other);
+		void print(std::ostream& out);
 
 		inline void clear()
 		{
