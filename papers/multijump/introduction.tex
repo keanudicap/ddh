@@ -1,2 +1,30 @@
 \section{Introduction}
-The introduction goes here.
+
+Path planning in grid is a critical problem for many applications 
+ranging from robotics to video-games, 
+where the optimal path 
+between a unit location and its target must be found quickly.  
+
+The optimal preserving algorithms are based on $A^*$, 
+which develops several paths in parallel 
+and uses a heuristic to determine 
+which path is the most promising 
+and should be developed.  
+We extend a recent approach called Jump Point Search (JPS) 
+where symmetry is used to ignore numerous paths 
+and to quickly move in the grid.  
+
+JPS's main advantage is that much fewer nodes are expanded, 
+but each expansion is more expensive.  
+In our first contribution, we show 
+how the jump points can be pre-processed 
+so as to reduce the expansion time.  
+This operation is not trivial, 
+as the ``on-line'' computation of the jump points 
+automatically eliminates a number of potential points 
+that cannot be disregarded when the target is unknown.  
+The pre-computation requires only limited time 
+and the pre-computed table is linear 
+which makes it quite attractive.  
+
+% EOF
