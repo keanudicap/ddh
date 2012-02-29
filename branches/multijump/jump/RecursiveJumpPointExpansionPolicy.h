@@ -27,7 +27,6 @@
 #include "Jump.h"
 #include "JumpInfo.h"
 
-#include <ext/hash_map>
 #include <vector>
 #include <stdexcept>
 
@@ -36,7 +35,7 @@ class RecursiveJumpPointExpansionPolicy :
 	public ExpansionPolicy
 {
 	// a container for storing last_dir values of generated nodes
-	typedef __gnu_cxx::hash_map<int, Jump::Direction> DirectionList;
+	typedef std::vector<Jump::Direction> DirectionList;
 
 	public:
 		RecursiveJumpPointExpansionPolicy(JumpPointLocator* jpl, 
@@ -53,6 +52,7 @@ class RecursiveJumpPointExpansionPolicy :
 		virtual node* n();
 		virtual double cost_to_n();
 		virtual bool hasNext();
+		virtual void reset() { directions.clear(); }
 		virtual void setProblemInstance(ProblemInstance* p);
 		int jumplimit; 
 

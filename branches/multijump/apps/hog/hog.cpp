@@ -347,14 +347,27 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 {
 	int exitVal = 0;
 
+	//FlexibleAStar* astar = 0;
 	aStarOld* astar = 0;
 	mapFlatAbstraction* gridmap = 0;
 	if(checkOptimality)
 	{
+		// scale the grid map if necessary
+		Map* map = new Map(gDefaultMap);
+		int scalex = map->getMapWidth();
+		int scaley = map->getMapHeight();
+		if(scenariomgr.getNumExperiments() > 0)
+		{
+			scalex = scenariomgr.getNthExperiment(0)->getXScale();
+			scaley = scenariomgr.getNthExperiment(0)->getYScale();
+			if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
+				map->scale(scalex, scaley);
+		}
+
 		// reference map and search alg for checking optimality
+		gridmap = new mapFlatAbstraction(map);
+		//astar = new FlexibleAStar(new IncidentEdgesExpansionPolicy(gridmap), new OctileHeuristic());
 		astar = new aStarOld();
-		gridmap = new mapFlatAbstraction(
-				new Map(gDefaultMap));
 	}
 
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, false);
@@ -394,24 +407,35 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 			// run A* to check the optimal path length
 			node* s = gridmap->getNodeFromMap(nextExperiment->getStartX(),
 					nextExperiment->getStartY());
+			assert(s);
 			node* g = gridmap->getNodeFromMap(nextExperiment->getGoalX(),
 					nextExperiment->getGoalY());
+			assert(g);
+			optlen = 0;
 
 			p = astar->getPath(gridmap, s, g);
-			optlen = aMap->distance(p);
+			if(p)
+			{
+				optlen = gridmap->distance(p);
+			}
 			delete p;
 
 			if(!fequal(optlen, distanceTravelled))
 			{
-				std::cout << "optimality check failed!";
-				std::cout << "\noptimal path length: "<<optlen<<" computed length: ";
+				std::cout << "optimality check failed!" << std::endl;
+				std::cout << "exp "<<expnum<<" ";
+				nextExperiment->print(std::cout);
+				std::cout << " " << distanceTravelled;
+				std::cout << std::endl;
+				std::cout << "optimal path length: "<<optlen<<" computed length: ";
 				std::cout << distanceTravelled<<std::endl;
+				verbose = true;
 				if(verbose)
 				{
 					std::cout << "Running A*: \n";
 					astar->verbose = true;
 					alg->verbose = true;
-					path* p = astar->getPath(aMap, from, to);
+					path* p = astar->getPath(gridmap, from, to);
 					double tmp = aMap->distance(p);
 					delete p;
 					p = 0;
