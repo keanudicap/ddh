@@ -64,3 +64,39 @@ Jump::computeDirection(int x, int y, int x2, int y2)
 
 	return dir;
 }
+std::string 
+Jump::toString(Jump::Direction d)
+{
+	std::string retVal;
+	switch(d)
+	{
+		case Jump::N:
+			retVal.append("N");
+			break;
+		case Jump::S:
+			retVal.append("S");
+			break;
+		case Jump::E:
+			retVal.append("E");
+			break;
+		case Jump::W:
+			retVal.append("W");
+			break;
+		case Jump::NE:
+			retVal.append("NE");
+			break;
+		case Jump::SE:
+			retVal.append("SE");
+			break;
+		case Jump::SW:
+			retVal.append("SW");
+			break;
+		case Jump::NW:
+			retVal.append("NW");
+			break;
+		case Jump::NONE:
+			retVal.append("NONE");
+			break;
+	}
+	return retVal;
+}
