@@ -1,0 +1,42 @@
+\section{Experimental Setup}
+We evaluate the performance of jump point pruning on four benchmarks taken from the freely
+available pathfinding library Hierarchical Open Graph
+(HOG, \url{http://www.googlecode.com/p/hog2}): 
+\begin{itemize}
+
+\item{\textbf{Adaptive Depth}
+is a set of 12 maps of size 100$\times$100 in which approximately $\frac{1}{3}$
+of each map is divided into rectangular rooms of varying size and a large
+open area interspersed with large randomly placed obstacles.
+For this benchmark we randomly generated 100 valid problems per map for a 
+total of 1200 instances.
+} 
+
+\item{\textbf{Baldur's Gate} is a set of 120 maps taken from BioWare's popular
+roleplaying game \emph{Baldur's Gate II: Shadows of Amn}; it 
+appears regularly as a standard benchmark in the literature
+\cite{bjornsson06,harabor10,pochter10}.
+We use the variaton due to Nathan Sturtevant where all maps have been scaled to size
+$512\times512$ to more accurately represent modern pathfinding environments.
+Maps and all instances are available from \url{http://movingai.com}
+}
+
+\item{\textbf{Dragon Age} is another realistic benchmark; this time taken from
+BioWare's recent roleplaying game \emph{Dragon Age: Origins}.
+It consists of 156 maps ranging in size 
+from $30\times21$ to $1104\times1260$.
+For this benchmark we used a large set of randomly generated instances,
+again due to Nathan Sturtevant and available from \url{http://movingai.com}.
+}
+
+\item{\textbf{Rooms} is a set of 300 maps of size
+256$\times$256 which are divided into symmetric rows of small rectangular areas
+($7\times7$), connected by randomly placed entrances. This benchmark has
+previously appeared in \cite{pochter10}.
+For this benchmark we randomly generated 100 valid problems per map for a 
+total of 30000 instances.
+}
+\end{itemize}
+
+Our test machine is a 2.93GHz Intel Core 2 Duo processor with 4GB RAM running OSX 
+10.6.4.  
