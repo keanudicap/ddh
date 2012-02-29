@@ -4,7 +4,7 @@ echo "$stamp runScenarios"
 echo "$stamp runScenarios" >> log
 runs=3;
 for ((x=1;x<=$runs;x++)) ; do
-	for i in $(ls $1*.map.scen*);
+	for i in $(ls $1);
 	do
 			echo "$i"
 			./bin/hog -scenario $i -nogui $2 >> log
