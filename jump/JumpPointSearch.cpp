@@ -10,23 +10,25 @@
 
 #include "timer.h"
 
+#include <iostream>
+#include <sstream>
+
 JumpPointSearch::JumpPointSearch(bool _online, unsigned int _maxdepth, 
 	Heuristic* _heuristic, mapAbstraction* _map) : searchAlgorithm(), 
 	online(_online), maxdepth(_maxdepth), heuristic(_heuristic), map(_map)
 {
-	std::string algname;
 	JumpPointLocator* jpl = 0;
 	ExpansionPolicy* expander = 0;
 	if(online)
 	{
 		jpl = new OnlineJumpPointLocator(map);
-		algname.append("JPS");
+		name.append("JPS");
 	}	
 	else
 	{
 		jpl = new OfflineJumpPointLocator(
 				dynamic_cast<JumpPointAbstraction*>(map));
-		algname.append("JPAS");
+		name.append("JPAS");
 	}
 
 	if(maxdepth == 0)
@@ -35,13 +37,13 @@ JumpPointSearch::JumpPointSearch(bool _online, unsigned int _maxdepth,
 	}
 	else
 	{
-		algname.append("R");
+		std::stringstream ss;
+		ss << "R" << maxdepth;
+		name.append(ss.str());
 		expander = new RecursiveJumpPointExpansionPolicy(jpl, maxdepth);
 	}
 	expander->verbose = verbose;
-
 	astar = new FlexibleAStar(expander, heuristic);
-	name = const_cast<char*>(algname.c_str());
 }
 
 JumpPointSearch::~JumpPointSearch()

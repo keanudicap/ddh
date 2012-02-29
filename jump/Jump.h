@@ -10,6 +10,8 @@
 // @created: 17/03/2011
 //
 
+#include <string>
+
 class node;
 namespace Jump
 {
@@ -28,6 +30,7 @@ namespace Jump
 
 	Jump::Direction computeDirection(node* cur, node* succ);
 	Jump::Direction computeDirection(int, int, int, int);
+	std::string toString(Jump::Direction d);
 	
 }
 

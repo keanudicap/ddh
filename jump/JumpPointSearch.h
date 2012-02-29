@@ -23,7 +23,7 @@ class JumpPointSearch : public searchAlgorithm
 				Heuristic* heuristic, mapAbstraction* map);
 		virtual ~JumpPointSearch();
 
-		virtual const char *getName() { return name; }
+		virtual const char *getName() { return name.c_str(); }
 		virtual path *getPath(graphAbstraction *aMap, node *from, node *to, 
 				reservationProvider *rp = 0);	
 		void resetMetrics();
@@ -36,7 +36,7 @@ class JumpPointSearch : public searchAlgorithm
 		Heuristic* heuristic;
 		mapAbstraction* map;
 		FlexibleAStar* astar;
-		char* name;
+		std::string name;
 };
 
 #endif
