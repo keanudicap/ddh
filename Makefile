@@ -77,13 +77,13 @@ fast: CFLAGS = $(FAST_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES)
 fast: APPSTARGET = fast
 fast: $(TARGETS)
 
-$(TARGETS) : % : lib%.a hogcore
+$(TARGETS) : % : cleanapps lib%.a hogcore
 	$(CC) -o $(addprefix bin/,$(@)) \
 		$(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
 		$(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) \
 		-l$(@:.mk=) $(LIBFLAGS)
 
-$(addprefix lib, $(addsuffix .a, $(TARGETS))) :
+$(addprefix lib, $(addsuffix .a, $(TARGETS))) : 
 	@echo "making app: "$(@)" ("$(APPSTARGET)")"
 	@echo $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 	@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
