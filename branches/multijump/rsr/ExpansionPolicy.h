@@ -43,8 +43,9 @@ class ExpansionPolicy
 		// returns true until all remaining neighbours are iterated over
 		virtual bool hasNext() = 0;
 
+		virtual void setProblemInstance(ProblemInstance* p);
+
 		node* getTarget() const { return target;}
-		void setProblemInstance(ProblemInstance* p);
 		ProblemInstance* getProblemInstance(); 
 
 		bool verbose;
