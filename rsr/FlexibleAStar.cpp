@@ -93,7 +93,7 @@ FlexibleAStar::search(node* start, node* goal)
 		}
 
 		// check if the current node is the goal (early termination)
-		if(current == goal)
+		if(&*current == &*goal)
 		{
 			if(verbose)
 				debug->printNode(std::string("goal found! "), current);
@@ -103,8 +103,8 @@ FlexibleAStar::search(node* start, node* goal)
 		}
 		
 
-		expand(current, goal, &openList, &closedList);
 		closeNode(current, &closedList);
+		expand(current, goal, &openList, &closedList);
 				
 		// terminate when the open list is empty
 		if(openList.empty())
