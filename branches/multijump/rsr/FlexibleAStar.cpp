@@ -19,6 +19,7 @@ FlexibleAStar::FlexibleAStar(ExpansionPolicy* policy, Heuristic* heuristic)
 	this->policy = policy;
 	this->heuristic = heuristic;
 	this->markForVis = true;
+	this->debug = 0;
 }
 
 FlexibleAStar::~FlexibleAStar()
