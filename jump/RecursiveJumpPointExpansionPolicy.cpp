@@ -23,15 +23,18 @@ RecursiveJumpPointExpansionPolicy::~RecursiveJumpPointExpansionPolicy()
 		delete neighbours.at(i);
 	}
 	neighbours.clear();
+	directions.clear();
 	delete jpl;
 }
-
 
 void 
 RecursiveJumpPointExpansionPolicy::setProblemInstance(ProblemInstance* p)
 {
+	int graphSize = p->getMap()->getAbstractGraph(0)->getNumNodes();
+	directions.resize(graphSize);
+
 	ExpansionPolicy::setProblemInstance(p);
-	directions.clear();
+	directions.at(p->getStartNode()->getNum()) = Jump::NONE;
 }
 
 void 
@@ -72,6 +75,11 @@ RecursiveJumpPointExpansionPolicy::computeNeighbourSet()
 
 	// Retrieve the direction of travel used to reach the current node.
 	Jump::Direction which = getDirection(this->target); 
+	if(verbose)
+	{
+		std::cout << "computing jump points. lastdir="<<Jump::toString(which)
+			<< std::endl;
+	}
 
 	// Look for jump point successors in the same direction
 	switch(which)
@@ -457,6 +465,10 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 		Jump::Direction dir, JumpInfo& out)
 {
 	out.clear();
+	if(verbose)
+	{
+		std::cout << "jumping dir=" << Jump::toString(dir);
+	}
 
 	// jump in the given direction
 	node* from = this->target;
@@ -471,6 +483,10 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 	{
 		// terminate; no jump point in direction @param dir
 		out.clear();
+		if(verbose)
+		{
+			std::cout << " succ: none" << std::endl;
+		}
 		return;
 	}
 	else
@@ -479,7 +495,7 @@ RecursiveJumpPointExpansionPolicy::findJumpNode(
 		out.addJump(succ, dir, problem->getHeuristic()->h(from, succ));
 		if(verbose)
 		{
-			std::cout << "jumped to (" << succ->getLabelL(kFirstData) <<", "
+			std::cout << " succ: (" << succ->getLabelL(kFirstData) <<", "
 				<< succ->getLabelL(kFirstData+1) << ")" << std::endl;
 		}
 	}
@@ -548,7 +564,8 @@ RecursiveJumpPointExpansionPolicy::findBranchingNode(
 	if(verbose)
 	{
 		std::cout << "branching (" << from->getLabelL(kFirstData) <<", "
-			<< from->getLabelL(kFirstData+1) << ") depth: "<< depth << std::endl;
+			<< from->getLabelL(kFirstData+1) << ") last_dir: " << Jump::toString(last_dir) 
+			<< " depth: "<< depth << std::endl;
 	}
 
 	// @param from is designated a branching node if we reach
@@ -648,11 +665,10 @@ RecursiveJumpPointExpansionPolicy::label_n()
 {
 	assert(neighbourIndex < neighbours.size());
 	JumpInfo* info = neighbours.at(neighbourIndex);
-
 	node* n_ = info->getNode(info->nodecount() - 1);
 	Jump::Direction last_dir = info->getDirection(info->nodecount() - 1);
 
-	directions[n_->getUniqueID()] = last_dir;
+	directions.at(n_->getNum()) = last_dir;
 	n_->backpointer = this->target;
 }
 
@@ -663,12 +679,10 @@ RecursiveJumpPointExpansionPolicy::label_n()
 // NB: Unlike non-recursive jumping, there is no guarantee that p(n) can
 // be reached by travelling in the opposite direction to the return value.
 Jump::Direction 
-RecursiveJumpPointExpansionPolicy::getDirection(node* n)
+RecursiveJumpPointExpansionPolicy::getDirection(node* n_)
 {
-	DirectionList::iterator it = directions.find(n->getUniqueID());
-	if(it == directions.end())
-		return Jump::NONE;
-	return (*it).second;
+	assert(n_->getNum() < directions.size());
+	return directions.at(n_->getNum());
 }
 
 void
