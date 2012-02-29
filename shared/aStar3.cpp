@@ -68,22 +68,45 @@ path *aStarOld::getPath(graphAbstraction *aMap, node *from, node *to, reservatio
 	n = from;
 	n->setLabelF(kTemporaryLabel, wh*h(n, to));
 	n->markEdge(0);
+	openList->add(n);
 	
 	Timer t;
 	t.startTimer();
 	while (1)
 	{
-		nodesExpanded++;
-		edge_iterator ei;
+		// get the next (the best) node off the open list
+		n = (node*)openList->remove();
+		
+		// this means we have expanded all reachable nodes and there is no path
+		if (n == 0) 
+		{ 
+			if(verbose)
+				printf("Search failed\n");
+
+			delete openList; 
+			return 0; 
+		}
+
+		if (verbose)
+			printf("Expanding (%s) (%d) with cost %1.2f\n", 
+					n->getName(),
+					n->getNum(),
+					n->getLabelF(kTemporaryLabel));
+
+		if (n == to)
+		{
+			if(verbose)
+				printf("Goal found!\n");
+			break; // we found the goal
+		}
 		
 		// move current node onto closed list
 		// mark node with its location in the closed list
 		closedList.push_back(n);
 		n->key = closedList.size()-1;
 		
-		if (verbose)
-			printf("Working on %d with cost %1.2f\n", n->getNum(), n->getLabelF(kTemporaryLabel));
 		
+		edge_iterator ei;
 		ei = n->getEdgeIter();
 		
 		// iterate over all the children
@@ -117,19 +140,13 @@ path *aStarOld::getPath(graphAbstraction *aMap, node *from, node *to, reservatio
 				nextChild->markEdge(0);
 				openList->add(nextChild);
 				if (verbose)
-					printf("Adding neighbor/child %d\n", which);
+					printf("  Generating. ");
 				relaxEdge(openList, g, e, n->getNum(), which, to);
 				nodesGenerated++;
 			}
 		}
+		nodesExpanded++;
 		
-		// get the next (the best) node off the open list
-		n = (node*)openList->remove();
-		
-		// this means we have expanded all reachable nodes and there is no path
-		if (n == 0) { delete openList; return 0; }
-		if (verbose) printf("Expanding %d\n", n->getNum());
-		if (n == to) break; // we found the goal
 	}
 	searchTime = t.endTimer();
 	delete openList;
@@ -148,7 +165,11 @@ void aStarOld::relaxEdge(heap *nodeHeap, graph *g, edge *e, int source, int next
 	if (fless(weight, to->getLabelF(kTemporaryLabel)))
 	{
 		if (verbose)
-			printf("Updating %s  (%d) to %1.4f from %1.4f", to->getName(), to->getNum(), weight, to->getLabelF(kTemporaryLabel));
+		{
+			printf("  Updating %s (%d) to %1.4f from %1.4f\n", 
+					to->getName(), to->getNum(), weight, 
+					to->getLabelF(kTemporaryLabel));
+		}
 		to->setLabelF(kTemporaryLabel, weight);
 		nodeHeap->decreaseKey(to); // move the node up in priority
 		to->markEdge(e); // this is the edge used to get to this node in the min. path tree
@@ -163,8 +184,6 @@ path *aStarOld::extractBestPath(graph *g, unsigned int current)
 	// for visuallization purposes, an edge can be marked meaning it will be drawn in white
 	while ((e = g->getNode(current)->getMarkedEdge()))
 	{
-		if (verbose) printf("%d <- ", current);
-		
 		p = new path(g->getNode(current), p);
 		
 		if (doPathDraw)
@@ -176,7 +195,9 @@ path *aStarOld::extractBestPath(graph *g, unsigned int current)
 			current = e->getFrom();
 	}
 	p = new path(g->getNode(current), p);
-	if (verbose) printf("%d\n", current);
+
+	if(verbose)
+		p->print();
 	return p;	
 }
 
