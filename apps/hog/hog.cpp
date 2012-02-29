@@ -77,26 +77,35 @@ int expnum=0;
 bool scenario=false;
 bool verbose = false;
 bool allowDiagonals = true;
+bool checkOptimality = false;
+bool runNext = false;
+
+// search algorithm parameter
+HOG::SearchMethod searchType = HOG::ASTAR;
+
+// JPS parameters
+int jps_recursion_depth = 0;
+bool jps_preprocess = false;
+
+// RSR parameters
 bool reducePerimeter = false;
 bool bfReduction = false;
-bool checkOptimality = false;
-char* algName;
-HOG::AbstractionType absType = HOG::FLAT;
-bool runNext = false;
 
 /**
  * This function is called each time a unitSimulation is deallocated to
  * allow any necessary stat processing beforehand
  */
-
 void 
 processStats(statCollection *stat)
 {
-	if(stat->getNumStats() == 0)
-		return;
-	
-	processStats(stat, algName);
-	stat->clearAllStats();
+        if(stat->getNumStats() == 0)
+                return;
+
+		for(int i=0; i < stat->getNumOwners(); i++)
+		{
+			processStats(stat, stat->lookupOwnerID(i));
+		}
+        stat->clearAllStats();
 }
 
 
@@ -181,6 +190,8 @@ processStats(statCollection* stat, const char* unitname)
 
 	fflush(f);
 	fclose(f);
+
+	stat->clearAllStats();
 }
 
 /**
@@ -193,36 +204,35 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout << "createSimulation.";
 	std::cout << " nogui="<<(getDisableGUI()?"true":"false");
 	std::cout << " cardinal="<<(!allowDiagonals?"true":"false");
-	std::cout << " pr="<<(reducePerimeter?"true":"false");
-	std::cout << " bfr="<<(bfReduction?"true":"false");
-	std::cout << " abs=";
-	switch(absType)
+	std::cout << " search=";
+	switch(searchType)
 	{
 		case HOG::HPA:
 			std::cout << "HPA";
 			break;
-		case HOG::ERR:
-			std::cout << "ERR";
+		case HOG::RSR:
+			std::cout << "RSR";
+			if(reducePerimeter)
+				std::cout << "+pr";
+			if(bfReduction)
+				std::cout << "+bfr";
 			break;
-		case HOG::FLAT:
-			std::cout << "FLAT";
+		case HOG::JPS:
+			std::cout << "JPS";
+			if(jps_preprocess)
+				std::cout << "+pre";
+			std::cout << "(lookahead="<<jps_recursion_depth
+				<< ")";
 			break;
-		case HOG::FLATJUMP:
-			std::cout << "FLATJUMP";
-			break;
-		case HOG::MULTIJUMP:
-			std::cout << "MULTIJUMP";
-			break;
-		case HOG::JPA:
-			std::cout << "JPA";
+		case HOG::ASTAR:
+			std::cout << "A*";
 			break;
 		default:
 			std::cout << "Unknown?? Fix me!!";
-			break;
+			exit(1);
 	}
 	std::cout << std::endl;
 
-	algName = (char*)"";
 	Map* map = new Map(gDefaultMap);
 	std::cout << "map: "<<gDefaultMap;
 
@@ -239,7 +249,7 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout <<map->getMapHeight()<<std::endl;
 
 	mapAbstraction* aMap = 0;
-	switch(absType)
+	switch(searchType)
 	{
 		case HOG::HPA:
 		{
@@ -250,7 +260,7 @@ createSimulation(unitSimulation * &unitSim)
 			dynamic_cast<HPAClusterAbstraction*>(aMap)->clearColours();
 			break;
 		}
-		case HOG::ERR:
+		case HOG::RSR:
 		{
 			aMap = new EmptyClusterAbstraction(map, 
 					new EmptyClusterFactory(), new MacroNodeFactory(),
@@ -264,10 +274,17 @@ createSimulation(unitSimulation * &unitSim)
 
 			break;
 		}
-		case HOG::JPA:
+		case HOG::JPS:
 		{
-			aMap = new JumpPointAbstraction(map, new NodeFactory(), 
-					new EdgeFactory(), verbose);
+			if(jps_preprocess)
+			{
+				aMap = new JumpPointAbstraction(map, new NodeFactory(), 
+						new EdgeFactory(), verbose);
+			}
+			else
+			{
+				aMap = new mapFlatAbstraction(map);
+			}
 			break;
 		}
 		default:
@@ -385,14 +402,13 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 				nextExperiment->getGoalY());
 		
 
-		algName = (char*)alg->getName();
 		alg->verbose = verbose;
 		path* p = alg->getPath(aMap, from, to);
 //		double distanceTravelled = aMap->distance(p);	
 		double distanceTravelled = to->getLabelF(kTemporaryLabel);
-		stats.addStat("distanceMoved", algName, distanceTravelled);
+		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
 		alg->logFinalStats(&stats);
-		processStats(&stats);
+		processStats(&stats, alg->getName());
 		stats.clearAllStats();
 		delete p;
 
@@ -561,18 +577,20 @@ initializeHandlers()
 			"Verify each experiment ran is solved optimally."
 			"(default = false)");
 
-	installCommandLineHandler(myAllPurposeCLHandler, "-abs", 
-			"-abs [flat | flatjump | multijump | hpa | err | err_pr | err_bfr | err_pr_bfr]", 
-			"Abstraction Type:\n"
-			"\tflat = no abstraction (default)\n"
-			"\tflatjump = like flat but use jump points to speed search\n"
-			"\tmultijump = recursive flatjump (default depth=3) \n"
+	installCommandLineHandler(myAllPurposeCLHandler, "-search", 
+			"-search [algorithm]", 
+			"Available Search Algorithms:\n"
+			"\tastar = standard a* search\n"
+			"\trsr = rectangular symmetry reduction (all optimisations applied)\n" 
+			"\trsr_simple = rectangular symmetry reduction (rectangle decomposition only, no pruning)\n"
+			"\trsr_pr = rsr_simple + perimeter reduction as a preprocessing step\n"
+			"\trsr_bfr = rsr_simple + online branching factor optimisations\n"
 			"\thpa = hpa cluster abstraction (cluster size = 10x10)\n"
-			"\terr = empty rectangular rooms abstraction\n"
-			"\terr_pr = err with perimeter reduction\n"
-			"\terr_bfr = err with branching factor optimisations\n"
-			"\terr_pr_bfr = err with both perimeter reduction and branching "
-			"factor optimisations\n");
+			"\tjps = online jump point search\n"
+			"\tjpsr = recursive flatjump (default depth=3) \n"
+			"\tjps_pre = jps + preprocessing to speed up search\n"
+			"\tjpsr_pre = recursive jps_pre (default depth=3)\n"
+			);
 
 	installMouseClickHandler(myClickHandler);
 }
@@ -601,61 +619,62 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 		checkOptimality = true;
 		argsParsed++;
 	}
-	else if(strcmp(argument[0], "-abs") == 0)
+	else if(strcmp(argument[0], "-search") == 0)
 	{
 		argsParsed++;
 		if(strcmp(argument[1], "hpa") == 0)
 		{
-			absType = HOG::HPA; 
+			searchType = HOG::HPA; 
 			argsParsed++;
 		}
-		else if(strcmp(argument[1], "err") == 0)
+		else if(strcmp(argument[1], "rsr_simple") == 0)
 		{
 			argsParsed++;
-			absType = HOG::ERR; 
+			searchType = HOG::RSR; 
 		}
-		else if(strcmp(argument[1], "err_pr") == 0)
+		else if(strcmp(argument[1], "rsr_pr") == 0)
 		{
 			argsParsed++;
-			absType = HOG::ERR; 
+			searchType = HOG::RSR; 
 			reducePerimeter = true;
 		}
-		else if(strcmp(argument[1], "err_bfr") == 0)
+		else if(strcmp(argument[1], "rsr_bfr") == 0)
 		{
 			argsParsed++;
-			absType = HOG::ERR; 
+			searchType = HOG::RSR; 
 			bfReduction = true;
 		}
-		else if(strcmp(argument[1], "err_pr_bfr") == 0)
+		else if(strcmp(argument[1], "rsr") == 0)
 		{
 			argsParsed++;
-			absType = HOG::ERR; 
+			searchType = HOG::RSR; 
 			bfReduction = true;
 			reducePerimeter = true;
 		}
-		else if(strcmp(argument[1], "flat") == 0)
+		else if(strcmp(argument[1], "jps") == 0)
 		{
 			argsParsed++;
-			absType = HOG::FLAT;
-		}
-		else if(strcmp(argument[1], "flatjump") == 0)
-		{
-			argsParsed++;
-			absType = HOG::FLATJUMP;
-		}
-		else if(strcmp(argument[1], "multijump") == 0)
-		{
-			argsParsed++;
-			absType = HOG::MULTIJUMP;
-		}
-		else if(strcmp(argument[1], "jpa") == 0)
-		{
-			argsParsed++;
-			absType = HOG::JPA;
+			searchType = HOG::JPS;
+			int jps_params = 0;
+			for(int i=2; i < maxNumArgs; i++)
+			{
+				if(*argument[i] == '-')
+					break;
+				jps_params++;
+			}
+			if(parse_jps_args(argument+2, jps_params))
+			{
+				argsParsed += jps_params;
+			}
+			else
+			{
+				printCommandLineArguments();
+				exit(1);
+			}
 		}
 		else
 		{
-			std::cout << argument[1] << ": invalid abstraction type.\n";
+			std::cout << argument[1] << ": invalid search type.\n";
 			printCommandLineArguments();
 			exit(1);
 		}
@@ -841,7 +860,11 @@ myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 		if(lastunit)
 		{
 			lastunit->logFinalStats(unitSim->getStats());
-			processStats(unitSim->getStats());
+			statCollection* allStats = unitSim->getStats();
+			for(int i=0; i < allStats->getNumOwners(); i++)
+			{
+				processStats(allStats, allStats->lookupOwnerID(i));
+			}
 		}
 	}
 	unitSim->clearAllUnits();
@@ -884,8 +907,6 @@ myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 	unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
 	u->setColor(1,1,0);
 	targ->setColor(1,1,0);
-
-	algName = (char*)u->getName();
 	u->setSpeed(0.12);
 }
 
@@ -940,9 +961,9 @@ runNextExperiment(unitSimulation *unitSim)
 			nextExperiment->getGoalY());
 
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, true); 
-	if(absType == HOG::FLATJUMP || absType == HOG::MULTIJUMP ||
-		   absType == HOG::JPA)
+	if(searchType == HOG::JPS)
 	{
+		// wrap JPS; this allows concrete refinement of jump point paths
 		std::string algname(alg->getName());
 		alg = new HierarchicalSearch(
 				new NoInsertionPolicy(),
@@ -952,7 +973,6 @@ runNextExperiment(unitSimulation *unitSim)
 	}	
 
 	alg->verbose = verbose;
-	algName = (char*)alg->getName();
 	nextUnit = new searchUnit(nextExperiment->getStartX(), 
 			nextExperiment->getStartY(), nextTarget, alg); 
 	nextUnit->setColor(0.1,0.1,0.5);
@@ -966,7 +986,6 @@ runNextExperiment(unitSimulation *unitSim)
 	std::cout << alg->getName() << ": ";
 	std::cout << "exp "<<expnum<<" ";
 	nextExperiment->print(std::cout);
-	//std::cout << " " << distanceTravelled;
 	std::cout << std::endl;
 
 	expnum++;
@@ -976,10 +995,11 @@ ExpansionPolicy*
 newExpansionPolicy(mapAbstraction* map)
 {
 	ExpansionPolicy* policy;
-	switch(absType)
+	switch(searchType)
 	{
-		case HOG::ERR:
+		case HOG::RSR:
 		{
+			// TODO: move this inside RSRSearch
 			if(bfReduction)
 				policy = new RRExpansionPolicy(map);
 			else
@@ -1010,7 +1030,7 @@ searchAlgorithm*
 newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 {
 	searchAlgorithm* alg = 0;
-	switch(absType)
+	switch(searchType)
 	{
 		case HOG::HPA:
 		{
@@ -1025,7 +1045,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 			alg->verbose = verbose;
 			break;
 		}
-		case HOG::ERR:
+		case HOG::RSR:
 		{
 			EmptyClusterAbstraction* map = 
 				dynamic_cast<EmptyClusterAbstraction*>(aMap);
@@ -1039,23 +1059,9 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 			break;
 		}
 
-		case HOG::FLATJUMP:
+		case HOG::JPS:
 		{
-			alg = new JumpPointSearch(true, 0, newHeuristic(), aMap);
-			alg->verbose = verbose;
-			break;
-		}
-
-		case HOG::MULTIJUMP:
-		{
-			alg = new JumpPointSearch(true, 3, newHeuristic(), aMap);
-			alg->verbose = verbose;
-			break;
-		}
-
-		case HOG::JPA:
-		{
-			alg = new JumpPointSearch(false, 0, newHeuristic(), aMap);
+			alg = new JumpPointSearch(!jps_preprocess, jps_recursion_depth, newHeuristic(), aMap);
 			alg->verbose = verbose;
 			break;
 		}
@@ -1077,7 +1083,7 @@ newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 		return new NoRefinementPolicy();
 
 	RefinementPolicy* refPol = 0;
-	switch(absType)
+	switch(searchType)
 	{
 		case HOG::HPA:
 		{
@@ -1088,9 +1094,7 @@ newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 			break;
 		}
 
-		case HOG::MULTIJUMP:
-		case HOG::FLATJUMP:
-		case HOG::JPA:
+		case HOG::JPS:
 		{
 			refPol = new OctileDistanceRefinementPolicy(map);
 			break;
@@ -1104,4 +1108,39 @@ newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 	}
 
 	return refPol;
+}
+
+bool
+parse_jps_args(char** argument, int maxArgs)
+{
+	jps_recursion_depth = 1;
+	jps_preprocess = false;
+
+	for(int i=0; i < maxArgs; i++)
+	{
+		if(strncmp(argument[i], "depth=", 6) == 0)
+		{
+			int tmp = atoi(argument[i]+6);
+			if(tmp != INT_MAX || tmp != INT_MIN)
+			{
+				jps_recursion_depth = tmp;
+			}
+		}
+		else if(strcmp(argument[i], "online") == 0)
+		{
+			jps_preprocess = false;
+		}
+
+		else if(strcmp(argument[i], "offline") == 0)
+		{
+			jps_preprocess = true;
+		}
+		else
+		{
+			std::cerr << "unrecognised search parameter: " << argument[i]
+				<< std::endl;
+			return false;
+		}
+	}
+	return true;
 }

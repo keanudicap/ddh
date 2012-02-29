@@ -26,9 +26,9 @@ namespace HOG
 {
 	typedef enum
 	{ 
-		HPA, ERR, FLAT, FLATJUMP, JPA, MULTIJUMP
+		ASTAR, HPA, RSR, JPS
 	} 
-	AbstractionType;
+	SearchMethod;
 }
 
 void myDisplayHandler(unitSimulation *, tKeyboardModifier, char key);
@@ -45,3 +45,4 @@ ExpansionPolicy* newExpansionPolicy(mapAbstraction* map);
 Heuristic* newHeuristic();
 searchAlgorithm* newSearchAlgorithm(mapAbstraction* aMap, bool refine=true);
 RefinementPolicy* newRefinementPolicy(ExpansionPolicy*, mapAbstraction*, bool);
+bool parse_jps_args(char** argument, int maxArgs);
