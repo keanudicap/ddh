@@ -28,7 +28,7 @@ JumpPointSearch::JumpPointSearch(bool _online, unsigned int _maxdepth,
 	{
 		jpl = new OfflineJumpPointLocator(
 				dynamic_cast<JumpPointAbstraction*>(map));
-		name.append("JPAS");
+		name.append("JPA");
 	}
 
 	if(maxdepth == 0)
