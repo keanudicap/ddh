@@ -150,8 +150,8 @@ FlexibleAStar::expand(node* current, node* goal, altheap* openList,
 
 	nodesExpanded++;
 	nodesTouched++;
-
 	policy->expand(current);
+
 	for(node* neighbour = policy->first(); neighbour != 0; 
 			neighbour = policy->next())
 	{
@@ -245,6 +245,11 @@ FlexibleAStar::relaxNode(node* from, node* to, node* goal, double cost,
 		//to->backpointer = from;
 		policy->label_n();
 		openList->decreaseKey(to);
+		if(&*(to->backpointer) != &*from)
+		{
+			policy->label_n();
+		}
+		assert(&*(to->backpointer) == &*from);
 	}
 }
 

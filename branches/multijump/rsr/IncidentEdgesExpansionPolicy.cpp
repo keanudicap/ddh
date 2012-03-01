@@ -2,7 +2,9 @@
 
 #include "graph.h"
 #include "graphAbstraction.h"
+
 #include <cassert>
+#include <cfloat>
 
 IncidentEdgesExpansionPolicy::IncidentEdgesExpansionPolicy(
 		graphAbstraction* map) : SelectiveExpansionPolicy()
@@ -52,6 +54,10 @@ IncidentEdgesExpansionPolicy::next_impl()
 		which++;
 		retVal = n();
 	}
+	else
+	{
+		which = target->getNumEdges();
+	}
 
 	return retVal;
 }
@@ -67,8 +73,13 @@ IncidentEdgesExpansionPolicy::hasNext()
 double 
 IncidentEdgesExpansionPolicy::cost_to_n()
 {
-	edge* e = target->getEdge(which);
-	return e->getWeight();
+	double cost = DBL_MAX;
+	if(n())
+	{
+		edge* e = target->getEdge(which);
+		cost = e->getWeight();
+	}
+	return cost;
 }
 
 void
@@ -76,5 +87,7 @@ IncidentEdgesExpansionPolicy::label_n()
 {
 	node* tmp = this->n();
 	if(tmp)
+	{
 		tmp->backpointer = this->target;
+	}
 }

@@ -51,7 +51,7 @@ class ExpansionPolicy
 		bool verbose;
 
 	protected:
-		node* n_;
+		//node* n_;
 		node* target;
 		ProblemInstance* problem;
 };
