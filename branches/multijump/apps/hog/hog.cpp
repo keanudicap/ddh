@@ -85,7 +85,7 @@ HOG::SearchMethod searchType = HOG::ASTAR;
 
 // JPS parameters
 int jps_recursion_depth = 0;
-bool jps_preprocess = false;
+bool jps_online = true;
 
 // RSR parameters
 bool reducePerimeter = false;
@@ -219,8 +219,8 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 		case HOG::JPS:
 			std::cout << "JPS";
-			if(jps_preprocess)
-				std::cout << "+pre";
+			if(!jps_online)
+				std::cout << "+preprocessing";
 			std::cout << "(lookahead="<<jps_recursion_depth
 				<< ")";
 			break;
@@ -267,16 +267,15 @@ createSimulation(unitSimulation * &unitSim)
 				   	new EdgeFactory(), allowDiagonals, reducePerimeter, 
 					bfReduction);
 
-			dynamic_cast<EmptyClusterAbstraction*>(aMap)->setVerbose(verbose);
+			//dynamic_cast<EmptyClusterAbstraction*>(aMap)->setVerbose(verbose);
 			dynamic_cast<EmptyClusterAbstraction*>(aMap)->buildClusters();
 			dynamic_cast<EmptyClusterAbstraction*>(aMap)->buildEntrances();
 			dynamic_cast<EmptyClusterAbstraction*>(aMap)->clearColours();
-
 			break;
 		}
 		case HOG::JPS:
 		{
-			if(jps_preprocess)
+			if(!jps_online)
 			{
 				aMap = new JumpPointAbstraction(map, new NodeFactory(), 
 						new EdgeFactory(), verbose);
@@ -292,13 +291,13 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 	}
 
-	if(verbose && aMap->getNumAbstractGraphs() > 1)
-	{
-		Heuristic* h = newHeuristic();
-		DebugUtility debug(aMap, h);
-		debug.printGraph(aMap->getAbstractGraph(1));
-		delete h;
-	}
+//	if(verbose && aMap->getNumAbstractGraphs() > 1)
+//	{
+//		Heuristic* h = newHeuristic();
+//		DebugUtility debug(aMap, h);
+//		debug.printGraph(aMap->getAbstractGraph(1));
+//		delete h;
+//	}
 
 	graph* g = aMap->getAbstractGraph(0);
 	if(aMap->getNumAbstractGraphs() > 1)
@@ -400,12 +399,15 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 				nextExperiment->getStartY());
 		node* to = aMap->getNodeFromMap(nextExperiment->getGoalX(), 
 				nextExperiment->getGoalY());
-		
 
 		alg->verbose = verbose;
 		path* p = alg->getPath(aMap, from, to);
-//		double distanceTravelled = aMap->distance(p);	
-		double distanceTravelled = to->getLabelF(kTemporaryLabel);
+		double distanceTravelled = 0;
+		if(searchType == HOG::JPS)
+			distanceTravelled = to->getLabelF(kTemporaryLabel);
+		else
+			distanceTravelled = aMap->distance(p);	
+
 		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
 		alg->logFinalStats(&stats);
 		processStats(&stats, alg->getName());
@@ -903,6 +905,17 @@ myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 	//	}
 	//}
 	astar = newSearchAlgorithm(aMap); 
+	if(searchType == HOG::JPS || searchType == HOG::RSR)
+	{
+		// wrap JPS and RSR in order to extract a refined path that can be 
+		// immediately executed (only need this when running the gui)
+		std::string algname(astar->getName());
+		astar = new HierarchicalSearch(
+				new NoInsertionPolicy(),
+				astar, 
+				new OctileDistanceRefinementPolicy(aMap));
+		((HierarchicalSearch*)astar)->setName(algname.c_str());
+	}	
 	astar->verbose = verbose;
 	unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
 	u->setColor(1,1,0);
@@ -961,9 +974,10 @@ runNextExperiment(unitSimulation *unitSim)
 			nextExperiment->getGoalY());
 
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, true); 
-	if(searchType == HOG::JPS)
+	if(searchType == HOG::JPS || searchType == HOG::RSR)
 	{
-		// wrap JPS; this allows concrete refinement of jump point paths
+		// wrap JPS and RSR in order to extract a refined path that can be 
+		// immediately executed (only need this when running the gui)
 		std::string algname(alg->getName());
 		alg = new HierarchicalSearch(
 				new NoInsertionPolicy(),
@@ -991,30 +1005,6 @@ runNextExperiment(unitSimulation *unitSim)
 	expnum++;
 }
 
-ExpansionPolicy* 
-newExpansionPolicy(mapAbstraction* map)
-{
-	ExpansionPolicy* policy;
-	switch(searchType)
-	{
-		case HOG::RSR:
-		{
-			// TODO: move this inside RSRSearch
-			if(bfReduction)
-				policy = new RRExpansionPolicy(map);
-			else
-				policy = new IncidentEdgesExpansionPolicy(map);
-			break;
-		}
-		default:
-		{
-			policy = new IncidentEdgesExpansionPolicy(map);
-			break;
-		}
-	}
-	return policy;
-}
-
 Heuristic* newHeuristic()
 {
 	Heuristic* h;
@@ -1036,43 +1026,36 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		{
 			GenericClusterAbstraction* map = 
 				dynamic_cast<GenericClusterAbstraction*>(aMap);
-			alg = new HierarchicalSearch(new DefaultInsertionPolicy(map),
+			alg = new HierarchicalSearch(
+					new DefaultInsertionPolicy(map),
 					new FlexibleAStar(
-						newExpansionPolicy(map), 
+						new IncidentEdgesExpansionPolicy(map),
 						newHeuristic()),
-						newRefinementPolicy(0, map, true));
+					newRefinementPolicy(0, map, true));
 			((HierarchicalSearch*)alg)->setName("HPA");
-			alg->verbose = verbose;
 			break;
 		}
 		case HOG::RSR:
 		{
-			EmptyClusterAbstraction* map = 
-				dynamic_cast<EmptyClusterAbstraction*>(aMap);
-			alg = new RSRSearch(
-					map, 
-					new FlexibleAStar(
-						newExpansionPolicy(map),
-						newHeuristic()));
-			((HierarchicalSearch*)alg)->setName("RSR");
-			alg->verbose = verbose;
+			alg = new RSRSearch(bfReduction, newHeuristic());
 			break;
 		}
 
 		case HOG::JPS:
 		{
-			alg = new JumpPointSearch(!jps_preprocess, jps_recursion_depth, newHeuristic(), aMap);
-			alg->verbose = verbose;
+			alg = new JumpPointSearch(jps_online, jps_recursion_depth, 
+					newHeuristic(), aMap);
 			break;
 		}
 
 		default:
 		{
-			alg = new FlexibleAStar(newExpansionPolicy(aMap), newHeuristic());
-			alg->verbose = verbose;
+			alg = new FlexibleAStar(
+					new IncidentEdgesExpansionPolicy(aMap), newHeuristic());
 			break;
 		}
 	}
+	alg->verbose = verbose;
 	return alg;
 }
 
@@ -1114,7 +1097,7 @@ bool
 parse_jps_args(char** argument, int maxArgs)
 {
 	jps_recursion_depth = 1;
-	jps_preprocess = false;
+	jps_online = true;
 
 	for(int i=0; i < maxArgs; i++)
 	{
@@ -1128,12 +1111,12 @@ parse_jps_args(char** argument, int maxArgs)
 		}
 		else if(strcmp(argument[i], "online") == 0)
 		{
-			jps_preprocess = false;
+			jps_online = true;
 		}
 
 		else if(strcmp(argument[i], "offline") == 0)
 		{
-			jps_preprocess = true;
+			jps_online = false;
 		}
 		else
 		{
