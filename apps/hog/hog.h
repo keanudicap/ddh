@@ -41,7 +41,6 @@ bool myClickHandler(unitSimulation *, int x, int y, point3d loc, tButtonType, tM
 void runNextExperiment(unitSimulation *unitSim);
 void processStats(statCollection* stat, const char* unitname);
 void gogoGadgetNOGUIScenario(mapAbstraction* ecmap);
-ExpansionPolicy* newExpansionPolicy(mapAbstraction* map);
 Heuristic* newHeuristic();
 searchAlgorithm* newSearchAlgorithm(mapAbstraction* aMap, bool refine=true);
 RefinementPolicy* newRefinementPolicy(ExpansionPolicy*, mapAbstraction*, bool);
