@@ -1,2 +1,30 @@
 \section{Related Work}
-Related work goes here.
+
+Problem definition
+
+Most optimal methods for path search in uniform-cost grids are based on $A^*$.  
+Starting with the source, 
+the most promising node is expanded 
+(i.e., all its neighbours are added to the list of nodes to expand).  
+The most promising node is defined as the node 
+that minimzes the sum 
+between the shortest distance from the source to the node 
+(known when the node is expanded) 
+and an (under-)estimate of the distance between the node and the target.  
+
+Many extensions have been proposed for $A^*$.  
+To reduce the number of nodes expanded, 
+Botea et al. \cite{botea04} proposed a hierarchical approach
+where the search is first performed at an abstract level 
+and then refined.  
+The resulting path is not optimal in general, 
+albeit often optimal.  
+
+The precision of the estimate of the distance 
+between any node and the target 
+affects greatly the number of nodes that need to be expanded.  
+
+
+JPS
+
+% EOF 
