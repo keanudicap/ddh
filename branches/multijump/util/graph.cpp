@@ -1,11 +1,8 @@
 /*
  * $Id: graph.cpp,v 1.11 2007/12/04
  *
-	@version 1.11: 
-		Added support for annotations: clearance values, terrain type.
- 
+	@author: Nathan Sturtevant
 	@author: Daniel Harabor
-	author:	Nathan Sturtevant
  * 
  * This file is part of HOG.
  *
@@ -214,48 +211,6 @@ edge *graph::findEdge(unsigned int from, unsigned int to)
   return 0;
 }
 
-///*edge* graph::findAnnotatedEdge(node* from, node* to, int capability, int clearance, double weight)
-//{
-//        if(!(from && to))
-//                return 0;
-//
-//		edge* shortestSoFar=0;
-//		
-//        edge_iterator ei = from->getEdgeIter();
-//        edge * e = from->edgeIterNext(ei);
-//        while(e)
-//        {
-//                        unsigned int which;
-//                        if ((which = e->getFrom()) == from->getNum()) which = e->getTo();
-//
-//                        /* found an existing edge between these two nodes */
-///*                        if(which == to->getNum())
-//                        {
-//                                /* is the edge traversable with the given capability parameter? */
-///*								int eclearance = e->getClearance(capability);
-//								if(e->getWeight() <= weight)
-//									if(eclearance >= clearance)
-//									{
-//										if(shortestSoFar==0)
-//											shortestSoFar = e;
-//										else
-//										{
-//											if(e->getWeight() < shortestSoFar->getWeight())
-//												shortestSoFar = e;
-//										}
-//										
-//									}
-////									else
-////										std::cout << "\nWARNING! findAnnotatedEdge being queried about a more optimal path between endpoints\n";
-//						}
-//
-//                        e = from->edgeIterNext(ei);
-//        }
-//
-//        return shortestSoFar;
-//}
-//*/
-
 bool graph::relax(edge *e, int weightIndex)
 {
   int from = e->getFrom();
@@ -400,49 +355,6 @@ node *graph::removeNode(node *n, unsigned int &oldID)
   }
   return tmp;
 }
-
-
-edge* node::findAnnotatedEdge(node* to, int capability, int clearance, double weight)
-{
-        if(!to)
-                return 0;
-
-		edge* shortestSoFar=0;
-		
-        edge_iterator ei = this->getEdgeIter();
-        edge * e = this->edgeIterNext(ei);
-        while(e)
-        {
-                        unsigned int which;
-                        if ((which = e->getFrom()) == this->getNum()) which = e->getTo();
-
-                        /* found an existing edge between these two nodes */
-                        if(which == to->getNum())
-                        {
-                                /* is the edge traversable with the given capability parameter? */
-								int eclearance = e->getClearance(capability);
-								if(e->getWeight() <= weight)
-									if(eclearance >= clearance)
-									{
-										if(shortestSoFar==0)
-											shortestSoFar = e;
-										else
-										{
-											if(e->getWeight() < shortestSoFar->getWeight())
-												shortestSoFar = e;
-										}
-										
-									}
-//									else
-//										std::cout << "\nWARNING! findAnnotatedEdge being queried about a more optimal path between endpoints\n";
-						}
-
-                        e = this->edgeIterNext(ei);
-        }
-
-        return shortestSoFar;
-}
-
 
 // BFS from start node
 vector<node*>* graph::getReachableNodes(node* start)
@@ -612,9 +524,6 @@ edge::edge(unsigned int f, unsigned int t, double w)
   setLabelF(kEdgeWeight, w);
 	//	if ((from == -1) || (to == -1))
 	//		cerr << "Error - " << from << "->" << to << endl;
-	
-	capability=0;
-	clearance=0;
 }
 
 
@@ -628,9 +537,6 @@ edge::edge(const edge* e)
 graph_object* edge::clone() const
 {	
 	edge *eclone = new edge(from, to, getLabelF(kEdgeWeight)); 
-	eclone->capability = capability;
-	eclone->clearance = clearance;
-	
 	return eclone;
 }
 
@@ -669,51 +575,14 @@ void edge::setLabelL(unsigned int index, long val)
   }
 }
 
-void edge::setClearance(int capability, int clearance)
-{
-	if(clearance <= 0)
-		return;
-	
-/*(	switch(capability)
-	{
-		case 0x4: // kGround
-			this->capability = capability;
-			this->clearance = clearance;
-		case 0x40: // kTrees
-			this->capability = capability;
-			this->clearance = clearance;
-		case 0x44: // kGround|kTrees
-*/			this->capability = capability;
-			this->clearance = clearance;
-//	}
-}
-int edge::getClearance(int agentcapability)
-{
-	if((this->capability & agentcapability) == capability)
-		return clearance;
-
-	return 0;
-}
-
-
-
 node::node(const char *n)
 :label(), _edgesOutgoing(), _edgesIncoming(), _allEdges()
 {
-	// fixme: unsafe, 30?
+	// TODO: unsafe, 30?
 	strncpy(name, n, 30);
-//	for (int x = 0; x < label.size(); x++)
-//		label[x].lval = MAXINT;
-		
 	keyLabel = 0;
 	markedEdge = 0;
 	backpointer = 0;
-
-	clusterid = -1; // no parent cluster set
-	terraintype=0; // no default terraintype assumed (untraversable node)
-	for(int i=0;i<3;i++) 	// init clvals. everything is zero unless otherwise specified.
-		clearance[i]=0;	
-
 	drawColor=0;
 }
 
@@ -726,151 +595,17 @@ node::node(const node* n)
 
 	keyLabel = n->keyLabel;
 	nodeNum = n->nodeNum;
-	width = n->width;
 	drawColor=0;
 	markedEdge = 0;
 	backpointer = 0;
 }
 
-// clones all labels, all annotations, nodeNum, weight etc. DOES NOT clone edges or parentclusterid
-// TODO: remove annotations stuff. call copy constructor
+// passthrough for copy constructor
+// TODO: remove this entirely?
 graph_object *node::clone() const
 {
-  node *n = new node(name);
-  for (unsigned int x = 0; x < label.size(); x++) n->label.push_back(label[x]);
-  
-  n->setParentCluster(-1); // cloned node is not assigned to any cluster intially
-  n->setTerrainType(terraintype);
-  for(int i=0; i<3;i++) n->clearance[i] = clearance[i];
-
-  n->keyLabel = keyLabel;
-  n->nodeNum = nodeNum;
-  n->width = width;
-  n->drawColor=0;
-  n->markedEdge = 0;
-  n->backpointer = 0;
-  return n;
+  return new node(this);
 }
-
-/* setClearance
-	@desc:
-		Clearance value annotations represent some maximal amount of free space at a map location for some given terrain type. 
-		if a node is traversable, minval = 1, maxval = unbounded.
-		else, minvalue = maxvalue = 0. 
-			
-		The number of annotations for each node is a function of the # of basic terrain types. More precisely, 
-		total # of node annotations = (2^n - n), where n is the number of basic terrains.
-		
-		Supported terrains: kGround, kTrees, kGround|kTrees.
-*/
-void node::setClearance(int terraintype, int value)
-{
-	if(this->terraintype == 0) // only nodes with valid terrain are traversable (and hence need clearance > 0)
-	{ 
-		if(debuginfo) cout << "node::setClearance: trying to set clearance > 0 for invalid terrain (t: "<<terraintype<<" @ "<<getLabelL(kFirstData)<<","<<getLabelL(kFirstData+1)<<")"<<endl;
-		return;
-	}
-	if(value < 0)
-	{
-		if(debuginfo) cout << "node::setClearance: Clearance value < 0 ("<<terraintype<<")"<<endl;
-		return;
-	}
-	
-	switch(terraintype)
-	{
-		case 0x04:
-			clearance[0] = value;
-			break;
-		case 0x40:
-			clearance[1] = value;
-			break;
-		case 0x44:
-			clearance[2] = value;
-			break;
-		default:
-			if(debuginfo) cout << "node::setClearance: Invalid terrain type ("<<terraintype<<")"<<endl;
-			break;
-	}
-
-}
-
-int node::getClearance(int terrain)
-{
-	int cv = 0;
-	switch(terrain)
-	{
-		case 0x04:
-			cv = clearance[0];
-			break;
-		case 0x40:
-			cv = clearance[1];
-			break;
-		case 0x44:
-			cv = clearance[2];
-			break;
-		default:
-			if(debuginfo) cout << "node::getClearance: Invalid terrain type ("<<terraintype<<")"<<endl;
-			break;
-	}
-
-	return cv;
-}
-
-int node::getTerrainType()
-{
-	return terraintype;
-}
-
-void node::setTerrainType(int terrain)
-{	
-	switch(terrain)
-	{
-		case 0x04:
-			terraintype = terrain;
-			break;
-		case 0x40:
-			terraintype = terrain;
-			break;
-		case 0x44:
-			terraintype = terrain;
-			break;
-		default:
-			if(debuginfo) cout << "node::setTerraintype: Invalid terrain type ("<<terraintype<<")"<<endl;
-			break;
-	}
-}
-
-int node::getParentCluster()
-{
-	return clusterid;
-}
-
-void node::setParentCluster(int clusterid)
-{
-	if(clusterid >= 0)
-		this->clusterid = clusterid;
-		
-	return;
-}
-
-
-
-// clones all labels, all annotations, nodeNum, weight etc. DOES NOT clone edges or parentclusterid
-/*graph_object *node::clone() const
-{
-  node *n = new node(name);
-  for (unsigned int x = 0; x < label.size(); x++) n->label.push_back(label[x]);
-  
-  n->setParentCluster(-1); // cloned node is not assigned to any cluster intially
-  n->setTerrainType(terraintype);
-  for(int i=0; i<3;i++) n->clearance[i] = clearance[i];
-
-  n->keyLabel = keyLabel;
-  n->nodeNum = nodeNum;
-  n->width = width;
-  
-  return n;
-}*/
 
 void node::addEdge(edge *e)
 {

@@ -111,7 +111,7 @@ public:
   std::vector<node*>* getReachableNodes(node* start);
   
   bool verifyGraph() const;
-  void Print(std::ostream&) const;
+  virtual void Print(std::ostream&) const;
   void printStats();
 
   
@@ -161,23 +161,15 @@ class edge : public graph_object {
 
 	int getEdgeNum() const { return edgeNum; } 
 
-	void Print(std::ostream&) const;
-	
-	void setClearance(int, int);
-	int getClearance(int);
-	int getCapability() { return capability; }
+	virtual void Print(std::ostream&) const;
 	
  private:
 	friend class graph;
 	friend class EmptyCluster;
 	bool mark;
 	unsigned int from, to;
-//	double weight;
-//	double width;
 	unsigned int edgeNum;//, label[MAXLABELS];
 	std::vector<labelValue> label;
-	int capability;
-	int clearance;
 };
 
 /**
@@ -245,16 +237,7 @@ public:
   double getWidth() { return width; }
   void setWidth(double val) { width = val; }
 
-  void Print(std::ostream&) const;
-
-  /* AHA* extensions */
-  void setClearance(int terraintype, int value);
-  int getClearance(int terrain);
-  void setTerrainType(int terrain);
-  int getTerrainType();
-  void setParentCluster(int clusterid);
-  int getParentCluster(); 
-  edge* findAnnotatedEdge(node* to, int capability, int clearance, double dist);
+  virtual void Print(std::ostream&) const;
 
   int drawColor;
   node* backpointer;
@@ -270,12 +253,6 @@ private:
   char name[30];
   int keyLabel;
   double width;
-  
-  int clearance[3];
-  int terraintype;
-  int clusterid;
-
-  
 };
 
 std::ostream& operator <<(std::ostream & out, const graph &_Graph);
