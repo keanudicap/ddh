@@ -11,6 +11,7 @@
 //
 
 #include <string>
+#include <cassert>
 
 class node;
 namespace Jump
@@ -31,7 +32,9 @@ namespace Jump
 	Jump::Direction computeDirection(node* cur, node* succ);
 	Jump::Direction computeDirection(int, int, int, int);
 	std::string toString(Jump::Direction d);
-	
+
+	// check if asserts are enabled or not
+	bool hog_asserts_enabled();
 }
 
 #endif

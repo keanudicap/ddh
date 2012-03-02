@@ -102,3 +102,9 @@ Jump::toString(Jump::Direction d)
 	}
 	return retVal;
 }
+bool Jump::hog_asserts_enabled()
+{
+	bool debug=false; 
+	assert(debug = true);
+   	return debug;
+}
