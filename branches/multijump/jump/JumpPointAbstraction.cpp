@@ -6,7 +6,11 @@
 #include "graph.h"
 #include "map.h"
 #include "OctileHeuristic.h"
-#include <limits.h>
+
+#include <cstdlib>
+#include <climits>
+#include <iostream>
+#include <fstream>
 
 JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf, 
 		IEdgeFactory* _ef, bool _verbose) : mapAbstraction(_m), 
@@ -16,6 +20,17 @@ JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf,
 	ef = _ef;
 
 	makeJumpPointGraph();
+	verifyHierarchy();
+}
+
+JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf, 
+		IEdgeFactory* _ef, std::string filename, bool _verbose) 
+	: mapAbstraction(_m), verbose(_verbose)
+{
+	nf = _nf;
+	ef = _ef;
+
+	importGraph(filename);
 	verifyHierarchy();
 }
 
@@ -196,6 +211,114 @@ JumpPointAbstraction::makeJumpPointGraph()
 					" cost: "<< e->getWeight() <<std::endl;
 			}
 		}
+	}
+}
+
+void
+JumpPointAbstraction::importGraph(std::string filename)
+{
+	// compute the set of nodes in the graph
+	graph* g = makeMapNodes(this->getMap(), nf);
+	abstractions.push_back(g);
+
+	std::ifstream fin(filename.c_str());
+	std::string nextline;
+	int line_num=1;
+
+	getline(fin, nextline);
+	int begin = nextline.find(std::string("nodes="));
+	int end = nextline.find(std::string(" "), begin);
+	int intVal = atoi(nextline.substr(begin+6, end).c_str());
+	if(intVal==0 || intVal == INT_MAX || intVal == INT_MIN)
+	{
+		std::cout << "Error importing graph: broken header on line."
+			<< line_num << std::endl;
+		exit(1);
+	}
+
+	line_num++;
+	nextline.clear();
+	getline(fin, nextline);
+	while(fin.good())
+	{
+		begin = 0;
+		end = nextline.find("[")-1;
+
+		if(end <= begin)
+		{
+			// line doesn't begin with a node identifier
+			std::cout << "Error importing graph: cannot find nodeid "
+				"on line " << line_num << std::endl;
+			exit(1);
+		}
+
+		intVal = atoi(nextline.substr(begin, end-begin).c_str());
+		if((intVal == 0 && nextline.at(begin) != '0') || intVal == INT_MAX || intVal == INT_MIN)
+		{
+			// record doesn't have an integral node identifier 
+			std::cout << "Error importing graph: invalid nodeid "
+				"on line " << line_num << std::endl;
+			exit(1);
+		}
+		int nodeId = intVal;
+
+		// read edge records
+		while(1)
+		{
+			// identify the range of the substring containing the edge record
+			end = nextline.find("]", begin);
+			begin = nextline.find("[", begin);
+
+			if(begin ==-1 && end == -1)
+			{
+				// node has no (more) outgoing edges
+				break;
+			}
+
+			if(begin==-1 || end == -1)
+			{
+				// invalid edge record
+				std::cout << "Error importing graph: invalid edge record on"
+					" line " << line_num << std::endl;
+				begin = nextline.find(" ", begin+1);
+				exit(1);
+			}
+
+			// read neighbour id
+			int commapos = nextline.find(",", begin);
+			intVal = atoi(nextline.substr(begin+1, commapos-(begin+1)).c_str());
+			if((intVal==0 && nextline.at(begin+1) != '0')  // a bit buggy
+					|| intVal == INT_MAX || intVal == INT_MIN)
+			{
+				std::cout << "Error importing graph: cannot read neighbourId on "
+					"line " << line_num << std::endl;
+				begin = nextline.find(" ", begin+1);
+				exit(1);
+			}
+			int neighbourId = intVal;
+			assert(begin+1 < end);
+
+			// read edge cost
+			begin = commapos;
+			double doubleVal = atof(nextline.substr(begin+1, (end-1)-(begin+1)).c_str());
+			if((doubleVal == 0 && nextline.at(begin+1) != '0') || doubleVal == HUGE_VAL)
+			{
+				std::cout << "Error importing graph: cannot read edge cost on "
+					"	line " << line_num << std::endl;
+				exit(1);
+			}
+
+			edge* e = new edge(nodeId, neighbourId, doubleVal);
+			int numEdges = g->getNumEdges();
+			g->addEdge(e);
+			assert(g->getNumEdges() > numEdges);
+
+			begin = end+1;
+			end++;
+		}
+		line_num++;
+		nextline.clear();
+		getline(fin, nextline);
 	}
 }
 

@@ -81,6 +81,8 @@ bool allowDiagonals = true;
 bool checkOptimality = false;
 bool runNext = false;
 
+std::string scenarioFile;
+
 // search algorithm parameter
 HOG::SearchMethod searchType = HOG::ASTAR;
 
@@ -216,12 +218,45 @@ processStats(statCollection* stat, const char* unitname)
 void 
 createSimulation(unitSimulation * &unitSim)
 {
+	Map* map = new Map(gDefaultMap);
+	int scalex = map->getMapWidth();
+	int scaley = map->getMapHeight();
+	if(scenariomgr.getNumExperiments() > 0)
+	{
+		scalex = scenariomgr.getNthExperiment(0)->getXScale();
+		scaley = scenariomgr.getNthExperiment(0)->getYScale();
+		if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
+			map->scale(scalex, scaley);
+	}
+
+	// print the list of parameters in use
 	bool asserts_enabled = false;
 	assert((asserts_enabled = true));
-	std::cout << "BUILD=" << (asserts_enabled?"debug":"fast") << std::endl;
-	std::cout << "createSimulation.";
-	std::cout << " nogui="<<(getDisableGUI()?"true":"false");
-	std::cout << " cardinal="<<(!allowDiagonals?"true":"false");
+	std::cout << "Configuration Parameters: "<<std::endl;
+	std::cout << " build: ";
+	if(asserts_enabled)
+	{ 
+		if(Jump::hog_asserts_enabled())
+			std::cout << "debug"<<std::endl;
+		else
+			std::cout << "hybrid" << std::endl;
+	}
+	else
+	{
+		if(Jump::hog_asserts_enabled())
+			std::cout << "hybrid"<<std::endl;
+		else
+			std::cout << "fast" << std::endl;
+	}
+	std::cout << " gui: "<<(getDisableGUI()?"false":"true") << std::endl;
+	std::cout << " map file: "<<gDefaultMap << 
+		" ("<<map->getMapWidth()<<"x"<<map->getMapHeight() << ")"<<std::endl;
+	std::cout << " scenario file: "<<scenarioFile<<std::endl;
+	std::cout << " import file: "<<import_graph_filename<<std::endl;
+	std::cout << " export file: "<<export_graph_filename<<std::endl;
+	std::cout << "Experiment Parameters:";
+	std::cout << " repeat="<<repeat << std::endl;
+	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
 	std::cout << " search=";
 	switch(searchType)
 	{
@@ -251,20 +286,6 @@ createSimulation(unitSimulation * &unitSim)
 	}
 	std::cout << std::endl;
 
-	Map* map = new Map(gDefaultMap);
-	std::cout << "map: "<<gDefaultMap;
-
-	int scalex = map->getMapWidth();
-	int scaley = map->getMapHeight();
-	if(scenariomgr.getNumExperiments() > 0)
-	{
-		scalex = scenariomgr.getNthExperiment(0)->getXScale();
-		scaley = scenariomgr.getNthExperiment(0)->getYScale();
-		if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
-			map->scale(scalex, scaley);
-	}
-	std::cout << " width: "<<map->getMapWidth()<<" height: ";
-	std::cout <<map->getMapHeight()<<std::endl;
 
 	mapAbstraction* aMap = 0;
 	switch(searchType)
@@ -295,8 +316,16 @@ createSimulation(unitSimulation * &unitSim)
 		{
 			if(!jps_online)
 			{
-				aMap = new JumpPointAbstraction(map, new NodeFactory(), 
-						new EdgeFactory(), verbose);
+				if(import_graph)
+				{
+					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
+							new EdgeFactory(), import_graph_filename,verbose);
+				}
+				else
+				{
+					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
+							new EdgeFactory(), verbose);
+				}
 			}
 			else
 			{
@@ -695,7 +724,6 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 		}
 		else
 		{
-			std::cout << "\nrepeat "<<repeat<<std::endl;
 			argsParsed++;
 		}
 	}
@@ -843,6 +871,7 @@ myExecuteScenarioCLHandler(char *argument[], int maxNumArgs)
 	std::string infile(argument[1]);
 	try
 	{
+		scenarioFile = infile;
 		scenariomgr.loadScenarioFile(infile.c_str());	
 	}
 	catch(std::invalid_argument& e)
