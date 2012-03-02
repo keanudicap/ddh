@@ -74,7 +74,7 @@ AbstractCluster::addParent(node* _p) throw(std::invalid_argument)
 	if(getVerbose())
 	{
 		std::cout << "AbstractCluster::addParent ";
-		p->Print(std::cout);
+		p->print(std::cout);
 		std::cout << std::endl;
 	}
 
@@ -191,8 +191,8 @@ AbstractCluster::addTransition(node* from_, node* to_, double edgeweight)
 		if(getVerbose())
 		{
 			std::cout << "AbstractCluster::addTransition between ";
-			from->Print(std::cout);
-			to->Print(std::cout);
+			from->print(std::cout);
+			to->print(std::cout);
 			std::cout << " cost: "<<edgeweight<<std::endl;
 		}
 	}
@@ -201,8 +201,8 @@ AbstractCluster::addTransition(node* from_, node* to_, double edgeweight)
 		if(getVerbose())
 		{
 			std::cout << "AbstractCluster::addTransition edge already exists: ";
-			from->Print(std::cout);
-			to->Print(std::cout);
+			from->print(std::cout);
+			to->print(std::cout);
 			std::cout << " cost: "<<e->getWeight()<<std::endl;
 		}
 	}
