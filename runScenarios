@@ -2,7 +2,15 @@
 stamp=`date "+%d/%m/%y %H:%M:%S"`" $1"
 echo "$stamp runScenarios"
 echo "$stamp runScenarios" >> log
-runs=3;
+
+runs=
+if [ -n "$3" ]
+then
+	runs=$3
+else
+	runs=1
+fi
+
 for ((x=1;x<=$runs;x++)) ; do
 	for i in $(ls $1);
 	do
