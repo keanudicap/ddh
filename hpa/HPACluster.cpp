@@ -95,7 +95,7 @@ HPACluster::addNode(node* _mynode) throw(std::invalid_argument)
 	{
 		std::ostringstream oss;
 		oss << "HPACluster::addNode arg outside cluster boundary."<<std::endl;
-		mynode->Print(oss);
+		mynode->print(oss);
 		oss << std::endl;
 		this->print(oss);
 		oss << std::endl;
@@ -106,7 +106,7 @@ HPACluster::addNode(node* _mynode) throw(std::invalid_argument)
 	{
 		std::ostringstream oss;
 		oss << "HPACluster::addNode arg outside cluster boundary."<<std::endl;
-		mynode->Print(oss);
+		mynode->print(oss);
 		oss << std::endl;
 		this->print(oss);
 		oss << std::endl;
@@ -118,7 +118,7 @@ HPACluster::addNode(node* _mynode) throw(std::invalid_argument)
 		std::ostringstream oss;
 		oss << "HPACluster::addNode arg already assigned "
 			"to cluster "<<mynode->getParentClusterId()<<std::endl;
-		mynode->Print(oss);
+		mynode->print(oss);
 		oss << std::endl;
 		print(oss);
 		oss << std::endl;

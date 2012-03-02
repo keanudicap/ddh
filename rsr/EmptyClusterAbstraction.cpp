@@ -71,7 +71,7 @@ void EmptyClusterAbstraction::buildClusters()
 				cluster->setVerbose(getVerbose());
 
 				double priority = cluster->getNumNodes();
-//				n->Print(std::cout);
+//				n->print(std::cout);
 //				std::cout << "cluster size: "<<cluster->getNumNodes() << 
 //					" priority: "<<priority;
 //				std::cout << std::endl;
@@ -92,7 +92,7 @@ void EmptyClusterAbstraction::buildClusters()
 		if(getVerbose())
 		{
 			std::cout << "cluster seed ";
-			cur->Print(std::cout);
+			cur->print(std::cout);
 			std::cout << " priority: "<<cur->getLabelF(kTemporaryLabel);
 			std::cout << std::endl;
 		}
