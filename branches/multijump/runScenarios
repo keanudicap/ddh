@@ -3,6 +3,23 @@ stamp=`date "+%d/%m/%y %H:%M:%S"`" $1"
 echo "$stamp runScenarios"
 echo "$stamp runScenarios" >> log
 
+function help
+{
+	echo "Syntax: ./runScenarios \"[path to scenario files]\" \"[args to pass hog]\" [number of runs]"
+	echo "Example: ./runScenarios \"experiments/scenarios/local/*\" \"-search jps\" 3"
+	echo "NB:"
+	echo "Quotation marks are important. Don't omit them!"
+	echo "It may also be necessary to append the wildcard character * to the end of "
+	echo "the path if every file in the target directory is a scenario"
+}
+
+if [ $# -le 2 ]
+then
+	echo "Error: Invalid syntax."
+	help
+	exit 1
+fi
+
 runs=
 if [ -n "$3" ]
 then
@@ -25,3 +42,4 @@ for ((x=1;x<=$runs;x++)) ; do
 			fi
 	done
 done
+
