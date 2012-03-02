@@ -45,3 +45,4 @@ Heuristic* newHeuristic();
 searchAlgorithm* newSearchAlgorithm(mapAbstraction* aMap, bool refine=true);
 RefinementPolicy* newRefinementPolicy(ExpansionPolicy*, mapAbstraction*, bool);
 bool parse_jps_args(char** argument, int maxArgs);
+void export_search_graph(graph* g);

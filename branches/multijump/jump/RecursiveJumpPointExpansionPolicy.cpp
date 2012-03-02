@@ -7,7 +7,8 @@
 #include "mapAbstraction.h"
 #include "ProblemInstance.h"
 
-#include <limits.h>
+#include <cfloat>
+#include <climits>
 
 RecursiveJumpPointExpansionPolicy::RecursiveJumpPointExpansionPolicy(
 		JumpPointLocator* _jpl, unsigned int _maxdepth) 

@@ -63,6 +63,7 @@
 #include "statCollection.h"
 
 #include <cstdlib>
+#include <climits>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -94,6 +95,16 @@ bool bfReduction = false;
 // number of times to run experiments in current scenario
 // only used when running with -nogui
 int repeat=1;
+
+// when true, the input graph is exported to file.
+bool export_graph=false;
+std::string export_graph_filename("");
+unsigned int export_graph_level = 0;
+
+// when true, load an input graph from file instead of
+// generating it from the map description
+bool import_graph=false;
+std::string import_graph_filename("");
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -298,6 +309,12 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 	}
 
+	// export the level 1 abstract graph
+	if(export_graph && export_graph_level < aMap->getNumAbstractGraphs())
+	{
+		export_search_graph(aMap->getAbstractGraph(export_graph_level));
+	}
+
 //	if(verbose && aMap->getNumAbstractGraphs() > 1)
 //	{
 //		Heuristic* h = newHeuristic();
@@ -364,7 +381,6 @@ createSimulation(unitSimulation * &unitSim)
 		int exitVal = 0; // nonzero indicates errors
 		for(int i=0; i < repeat; i++)
 		{
-			std::cout << "repeat "<<i<<std::endl;
 			exitVal = gogoGadgetNOGUIScenario(aMap);
 			if(exitVal)
 			{
@@ -592,6 +608,13 @@ initializeHandlers()
 	installCommandLineHandler(myAllPurposeCLHandler, "-repeat", "-repeat [times]", 
 			"Number of times to repeat the current scenario (default = 1)");
 
+	installCommandLineHandler(myAllPurposeCLHandler, "-export", "-export [filename]", 
+			"export the search graph to the specified file.");
+
+	installCommandLineHandler(myAllPurposeCLHandler, "-import", "-import [filename]", 
+			"import the search graph from a specified file (instead of generating it "
+			"from a map file).");
+
 	installCommandLineHandler(myAllPurposeCLHandler, "-cardinal", "-cardinal", 
 			"Disallow diagonal moves during search "
 			"(default = false)");
@@ -642,11 +665,31 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 		checkOptimality = true;
 		argsParsed++;
 	}
+	else if(strcmp(argument[0], "-export") == 0)
+	{
+		argsParsed++;
+		if(argsParsed < maxNumArgs && *argument[1] != '-')
+		{
+			argsParsed++;
+			export_graph=true;
+			export_graph_filename.append(argument[1]);
+		}
+	}
+	else if(strcmp(argument[0], "-import") == 0)
+	{
+		argsParsed++;
+		if(argsParsed < maxNumArgs && *argument[1] != '-')
+		{
+			argsParsed++;
+			import_graph=true;
+			import_graph_filename.append(argument[1]);
+		}
+	}
 	else if(strcmp(argument[0], "-repeat") == 0)
 	{
 		argsParsed++;
 		repeat = atoi(argument[1]);
-		if(repeat == 0 || repeat == INT_MAX && repeat == INT_MIN)
+		if(repeat == 0 || repeat == INT_MAX || repeat == INT_MIN)
 		{
 			repeat = 1;
 		}
@@ -1163,4 +1206,19 @@ parse_jps_args(char** argument, int maxArgs)
 		}
 	}
 	return true;
+}
+
+void
+export_search_graph(graph* g)
+{
+	assert(export_graph && export_graph_filename.size() > 0);
+	std::ofstream fout(export_graph_filename.c_str());
+	if(fout.fail())
+	{
+		std::cout << "Export failed. Cannot open target file: "
+			<< export_graph_filename << std::endl;
+		return;
+	}
+	g->print(fout);
+	fout.close();
 }

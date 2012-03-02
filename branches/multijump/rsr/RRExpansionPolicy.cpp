@@ -8,6 +8,8 @@
 #include "graph.h"
 #include "ProblemInstance.h"
 
+#include <cfloat>
+
 RRExpansionPolicy::RRExpansionPolicy(graphAbstraction* map) :
 
 	SelectiveExpansionPolicy()

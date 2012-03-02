@@ -3,6 +3,8 @@
 #include "constants.h"
 #include "graph.h"
 
+#include <cstdlib>
+
 // Find the direction of travel from a node to its jump point successor.
 // Note that jump point successors can only be located in a straight line
 // relative to their parent. Otherwise Jump::NONE is returned.
