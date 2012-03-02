@@ -2,6 +2,7 @@
 #include "graph.h"
 #include "mapAbstraction.h"
 
+#include <climits>
 
 OnlineJumpPointLocator::OnlineJumpPointLocator(mapAbstraction* _map) 
 	: JumpPointLocator(_map)

@@ -812,13 +812,13 @@ int node::nodeNeighborNext(neighbor_iterator& ni) const
 // dynamically when the graph is created.
 void node::print(ostream& out) const
 {
-  out << std::scientific << std::setprecision(4);
-  out << getNum() << std::endl;
+  out << std::fixed << std::setprecision(4);
+  out << getNum() << " ";
   for(unsigned int i; i < _edgesOutgoing.size(); i++)
   {
 	  edge* e = _edgesOutgoing[i];
 	  int nId = e->getTo();
-	  std::cout << "["<<nId<<","<<e->getWeight() << "] ";
+	  out << "["<<nId<<","<<e->getWeight() << "] ";
   }
 }
 
