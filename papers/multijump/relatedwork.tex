@@ -25,6 +25,26 @@ between any node and the target
 affects greatly the number of nodes that need to be expanded.  
 
 
-JPS
+\subsection{Jump Point Search}
+
+Our work is based on the Jump Point Search (JPS) approach.  
+JPS uses the following observations about uniform grid path planning: 
+\begin{itemize}
+\item 
+  Since we are interested only in optimal paths, 
+  given a node and its predecessor, 
+  the potential successors of the node are much fewer 
+  that eight (generally three and, in some instances, four).  
+\item 
+  Using additional symmetry (for instance, the fact that going North-West 
+  and then North is identical to going North and then North-West), 
+  the number of successors can be further reduced (often to one, sometimes to zero).  
+\item 
+  When there is only one successor, 
+  this successor can be immediately processed (this is the ``jump'').  
+\end{itemize}
+
+In JPS, the search works as follows: 
+from a node $n$, there are generally three successors
 
 % EOF 
