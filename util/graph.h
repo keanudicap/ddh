@@ -50,7 +50,7 @@ public:
   virtual ~graph_object() { gobjCount--; }
   int getUniqueID() const { return uniqueID; }
   virtual double getKey() { return 0; }
-  virtual void Print(std::ostream&) const;
+  virtual void print(std::ostream&) const;
   virtual graph_object *clone() const = 0;
   unsigned int key; // for use by a data structure to maintain a reverse-lookup
   // to go from an object to a table key in constant time.
@@ -105,13 +105,13 @@ public:
   void removeNode(node *n) { unsigned int x; removeNode(n, x); } // if you don't care about node #'s
   void removeNode(unsigned int nodeNum) { removeNode(getNode(nodeNum)); }
 	
-  inline int getNumEdges() { return _edges.size(); }
-  inline int getNumNodes() { return _nodes.size(); }
+  inline int getNumEdges() const { return _edges.size(); }
+  inline int getNumNodes() const { return _nodes.size(); }
   
   std::vector<node*>* getReachableNodes(node* start);
   
   bool verifyGraph() const;
-  virtual void Print(std::ostream&) const;
+  virtual void print(std::ostream&) const;
   void printStats();
 
   
@@ -161,7 +161,7 @@ class edge : public graph_object {
 
 	int getEdgeNum() const { return edgeNum; } 
 
-	virtual void Print(std::ostream&) const;
+	virtual void print(std::ostream&) const;
 	
  private:
 	friend class graph;
@@ -237,7 +237,7 @@ public:
   double getWidth() { return width; }
   void setWidth(double val) { width = val; }
 
-  virtual void Print(std::ostream&) const;
+  virtual void print(std::ostream&) const;
 
   int drawColor;
   node* backpointer;

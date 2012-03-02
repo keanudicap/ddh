@@ -30,20 +30,22 @@
 #include <vector>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 
 unsigned graph_object::uniqueIDCounter = 0;
 int graph_object::gobjCount = 0;
 
-void graph_object::Print(ostream& /*out*/) const
+void graph_object::print(ostream& /*out*/) const
 {
 	//	out << val;
 }
 
 ostream& operator <<(ostream & out, const graph_object &_Obj)
 {
-	_Obj.Print(out);
+	_Obj.print(out);
 	return out;
 }
 
@@ -394,24 +396,15 @@ vector<node*>* graph::getReachableNodes(node* start)
   return nodeList;
 }
 
-void graph::Print(ostream &out) const
+void graph::print(ostream &out) const
 {
+  out << "nodes="<< this->getNumNodes() << " edges="<< this->getNumEdges() << std::endl;
   node_iterator ni = getNodeIter();
-  edge_iterator ei = getEdgeIter();
-	
-  out << "Nodes:" << endl;
   while (1)
 	{
     node *n = nodeIterNext(ni);
     if (!n) break;
     out << *n << endl;
-  }
-  out << "Edges:" << endl;
-  while (1)
-	{
-    edge *e = edgeIterNext(ei);
-    if (!e) break;
-    out << *e << endl;
   }
 }
 
@@ -540,7 +533,7 @@ graph_object* edge::clone() const
 	return eclone;
 }
 
-void edge::Print(ostream& out) const
+void edge::print(ostream& out) const
 {
   out << from << "->" << to << " (" << getLabelF(kEdgeWeight) << ")";
 }
@@ -803,29 +796,46 @@ int node::nodeNeighborNext(neighbor_iterator& ni) const
 }
 
 
-void node::Print(ostream& out) const
+// serialises a simple node in a weighted graph. 
+//
+// each node is described on a single line.
+// each line begins with a node identifier followed by a set of (0..*) 
+// edge descriptors. for example: 
+// nodeid [id1,cost] [id2,cost],[id3,cost]
+//
+// each edge descriptor is a tuple formatted as so: [id,cost].
+// 'id' is the identifier of the neighbouring node; 'cost' is its weight
+// which is stored as a real number with a decimal precision of 4 digits.
+// each edge is assumed to be directed, originating at the current node
+// and terminating at the neighbouring node. 
+// there is no need to describe incoming edges; these can be re-added/computed
+// dynamically when the graph is created.
+void node::print(ostream& out) const
 {
-  out << "\"" << name << "\"" << " (" << nodeNum << ")";
-//  for (unsigned int x = 0; x < label.size(); x++)
-//	{
-//    out << " - " << label[x].lval;
-//  }
+  out << std::scientific << std::setprecision(4);
+  out << getNum() << std::endl;
+  for(unsigned int i; i < _edgesOutgoing.size(); i++)
+  {
+	  edge* e = _edgesOutgoing[i];
+	  int nId = e->getTo();
+	  std::cout << "["<<nId<<","<<e->getWeight() << "] ";
+  }
 }
 
 ostream& operator <<(ostream & out, const graph &_Graph)
 {
-  _Graph.Print(out);
+  _Graph.print(out);
   return out;
 }
 
 ostream& operator <<(ostream & out, const node &_Node)
 {
-  _Node.Print(out);
+  _Node.print(out);
   return out;
 }
 
 ostream& operator <<(ostream & out, const edge &_Edge)
 {
-  _Edge.Print(out);
+  _Edge.print(out);
   return out;
 }
