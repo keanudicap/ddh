@@ -83,13 +83,17 @@ bool runNext = false;
 // search algorithm parameter
 HOG::SearchMethod searchType = HOG::ASTAR;
 
-// JPS parameters
+// JPS default parameters
 int jps_recursion_depth = 0;
 bool jps_online = true;
 
-// RSR parameters
+// RSR default parameters
 bool reducePerimeter = false;
 bool bfReduction = false;
+
+// number of times to run experiments in current scenario
+// only used when running with -nogui
+int repeat=1;
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -201,6 +205,9 @@ processStats(statCollection* stat, const char* unitname)
 void 
 createSimulation(unitSimulation * &unitSim)
 {
+	bool asserts_enabled = false;
+	assert((asserts_enabled = true));
+	std::cout << "BUILD=" << (asserts_enabled?"debug":"fast") << std::endl;
 	std::cout << "createSimulation.";
 	std::cout << " nogui="<<(getDisableGUI()?"true":"false");
 	std::cout << " cardinal="<<(!allowDiagonals?"true":"false");
@@ -221,7 +228,7 @@ createSimulation(unitSimulation * &unitSim)
 			std::cout << "JPS";
 			if(!jps_online)
 				std::cout << "+preprocessing";
-			std::cout << "(lookahead="<<jps_recursion_depth
+			std::cout << "(recursion_depth="<<jps_recursion_depth
 				<< ")";
 			break;
 		case HOG::ASTAR:
@@ -354,11 +361,23 @@ createSimulation(unitSimulation * &unitSim)
 	}
 	else
 	{
-		gogoGadgetNOGUIScenario(aMap);
+		int exitVal = 0; // nonzero indicates errors
+		for(int i=0; i < repeat; i++)
+		{
+			std::cout << "repeat "<<i<<std::endl;
+			exitVal = gogoGadgetNOGUIScenario(aMap);
+			if(exitVal)
+			{
+				std::cout << "early termination\n";
+				break;
+			}
+		}
+		delete aMap;
+		exit(exitVal);
 	}
 }
 
-void 
+int
 gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 {
 	int exitVal = 0;
@@ -473,7 +492,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 	}
 	
 	delete alg;
-	delete aMap;
 
 	if(checkOptimality)
 	{
@@ -481,7 +499,7 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		delete gridmap;
 	}
 
-	exit(exitVal);
+	return exitVal;
 }
 
 
@@ -571,6 +589,9 @@ initializeHandlers()
 			"Turn on verbose (debugging) mode "
 			"(default = off)");
 
+	installCommandLineHandler(myAllPurposeCLHandler, "-repeat", "-repeat [times]", 
+			"Number of times to repeat the current scenario (default = 1)");
+
 	installCommandLineHandler(myAllPurposeCLHandler, "-cardinal", "-cardinal", 
 			"Disallow diagonal moves during search "
 			"(default = false)");
@@ -621,10 +642,29 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 		checkOptimality = true;
 		argsParsed++;
 	}
+	else if(strcmp(argument[0], "-repeat") == 0)
+	{
+		argsParsed++;
+		repeat = atoi(argument[1]);
+		if(repeat == 0 || repeat == INT_MAX && repeat == INT_MIN)
+		{
+			repeat = 1;
+		}
+		else
+		{
+			std::cout << "\nrepeat "<<repeat<<std::endl;
+			argsParsed++;
+		}
+	}
 	else if(strcmp(argument[0], "-search") == 0)
 	{
 		argsParsed++;
-		if(strcmp(argument[1], "hpa") == 0)
+		if(strcmp(argument[1], "astar") == 0)
+		{
+			searchType = HOG::ASTAR; 
+			argsParsed++;
+		}
+		else if(strcmp(argument[1], "hpa") == 0)
 		{
 			searchType = HOG::HPA; 
 			argsParsed++;
@@ -1096,9 +1136,6 @@ newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 bool
 parse_jps_args(char** argument, int maxArgs)
 {
-	jps_recursion_depth = 1;
-	jps_online = true;
-
 	for(int i=0; i < maxArgs; i++)
 	{
 		if(strncmp(argument[i], "depth=", 6) == 0)

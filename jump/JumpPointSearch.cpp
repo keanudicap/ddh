@@ -31,15 +31,16 @@ JumpPointSearch::JumpPointSearch(bool _online, unsigned int _maxdepth,
 		name.append("JPA");
 	}
 
+	std::stringstream ss;
+	ss << "R" << maxdepth;
+	name.append(ss.str());
+
 	if(maxdepth == 0)
 	{
 		expander = new JumpPointExpansionPolicy(jpl);
 	}
 	else
 	{
-		std::stringstream ss;
-		ss << "R" << maxdepth;
-		name.append(ss.str());
 		expander = new RecursiveJumpPointExpansionPolicy(jpl, maxdepth);
 	}
 	expander->verbose = verbose;
