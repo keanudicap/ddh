@@ -40,7 +40,7 @@ int myExecuteScenarioCLHandler(char *argument[], int maxNumArgs);
 bool myClickHandler(unitSimulation *, int x, int y, point3d loc, tButtonType, tMouseEventType);
 void runNextExperiment(unitSimulation *unitSim);
 void processStats(statCollection* stat, const char* unitname);
-void gogoGadgetNOGUIScenario(mapAbstraction* ecmap);
+int gogoGadgetNOGUIScenario(mapAbstraction* ecmap);
 Heuristic* newHeuristic();
 searchAlgorithm* newSearchAlgorithm(mapAbstraction* aMap, bool refine=true);
 RefinementPolicy* newRefinementPolicy(ExpansionPolicy*, mapAbstraction*, bool);
