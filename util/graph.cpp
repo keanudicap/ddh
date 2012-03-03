@@ -818,7 +818,7 @@ void node::print(ostream& out) const
   {
 	  edge* e = _edgesOutgoing[i];
 	  int nId = e->getTo();
-	  out << "["<<nId<<","<<e->getWeight() << "] ";
+	  //out << "["<<nId<<","<<e->getWeight() << "] ";
   }
 }
 

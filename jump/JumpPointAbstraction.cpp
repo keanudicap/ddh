@@ -204,11 +204,6 @@ JumpPointAbstraction::makeJumpPointGraph()
 			{
 				node* from = g->getNode(e->getFrom());
 				node* to = g->getNode(e->getTo());
-				std::cout << "jpa edge: ("<< from->getLabelL(kFirstData) << ", "
-					<< from->getLabelL(kFirstData+1) << ") -> ("<<
-					to->getLabelL(kFirstData)<<","<<
-					to->getLabelL(kFirstData+1)<<")"<<
-					" cost: "<< e->getWeight() <<std::endl;
 			}
 		}
 	}
@@ -320,5 +315,6 @@ JumpPointAbstraction::importGraph(std::string filename)
 		nextline.clear();
 		getline(fin, nextline);
 	}
+	fin.close();
 }
 
