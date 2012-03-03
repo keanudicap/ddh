@@ -33,16 +33,10 @@ class JumpPointLocator
 		unsigned int numForcedNeighbours();
 		node* getForcedNeighbour(unsigned int i);
 
-		// fringe nodes are forced neighbours or jump point successors
-		// of the node last returned by findJumpNode.
-		unsigned int numFringeNodes();
-		node* getFringeNode(unsigned int index);
-
 		inline int getLimit() { return jumplimit; }
 		inline void setLimit(int lim) { jumplimit = lim; }
 
 	protected:
-		std::vector<node*> fringe;
 		mapAbstraction* map;
 		int jumplimit; // max # of steps to take before giving up (default=inf)
 };
