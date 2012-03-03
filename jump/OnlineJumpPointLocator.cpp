@@ -25,8 +25,6 @@ node*
 OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y, 
 		int goalx, int goaly)
 {
-	fringe.clear();
-
 	node* n = 0;
 	switch(d)
 	{
@@ -47,14 +45,12 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(x-1, ny) && 
 						map->getNodeFromMap(x-1, ny-1))
 				{
-					fringe.push_back(map->getNodeFromMap(x-1,ny-1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(x+1, ny) &&
 						map->getNodeFromMap(x+1, ny-1))
 				{
-					fringe.push_back(map->getNodeFromMap(x+1,ny-1));
 					break;
 				}
 				
@@ -77,14 +73,12 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(x-1, ny) && 
 						map->getNodeFromMap(x-1, ny+1))
 				{
-					fringe.push_back(map->getNodeFromMap(x-1, ny+1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(x+1, ny) &&
 						map->getNodeFromMap(x+1, ny+1))
 				{
-					fringe.push_back(map->getNodeFromMap(x+1, ny+1));
 					break;
 				}
 			}
@@ -106,14 +100,12 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx, y-1) && 
 						map->getNodeFromMap(nx+1, y-1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx+1, y-1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(nx, y+1) &&
 						map->getNodeFromMap(nx+1, y+1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx+1, y+1));
 					break;
 				}
 			}
@@ -136,14 +128,12 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx, y-1) && 
 						map->getNodeFromMap(nx-1, y-1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx-1, y-1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(nx, y+1) &&
 						map->getNodeFromMap(nx-1, y+1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx-1, y+1));
 					break;
 				}
 			}
@@ -171,7 +161,6 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx, ny+1) && 
 						map->getNodeFromMap(nx+1, ny+1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx+1, ny+1));
 					break;
 				}
 
@@ -180,18 +169,14 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx-1, ny) && 
 						map->getNodeFromMap(nx-1, ny-1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx-1, ny-1));
 					break;
 				}
 			
 				// n is a jump node if we can reach other jump nodes by
 				// travelling vertically or horizontally 
-				node* tmp = findJumpNode(Jump::N, nx, ny, goalx, goaly);
-				node* tmp2 = findJumpNode(Jump::E, nx, ny, goalx, goaly);
-				if(tmp || tmp2)
+				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::E, nx, ny, goalx, goaly))
 				{
-					if(tmp) fringe.push_back(tmp);
-					if(tmp2) fringe.push_back(tmp2);
 					break;
 				}
 			}
@@ -214,23 +199,18 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx, ny-1) && 
 						map->getNodeFromMap(nx+1, ny-1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx+1, ny-1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(nx-1, ny) && 
 						map->getNodeFromMap(nx-1, ny+1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx-1, ny+1));
 					break;
 				}
 
-				node* tmp = findJumpNode(Jump::S, nx, ny, goalx, goaly);
-				node* tmp2 = findJumpNode(Jump::E, nx, ny, goalx, goaly);
-				if(tmp || tmp2)
+				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::E, nx, ny, goalx, goaly))
 				{
-					if(tmp) fringe.push_back(tmp);
-					if(tmp2) fringe.push_back(tmp2);
 					break;
 				}
 			}
@@ -253,23 +233,18 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx, ny+1) && 
 						map->getNodeFromMap(nx-1, ny+1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx-1, ny+1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(nx+1, ny) && 
 						map->getNodeFromMap(nx+1, ny-1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx+1, ny-1));
 					break;
 				}
 
-				node* tmp = findJumpNode(Jump::N, nx, ny, goalx, goaly);
-				node* tmp2 = findJumpNode(Jump::W, nx, ny, goalx, goaly);
-				if(tmp || tmp2)
+				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
+					findJumpNode(Jump::W, nx, ny, goalx, goaly))
 				{
-					if(tmp) fringe.push_back(tmp);
-					if(tmp2) fringe.push_back(tmp2);
 					break;
 				}
 			}
@@ -292,23 +267,18 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(!map->getNodeFromMap(nx, ny-1) && 
 						map->getNodeFromMap(nx-1, ny-1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx-1, ny-1));
 					break;
 				}
 
 				if(!map->getNodeFromMap(nx+1, ny) && 
 						map->getNodeFromMap(nx+1, ny+1))
 				{
-					fringe.push_back(map->getNodeFromMap(nx+1, ny+1));
 					break;
 				}
 
-				node* tmp = findJumpNode(Jump::S, nx, ny, goalx, goaly);
-				node* tmp2 = findJumpNode(Jump::W, nx, ny, goalx, goaly);
-				if(tmp || tmp2)
+				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) ||
+					findJumpNode(Jump::W, nx, ny, goalx, goaly))
 				{
-					if(tmp) fringe.push_back(tmp);
-					if(tmp2) fringe.push_back(tmp2);
 					break;
 				}
 			}
