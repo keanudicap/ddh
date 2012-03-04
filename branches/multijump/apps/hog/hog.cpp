@@ -467,10 +467,11 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		alg->verbose = verbose;
 		path* p = alg->getPath(aMap, from, to);
 		double distanceTravelled = 0;
-		if(searchType == HOG::JPS)
-			distanceTravelled = to->getLabelF(kTemporaryLabel);
-		else
+
+		if(p)
+		{
 			distanceTravelled = aMap->distance(p);	
+		}
 
 		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
 		alg->logFinalStats(&stats);
