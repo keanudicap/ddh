@@ -147,3 +147,64 @@ plotresults <- function(series, dist, mainlabel, xlabel, ylabel, snames)
 	}
 	legend("topleft", snames, lty=seq(1, numSeries, by=1), cex=1.25)
 }
+
+runav <- function(raw, runs)
+{
+# averages the SEARCH TIME RESULTS from several runs on the 
+# same experiment set.
+# NB: this function IS ONLY USEFUL IF in the results file
+# the same set of experiments are repeated immediately one
+# after the other: i.e. execute all of scenario a, then
+# execute it again a second time, without anything in between
+	out <- raw[1,]
+	
+	firstindex = 1
+	lastindex = 1
+	while(firstindex < length(raw$map))
+	{
+		index = firstindex
+		mapname <- raw$map[index]
+		stepsize = 1000;
+		while(stepsize >= 1)
+		{
+			while(mapname == raw$map[index])
+			{
+				lastindex = index;
+				index = index + stepsize
+				if(index > length(raw$map))
+				{
+					index = length(raw$map)
+					break
+				}
+			}
+			stepsize = as.integer(stepsize / 2)
+			index = lastindex;
+		}
+		lastindex = index
+		rawmap <- raw[firstindex:lastindex,]
+		print(c(raw$map[firstindex], "range: ", firstindex, lastindex))
+		flush.console()
+
+		uniqueExperiments = as.integer(length(rawmap$map)/runs)
+		for(i in seq(1, uniqueExperiments, by=1))
+		{
+			searchTime = rawmap$st[i]
+			expIndex = i + uniqueExperiments
+			while(expIndex < length(rawmap$map))
+			{
+				searchTime = searchTime + rawmap$st[expIndex]
+				if(rawmap$id[expIndex] != rawmap$id[i])
+				{	
+					print("warning: averaging results for different experiments. Rows:", i, expIndex)
+					flush.console()
+				}
+				expIndex = expIndex + uniqueExperiments
+			}
+			rawmap$st[i] = mean(searchTime);
+		}
+		out <- rbind(out, rawmap[1:uniqueExperiments,])
+		firstindex = lastindex+1
+	}
+	out <- out[-1,]
+	out	
+}
