@@ -91,8 +91,8 @@ int jps_recursion_depth = 0;
 bool jps_online = true;
 
 // RSR default parameters
-bool reducePerimeter = false;
-bool bfReduction = false;
+bool reducePerimeter = true;
+bool bfReduction = true;
 
 // number of times to run experiments in current scenario
 // only used when running with -nogui
@@ -657,15 +657,8 @@ initializeHandlers()
 			"-search [algorithm]", 
 			"Available Search Algorithms:\n"
 			"\tastar = standard a* search\n"
-			"\trsr = rectangular symmetry reduction (all optimisations applied)\n" 
-			"\trsr_simple = rectangular symmetry reduction (rectangle decomposition only, no pruning)\n"
-			"\trsr_pr = rsr_simple + perimeter reduction as a preprocessing step\n"
-			"\trsr_bfr = rsr_simple + online branching factor optimisations\n"
-			"\thpa = hpa cluster abstraction (cluster size = 10x10)\n"
+			"\trsr = rectangular symmetry reduction\n" 
 			"\tjps = online jump point search\n"
-			"\tjpsr = recursive flatjump (default depth=3) \n"
-			"\tjps_pre = jps + preprocessing to speed up search\n"
-			"\tjpsr_pre = recursive jps_pre (default depth=3)\n"
 			);
 
 	installMouseClickHandler(myClickHandler);
@@ -741,29 +734,26 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 			searchType = HOG::HPA; 
 			argsParsed++;
 		}
-		else if(strcmp(argument[1], "rsr_simple") == 0)
-		{
-			argsParsed++;
-			searchType = HOG::RSR; 
-		}
-		else if(strcmp(argument[1], "rsr_pr") == 0)
-		{
-			argsParsed++;
-			searchType = HOG::RSR; 
-			reducePerimeter = true;
-		}
-		else if(strcmp(argument[1], "rsr_bfr") == 0)
-		{
-			argsParsed++;
-			searchType = HOG::RSR; 
-			bfReduction = true;
-		}
 		else if(strcmp(argument[1], "rsr") == 0)
 		{
 			argsParsed++;
-			searchType = HOG::RSR; 
-			bfReduction = true;
-			reducePerimeter = true;
+			searchType = HOG::RSR;
+			int rsr_params = 0;
+			for(int i=2; i < maxNumArgs; i++)
+			{
+				if(*argument[i] == '-')
+					break;
+				rsr_params++;
+			}
+			if(parse_jps_args(argument+2, rsr_params))
+			{
+				argsParsed += rsr_params;
+			}
+			else
+			{
+				printCommandLineArguments();
+				exit(1);
+			}
 		}
 		else if(strcmp(argument[1], "jps") == 0)
 		{
@@ -1227,6 +1217,39 @@ parse_jps_args(char** argument, int maxArgs)
 		else if(strcmp(argument[i], "offline") == 0)
 		{
 			jps_online = false;
+		}
+		else
+		{
+			std::cerr << "unrecognised search parameter: " << argument[i]
+				<< std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+bool
+parse_rsr_args(char** argument, int maxArgs)
+{
+	reducePerimeter = true;
+	bfReduction = true;
+	for(int i=0; i < maxArgs; i++)
+	{
+		if(strcmp(argument[i], "simple") == 0)
+		{
+			bfReduction = false;
+			reducePerimeter = false;
+		}
+		else if(strcmp(argument[i], "bfr_only") == 0)
+		{
+			bfReduction = true;
+			reducePerimeter = false;
+		}
+
+		else if(strcmp(argument[i], "pr_only") == 0)
+		{
+			bfReduction = false;
+			reducePerimeter = true;
 		}
 		else
 		{
