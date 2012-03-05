@@ -13,9 +13,9 @@ function help
 	echo "the path if every file in the target directory is a scenario"
 }
 
-if [ $# -le 2 ]
+if [ $# -le 1 ]
 then
-	echo "Error: Invalid syntax."
+	echo "Error: Invalid syntax. $0 $1 $2 $3"
 	help
 	exit 1
 fi
