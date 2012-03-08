@@ -26,9 +26,9 @@ namespace HOG
 {
 	typedef enum
 	{ 
-		HPA, ERR, FLAT, FLATJUMP, JPA
+		ASTAR, HPA, RSR, JPS
 	} 
-	AbstractionType;
+	SearchMethod;
 }
 
 void myDisplayHandler(unitSimulation *, tKeyboardModifier, char key);
@@ -40,8 +40,10 @@ int myExecuteScenarioCLHandler(char *argument[], int maxNumArgs);
 bool myClickHandler(unitSimulation *, int x, int y, point3d loc, tButtonType, tMouseEventType);
 void runNextExperiment(unitSimulation *unitSim);
 void processStats(statCollection* stat, const char* unitname);
-void gogoGadgetNOGUIScenario(mapAbstraction* ecmap);
-ExpansionPolicy* newExpansionPolicy(mapAbstraction* map);
+int gogoGadgetNOGUIScenario(mapAbstraction* ecmap);
 Heuristic* newHeuristic();
 searchAlgorithm* newSearchAlgorithm(mapAbstraction* aMap, bool refine=true);
-RefinementPolicy* newRefinementPolicy(mapAbstraction* map, bool refine);
+RefinementPolicy* newRefinementPolicy(ExpansionPolicy*, mapAbstraction*, bool);
+bool parse_jps_args(char** argument, int maxArgs);
+bool parse_rsr_args(char** argument, int maxArgs);
+void export_search_graph(graph* g);

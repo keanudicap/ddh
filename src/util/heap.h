@@ -40,7 +40,7 @@ public:
   // creates a new min or max heap (depending on whether minheap 
   // is true or false)
   heap(int s = DEFAULT_SIZE, bool minheap = true );
-  ~heap();
+  virtual ~heap();
 
   unsigned int size();
   void add(graph_object *val);

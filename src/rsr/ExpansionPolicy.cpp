@@ -7,6 +7,7 @@ ExpansionPolicy::ExpansionPolicy()
 {
 	this->target = 0;
 	this->problem = 0; 
+	verbose = false;
 }
 
 ExpansionPolicy::~ExpansionPolicy() 

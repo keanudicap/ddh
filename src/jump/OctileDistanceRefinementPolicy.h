@@ -28,6 +28,7 @@ class OctileDistanceRefinementPolicy : public RefinementPolicy
 		virtual path* refine(path* abspath);
 
 	private:
+		mapAbstraction* map;
 		node* nextStep(node* first, node* last);
 };
 

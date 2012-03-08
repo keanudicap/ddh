@@ -1,7 +1,7 @@
 #include "JumpPointRefinementPolicy.h"
 
 #include "graph.h"
-#include "JumpPointsExpansionPolicy.h"
+#include "JumpPointExpansionPolicy.h"
 #include "mapAbstraction.h"
 #include "OnlineJumpPointLocator.h"
 #include "OctileDistanceRefinementPolicy.h"
@@ -10,7 +10,7 @@
 #include <cstdlib>
 
 JumpPointRefinementPolicy::JumpPointRefinementPolicy(mapAbstraction* _map,
-		int _maxdepth) : RefinementPolicy(_map)
+		int _maxdepth) : RefinementPolicy(), map(_map), maxdepth(_maxdepth)
 {
 	this->jpl = new OnlineJumpPointLocator(_map);
 	this->maxdepth = _maxdepth;

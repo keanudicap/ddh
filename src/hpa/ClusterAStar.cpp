@@ -116,7 +116,7 @@ path* AbstractClusterAStar::search(graph* g, node* from, node* goal)
 	from->markEdge(0);
 	
 	heap* openList = new heap(30);
-	std::map<int, node*> closedList;
+	__gnu_cxx::hash_map<int, node*> closedList;
 	
 	openList->add(from);
 	path *p = NULL;
@@ -163,7 +163,7 @@ path* AbstractClusterAStar::search(graph* g, node* from, node* goal)
 
 void
 AbstractClusterAStar::expand(node* current, node* goal, edge_iterator iter, unsigned int card, 
-				heap* openList, std::map<int, node*>& closedList, graph* g)
+				heap* openList, ClosedList& closedList, graph* g)
 {
 	if(verbose) printNode(string("expanding... "), current, goal);
 	nodesExpanded++;
@@ -189,7 +189,7 @@ AbstractClusterAStar::expand(node* current, node* goal, edge_iterator iter, unsi
 }
 
 void AbstractClusterAStar::closeNode(node* current, 
-		std::map<int, node*>& closedList)
+		ClosedList& closedList)
 {
 	if(markForVis)
 		current->drawColor = 2; // visualise expanded
@@ -204,7 +204,7 @@ void AbstractClusterAStar::closeNode(node* current,
 }
 
 void AbstractClusterAStar::processNeighbour(node* current, edge* e, 
-		node* to, heap* openList, std::map<int, node*>& closedList, graph* g)
+		node* to, heap* openList, ClosedList& closedList, graph* g)
 {
 	int neighbourid = e->getFrom()==current->getNum()?e->getTo():e->getFrom();
 	ClusterNode* neighbour = static_cast<ClusterNode*>(

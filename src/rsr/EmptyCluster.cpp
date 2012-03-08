@@ -475,8 +475,8 @@ EmptyCluster::addInterEdges()
 					if(getVerbose())
 					{
 							std::cout << "EmptyCluster::addInterEdges connecting: ";
-							parent->Print(std::cout);
-							parent2->Print(std::cout);
+							parent->print(std::cout);
+							parent2->print(std::cout);
 							std::cout << " cost: "<<edgeweight<<std::endl;
 					}
 				}

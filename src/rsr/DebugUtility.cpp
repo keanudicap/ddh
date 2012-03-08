@@ -46,7 +46,7 @@ void DebugUtility::printPath(path* p)
 void DebugUtility::printNode(std::string msg, node* n, node* goal)
 {	
 	graph* g = map->getAbstractGraph(n->getLabelL(kAbstractionLevel));
-	std::cout << msg <<"addr: "<<&(*n)<<" num: "<<n->getUniqueID();
+	std::cout << msg <<&(*n)<<" ["<<n->getUniqueID() << "]";
 	std::cout <<" ("<<n->getLabelL(kFirstData)<<","<<n->getLabelL(kFirstData+1)<<") ";
 
 	if(n->getMarkedEdge())

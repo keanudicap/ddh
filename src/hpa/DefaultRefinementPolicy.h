@@ -17,6 +17,7 @@ class DefaultRefinementPolicy : public RefinementPolicy
 		inline bool getVerbose() { return verbose; }
 
 	private:
+		mapAbstraction* map_;
 		bool verbose;
 };
 

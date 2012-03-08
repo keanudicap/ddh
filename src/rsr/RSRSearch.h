@@ -3,40 +3,43 @@
 
 // RSRSearch.h
 // 
-// Almost identical to the standard HierarchicalSearch class,
-// this variant is hardcoded to use:
-//  - a FlexibleAStar search algorithm
-// 	- a EmptyClusterInsertionPolicy
-//  - a OctileDistanceRefinementPolicy.
+// A convenience wrapper for configuring various types of search 
+// algorithms that use Rectangular Symmetry Reduction.
 //
-// There is also a small optimisation where the optimal path
-// is returned without search if the start and goal are
-// located in the same cluster.
+// There is also a small optimisation where the optimal path is returned 
+// without search if the start and goal are located in the same cluster.
 // 
 // @author: dharabor
 // @created: 03/06/2011
 //
 
-#include "HierarchicalSearch.h"
+#include "searchAlgorithm.h"
 
-class EmptyClusterAbstraction;
 class FlexibleAStar;
+class Heuristic;
+class InsertionPolicy;
 class node;
 class path;
 class reservationProvider;
 
-class RSRSearch : public HierarchicalSearch
+class RSRSearch : public searchAlgorithm
 {
 	public: 
-		RSRSearch(EmptyClusterAbstraction* _map, 
-				FlexibleAStar* alg);
+		RSRSearch(bool bfReduction, Heuristic* heuristic);
 		virtual ~RSRSearch();
 
+		virtual const char* getName() { return name.c_str(); }
 		virtual path *getPath(graphAbstraction *aMap, node *from, node *to, 
 				reservationProvider *rp = 0);	
+		bool usingBranchingFactorReduction() { return bfReduction; }
 
 	private:
 		path* getClusterPath(node* from, node* to);
+		FlexibleAStar* alg;
+		std::string name;
+		bool bfReduction;
+		InsertionPolicy* inserter;
+		Heuristic* heuristic;
 };
 
 #endif

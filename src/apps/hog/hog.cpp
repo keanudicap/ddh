@@ -43,8 +43,9 @@
 #include "hog.h"
 #include "IncidentEdgesExpansionPolicy.h"
 #include "JumpPointAbstraction.h"
-#include "JumpPointsExpansionPolicy.h"
+#include "JumpPointExpansionPolicy.h"
 #include "JumpPointRefinementPolicy.h"
+#include "JumpPointSearch.h"
 #include "mapFlatAbstraction.h"
 #include "MacroNodeFactory.h"
 #include "ManhattanHeuristic.h"
@@ -55,12 +56,14 @@
 #include "OctileHeuristic.h"
 #include "OfflineJumpPointLocator.h"
 #include "OnlineJumpPointLocator.h"
+#include "RecursiveJumpPointExpansionPolicy.h"
 #include "RRExpansionPolicy.h"
 #include "ScenarioManager.h"
 #include "searchUnit.h"
 #include "statCollection.h"
 
 #include <cstdlib>
+#include <climits>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -75,26 +78,51 @@ int expnum=0;
 bool scenario=false;
 bool verbose = false;
 bool allowDiagonals = true;
-bool reducePerimeter = false;
-bool bfReduction = false;
 bool checkOptimality = false;
-char* algName;
-HOG::AbstractionType absType = HOG::FLAT;
 bool runNext = false;
+
+std::string scenarioFile;
+
+// search algorithm parameter
+HOG::SearchMethod searchType = HOG::ASTAR;
+
+// JPS default parameters
+int jps_recursion_depth = 0;
+bool jps_online = true;
+
+// RSR default parameters
+bool reducePerimeter = true;
+bool bfReduction = true;
+
+// number of times to run experiments in current scenario
+// only used when running with -nogui
+int repeat=1;
+
+// when true, the input graph is exported to file.
+bool export_graph=false;
+std::string export_graph_filename("");
+unsigned int export_graph_level = 0;
+
+// when true, load an input graph from file instead of
+// generating it from the map description
+bool import_graph=false;
+std::string import_graph_filename("");
 
 /**
  * This function is called each time a unitSimulation is deallocated to
  * allow any necessary stat processing beforehand
  */
-
 void 
 processStats(statCollection *stat)
 {
-	if(stat->getNumStats() == 0)
-		return;
-	
-	processStats(stat, algName);
-	stat->clearAllStats();
+        if(stat->getNumStats() == 0)
+                return;
+
+		for(int i=0; i < stat->getNumOwners(); i++)
+		{
+			processStats(stat, stat->lookupOwnerID(i));
+		}
+        stat->clearAllStats();
 }
 
 
@@ -179,6 +207,8 @@ processStats(statCollection* stat, const char* unitname)
 
 	fflush(f);
 	fclose(f);
+
+	stat->clearAllStats();
 }
 
 /**
@@ -188,39 +218,7 @@ processStats(statCollection* stat, const char* unitname)
 void 
 createSimulation(unitSimulation * &unitSim)
 {
-	std::cout << "createSimulation.";
-	std::cout << " nogui="<<(getDisableGUI()?"true":"false");
-	std::cout << " cardinal="<<(!allowDiagonals?"true":"false");
-	std::cout << " pr="<<(reducePerimeter?"true":"false");
-	std::cout << " bfr="<<(bfReduction?"true":"false");
-	std::cout << " abs=";
-	switch(absType)
-	{
-		case HOG::HPA:
-			std::cout << "HPA";
-			break;
-		case HOG::ERR:
-			std::cout << "ERR";
-			break;
-		case HOG::FLAT:
-			std::cout << "FLAT";
-			break;
-		case HOG::FLATJUMP:
-			std::cout << "FLATJUMP";
-			break;
-		case HOG::JPA:
-			std::cout << "JPA";
-			break;
-		default:
-			std::cout << "Unknown?? Fix me!!";
-			break;
-	}
-	std::cout << std::endl;
-
-	algName = (char*)"";
 	Map* map = new Map(gDefaultMap);
-	std::cout << "map: "<<gDefaultMap;
-
 	int scalex = map->getMapWidth();
 	int scaley = map->getMapHeight();
 	if(scenariomgr.getNumExperiments() > 0)
@@ -230,11 +228,67 @@ createSimulation(unitSimulation * &unitSim)
 		if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
 			map->scale(scalex, scaley);
 	}
-	std::cout << " width: "<<map->getMapWidth()<<" height: ";
-	std::cout <<map->getMapHeight()<<std::endl;
+
+	// print the list of parameters in use
+	bool asserts_enabled = false;
+	assert((asserts_enabled = true));
+	std::cout << "Configuration Parameters: "<<std::endl;
+	std::cout << " build: ";
+	if(asserts_enabled)
+	{ 
+		if(Jump::hog_asserts_enabled())
+			std::cout << "debug"<<std::endl;
+		else
+			std::cout << "hybrid" << std::endl;
+	}
+	else
+	{
+		if(Jump::hog_asserts_enabled())
+			std::cout << "hybrid"<<std::endl;
+		else
+			std::cout << "fast" << std::endl;
+	}
+	std::cout << " gui: "<<(getDisableGUI()?"false":"true") << std::endl;
+	std::cout << " map file: "<<gDefaultMap << 
+		" ("<<map->getMapWidth()<<"x"<<map->getMapHeight() << ")"<<std::endl;
+	std::cout << " scenario file: "<<scenarioFile<<std::endl;
+	std::cout << " import file: "<<import_graph_filename<<std::endl;
+	std::cout << " export file: "<<export_graph_filename<<std::endl;
+	std::cout << "Experiment Parameters:";
+	std::cout << " repeat="<<repeat << std::endl;
+	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
+	std::cout << " search=";
+	switch(searchType)
+	{
+		case HOG::HPA:
+			std::cout << "HPA";
+			break;
+		case HOG::RSR:
+			std::cout << "RSR";
+			if(reducePerimeter)
+				std::cout << "+pr";
+			if(bfReduction)
+				std::cout << "+bfr";
+			break;
+		case HOG::JPS:
+			std::cout << "JPS";
+			if(!jps_online)
+				std::cout << "+preprocessing";
+			std::cout << "(recursion_depth="<<jps_recursion_depth
+				<< ")";
+			break;
+		case HOG::ASTAR:
+			std::cout << "A*";
+			break;
+		default:
+			std::cout << "Unknown?? Fix me!!";
+			exit(1);
+	}
+	std::cout << std::endl;
+
 
 	mapAbstraction* aMap = 0;
-	switch(absType)
+	switch(searchType)
 	{
 		case HOG::HPA:
 		{
@@ -245,24 +299,38 @@ createSimulation(unitSimulation * &unitSim)
 			dynamic_cast<HPAClusterAbstraction*>(aMap)->clearColours();
 			break;
 		}
-		case HOG::ERR:
+		case HOG::RSR:
 		{
 			aMap = new EmptyClusterAbstraction(map, 
 					new EmptyClusterFactory(), new MacroNodeFactory(),
 				   	new EdgeFactory(), allowDiagonals, reducePerimeter, 
 					bfReduction);
 
-			dynamic_cast<EmptyClusterAbstraction*>(aMap)->setVerbose(verbose);
+			//dynamic_cast<EmptyClusterAbstraction*>(aMap)->setVerbose(verbose);
 			dynamic_cast<EmptyClusterAbstraction*>(aMap)->buildClusters();
 			dynamic_cast<EmptyClusterAbstraction*>(aMap)->buildEntrances();
 			dynamic_cast<EmptyClusterAbstraction*>(aMap)->clearColours();
-
 			break;
 		}
-		case HOG::JPA:
+		case HOG::JPS:
 		{
-			aMap = new JumpPointAbstraction(map, new NodeFactory(), 
-					new EdgeFactory(), verbose);
+			if(!jps_online)
+			{
+				if(import_graph)
+				{
+					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
+							new EdgeFactory(), import_graph_filename,verbose);
+				}
+				else
+				{
+					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
+							new EdgeFactory(), verbose);
+				}
+			}
+			else
+			{
+				aMap = new mapFlatAbstraction(map);
+			}
 			break;
 		}
 		default:
@@ -270,13 +338,19 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 	}
 
-	if(verbose && aMap->getNumAbstractGraphs() > 1)
+	// export the level 1 abstract graph
+	if(export_graph && export_graph_level < aMap->getNumAbstractGraphs())
 	{
-		Heuristic* h = newHeuristic();
-		DebugUtility debug(aMap, h);
-		debug.printGraph(aMap->getAbstractGraph(1));
-		delete h;
+		export_search_graph(aMap->getAbstractGraph(export_graph_level));
 	}
+
+//	if(verbose && aMap->getNumAbstractGraphs() > 1)
+//	{
+//		Heuristic* h = newHeuristic();
+//		DebugUtility debug(aMap, h);
+//		debug.printGraph(aMap->getAbstractGraph(1));
+//		delete h;
+//	}
 
 	graph* g = aMap->getAbstractGraph(0);
 	if(aMap->getNumAbstractGraphs() > 1)
@@ -333,23 +407,47 @@ createSimulation(unitSimulation * &unitSim)
 	}
 	else
 	{
-		gogoGadgetNOGUIScenario(aMap);
+		int exitVal = 0; // nonzero indicates errors
+		for(int i=0; i < repeat; i++)
+		{
+			exitVal = gogoGadgetNOGUIScenario(aMap);
+			if(exitVal)
+			{
+				std::cout << "early termination\n";
+				break;
+			}
+		}
+		delete aMap;
+		exit(exitVal);
 	}
 }
 
-void 
+int
 gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 {
 	int exitVal = 0;
 
-	aStarOld* astar = 0;
+	FlexibleAStar* astar = 0;
+	//aStarOld* astar = 0;
 	mapFlatAbstraction* gridmap = 0;
 	if(checkOptimality)
 	{
+		// scale the grid map if necessary
+		Map* map = new Map(gDefaultMap);
+		int scalex = map->getMapWidth();
+		int scaley = map->getMapHeight();
+		if(scenariomgr.getNumExperiments() > 0)
+		{
+			scalex = scenariomgr.getNthExperiment(0)->getXScale();
+			scaley = scenariomgr.getNthExperiment(0)->getYScale();
+			if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
+				map->scale(scalex, scaley);
+		}
+
 		// reference map and search alg for checking optimality
-		astar = new aStarOld();
-		gridmap = new mapFlatAbstraction(
-				new Map(gDefaultMap));
+		gridmap = new mapFlatAbstraction(map);
+		astar = new FlexibleAStar(new IncidentEdgesExpansionPolicy(gridmap), new OctileHeuristic());
+		//astar = new aStarOld();
 	}
 
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, false);
@@ -365,16 +463,19 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 				nextExperiment->getStartY());
 		node* to = aMap->getNodeFromMap(nextExperiment->getGoalX(), 
 				nextExperiment->getGoalY());
-		
 
-		algName = (char*)alg->getName();
 		alg->verbose = verbose;
 		path* p = alg->getPath(aMap, from, to);
-//		double distanceTravelled = aMap->distance(p);	
-		double distanceTravelled = to->getLabelF(kTemporaryLabel);
-		stats.addStat("distanceMoved", algName, distanceTravelled);
+		double distanceTravelled = 0;
+
+		if(p)
+		{
+			distanceTravelled = aMap->distance(p);	
+		}
+
+		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
 		alg->logFinalStats(&stats);
-		processStats(&stats);
+		processStats(&stats, alg->getName());
 		stats.clearAllStats();
 		delete p;
 
@@ -389,27 +490,39 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 			// run A* to check the optimal path length
 			node* s = gridmap->getNodeFromMap(nextExperiment->getStartX(),
 					nextExperiment->getStartY());
+			assert(s);
 			node* g = gridmap->getNodeFromMap(nextExperiment->getGoalX(),
 					nextExperiment->getGoalY());
+			assert(g);
+			optlen = 0;
 
 			p = astar->getPath(gridmap, s, g);
-			optlen = aMap->distance(p);
+			if(p)
+			{
+				optlen = gridmap->distance(p);
+			}
 			delete p;
 
 			if(!fequal(optlen, distanceTravelled))
 			{
-				std::cout << "optimality check failed!";
-				std::cout << "\noptimal path length: "<<optlen<<" computed length: ";
+				std::cout << "optimality check failed!" << std::endl;
+				std::cout << "exp "<<expnum<<" ";
+				nextExperiment->print(std::cout);
+				std::cout << " " << distanceTravelled;
+				std::cout << std::endl;
+				std::cout << "optimal path length: "<<optlen<<" computed length: ";
 				std::cout << distanceTravelled<<std::endl;
+				verbose = true;
 				if(verbose)
 				{
 					std::cout << "Running A*: \n";
 					astar->verbose = true;
 					alg->verbose = true;
-					path* p = astar->getPath(aMap, from, to);
-					double tmp = aMap->distance(p);
+					path* p = astar->getPath(gridmap, s, g);
+					double tmp = gridmap->distance(p);
 					delete p;
 					p = 0;
+
 					std::cout << "\nRunning "<<alg->getName()<<": \n";
 					p = alg->getPath(aMap, from, to);
 					double tmp2 = aMap->distance(p);
@@ -425,7 +538,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 	}
 	
 	delete alg;
-	delete aMap;
 
 	if(checkOptimality)
 	{
@@ -433,7 +545,7 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		delete gridmap;
 	}
 
-	exit(exitVal);
+	return exitVal;
 }
 
 
@@ -523,6 +635,16 @@ initializeHandlers()
 			"Turn on verbose (debugging) mode "
 			"(default = off)");
 
+	installCommandLineHandler(myAllPurposeCLHandler, "-repeat", "-repeat [times]", 
+			"Number of times to repeat the current scenario (default = 1)");
+
+	installCommandLineHandler(myAllPurposeCLHandler, "-export", "-export [filename]", 
+			"export the search graph to the specified file.");
+
+	installCommandLineHandler(myAllPurposeCLHandler, "-import", "-import [filename]", 
+			"import the search graph from a specified file (instead of generating it "
+			"from a map file).");
+
 	installCommandLineHandler(myAllPurposeCLHandler, "-cardinal", "-cardinal", 
 			"Disallow diagonal moves during search "
 			"(default = false)");
@@ -531,17 +653,13 @@ initializeHandlers()
 			"Verify each experiment ran is solved optimally."
 			"(default = false)");
 
-	installCommandLineHandler(myAllPurposeCLHandler, "-abs", 
-			"-abs [flat | flatjump | hpa | err | err_pr | err_bfr | err_pr_bfr]", 
-			"Abstraction Type:\n"
-			"\tflat = no abstraction (default)\n"
-			"\tflatjump = like flat but use jump points to speed search\n"
-			"\thpa = hpa cluster abstraction (cluster size = 10x10)\n"
-			"\terr = empty rectangular rooms abstraction\n"
-			"\terr_pr = err with perimeter reduction\n"
-			"\terr_bfr = err with branching factor optimisations\n"
-			"\terr_pr_bfr = err with both perimeter reduction and branching "
-			"factor optimisations\n");
+	installCommandLineHandler(myAllPurposeCLHandler, "-search", 
+			"-search [algorithm]", 
+			"Available Search Algorithms:\n"
+			"\tastar = standard a* search\n"
+			"\trsr = rectangular symmetry reduction\n" 
+			"\tjps = online jump point search\n"
+			);
 
 	installMouseClickHandler(myClickHandler);
 }
@@ -570,56 +688,97 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 		checkOptimality = true;
 		argsParsed++;
 	}
-	else if(strcmp(argument[0], "-abs") == 0)
+	else if(strcmp(argument[0], "-export") == 0)
 	{
 		argsParsed++;
-		if(strcmp(argument[1], "hpa") == 0)
+		if(argsParsed < maxNumArgs && *argument[1] != '-')
 		{
-			absType = HOG::HPA; 
 			argsParsed++;
+			export_graph=true;
+			export_graph_filename.append(argument[1]);
 		}
-		else if(strcmp(argument[1], "err") == 0)
+	}
+	else if(strcmp(argument[0], "-import") == 0)
+	{
+		argsParsed++;
+		if(argsParsed < maxNumArgs && *argument[1] != '-')
 		{
 			argsParsed++;
-			absType = HOG::ERR; 
+			import_graph=true;
+			import_graph_filename.append(argument[1]);
 		}
-		else if(strcmp(argument[1], "err_pr") == 0)
+	}
+	else if(strcmp(argument[0], "-repeat") == 0)
+	{
+		argsParsed++;
+		repeat = atoi(argument[1]);
+		if(repeat == 0 || repeat == INT_MAX || repeat == INT_MIN)
 		{
-			argsParsed++;
-			absType = HOG::ERR; 
-			reducePerimeter = true;
-		}
-		else if(strcmp(argument[1], "err_bfr") == 0)
-		{
-			argsParsed++;
-			absType = HOG::ERR; 
-			bfReduction = true;
-		}
-		else if(strcmp(argument[1], "err_pr_bfr") == 0)
-		{
-			argsParsed++;
-			absType = HOG::ERR; 
-			bfReduction = true;
-			reducePerimeter = true;
-		}
-		else if(strcmp(argument[1], "flat") == 0)
-		{
-			argsParsed++;
-			absType = HOG::FLAT;
-		}
-		else if(strcmp(argument[1], "flatjump") == 0)
-		{
-			argsParsed++;
-			absType = HOG::FLATJUMP;
-		}
-		else if(strcmp(argument[1], "jpa") == 0)
-		{
-			argsParsed++;
-			absType = HOG::JPA;
+			repeat = 1;
 		}
 		else
 		{
-			std::cout << argument[1] << ": invalid abstraction type.\n";
+			argsParsed++;
+		}
+	}
+	else if(strcmp(argument[0], "-search") == 0)
+	{
+		argsParsed++;
+		if(strcmp(argument[1], "astar") == 0)
+		{
+			searchType = HOG::ASTAR; 
+			argsParsed++;
+		}
+		else if(strcmp(argument[1], "hpa") == 0)
+		{
+			searchType = HOG::HPA; 
+			argsParsed++;
+		}
+		else if(strcmp(argument[1], "rsr") == 0)
+		{
+			argsParsed++;
+			searchType = HOG::RSR;
+			int rsr_params = 0;
+			for(int i=2; i < maxNumArgs; i++)
+			{
+				if(*argument[i] == '-')
+					break;
+				rsr_params++;
+			}
+			if(parse_jps_args(argument+2, rsr_params))
+			{
+				argsParsed += rsr_params;
+			}
+			else
+			{
+				printCommandLineArguments();
+				exit(1);
+			}
+		}
+		else if(strcmp(argument[1], "jps") == 0)
+		{
+			argsParsed++;
+			searchType = HOG::JPS;
+			int jps_params = 0;
+			for(int i=2; i < maxNumArgs; i++)
+			{
+				if(*argument[i] == '-')
+					break;
+				jps_params++;
+			}
+			if(parse_jps_args(argument+2, jps_params))
+			{
+				argsParsed += jps_params;
+			}
+			else
+			{
+				printCommandLineArguments();
+				exit(1);
+			}
+		}
+		else
+		{
+			std::cout << argument[1] << ": invalid search type.\n";
 			printCommandLineArguments();
 			exit(1);
 		}
@@ -703,6 +862,7 @@ myExecuteScenarioCLHandler(char *argument[], int maxNumArgs)
 	std::string infile(argument[1]);
 	try
 	{
+		scenarioFile = infile;
 		scenariomgr.loadScenarioFile(infile.c_str());	
 	}
 	catch(std::invalid_argument& e)
@@ -805,7 +965,11 @@ myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 		if(lastunit)
 		{
 			lastunit->logFinalStats(unitSim->getStats());
-			processStats(unitSim->getStats());
+			statCollection* allStats = unitSim->getStats();
+			for(int i=0; i < allStats->getNumOwners(); i++)
+			{
+				processStats(allStats, allStats->lookupOwnerID(i));
+			}
 		}
 	}
 	unitSim->clearAllUnits();
@@ -822,28 +986,43 @@ myNewUnitKeyHandler(unitSimulation *unitSim, tKeyboardModifier mod, char c)
 	
 	unitSim->addUnit(targ = new unit(x1, y1));
 
-	switch (mod)
+	//switch (mod)
+	//{
+	//	case kShiftDown: 
+	//	{
+	//		astar = newSearchAlgorithm(aMap); 
+	//		astar->verbose = verbose;
+	//		unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
+	//		u->setColor(0.3,0.7,0.3);
+	//		targ->setColor(0.3,0.7,0.3);
+	//		break;
+	//	}
+	//	default:
+	//	{
+	//		astar = new FlexibleAStar(newExpansionPolicy(aMap), newHeuristic());	
+	//		astar->verbose = verbose;
+	//		unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
+	//		u->setColor(1,1,0);
+	//		targ->setColor(1,1,0);
+	//		break;
+	//	}
+	//}
+	astar = newSearchAlgorithm(aMap); 
+	if(searchType == HOG::JPS || searchType == HOG::RSR)
 	{
-		case kShiftDown: 
-		{
-			astar = newSearchAlgorithm(aMap); 
-			astar->verbose = verbose;
-			unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
-			u->setColor(0.3,0.7,0.3);
-			targ->setColor(0.3,0.7,0.3);
-			break;
-		}
-		default:
-		{
-			astar = new FlexibleAStar(newExpansionPolicy(aMap), newHeuristic());	
-			astar->verbose = verbose;
-			unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
-			u->setColor(1,1,0);
-			targ->setColor(1,1,0);
-			break;
-		}
-	}
-	algName = (char*)u->getName();
+		// wrap JPS and RSR in order to extract a refined path that can be 
+		// immediately executed (only need this when running the gui)
+		std::string algname(astar->getName());
+		astar = new HierarchicalSearch(
+				new NoInsertionPolicy(),
+				astar, 
+				new OctileDistanceRefinementPolicy(aMap));
+		((HierarchicalSearch*)astar)->setName(algname.c_str());
+	}	
+	astar->verbose = verbose;
+	unitSim->addUnit(u=new searchUnit(x2, y2, targ, astar)); 
+	u->setColor(1,1,0);
+	targ->setColor(1,1,0);
 	u->setSpeed(0.12);
 }
 
@@ -898,8 +1077,19 @@ runNextExperiment(unitSimulation *unitSim)
 			nextExperiment->getGoalY());
 
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, true); 
+	if(searchType == HOG::JPS || searchType == HOG::RSR)
+	{
+		// wrap JPS and RSR in order to extract a refined path that can be 
+		// immediately executed (only need this when running the gui)
+		std::string algname(alg->getName());
+		alg = new HierarchicalSearch(
+				new NoInsertionPolicy(),
+				alg, 
+				new OctileDistanceRefinementPolicy(aMap));
+		((HierarchicalSearch*)alg)->setName(algname.c_str());
+	}	
+
 	alg->verbose = verbose;
-	algName = (char*)alg->getName();
 	nextUnit = new searchUnit(nextExperiment->getStartX(), 
 			nextExperiment->getStartY(), nextTarget, alg); 
 	nextUnit->setColor(0.1,0.1,0.5);
@@ -913,47 +1103,9 @@ runNextExperiment(unitSimulation *unitSim)
 	std::cout << alg->getName() << ": ";
 	std::cout << "exp "<<expnum<<" ";
 	nextExperiment->print(std::cout);
-	//std::cout << " " << distanceTravelled;
 	std::cout << std::endl;
 
 	expnum++;
-}
-
-ExpansionPolicy* 
-newExpansionPolicy(mapAbstraction* map)
-{
-	ExpansionPolicy* policy;
-	switch(absType)
-	{
-		case HOG::ERR:
-		{
-			if(bfReduction)
-				policy = new RRExpansionPolicy(map);
-			else
-				policy = new IncidentEdgesExpansionPolicy(map);
-			break;
-		}
-		case HOG::FLATJUMP:
-		{
-			policy = new JumpPointsExpansionPolicy(
-					new OnlineJumpPointLocator(map));
-			break;
-		}
-		case HOG::JPA:
-		{
-			JumpPointAbstraction* _map = 
-				dynamic_cast<JumpPointAbstraction*>(map);
-			policy = new JumpPointsExpansionPolicy(
-					new OfflineJumpPointLocator(_map));
-			break;
-		}
-		default:
-		{
-			policy = new IncidentEdgesExpansionPolicy(map);
-			break;
-		}
-	}
-	return policy;
 }
 
 Heuristic* newHeuristic()
@@ -971,77 +1123,53 @@ searchAlgorithm*
 newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 {
 	searchAlgorithm* alg = 0;
-	switch(absType)
+	switch(searchType)
 	{
 		case HOG::HPA:
 		{
 			GenericClusterAbstraction* map = 
 				dynamic_cast<GenericClusterAbstraction*>(aMap);
-			alg = new HierarchicalSearch(new DefaultInsertionPolicy(map),
+			alg = new HierarchicalSearch(
+					new DefaultInsertionPolicy(map),
 					new FlexibleAStar(
-						newExpansionPolicy(map), 
+						new IncidentEdgesExpansionPolicy(map),
 						newHeuristic()),
-						//newRefinementPolicy(map, refineAbsPath));
-						newRefinementPolicy(map, true));
+					newRefinementPolicy(0, map, true));
 			((HierarchicalSearch*)alg)->setName("HPA");
-			alg->verbose = verbose;
 			break;
 		}
-		case HOG::ERR:
+		case HOG::RSR:
 		{
-			EmptyClusterAbstraction* map = 
-				dynamic_cast<EmptyClusterAbstraction*>(aMap);
-			alg = new RSRSearch(
-					map, 
-					new FlexibleAStar(
-						newExpansionPolicy(map),
-						newHeuristic()));
-			((HierarchicalSearch*)alg)->setName("RSR");
-			alg->verbose = verbose;
+			alg = new RSRSearch(bfReduction, newHeuristic());
 			break;
 		}
 
-		case HOG::FLATJUMP:
+		case HOG::JPS:
 		{
-			alg = new HierarchicalSearch(new NoInsertionPolicy(),
-						new FlexibleAStar(
-							newExpansionPolicy(aMap),			
-							newHeuristic()),
-							newRefinementPolicy(aMap, refineAbsPath));
-			((HierarchicalSearch*)alg)->setName("JPS");
-			alg->verbose = verbose;
-			break;
-		}
-		case HOG::JPA:
-		{
-			alg = new HierarchicalSearch(new NoInsertionPolicy(),
-						new FlexibleAStar(
-							newExpansionPolicy(aMap),	
-							newHeuristic()),
-							newRefinementPolicy(aMap, refineAbsPath));
-			((HierarchicalSearch*)alg)->setName("JPAS");
-			alg->verbose = verbose;
+			alg = new JumpPointSearch(jps_online, jps_recursion_depth, 
+					newHeuristic(), aMap);
 			break;
 		}
 
 		default:
 		{
-			alg = new FlexibleAStar(newExpansionPolicy(aMap), newHeuristic());
-			alg->verbose = verbose;
+			alg = new FlexibleAStar(
+					new IncidentEdgesExpansionPolicy(aMap), newHeuristic());
 			break;
 		}
 	}
+	alg->verbose = verbose;
 	return alg;
 }
 
 RefinementPolicy*
-newRefinementPolicy(mapAbstraction* map, bool refine)
+newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 {
 	if(!refine)
 		return new NoRefinementPolicy();
 
 	RefinementPolicy* refPol = 0;
-	switch(absType)
+	switch(searchType)
 	{
 		case HOG::HPA:
 		{
@@ -1052,8 +1180,7 @@ newRefinementPolicy(mapAbstraction* map, bool refine)
 			break;
 		}
 
-		case HOG::FLATJUMP:
-		case HOG::JPA:
+		case HOG::JPS:
 		{
 			refPol = new OctileDistanceRefinementPolicy(map);
 			break;
@@ -1062,8 +1189,89 @@ newRefinementPolicy(mapAbstraction* map, bool refine)
 		default:
 		{
 			refPol = new NoRefinementPolicy();
+			break;
 		}
 	}
 
 	return refPol;
+}
+
+bool
+parse_jps_args(char** argument, int maxArgs)
+{
+	for(int i=0; i < maxArgs; i++)
+	{
+		if(strncmp(argument[i], "depth=", 6) == 0)
+		{
+			int tmp = atoi(argument[i]+6);
+			if(tmp != INT_MAX || tmp != INT_MIN)
+			{
+				jps_recursion_depth = tmp;
+			}
+		}
+		else if(strcmp(argument[i], "online") == 0)
+		{
+			jps_online = true;
+		}
+
+		else if(strcmp(argument[i], "offline") == 0)
+		{
+			jps_online = false;
+		}
+		else
+		{
+			std::cerr << "unrecognised search parameter: " << argument[i]
+				<< std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+bool
+parse_rsr_args(char** argument, int maxArgs)
+{
+	reducePerimeter = true;
+	bfReduction = true;
+	for(int i=0; i < maxArgs; i++)
+	{
+		if(strcmp(argument[i], "simple") == 0)
+		{
+			bfReduction = false;
+			reducePerimeter = false;
+		}
+		else if(strcmp(argument[i], "bfr_only") == 0)
+		{
+			bfReduction = true;
+			reducePerimeter = false;
+		}
+
+		else if(strcmp(argument[i], "pr_only") == 0)
+		{
+			bfReduction = false;
+			reducePerimeter = true;
+		}
+		else
+		{
+			std::cerr << "unrecognised search parameter: " << argument[i]
+				<< std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+void
+export_search_graph(graph* g)
+{
+	assert(export_graph && export_graph_filename.size() > 0);
+	std::ofstream fout(export_graph_filename.c_str());
+	if(fout.fail())
+	{
+		std::cout << "Export failed. Cannot open target file: "
+			<< export_graph_filename << std::endl;
+		return;
+	}
+	g->print(fout);
+	fout.close();
 }

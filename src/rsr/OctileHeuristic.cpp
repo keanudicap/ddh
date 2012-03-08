@@ -13,7 +13,7 @@ OctileHeuristic::~OctileHeuristic()
 {
 }
 
-// euclidean distance on octile grids
+// Euclidean distance on octile grids
 // author: Nathan Sturtevant
 double OctileHeuristic::h(node* a, node* b) const
 {

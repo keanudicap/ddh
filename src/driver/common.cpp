@@ -198,6 +198,13 @@ void processCommandLineArgs(int argc, char *argv[])
 	//initializeCommandLineHandlers();
 	// printCommandLineArguments();
 
+	if(argc < 2)
+	{
+		printf("Error: no initialisation arguments specified.\n");
+		printCommandLineArguments();
+		exit(10);
+	}
+
 	int lastval;
 	for (int y = 1; y < argc; )
 	{

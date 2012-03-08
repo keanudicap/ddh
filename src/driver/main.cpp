@@ -58,6 +58,7 @@ pRecContext getCurrentContext()
 
 void cleanup (void)
 {
+	return; // ignore this for now. let the OS clean things up
 	delete pContextInfo->unitLayer;
 	delete pContextInfo;
 	assert(graph_object::gobjCount == 0);
@@ -80,7 +81,6 @@ int main(int argc, char** argv)
 	else 
 		hh = getcwd(val, PATH_MAX);
 
-	std::cout << "\nHOGHOME";
 	setHome(hh);
 
 	// Init traj global

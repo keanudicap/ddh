@@ -8,6 +8,8 @@
 #include "graph.h"
 #include "ProblemInstance.h"
 
+#include <cfloat>
+
 RRExpansionPolicy::RRExpansionPolicy(graphAbstraction* map) :
 
 	SelectiveExpansionPolicy()
@@ -16,7 +18,7 @@ RRExpansionPolicy::RRExpansionPolicy(graphAbstraction* map) :
 
 	primary = new IncidentEdgesExpansionPolicy(map);
 	skipSecondary = false;
-	whichSecondary = 0;
+	whichSecondary = -1;
 	numSecondary = 0;
 	cost = 0;
 }
@@ -28,12 +30,12 @@ RRExpansionPolicy::~RRExpansionPolicy()
 
 void RRExpansionPolicy::expand(node* target_) throw(std::logic_error)
 {
+	ExpansionPolicy::expand(target_);
+
 	if(!primary->getProblemInstance())
 		primary->setProblemInstance(problem->clone());
-
 	primary->expand(target_);
 
-	ExpansionPolicy::expand(target_);
 	this->g = map->getAbstractGraph(target_->getLabelL(kAbstractionLevel));
 	MacroNode* mnTarget = dynamic_cast<MacroNode*>(target_);
 	assert(mnTarget);
@@ -48,13 +50,13 @@ void RRExpansionPolicy::expand(node* target_) throw(std::logic_error)
 		skipSecondary = false;
 	}
 
-	whichSecondary = 0;
+	whichSecondary = -1;
 	numSecondary = mnTarget->numSecondaryEdges();
 }
 
 node* RRExpansionPolicy::first_impl()
 {
-	whichSecondary = 0;
+	whichSecondary = -1;
 	node* retVal = primary->first();
 	cost = primary->cost_to_n();
 	return retVal;
@@ -70,6 +72,7 @@ node* RRExpansionPolicy::n_impl()
 		assert(primary->hasNext() == false);
 		if(skipSecondary == false && whichSecondary < numSecondary)
 		{
+			assert(0 <= whichSecondary);
 			MacroNode* mnTarget = dynamic_cast<MacroNode*>(target);
 			edge* e = mnTarget->getSecondaryEdge(whichSecondary);
 			assert(e);
@@ -84,14 +87,14 @@ node* RRExpansionPolicy::n_impl()
 
 node* RRExpansionPolicy::next_impl()
 {
-	node* retVal = 0;
-	if(primary->hasNext())
+	node* retVal = primary->next();
+	if(retVal)
 	{
-		retVal = primary->next();
 		cost = primary->cost_to_n();
 	}
 	else if(skipSecondary == false)
 	{
+		whichSecondary++;
 		if(whichSecondary < numSecondary)
 		{
 			MacroNode* mnTarget = dynamic_cast<MacroNode*>(target);
@@ -101,7 +104,10 @@ node* RRExpansionPolicy::next_impl()
 			retVal = g->getNode(neighbourid);
 			assert(retVal);
 			cost = e->getWeight();
-			whichSecondary++;
+		}
+		else
+		{
+			cost = DBL_MAX;
 		}
 	}
 
@@ -112,8 +118,10 @@ bool RRExpansionPolicy::hasNext()
 {
 	if(primary->hasNext())
 		return true;
-	if(0 <= whichSecondary && whichSecondary < numSecondary)
+
+	if(!skipSecondary && 0 < numSecondary && whichSecondary < numSecondary)
 		return true;
+
 	return false;
 }
 
@@ -121,3 +129,12 @@ double RRExpansionPolicy::cost_to_n()
 {
 	return cost;	
 }
+
+void
+RRExpansionPolicy::label_n()
+{
+	node* tmp = n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}
+
