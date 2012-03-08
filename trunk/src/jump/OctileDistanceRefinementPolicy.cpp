@@ -6,7 +6,7 @@
 #include "path.h"
 
 OctileDistanceRefinementPolicy::OctileDistanceRefinementPolicy(
-		mapAbstraction* _map) : RefinementPolicy(_map)
+		mapAbstraction* _map) : RefinementPolicy(), map(_map)
 {
 }
 

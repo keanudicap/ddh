@@ -26,6 +26,7 @@ class IncidentEdgesExpansionPolicy : public SelectiveExpansionPolicy
 		virtual void expand(node* n) throw(std::logic_error);
 		virtual bool hasNext();
 		virtual double cost_to_n();
+		virtual void label_n();
 
 
 	protected:

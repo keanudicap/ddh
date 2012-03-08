@@ -66,7 +66,7 @@ void
 EmptyClusterInsertionPolicy::remove(node* _n) 
 	throw(std::runtime_error)
 {
-	if(removeNode(_n))
+	if(InsertionPolicy::removeNode(_n))
 	{
 		// then remove it from the abstract graph and its parent cluster
 		graph* g = map->getAbstractGraph(1);

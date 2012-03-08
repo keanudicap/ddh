@@ -14,14 +14,12 @@
 // @created: 08/03/2011
 //
 
-class mapAbstraction;
 class path;
 class RefinementPolicy
 {
 	public:
-		RefinementPolicy(mapAbstraction* map);
+		RefinementPolicy();
 		virtual ~RefinementPolicy();
-
 		virtual path* refine(path* abspath) = 0;
 		
 		// metrics
@@ -35,8 +33,6 @@ class RefinementPolicy
 		inline void setVerbose(bool _verbose) { this->verbose = _verbose; }
 
 	protected:
-		mapAbstraction* map;
-
 		long nodesExpanded;
 		long nodesTouched;
 		long nodesGenerated;

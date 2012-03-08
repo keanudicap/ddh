@@ -13,6 +13,8 @@
 #include "mapAbstraction.h"
 #include "Jump.h"
 
+#include <string>
+
 class IEdgeFactory;
 class INodeFactory;
 class Map;
@@ -23,7 +25,10 @@ class graph;
 class JumpPointAbstraction : public mapAbstraction
 {
 	public:
-		JumpPointAbstraction(Map*, INodeFactory*, IEdgeFactory*, bool _verbose = false);
+		JumpPointAbstraction(Map*, INodeFactory*, IEdgeFactory*, 
+				bool _verbose = false);
+		JumpPointAbstraction(Map*, INodeFactory*, IEdgeFactory*, 
+				std::string filename, bool _verbose = false);
 		virtual ~JumpPointAbstraction();
 		virtual mapAbstraction *clone(Map *);
 
@@ -44,6 +49,7 @@ class JumpPointAbstraction : public mapAbstraction
 		IEdgeFactory* ef;
 
 		void makeJumpPointGraph();		
+		void importGraph(std::string filename);
 		node* findJumpNode(Jump::Direction d, int x, int y);
 		node* findObstacleJumpNode(Jump::Direction d, int x, int y);
 };

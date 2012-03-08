@@ -79,13 +79,13 @@ void path::print(bool beginning)
 		printf("[");
 	
 	if (n != NULL)
-		printf("0x%p [%ud](%ld, %ld)", (void*)n, n->getNum(),
+		printf("0x%p [%u](%ld, %ld)", (void*)n, n->getNum(),
 				n->getLabelL(kFirstData), n->getLabelL(kFirstData+1));
 	else
 		printf("NULL");
 	
 	if (next != NULL) {
-		printf(",");
+		printf("\n");
 		next->print(false);
 	}
 	else

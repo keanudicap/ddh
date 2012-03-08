@@ -19,6 +19,7 @@ FlexibleAStar::FlexibleAStar(ExpansionPolicy* policy, Heuristic* heuristic)
 	this->policy = policy;
 	this->heuristic = heuristic;
 	this->markForVis = true;
+	this->debug = 0;
 }
 
 FlexibleAStar::~FlexibleAStar()
@@ -37,12 +38,20 @@ path*
 FlexibleAStar::getPath(graphAbstraction *aMap, node *start, node *goal,
 		reservationProvider *rp)
 {
-	debug = new DebugUtility(aMap, heuristic);
+	if(verbose)
+	{
+		debug = new DebugUtility(aMap, heuristic);
+	}
+	policy->verbose = verbose;
 	policy->setProblemInstance(new ProblemInstance(start, goal, 
 				dynamic_cast<mapAbstraction*>(aMap), heuristic));
 	path* p = search(start, goal);
 
-	delete debug;
+	if(debug)
+	{
+		delete debug;
+		debug = 0;
+	}
 	return p;
 }
 
@@ -76,19 +85,16 @@ FlexibleAStar::search(node* start, node* goal)
 	t.startTimer();
 	while(1) 
 	{
-		// expand the current node
+		// expand the highest priority node from open
 		node* current = ((node*)openList.remove()); 
-
+	
 		if(verbose) 
 		{
-			double fVal = current->getLabelF(kTemporaryLabel);
-			double gVal = fVal - heuristic->h(current, goal);
-			debug->printNode(std::string("expanding... "), current);
-			std::cout << " g: "<<gVal<<" f: "<<fVal<<std::endl;
+			debug->printNode(std::string("expanding... "), current, goal);
 		}
 
 		// check if the current node is the goal (early termination)
-		if(current == goal)
+		if(&*current == &*goal)
 		{
 			if(verbose)
 				debug->printNode(std::string("goal found! "), current);
@@ -97,9 +103,9 @@ FlexibleAStar::search(node* start, node* goal)
 			break;
 		}
 		
-		// expand current node
-		expand(current, goal, &openList, &closedList);
+
 		closeNode(current, &closedList);
+		expand(current, goal, &openList, &closedList);
 				
 		// terminate when the open list is empty
 		if(openList.empty())
@@ -114,9 +120,8 @@ FlexibleAStar::search(node* start, node* goal)
 	start->drawColor = 3;
 	goal->drawColor = 3;
 
-	if(verbose)
+	if(verbose && p)
 	{
-		std::cout << "\n";
 		debug->printPath(p); 
 	}
 
@@ -132,7 +137,6 @@ FlexibleAStar::closeNode(node* current, ClosedList* closedList)
 	if(verbose)
 	{	
 		debug->printNode(std::string("closing... "), current);
-		std::cout << " f: "<<current->getLabelF(kTemporaryLabel) <<std::endl;
 	}
 	closedList->insert(std::pair<int, node*>(current->getUniqueID(), current));
 
@@ -146,8 +150,8 @@ FlexibleAStar::expand(node* current, node* goal, altheap* openList,
 
 	nodesExpanded++;
 	nodesTouched++;
-
 	policy->expand(current);
+
 	for(node* neighbour = policy->first(); neighbour != 0; 
 			neighbour = policy->next())
 	{
@@ -163,8 +167,8 @@ FlexibleAStar::expand(node* current, node* goal, altheap* openList,
 				{
 					if(neighbour->getLabelF(kTemporaryLabel) < fVal)
 					{
-						debug->printNode("\trelaxing...", neighbour);
-						std::cout << " gOld: "<< 
+						debug->printNode("\trelaxing...", neighbour, goal);
+						std::cout << "\tgOld: "<< 
 							(fVal - heuristic->h(neighbour, goal)) <<
 							" fOld: "<< fVal;
 						double fVal = neighbour->getLabelF(kTemporaryLabel);
@@ -180,22 +184,18 @@ FlexibleAStar::expand(node* current, node* goal, altheap* openList,
 			}
 			else
 			{
-				if(verbose) 
-					debug->printNode("\tgenerating...", neighbour);
 
 				neighbour->setLabelF(kTemporaryLabel, MAXINT); // initial fCost 
 				neighbour->setKeyLabel(kTemporaryLabel); // store priority here 
-				neighbour->backpointer = 0;  // reset any marked edges 
+				//neighbour->backpointer = 0;  // reset any marked edges 
 				openList->add(neighbour);
 				relaxNode(current, neighbour, goal, policy->cost_to_n(), openList); 
 				nodesGenerated++;
-
-				if(verbose)
+				if(verbose) 
 				{
-					double fVal = neighbour->getLabelF(kTemporaryLabel);
-					std::cout << " g: "<<(fVal - heuristic->h(neighbour, goal))
-							<< " fNew: "<< fVal;
+					debug->printNode("\tgenerating...", neighbour, goal);
 				}
+
 			}
 			if(markForVis)
 				neighbour->drawColor = 1; // visualise touched
@@ -204,19 +204,10 @@ FlexibleAStar::expand(node* current, node* goal, altheap* openList,
 		{
 			if(verbose)
 			{
-				debug->printNode("\tclosed...", neighbour);
-				double fCur = current->getLabelF(kTemporaryLabel);
-				double gCur =  fCur - heuristic->h(current, goal);
-				double gAlt = gCur + policy->cost_to_n();
-				double fAlt = gAlt + heuristic->h(neighbour, goal);
-				double fClosed = neighbour->getLabelF(kTemporaryLabel);
-				std::cout << " (fClosed: "<<fClosed<<"; fAlt: "<<fAlt<<")";
+				debug->printNode("\tclosed...", neighbour, goal);
+				debug->debugClosedNode(current, neighbour, policy->cost_to_n(), goal);
 			}
-			debug->debugClosedNode(current, neighbour, policy->cost_to_n(), goal);
 		}
-
-		if(verbose)
-			std::cout << std::endl;
 	}
 }
 
@@ -247,11 +238,18 @@ FlexibleAStar::relaxNode(node* from, node* to, node* goal, double cost,
 	double g_from = from->getLabelF(kTemporaryLabel) - heuristic->h(from, goal);
 	double f_to = g_from + cost + heuristic->h(to, goal);
 	
-	if(fless(f_to, to->getLabelF(kTemporaryLabel)))
+	if(!fequal(f_to, to->getLabelF(kTemporaryLabel)) &&
+			fless(f_to, to->getLabelF(kTemporaryLabel)))
 	{
 		to->setLabelF(kTemporaryLabel, f_to);
-		to->backpointer = from;
+		//to->backpointer = from;
+		policy->label_n();
 		openList->decreaseKey(to);
+		if(&*(to->backpointer) != &*from)
+		{
+			policy->label_n();
+		}
+		assert(&*(to->backpointer) == &*from);
 	}
 }
 

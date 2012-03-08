@@ -11,9 +11,10 @@
 // 	- OfflineJumpPointLocator
 //
 // @author: dharabor
-// @created: 
+// @created: 7/06/2011
 
 #include "Jump.h"
+#include <vector>
 
 class node;
 class mapAbstraction;
@@ -29,6 +30,8 @@ class JumpPointLocator
 		int computeSuccessors(Jump::Direction d, int x, int y);
 		int computeNatural(Jump::Direction d, int x, int y);
 		int computeForced(Jump::Direction d, int x, int y);
+		unsigned int numForcedNeighbours();
+		node* getForcedNeighbour(unsigned int i);
 
 		inline int getLimit() { return jumplimit; }
 		inline void setLimit(int lim) { jumplimit = lim; }

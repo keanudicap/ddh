@@ -131,6 +131,11 @@ int statCollection::getNumStats() const
 	return (int)stats.size();
 }
 
+int statCollection::getNumOwners() const
+{
+	return (int)owners.size();
+}
+
 /**
 * Return the nth stat which has been collected.
  */

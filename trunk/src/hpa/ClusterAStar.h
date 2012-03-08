@@ -32,6 +32,8 @@ class statCollection;
 
 class AbstractClusterAStar : public aStarOld
 {
+	typedef  __gnu_cxx::hash_map<int, node*> ClosedList;
+
 	public:	
 		AbstractClusterAStar() { corridorNodes = NULL; verbose = false; markForVis=true; }
 		virtual ~AbstractClusterAStar() {}
@@ -48,7 +50,7 @@ class AbstractClusterAStar : public aStarOld
 		virtual void printStats();
 
 		virtual void expand(node* current_, node* goal, edge_iterator begin, unsigned int card, 
-				heap* openList, std::map<int, node*>& closedList, graph* g);
+				heap* openList, ClosedList& closedList, graph* g);
 
 		bool markForVis;	
 		//bool verbose;
@@ -58,15 +60,13 @@ class AbstractClusterAStar : public aStarOld
 		bool isInCorridor(node* n);
 
 		virtual void processNeighbour(node* current, edge* e, 
-				node* to,heap* openList, std::map<int, node*>& closedList, graph* g);
-		virtual void closeNode(node* current, std::map<int, node*>& closedList);
+				node* to,heap* openList, ClosedList& closedList, graph* g);
+		virtual void closeNode(node* current, ClosedList& closedList);
 
 		virtual bool evaluate(node* current, node* target, edge* e) = 0; 
 		virtual path *search(graph* g, node *from, node *to);
 		
 		std::map<int, node*> *corridorNodes;
-		__gnu_cxx::hash_map<int,node*> openmirror;
-		__gnu_cxx::hash_map<int,node*> closedmirror;
 };
 
 class ClusterAStar : public AbstractClusterAStar

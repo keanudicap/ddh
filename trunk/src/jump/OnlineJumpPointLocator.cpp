@@ -2,6 +2,7 @@
 #include "graph.h"
 #include "mapAbstraction.h"
 
+#include <climits>
 
 OnlineJumpPointLocator::OnlineJumpPointLocator(mapAbstraction* _map) 
 	: JumpPointLocator(_map)
@@ -174,8 +175,10 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				// n is a jump node if we can reach other jump nodes by
 				// travelling vertically or horizontally 
 				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::E, nx, ny, goalx, goaly))
+					findJumpNode(Jump::E, nx, ny, goalx, goaly))
+				{
 					break;
+				}
 			}
 			break;
 		}
@@ -206,8 +209,10 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				}
 
 				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::E, nx, ny, goalx, goaly))
+					findJumpNode(Jump::E, nx, ny, goalx, goaly))
+				{
 					break;
+				}
 			}
 			break;
 		}
@@ -238,8 +243,10 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				}
 
 				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::W, nx, ny, goalx, goaly))
+					findJumpNode(Jump::W, nx, ny, goalx, goaly))
+				{
 					break;
+				}
 			}
 			break;
 		}
@@ -269,9 +276,11 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 					break;
 				}
 
-				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
-						findJumpNode(Jump::W, nx, ny, goalx, goaly))
+				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) ||
+					findJumpNode(Jump::W, nx, ny, goalx, goaly))
+				{
 					break;
+				}
 			}
 			break;
 		}

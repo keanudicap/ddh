@@ -49,7 +49,7 @@ ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
   LIBFLAGS = -Lapps/libs -framework GLUT -framework OpenGL -framework AppKit -framework Foundation
 else # Cygwin/Windows
 ifeq ("$(findstring CYGWIN, $(shell uname -s))", "CYGWIN")
-  SYS_CFLAGS = -Dlinux -I/usr/include/opengl/ 
+  SYS_CFLAGS = -Dlinux -I/usr/include/opengl
   LIBFLAGS = -Lapps/libs -lopengl32 -lglu32 -lglut32 -L/lib/w32api
 else # Linux et al 
  LIBFLAGS = -Lapps/libs -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
@@ -77,13 +77,13 @@ fast: CFLAGS = $(FAST_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES)
 fast: APPSTARGET = fast
 fast: $(TARGETS)
 
-$(TARGETS) : % : lib%.a hogcore
+$(TARGETS) : % : cleanapps lib%.a hogcore
 	$(CC) -o $(addprefix bin/,$(@)) \
 		$(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) $(SHARED_OBJ) \
 		$(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) \
 		-l$(@:.mk=) $(LIBFLAGS)
 
-$(addprefix lib, $(addsuffix .a, $(TARGETS))) :
+$(addprefix lib, $(addsuffix .a, $(TARGETS))) : 
 	@echo "making app: "$(@)" ("$(APPSTARGET)")"
 	@echo $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 	@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..

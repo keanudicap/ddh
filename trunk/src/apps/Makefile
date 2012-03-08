@@ -14,7 +14,7 @@ HDRS = $(foreach T, $(APPS), $(wildcard $(T)/*.h))
 fast : CFLAGS = -O3 -ansi -DNDEBUG
 fast : clean apps.mk
 
-dev : CFLAGS = -Wall -Wno-deprecated -g -ggdb
+dev : CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic
 dev : clean apps.mk
 
 all : fast
@@ -66,7 +66,7 @@ apps.mk : $(TARGS) Makefile
 	@echo "  LIBFLAGS = -framework GLUT -framework OpenGL -framework AppKit -framework Foundation" >> apps.mk
 	@echo "else # Cygwin/Windows" >> apps.mk
 	@echo 'ifeq ("$(value DLR)(findstring CYGWIN, $(value DLR)(shell uname -s))", "CYGWIN")' >> apps.mk
-	@echo "  CFLAGS += -Dlinux -I/usr/include/opengl/ " >> apps.mk
+	@echo "  CFLAGS += -Dlinux -I/usr/include/opengl" >> apps.mk
 	@echo "  LIBFLAGS = -Lapps/libs -lopengl32 -lglu32 -lglut32 -L/lib/w32api" >> apps.mk
 	@echo "else # Linux et al " >> apps.mk
 	@echo ' LIBFLAGS = -Lapps/libs -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(value DLR)(HOME)/lib -L/opt/local/lib -L/usr/local/lib' >> apps.mk

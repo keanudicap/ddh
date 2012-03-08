@@ -58,6 +58,7 @@ public:
 	//	void clearOwnerStats(const char *owner); // not define for now; can be defined if needed
 	//	void clearCategoryStats(const char *category);
 	
+	int getNumOwners() const;
 	int getNumStats() const;
 	const stat *getStatNum(int which) const;
 	

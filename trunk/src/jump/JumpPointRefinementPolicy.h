@@ -32,6 +32,7 @@ class JumpPointRefinementPolicy : public RefinementPolicy
 		path* recurse(Jump::Direction d, node* current, node* next, int depth);
 		int computeSuccessors(Jump::Direction d, int x, int y);
 
+		mapAbstraction* map;
 		OnlineJumpPointLocator* jpl;
 		int maxdepth;
 
