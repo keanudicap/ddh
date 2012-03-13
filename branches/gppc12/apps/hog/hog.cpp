@@ -108,6 +108,9 @@ unsigned int export_graph_level = 0;
 bool import_graph=false;
 std::string import_graph_filename("");
 
+// when true this var allows diagonal shortcutting around corners.
+bool cutCorners = false;
+
 /**
  * This function is called each time a unitSimulation is deallocated to
  * allow any necessary stat processing beforehand
@@ -257,6 +260,7 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout << "Experiment Parameters:";
 	std::cout << " repeat="<<repeat << std::endl;
 	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
+	std::cout << " cutcorners="<<(!cutCorners?"true":"false") << std::endl;
 	std::cout << " search=";
 	switch(searchType)
 	{
@@ -427,32 +431,8 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 {
 	int exitVal = 0;
 
-	FlexibleAStar* astar = 0;
-	//aStarOld* astar = 0;
-	mapFlatAbstraction* gridmap = 0;
-	if(checkOptimality)
-	{
-		// scale the grid map if necessary
-		Map* map = new Map(gDefaultMap);
-		int scalex = map->getMapWidth();
-		int scaley = map->getMapHeight();
-		if(scenariomgr.getNumExperiments() > 0)
-		{
-			scalex = scenariomgr.getNthExperiment(0)->getXScale();
-			scaley = scenariomgr.getNthExperiment(0)->getYScale();
-			if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
-				map->scale(scalex, scaley);
-		}
-
-		// reference map and search alg for checking optimality
-		gridmap = new mapFlatAbstraction(map);
-		astar = new FlexibleAStar(new IncidentEdgesExpansionPolicy(gridmap), new OctileHeuristic());
-		//astar = new aStarOld();
-	}
-
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, false);
 	statCollection stats;
-	double optlen=0;
 	
 	for(int i=0; i< scenariomgr.getNumExperiments(); i++)
 	{
@@ -487,22 +467,7 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 
 		if(checkOptimality)
 		{
-			// run A* to check the optimal path length
-			node* s = gridmap->getNodeFromMap(nextExperiment->getStartX(),
-					nextExperiment->getStartY());
-			assert(s);
-			node* g = gridmap->getNodeFromMap(nextExperiment->getGoalX(),
-					nextExperiment->getGoalY());
-			assert(g);
-			optlen = 0;
-
-			p = astar->getPath(gridmap, s, g);
-			if(p)
-			{
-				optlen = gridmap->distance(p);
-			}
-			delete p;
-
+			double optlen = nextExperiment->getDistance();
 			if(!fequal(optlen, distanceTravelled))
 			{
 				std::cout << "optimality check failed!" << std::endl;
@@ -512,25 +477,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 				std::cout << std::endl;
 				std::cout << "optimal path length: "<<optlen<<" computed length: ";
 				std::cout << distanceTravelled<<std::endl;
-				verbose = true;
-				if(verbose)
-				{
-					std::cout << "Running A*: \n";
-					astar->verbose = true;
-					alg->verbose = true;
-					path* p = astar->getPath(gridmap, s, g);
-					double tmp = gridmap->distance(p);
-					delete p;
-					p = 0;
-
-					std::cout << "\nRunning "<<alg->getName()<<": \n";
-					p = alg->getPath(aMap, from, to);
-					double tmp2 = aMap->distance(p);
-					delete p;
-
-					std::cout << "\n optimal: "<<tmp;
-					std::cout << " computed: "<<tmp2<<std::endl;
-				}
 				exitVal = 1;
 				break;
 			}
@@ -538,13 +484,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 	}
 	
 	delete alg;
-
-	if(checkOptimality)
-	{
-		delete astar;
-		delete gridmap;
-	}
-
 	return exitVal;
 }
 
@@ -649,6 +588,10 @@ initializeHandlers()
 			"Disallow diagonal moves during search "
 			"(default = false)");
 
+	installCommandLineHandler(myAllPurposeCLHandler, "-cutcorners", "-cutcorners", 
+			"Enable diagonal shortcutting around corners"
+			"(default = false)");
+
 	installCommandLineHandler(myAllPurposeCLHandler, "-checkopt", "-checkopt", 
 			"Verify each experiment ran is solved optimally."
 			"(default = false)");
@@ -671,6 +614,11 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 	if(strcmp(argument[0], "-cardinal") == 0)
 	{
 		allowDiagonals = false;
+		argsParsed++;
+	}
+	if(strcmp(argument[0], "-cutcorners") == 0)
+	{
+		cutCorners = true;
 		argsParsed++;
 	}
 	else if(strcmp(argument[0], "-nogui") == 0)
@@ -1134,7 +1082,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 					new FlexibleAStar(
 						new IncidentEdgesExpansionPolicy(map),
 						newHeuristic()),
-					newRefinementPolicy(0, map, true));
+					newRefinementPolicy(map, true));
 			((HierarchicalSearch*)alg)->setName("HPA");
 			break;
 		}
@@ -1153,8 +1101,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 
 		default:
 		{
-			alg = new FlexibleAStar(
-					new IncidentEdgesExpansionPolicy(aMap), newHeuristic());
+			alg = new FlexibleAStar(new IncidentEdgesExpansionPolicy(aMap), 
+						newHeuristic());
 			break;
 		}
 	}
@@ -1163,7 +1111,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 }
 
 RefinementPolicy*
-newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
+newRefinementPolicy(mapAbstraction* map, bool refine)
 {
 	if(!refine)
 		return new NoRefinementPolicy();
@@ -1188,7 +1136,7 @@ newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 
 		default:
 		{
-			refPol = new NoRefinementPolicy();
+			refPol = new OctileDistanceRefinementPolicy(map);
 			break;
 		}
 	}

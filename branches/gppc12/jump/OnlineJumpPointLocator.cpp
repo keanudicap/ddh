@@ -8,6 +8,7 @@ OnlineJumpPointLocator::OnlineJumpPointLocator(mapAbstraction* _map)
 	: JumpPointLocator(_map)
 {
 	jumplimit = INT_MAX;
+	cutCorners = false;
 }
 
 OnlineJumpPointLocator::~OnlineJumpPointLocator()
@@ -40,20 +41,19 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(x == goalx && ny == goaly)
 					break;
 
-				// n is a jump node if we cannot prove a shorter path to 
-				// a diagonal neighbour exists
-				if(!map->getNodeFromMap(x-1, ny) && 
-						map->getNodeFromMap(x-1, ny-1))
+				// n is a jump node if we cannot prove a symmetric path to 
+				// either of two diagonal neighbours exists
+				if(!canStep(x, y-(steps-1), Jump::NW) && 
+						canStep(x, ny, Jump::NW))
 				{
 					break;
 				}
 
-				if(!map->getNodeFromMap(x+1, ny) &&
-						map->getNodeFromMap(x+1, ny-1))
+				if(!canStep(x, y-(steps-1), Jump::NE) && 
+						canStep(x, ny, Jump::NE))
 				{
 					break;
 				}
-				
 			}
 			break;
 		}
@@ -69,18 +69,21 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 
 				if(x == goalx && ny == goaly)
 					break;
-
-				if(!map->getNodeFromMap(x-1, ny) && 
-						map->getNodeFromMap(x-1, ny+1))
+				
+				// n is a jump node if we cannot prove a symmetric path to 
+				// either of two diagonal neighbours exists
+				if(!canStep(x, y+(steps-1), Jump::SW) && 
+						canStep(x, ny, Jump::SW))
 				{
 					break;
 				}
 
-				if(!map->getNodeFromMap(x+1, ny) &&
-						map->getNodeFromMap(x+1, ny+1))
+				if(!canStep(x, y+(steps-1), Jump::SE) && 
+						canStep(x, ny, Jump::SE))
 				{
 					break;
 				}
+
 			}
 			break;
 		}
@@ -96,15 +99,17 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 
 				if(nx == goalx && y == goaly)
 					break;
-
-				if(!map->getNodeFromMap(nx, y-1) && 
-						map->getNodeFromMap(nx+1, y-1))
+				
+				// n is a jump node if we cannot prove a symmetric path to 
+				// either of two diagonal neighbours exists
+				if(!canStep(x+(steps-1), y, Jump::NE) && 
+						canStep(x, ny, Jump::SW))
 				{
 					break;
 				}
 
-				if(!map->getNodeFromMap(nx, y+1) &&
-						map->getNodeFromMap(nx+1, y+1))
+				if(!canStep(x+(steps-1), y, Jump::SE) && 
+						canStep(x, ny, Jump::SE))
 				{
 					break;
 				}
@@ -125,14 +130,17 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(nx == goalx && y == goaly)
 					break;
 
-				if(!map->getNodeFromMap(nx, y-1) && 
-						map->getNodeFromMap(nx-1, y-1))
+				
+				// n is a jump node if we cannot prove a symmetric path to 
+				// either of two diagonal neighbours exists
+				if(!canStep(x-(steps-1), y, Jump::NW) && 
+						canStep(x, ny, Jump::SW))
 				{
 					break;
 				}
 
-				if(!map->getNodeFromMap(nx, y+1) &&
-						map->getNodeFromMap(nx-1, y+1))
+				if(!canStep(x-(steps-1), y, Jump::SW) && 
+						canStep(x, ny, Jump::SE))
 				{
 					break;
 				}
@@ -146,7 +154,8 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 			{
 				int nx = x+steps;
 				int ny = y-steps;
-				n = map->getNodeFromMap(nx, ny);
+				if(canStep(x+(steps-1), y-(steps-1), Jump::NE))
+					n = map->getNodeFromMap(nx, ny);
 
 				// stop if we hit an obstacle (no jump node exists)
 				if(n == 0)
@@ -290,3 +299,142 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 	return n;
 }
 
+bool
+OnlineJumpPointLocator::canStep(int x, int y, Jump::Direction checkdir)
+{
+	assert(checkdir != Jump::NONE);
+	if(!map->getNodeFromMap(x, y))
+		return false;
+
+	bool retVal = true;
+	switch(checkdir)
+	{
+		case Jump::N:
+			if(!map->getNodeFromMap(x, y-1))
+				retVal =  false;
+			retVal =  true;
+			break;
+
+		case Jump::S:
+			if(!map->getNodeFromMap(x, y+1))
+				retVal =  false;
+			retVal =  true;
+			break;
+
+		case Jump::E:
+			if(!map->getNodeFromMap(x+1, y))
+				retVal =  false;
+			retVal =  true;
+			break;
+
+		case Jump::W:
+			if(!map->getNodeFromMap(x-1, y))
+				retVal =  false;
+			retVal =  true;
+			break;
+
+		case Jump::S:
+			if(!map->getNodeFromMap(x+1, y-1))
+				retVal =  false;
+			retVal =  true;
+			break;
+
+		case Jump::NE:
+			if(!map->getNodeFromMap(x+1, y-1))
+				retVal =  false;
+			if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x+1, y) && 
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x+1, y) ||
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+
+			retVal =  true;
+			break;
+
+		case Jump::SE:
+			if(!map->getNodeFromMap(x+1, y+1))
+				retVal =  false;
+			if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x+1, y) && 
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x+1, y) ||
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+
+			retVal =  true;
+			break;
+
+		case Jump::NW:
+			if(!map->getNodeFromMap(x-1, y-1))
+				retVal =  false;
+			if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x-1, y) && 
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x-1, y) ||
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+
+			retVal =  true;
+			break;
+
+		case Jump::SW:
+			if(!map->getNodeFromMap(x-1, y+1))
+				retVal =  false;
+			if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x-1, y) && 
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x-1, y) ||
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+
+			retVal =  true;
+			break;
+
+
+		case Jump::NONE:
+			retVal = false;
+	}
+
+	return retVal;
+}

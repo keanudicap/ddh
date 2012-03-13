@@ -34,58 +34,8 @@ JumpPointExpansionPolicy::expand(node* t) throw(std::logic_error)
 	neighbourIndex = 0;
 }
 
-// Computes the set of jump point neighbours for the target node which is being
-// expanded. If the target node has only a single successor, we do not generate
-// it. Instead, we immediately jump again in a recursive fashion, each time
-// stepping in the direction of the single successor until we identify a jump
-// point with a branching factor >= 2. When we find such a jump point, we
-// generate it as a successor of the target node.
-// 
-// NB: it is possible that after some number of recursive steps we eventually
-// reach a node that has zero jump point successors. In this case we conclude
-// that the target node is sterile -- i.e. it cannot appear on the optimal path
-// to the goal.
-//
-//
-// Thoughts:
-// 1. If only a single successor, keep jumping (same as stepping diagonally)
-// 2. If forced neighbour: check if it has a jump point. 
-// 		2a. If not, keep jumping in original direction.
-// 		2b. Else, jump in original direction and see if there is a further jump
-// 		point.
-// 			2b i). If yes, stop and return the current node as a jump point.
-// 			2b ii). Else, continue jumping in the direction of the forced
-// 			neighbour (probably resuming from its jump point rather than
-// 			rediscoverig it).
-// 	3. If no forced neighbour (but # successors > 1), check straight jump point
-// 	successors. 
-// 		3a. If they themselves a 
-//
-// 	Can we avoid sticking intermediate nodes on open? Just put them on closed
-// 	immediately? i.e. trying to optimise like Rabin suggests (and like BigWorld
-// 	stuff?).
-// 	Could we generate the successors of the jump point set neighbours? i.e.
-// 	the neighbours that forced the recursion to stop?
-// 	Seems so: we'd have to generate successors of nodes not-yet-expanded.
-// 	Normally this is a problem: if we find a shorter path to n, we need to
-// 	propagate that lower g-value to all successors generated before n was
-// 	expanded. But using jump points, we can only find a shorter path by
-// 	travelling in a different direction to reach n. 
-// 	Is there an overlap between the neighbour sets when travelling in two
-// 	directions that would require propagation? Maybe the straight neighbours
-// 	when jumping diagonally?
-// 	If no propagation is needed, then we can generate nodes before their parents
-// 	are expanded because these guys can never be on the optimal path (their
-// 	f-values must be <= and if n is on the optimal path these guys will not be.)
-// 	Disadvantages include more heap ops, a larger heap and possibly exploring
-// 	parts of the search space we might have ignored (maybe? check this).
-// 	Main advantage is that we don't need to rediscover directions or track
-// 	directions when jumping more than once.
-// 	There is some overlap. Need to explicitly re-identify straight jump point
-// 	neighbours when expanding a node reached by travelling diagonally.
-//
-// 		
-//
+// Computes the set of jump point successors for ::target
+// (the node which is currently being expanded).
 void 
 JumpPointExpansionPolicy::computeNeighbourSet()
 {
@@ -428,3 +378,6 @@ JumpPointExpansionPolicy::label_n()
 	if(tmp)
 		tmp->backpointer = this->target;
 }
+
+void
+JumpPointExpansionPolicy::adjust
