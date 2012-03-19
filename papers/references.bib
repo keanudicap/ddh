@@ -1034,3 +1034,24 @@ annote = {Exceedingly similar to HAA* }
 		works for curved obstacles.}
 } 
 
+@inproceedings{samet08,
+	author    = {Hanan Samet and
+		 Jagan Sankaranarayanan and
+							Houman Alborzi},
+	title     = {Scalable network distance browsing in spatial databases},
+	booktitle = {SIGMOD Conference},
+	year      = {2008},
+	pages     = {43-54},
+	ee        = {http://doi.acm.org/10.1145/1376616.1376623},
+	annote = { Applies first-move spatial databases to solving k-nearest-neighbour. Gives a novel kNN method that locates neighbours using branch-and-bound. Distance bounds are computed wrt minimum and maximum distances from each node to blocks in a quadtree decomposition. Distances are gradually refined and many candidates can be eliminated early. As an added bonus the alogorithm can terminate before fully refining every path! Quite neat and works much nicer than kNN over just the set of low-level nodes in the spatial network.}
+}
+
+@inproceedings{sanka05,
+	author    = {Jagan Sankaranarayanan and Houman Alborzi and Hanan Samet},
+	title     = {Efficient query processing on spatial networks},
+	booktitle = {GIS},
+	year      = {2005},
+	pages     = {200-209},
+	ee        = {http://doi.acm.org/10.1145/1097064.1097093},
+	annote = { Describes first-move spatial databases in terms of node coloring. For each SSSP, every node in the network is assigned a color corresponding to the optimal out-edge from the source. Motivates the use of such data structures by pointing out their flexibilty for solving a range of spatial queries (shorest paths, range queries, incremental k-nearest-neighbour, distance join/sem-join). Neat idea + well written.}
+}
