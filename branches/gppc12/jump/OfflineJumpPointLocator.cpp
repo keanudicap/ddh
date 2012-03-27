@@ -18,7 +18,7 @@ OfflineJumpPointLocator::~OfflineJumpPointLocator()
 // over the row or column of the goal node we return instead the node
 // on the row or column of the goal node. 
 //
-// This procedure is necssary to ensure we do not miss the goal node
+// This procedure is necessary to ensure we do not miss the goal node
 // while searching on a map of type JumpPointAbstraction.
 node*
 OfflineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y, 
@@ -205,7 +205,10 @@ OfflineJumpPointLocator::findSterileJumpNode(Jump::Direction d, int x, int y)
 			{
 				int nx = x+steps;
 				int ny = y-steps;
-				n = map->getNodeFromMap(nx, ny);
+				if(canStep(x+(steps-1), y-(steps-1), Jump::NE))
+					n = map->getNodeFromMap(nx, ny);
+				else
+					n = 0;
 				
 				// the node just before an obstacle is a jump point
 				if(n == 0)
@@ -224,7 +227,10 @@ OfflineJumpPointLocator::findSterileJumpNode(Jump::Direction d, int x, int y)
 			{
 				int nx = x+steps;
 				int ny = y+steps;
-				n = map->getNodeFromMap(nx, ny);
+				if(canStep(x+(steps-1), y+(steps-1), Jump::SE))
+					n = map->getNodeFromMap(nx, ny);
+				else
+					n = 0;
 
 				// the node just before an obstacle is a jump point
 				if(n == 0)
@@ -243,7 +249,10 @@ OfflineJumpPointLocator::findSterileJumpNode(Jump::Direction d, int x, int y)
 			{
 				int nx = x-steps; 
 				int ny = y-steps;
-				n = map->getNodeFromMap(nx, ny);
+				if(canStep(x-(steps-1), y-(steps-1), Jump::NW))
+					n = map->getNodeFromMap(nx, ny);
+				else
+					n = 0;
 
 				// the node just before an obstacle is a jump point
 				if(n == 0)
@@ -261,7 +270,10 @@ OfflineJumpPointLocator::findSterileJumpNode(Jump::Direction d, int x, int y)
 			{
 				int nx = x-steps;
 				int ny = y+steps;
-				n = map->getNodeFromMap(nx, ny);
+				if(canStep(x-(steps-1), y+(steps-1), Jump::SW))
+					n = map->getNodeFromMap(nx, ny);
+				else
+					n = 0;
 
 				// the node just before an obstacle is a jump point
 				if(n == 0)

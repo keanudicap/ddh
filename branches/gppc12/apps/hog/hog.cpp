@@ -110,7 +110,7 @@ bool import_graph=false;
 std::string import_graph_filename("");
 
 // when true this var allows diagonal shortcutting around corners.
-bool cutCorners = false;
+bool cutCorners = true;
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -261,7 +261,7 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout << "Experiment Parameters:";
 	std::cout << " repeat="<<repeat << std::endl;
 	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
-	std::cout << " cutcorners="<<(!cutCorners?"true":"false") << std::endl;
+	std::cout << " cutcorners="<<(cutCorners?"true":"false") << std::endl;
 	std::cout << " search=";
 	switch(searchType)
 	{
@@ -276,6 +276,7 @@ createSimulation(unitSimulation * &unitSim)
 				std::cout << "+bfr";
 			break;
 		case HOG::JPS:
+			cutCorners = false; // TODO implement this
 			std::cout << "JPS";
 			if(!jps_online)
 				std::cout << "+preprocessing";
@@ -630,7 +631,7 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 	}
 	if(strcmp(argument[0], "-cutcorners") == 0)
 	{
-		cutCorners = true;
+		//cutCorners = true;
 		argsParsed++;
 	}
 	else if(strcmp(argument[0], "-nogui") == 0)

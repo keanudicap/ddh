@@ -200,11 +200,6 @@ JumpPointAbstraction::makeJumpPointGraph()
 			}
 
 			g->addDirectedEdge(e);
-			if(verbose)
-			{
-				node* from = g->getNode(e->getFrom());
-				node* to = g->getNode(e->getTo());
-			}
 		}
 	}
 }

@@ -42,6 +42,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 	mapAbstraction* map = problem->getMap();
 	int x = target->getLabelL(kFirstData);
 	int y = target->getLabelL(kFirstData+1);
+	bool cutCorners = jpl->getCutCorners();
 
 	// Compute the direction of travel used to reach the current node.
 	// We look for successors in this same direction as well as in the direction of
@@ -55,20 +56,50 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-			// add SE neighbour only if E neighbour is null 
-			if(!map->getNodeFromMap(x+1, y))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::SE, x, y); 
-				if(n)
-					neighbours.push_back(n);
+				// add SE neighbour only if E neighbour is forced 
+				if(!map->getNodeFromMap(x+1, y))
+				{
+					n = findJumpNode(Jump::SE, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
+				// add SW neighbour only if W neighbour is forced
+				if(!map->getNodeFromMap(x-1, y))
+				{
+					n = findJumpNode(Jump::SW, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
-			// add SW neighbour only if W neighbour is null
-			if(!map->getNodeFromMap(x-1, y))
+			// special rules when corner cutting is disallowed
+			else 
 			{
-				n = findJumpNode(Jump::SW, x, y); 
-				if(n)
-					neighbours.push_back(n);
+				// E & SE neighbours are forced if NE neighbour is null 
+				if(!map->getNodeFromMap(x+1, y-1))
+				{
+					n = findJumpNode(Jump::E, x, y); 
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::SE, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
+				// W & SW neighbour are forced if NW neighbour is null 
+				if(!map->getNodeFromMap(x-1, y-1))
+				{
+					n = findJumpNode(Jump::W, x, y); 
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::SW, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
+
 			break;
 		}
 
@@ -86,20 +117,23 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-			// add NW neighbour only if N neighbour is null
-			if(!map->getNodeFromMap(x, y-1))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::NW, x, y); 
-				if(n)
-					neighbours.push_back(n);
-			}
+				// add NW neighbour only if N neighbour is forced
+				if(!map->getNodeFromMap(x, y-1))
+				{
+					n = findJumpNode(Jump::NW, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 
-			// add SE neighbour only if E neighbour is null
-			if(!map->getNodeFromMap(x+1, y))
-			{
-				n = findJumpNode(Jump::SE, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// add SE neighbour only if E neighbour is forced
+				if(!map->getNodeFromMap(x+1, y))
+				{
+					n = findJumpNode(Jump::SE, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -110,19 +144,48 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-		 	// add NW neighbour only if N neighbour is null	
-			if(!map->getNodeFromMap(x, y-1))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::NW, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// add NW neighbour only if N neighbour is forced	
+				if(!map->getNodeFromMap(x, y-1))
+				{
+					n = findJumpNode(Jump::NW, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
+				// add SW neighbour only if S neighbour is forced
+				if(!map->getNodeFromMap(x, y+1))
+				{
+					n = findJumpNode(Jump::SW, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
-			// add SW neighbour only if S neighbour is null
-			if(!map->getNodeFromMap(x, y+1))
+			// special rules when corner cutting is disallowed
+			else
 			{
-				n = findJumpNode(Jump::SW, x, y); 
-				if(n)
-					neighbours.push_back(n);
+				// N & NW are forced if NE neighbour is null
+				if(!map->getNodeFromMap(x+1, y-1))
+				{
+					n = findJumpNode(Jump::N, x, y);
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::NW, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
+				// S & SW are forced if SE neighbour is null
+				if(!map->getNodeFromMap(x+1, y+1))
+				{
+					n = findJumpNode(Jump::S, x, y); 
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::SW, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -141,20 +204,23 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-			// add SW neighbour only if S neighbour is null
-			if(!map->getNodeFromMap(x, y+1))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::SW, x, y); 
-				if(n)
-					neighbours.push_back(n);
-			}
+				// add SW neighbour only if S neighbour is forced
+				if(!map->getNodeFromMap(x, y+1))
+				{
+					n = findJumpNode(Jump::SW, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 
-			// add NE neighbour only if E neighbour is null
-			if(!map->getNodeFromMap(x+1, y))
-			{
-				n = findJumpNode(Jump::NE, x, y); 
-				if(n)
-					neighbours.push_back(n);
+				// add NE neighbour only if E neighbour is forced
+				if(!map->getNodeFromMap(x+1, y))
+				{
+					n = findJumpNode(Jump::NE, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -165,19 +231,47 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-			// add NE neighbour only if E neighbour is null 
-			if(!map->getNodeFromMap(x+1, y))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::NE, x, y); 
-				if(n)
-					neighbours.push_back(n);
+				// add NE neighbour only if E neighbour is forced 
+				if(!map->getNodeFromMap(x+1, y))
+				{
+					n = findJumpNode(Jump::NE, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
+				// add NW neighbour only if W neighbour is forced
+				if(!map->getNodeFromMap(x-1, y))
+				{
+					n = findJumpNode(Jump::NW, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
-			// add NW neighbour only if W neighbour is null
-			if(!map->getNodeFromMap(x-1, y))
+			else
 			{
-				n = findJumpNode(Jump::NW, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// E & NE are forced if SE neighbour is null
+				if(!map->getNodeFromMap(x+1, y+1))
+				{
+					n = findJumpNode(Jump::E, x, y); 
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::NE, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
+				// W & NW are forced if SW neighbour is null
+				if(!map->getNodeFromMap(x-1, y+1))
+				{
+					n = findJumpNode(Jump::W, x, y);
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::NW, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -196,20 +290,23 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-			// add SE neighbour only if S neighbour is null
-			if(!map->getNodeFromMap(x, y+1))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::SE, x, y);
-				if(n)
-					neighbours.push_back(n);
-			}
+				// add SE neighbour only if S neighbour is forced
+				if(!map->getNodeFromMap(x, y+1))
+				{
+					n = findJumpNode(Jump::SE, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 
-			// add NW neighbour only if W neighbour is null
-			if(!map->getNodeFromMap(x-1, y))
-			{
-				n = findJumpNode(Jump::NW, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// add NW neighbour only if W neighbour is forced
+				if(!map->getNodeFromMap(x-1, y))
+				{
+					n = findJumpNode(Jump::NW, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -220,19 +317,49 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-		 	// add NE neighbour only if N neighbour is null 
-			if(!map->getNodeFromMap(x, y-1))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::NE, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// add NE neighbour only if N neighbour is forced 
+				if(!map->getNodeFromMap(x, y-1))
+				{
+					n = findJumpNode(Jump::NE, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
+				// add SE neighbour only if S neighbour is forced
+				if(!map->getNodeFromMap(x, y+1))
+				{
+					n = findJumpNode(Jump::SE, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
-			// add SE neighbour only if S neighbour is null
-			if(!map->getNodeFromMap(x, y+1))
+			// special jumping rules when corner cutting is disallowed
+			else
 			{
-				n = findJumpNode(Jump::SE, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// N and NE neighbours are forced if NW is null 
+				if(!map->getNodeFromMap(x-1, y-1))
+				{
+					n = findJumpNode(Jump::N, x, y);
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::NE, x, y);
+					if(n)
+						neighbours.push_back(n);
+
+				}
+				// S and SE are forced if SW is null
+				if(!map->getNodeFromMap(x-1, y+1))
+				{
+					n = findJumpNode(Jump::S, x, y);
+					if(n)
+						neighbours.push_back(n);
+
+					n = findJumpNode(Jump::SE, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -251,20 +378,23 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 			if(n)
 				neighbours.push_back(n);
 
-			// add NE neighbour only if N neighbour is null
-			if(!map->getNodeFromMap(x, y-1))
+			if( cutCorners )
 			{
-				n = findJumpNode(Jump::NE, x, y); 
-				if(n)
-					neighbours.push_back(n);
-			}
+				// add NE neighbour only if N neighbour is forced
+				if(!map->getNodeFromMap(x, y-1))
+				{
+					n = findJumpNode(Jump::NE, x, y); 
+					if(n)
+						neighbours.push_back(n);
+				}
 
-			// add SW neighbour only if W neighbour is null
-			if(!map->getNodeFromMap(x-1, y))
-			{
-				n = findJumpNode(Jump::SW, x, y);
-				if(n)
-					neighbours.push_back(n);
+				// add SW neighbour only if W neighbour is forced
+				if(!map->getNodeFromMap(x-1, y))
+				{
+					n = findJumpNode(Jump::SW, x, y);
+					if(n)
+						neighbours.push_back(n);
+				}
 			}
 			break;
 		}
@@ -378,6 +508,3 @@ JumpPointExpansionPolicy::label_n()
 	if(tmp)
 		tmp->backpointer = this->target;
 }
-
-void
-JumpPointExpansionPolicy::adjust

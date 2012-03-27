@@ -15,6 +15,7 @@
 //
 
 #include "JumpPointLocator.h"
+#include "Jump.h"
 
 class mapAbstraction;
 class node;
@@ -27,10 +28,6 @@ class OnlineJumpPointLocator : public JumpPointLocator
 
 		virtual node* findJumpNode(Jump::Direction d, int x, int y, 
 				int goalx, int goaly);
-
-	private:
-		bool cutCorners;
-
 };
 
 #endif
