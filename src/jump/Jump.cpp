@@ -58,7 +58,7 @@ Jump::computeDirection(int x, int y, int x2, int y2)
 	{
 		if(x2 == x)
 			dir = Jump::S;
-		if(x2 < x)
+		else if(x2 < x)
 			dir = Jump::SW;
 		else // x2 > x
 			dir = Jump::SE;
