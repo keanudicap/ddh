@@ -100,9 +100,8 @@ void mapAbstraction::openGLDraw()
 
 	Map* map = this->getMap();
 	map->setDrawLand(false);
-	GLdouble xx, yy, zz, zzg, rr;
+	GLdouble xx, yy, zz, rr;
 	
-	double depthmod = 0.4;
 	for(int level=0; level<1; level++)
 	{
 		graph* mygraph = getAbstractGraph(level);
@@ -123,24 +122,23 @@ void mapAbstraction::openGLDraw()
 			int x = cur->getLabelL(kFirstData);
 			int y = cur->getLabelL(kFirstData+1);
 			map->getOpenGLCoord(x, y, xx, yy, zz, rr);
-			zzg = zz-rr*0.5;
-			zz = zz-rr*depthmod;
+			rr -= rr*0.20;
 
 			if(cur->drawColor == 0)
 			{
 				glColor3f(0.9, 0.9, 0.9);
-				glVertex3f(xx-rr, yy-rr, zz+0.01);
-				glVertex3f(xx-rr, yy+rr, zz+0.01);
-				glVertex3f(xx+rr, yy+rr, zz+0.01);
-				glVertex3f(xx+rr, yy-rr, zz+0.01);
+				glVertex3f(xx-rr, yy-rr, zz);
+				glVertex3f(xx-rr, yy+rr, zz);
+				glVertex3f(xx+rr, yy+rr, zz);
+				glVertex3f(xx+rr, yy-rr, zz);
 			}
 			if(cur->drawColor == 1)
 			{
 				glColor3f(0.9, 0.9, 0.9);
-				glVertex3f(xx-rr, yy-rr, zz+0.01);
-				glVertex3f(xx-rr, yy+rr, zz+0.01);
-				glVertex3f(xx+rr, yy+rr, zz+0.01);
-				glVertex3f(xx+rr, yy-rr, zz+0.01);
+				glVertex3f(xx-rr, yy-rr, zz);
+				glVertex3f(xx-rr, yy+rr, zz);
+				glVertex3f(xx+rr, yy+rr, zz);
+				glVertex3f(xx+rr, yy-rr, zz);
 
 				//glColor3f(0.4, 0.4, 0.4);
 				//glVertex3f(xx-rr, yy-rr, zz);
@@ -165,17 +163,6 @@ void mapAbstraction::openGLDraw()
 				glVertex3f(xx+rr, yy-rr, zz);
 			}
 			glEnd();
-
-			glColor3f (0.5F, 0.5F, 0.5F);
-			glLineWidth(0.3f);
-			glBegin(GL_LINE_STRIP);
-			glVertex3f(xx-rr, yy-rr, zzg);
-			glVertex3f(xx+rr, yy-rr, zzg);
-			glVertex3f(xx+rr, yy+rr, zzg);
-			glVertex3f(xx-rr, yy+rr, zzg);
-			glVertex3f(xx-rr, yy-rr, zzg);
-			glEnd();
-
 			cur = mygraph->nodeIterNext(ni);
 		}
 	}
