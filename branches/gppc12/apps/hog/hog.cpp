@@ -65,6 +65,7 @@
 #include <cstdlib>
 #include <climits>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -467,16 +468,27 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 
 		if(checkOptimality)
 		{
-			double optlen = nextExperiment->getDistance();
-			if(!fequal(optlen, distanceTravelled))
+			std::stringstream stroptlen;
+			stroptlen << nextExperiment->getDistance();
+			int precision=stroptlen.str().size();
+			if(stroptlen.str().find(".") != string::npos)
+				precision--;
+
+
+			std::stringstream strpathlen;
+			strpathlen << std::setprecision(precision);
+			strpathlen << distanceTravelled;
+
+			if(stroptlen.str().compare(strpathlen.str()))
 			{
+				//std::cout << std::fixed << std::setprecision(6);
+				std::cout << std::setprecision(6);
 				std::cout << "optimality check failed!" << std::endl;
 				std::cout << "exp "<<expnum<<" ";
 				nextExperiment->print(std::cout);
-				std::cout << " " << distanceTravelled;
 				std::cout << std::endl;
-				std::cout << "optimal path length: "<<optlen<<" computed length: ";
-				std::cout << distanceTravelled<<std::endl;
+				std::cout << "optimal path length: "<<stroptlen.str()<<" computed length: ";
+				std::cout << strpathlen.str()<<std::endl;
 				exitVal = 1;
 				break;
 			}
