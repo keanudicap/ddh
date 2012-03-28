@@ -118,11 +118,20 @@ void mapAbstraction::openGLDraw()
 					cur = parent;
 			}
 
-			glBegin(GL_QUADS);
 			int x = cur->getLabelL(kFirstData);
 			int y = cur->getLabelL(kFirstData+1);
 			map->getOpenGLCoord(x, y, xx, yy, zz, rr);
-			rr -= rr*0.20;
+			glBegin(GL_LINE_STRIP);
+				glColor3f(0.5, 0.5, 0.5);
+				glVertex3f(xx-rr, yy-rr, zz);
+				glVertex3f(xx-rr, yy+rr, zz);
+				glVertex3f(xx+rr, yy+rr, zz);
+				glVertex3f(xx+rr, yy-rr, zz);
+				glVertex3f(xx-rr, yy-rr, zz);
+			glEnd();
+
+			glBegin(GL_QUADS);
+			rr -= rr*0.10;
 
 			if(cur->drawColor == 0)
 			{
