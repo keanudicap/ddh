@@ -1055,3 +1055,23 @@ annote = {Exceedingly similar to HAA* }
 	ee        = {http://doi.acm.org/10.1145/1097064.1097093},
 	annote = { Describes first-move spatial databases in terms of node coloring. For each SSSP, every node in the network is assigned a color corresponding to the optimal out-edge from the source. Motivates the use of such data structures by pointing out their flexibilty for solving a range of spatial queries (shorest paths, range queries, incremental k-nearest-neighbour, distance join/sem-join). Neat idea + well written.}
 }
+
+@inproceedings{rintanen11,
+	author    = {Jussi Rintanen},
+	title     = {Planning with SAT, Admissible Heuristics and A*},
+	booktitle = {IJCAI},
+	year      = {2011},
+	pages     = {2015-2020},
+	ee        = {http://ijcai.org/papers11/Papers/IJCAI11-336.pdf},
+	annote = {Seriously nice paper. Shows IDA* with ANY heuristic is no better than DPLL + an SAT encoding of the same heuristic. Also shows unit resolution can be faster than A* search because the latter can choose (and does not detect) actions sequences that look nice heuristically but have effects that conflict with the goal state (i.e. dead ends).}
+}
+
+@inproceedings{pochter11,
+	author    = {Nir Pochter and Aviv Zohar and
+					Jeffrey S. Rosenschein},
+	title     = {Exploiting Problem Symmetries in State-Based Planners},
+	booktitle = {AAAI},
+	year      = {2011},
+	ee        = {http://www.aaai.org/ocs/index.php/AAAI/AAAI11/paper/view/3732},
+	annote = {Symmetry breaking method using path automorphisms. Creates a graph from a static problem description and computes automorphisms for it. The problem graph is then used to identify state symmetries during search. Only automorphisms that stabilise (i.e. are invariant wrt) the start and goal state are considered. Additional "shallow" pruning also identifies symmetric children of the current state using a similar approach. A canonical form for describing states is used to speed up symmetric state identification (without this identification is hard: each state has many automorphisms, each needs to be compared to every node on open + closed). Paper nicely explained but poorly structured paper. Results are OK but other types of symmetries not considered (e.g. partial orders). } 
+}
