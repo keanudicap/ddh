@@ -854,6 +854,14 @@ pages     = {522-536},
   booktitle = {IJCAI},
   year      = {2009},
   pages     = {1870-1875},
+  annote = { Theoretical description of the MAPP algorithm and the SLIDABLE class of multi-agent problems. 
+	  Each such problem is guaranteed to have a solution by maintaining always an empty node
+	  (the blank) in a location immediately adjacent to the current unit.
+		  This ensures other units can always be pushed aside in order to advance toward the
+		  goal. A total ordering over units,
+	  an alternate connectivity criteria (for sequences of triples appearing on the goal path)
+	  and some repositioning round things out.
+		  Nice work.}
 }
 
 @INPROCEEDINGS{lee09,
@@ -1074,4 +1082,19 @@ annote = {Exceedingly similar to HAA* }
 	year      = {2011},
 	ee        = {http://www.aaai.org/ocs/index.php/AAAI/AAAI11/paper/view/3732},
 	annote = {Symmetry breaking method using path automorphisms. Creates a graph from a static problem description and computes automorphisms for it. The problem graph is then used to identify state symmetries during search. Only automorphisms that stabilise (i.e. are invariant wrt) the start and goal state are considered. Additional "shallow" pruning also identifies symmetric children of the current state using a similar approach. A canonical form for describing states is used to speed up symmetric state identification (without this identification is hard: each state has many automorphisms, each needs to be compared to every node on open + closed). Paper nicely explained but poorly structured paper. Results are OK but other types of symmetries not considered (e.g. partial orders). } 
+}
+
+@article{wang11,
+	author    = {Ko-Hsin Cindy Wang and
+	 Adi Botea},
+	title     = {MAPP: a Scalable Multi-Agent Path Planning Algorithm with
+	   Tractability and Completeness Guarantees},
+	journal   = {J. Artif. Intell. Res. (JAIR)},
+	volume    = {42},
+	year      = {2011},
+	pages     = {55-90},
+	ee        = {http://dx.doi.org/10.1613/jair.3370},
+	annote = { Improves wang09 in several ways: relaxes target isolation, facilitates crossing single-width tunnels and improves makespan by reducing the number
+		of reposition operations. Solves ~99\% of random 2000-agent problems on various large BG maps. Also gives some low poly bounds on solution length and
+			memory use. The approach is complicated but the results are seriously nice. }
 }
