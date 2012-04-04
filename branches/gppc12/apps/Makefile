@@ -54,7 +54,7 @@ apps.mk : $(TARGS) Makefile
 
 	@echo '# locations of library files program depends on' >> apps.mk
 	@echo 'ifeq ("$(value DLR)(OPENGL)", "STUB")' >> apps.mk
-	@echo "  CFLAGS += -I./driver/STUB/ -I./driver/STUB/GL/ -DNO_OPENGL" >> apps.mk
+	@echo "  CFLAGS += -I../driver/STUB/ -I../driver/STUB/GL/ -DNO_OPENGL" >> apps.mk
 	@echo "else # OSX" >> apps.mk
 	@echo 'ifeq ("$(value DLR)(findstring Darwin, "$(value DLR)(shell uname -s)")", "Darwin")' >> apps.mk
 	@echo "  CFLAGS += -DOS_MAC -I/opt/local/include/ -I/usr/local/include/ " >> apps.mk

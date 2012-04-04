@@ -25,24 +25,31 @@
  *
  */
 
+#ifndef GLUTIL_H
+#define GLUTIL_H
+
 #ifdef NO_OPENGL
+
 #include "gl.h"
 #include "glut.h"
+
 #else
 #ifdef OS_MAC
+
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 //#include <OpenGL/glut.h>
 #include <AGL/agl.h>
+
 #else
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 //#include <GL/glut.h>
 #endif
+
 #endif
 
-#ifndef GLUTIL_H
-#define GLUTIL_H
 
 //#pragma mark -
 //#pragma mark OpenGL structures:

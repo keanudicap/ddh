@@ -28,11 +28,6 @@
 #include "glUtil.h"
 #include <math.h>
 
-#ifdef NO_OPENGL
-#include "gl.cpp"
-#include "glut.cpp"
-#endif
-
 /**
 * Normalize a vector.
  *

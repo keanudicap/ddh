@@ -18,14 +18,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#include "unitSimulation.h"
+#ifdef NO_OPENGL
+#include "glut.h"
+#else
 #ifdef OS_MAC
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
 #endif
+#endif
 
+#include "unitSimulation.h"
 #include "trackball.h"
 #include "common.h"
 
@@ -576,7 +579,7 @@ static void drawInfo (pRecContext /*pContextInfo*/)
 		myTextBox->draw();
 	}
 
-#ifdef OS_MAC
+#if defined (OS_MAC) && ! defined (NO_OPENGL)
 	//static float msgPresistance = 10.0f;
 	char cstr [256];
 	GLint matrixMode, line = 1;
