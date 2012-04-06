@@ -1098,3 +1098,26 @@ annote = {Exceedingly similar to HAA* }
 		of reposition operations. Solves ~99\% of random 2000-agent problems on various large BG maps. Also gives some low poly bounds on solution length and
 			memory use. The approach is complicated but the results are seriously nice. }
 }
+
+@inproceedings{likitvi04,
+	author={C. Likitvivatanavong and YL. Zhang and J. Bowen and E.C. Freuder},
+	editor={M.R.C. van Dongen},
+	title={Arc Consistency in {MAC}: A new perspective},
+	booktitle={Proceedings Constraint Propagation and Implementation, first International workshop Toronto, Canada},
+	pages={93-108},
+	month={September},
+	year={2004},
+	annote = {30pct faster AC checking by caching the results of previous checks for pairs of values. A further 2x speedup enhancement keeps a pointer
+		to the last identified support in a domain. The next check begins from the pointed-to value instead of the first value in the domain
+			(minimises re-identifiction of non-supports).}
+}
+
+@inproceedings{botea11,
+	author    = {Adi Botea},
+	title     = {Ultra-Fast Optimal Pathfinding without Runtime Search},
+	booktitle = {AIIDE},
+	year      = {2011},
+	ee        = {http://www.aaai.org/ocs/index.php/AIIDE/AIIDE11/paper/view/4050},
+	annote = {Compressed first-move database using homogeneous rectangles. Up to 700x faster than A* on BG domain.}
+}
+
