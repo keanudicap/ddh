@@ -1121,3 +1121,36 @@ annote = {Exceedingly similar to HAA* }
 	annote = {Compressed first-move database using homogeneous rectangles. Up to 700x faster than A* on BG domain.}
 }
 
+@inproceedings{wehrle12,
+	author = {Martin Wehrle and Matle Helmert},
+	title = {About Partial Order Reduction in Planning and Computer Aided Verification},
+	booktitle = {ICAPS},
+	year = {2012},
+	pages = {}
+	annote = {
+		Quasi lit-review of partial-order reductions for planning. Shows an equivalence between Stubborn Sets
+		and Expansion Core (+ corrects some errors in the latter). Also proves there is a strict dominance 
+		between some other known partial orderings: Sleep Sets > Commutativity Pruning > Stratified Planning.
+	}
+}
+	
+@inproceedings{rintannen03,
+	author    = {Jussi Rintanen},
+	title     = {Symmetry Reduction for SAT Representations of Transition
+		   Systems},
+	booktitle = {ICAPS},
+	year      = {2003},
+	pages     = {32-41},
+	annote = {
+		Identifies symmetries in transtion systems by looking for interchangeable objects 
+		in a given schemata (as a preprocessing step). To show a symmetry exists, the method must check
+		that the truth values of variables are invariant wrt. whichever transition-relation is chosen.
+		When a symmetry is found, a constraint is posted to break it. This involves defining a < order
+		over the interchangeable objects.
+		Constraints are translated to the propositional logic where planning-as-SAT is used to solve
+		the problem.
+		Very similar to shallow pruning in pochter11 but appears weaker.	
+	}
+			
+}
+
