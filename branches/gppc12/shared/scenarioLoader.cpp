@@ -7,6 +7,8 @@
  */
 
 #include <fstream>
+#include <iostream>
+#include <iomanip>
 using std::ifstream;
 
 #include "scenarioLoader.h"
@@ -65,6 +67,7 @@ void Experiment::print(std::ostream& out)
 	out << this->getStartY()<<"\t";
 	out << this->getGoalX()<<"\t";
 	out << this->getGoalY()<<"\t";
+	out << std::fixed << std::setprecision(4);
 	out << this->getDistance() << "\t";
 }
     

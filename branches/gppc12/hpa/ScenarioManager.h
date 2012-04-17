@@ -56,6 +56,7 @@ class AbstractScenarioManager
 			 throw(std::invalid_argument) = 0;
 		void writeScenarioFile(const char* filelocation);
 		void clearExperiments() { experiments.clear(); }
+		void sortExperiments(); // organise by increasing solution length
 	
 	protected: 
 		std::vector<Experiment*> experiments;		

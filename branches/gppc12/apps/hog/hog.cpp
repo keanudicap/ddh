@@ -470,14 +470,11 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		if(checkOptimality)
 		{
 			std::stringstream stroptlen;
+			stroptlen << std::fixed << std::setprecision(nextExperiment->getPrecision());
 			stroptlen << nextExperiment->getDistance();
-			int precision=stroptlen.str().size();
-			if(stroptlen.str().find(".") != string::npos)
-				precision--;
-
 
 			std::stringstream strpathlen;
-			strpathlen << std::setprecision(precision);
+			strpathlen << std::fixed << std::setprecision(nextExperiment->getPrecision());
 			strpathlen << distanceTravelled;
 
 			if(stroptlen.str().compare(strpathlen.str()))
@@ -490,6 +487,7 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 				std::cout << std::endl;
 				std::cout << "optimal path length: "<<stroptlen.str()<<" computed length: ";
 				std::cout << strpathlen.str()<<std::endl;
+				std::cout << "precision: " << nextExperiment->getPrecision()<<std::endl;
 				exitVal = 1;
 				break;
 			}
@@ -804,8 +802,6 @@ myScenarioGeneratorCLHandler(char *argument[], int maxNumArgs)
 			new EdgeFactory(), allowDiagonals, reducePerimeter, bfReduction);
 	
 	scenariomgr.generateExperiments(&aMap, numScenarios);
-	std::cout << "generated: "<<scenariomgr.getNumExperiments()<< 
-		" experiments"<<std::endl;
 
 	string outfile = map + ".scenario"; 
 	scenariomgr.writeScenarioFile(outfile.c_str());

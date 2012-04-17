@@ -24,10 +24,14 @@ static const int kNoScaling = -1;
 class Experiment{
 public:
   Experiment(int sx,int sy,int gx,int gy,int b, double d, string m)
-    :startx(sx),starty(sy),goalx(gx),goaly(gy),scaleX(kNoScaling),scaleY(kNoScaling),bucket(b),distance(d),map(m){}
-  virtual ~Experiment() { }
+    :startx(sx),starty(sy),goalx(gx),goaly(gy),scaleX(kNoScaling),scaleY(kNoScaling),bucket(b),distance(d),map(m),precision(4)
+  {}
+
   Experiment(int sx,int sy,int gx,int gy,int sizeX, int sizeY,int b, double d, string m)
-    :startx(sx),starty(sy),goalx(gx),goaly(gy),scaleX(sizeX),scaleY(sizeY),bucket(b),distance(d),map(m){}
+    :startx(sx),starty(sy),goalx(gx),goaly(gy),scaleX(sizeX),scaleY(sizeY),bucket(b),distance(d),map(m),precision(4)
+  {}
+
+  virtual ~Experiment() { }
   int getStartX(){return startx;}
   int getStartY(){return starty;}
   int getGoalX(){return goalx;}
@@ -38,6 +42,8 @@ public:
 	const char *getMapName() { return map.c_str(); }
   int getXScale(){return scaleX;}
   int getYScale(){return scaleY;}
+  void setPrecision(int prec) { precision = prec; }
+  int getPrecision() { return precision; }
 
   virtual  void print(std::ostream& out);
 
@@ -46,6 +52,7 @@ private:
   int scaleX;
   int scaleY;
   int bucket;
+  int precision;
   double distance;
   string map;
 };
