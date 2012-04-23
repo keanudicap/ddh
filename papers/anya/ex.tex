@@ -1,0 +1,147 @@
+Consider the example presented on Figure~\ref{fig::ex1} 
+where the path requires to travel from C7 to D3.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.3]{images/ex1}
+  \end{center}
+  \caption{Example of an any-angle path}
+  \label{fig::ex1}
+\end{figure}
+
+To find a path between node C7 and node D3, 
+the pathfinding algorithm proposed in [CITE] 
+successively explores nodes C6--C3 and D7--D4 
+(thereafter called the intermediate nodes) until reaching D3.  
+Notice that the actual shortest path between C7 and D3 
+does not go through these intermediate nodes, 
+and Theta* accounts to this fact by ``pulling'' the string 
+when a new node is explored.  
+Presented differently, when D3 is generated, 
+the $g$ value is computed for the direct path C7--D3 
+and not based on a path that would go through C6 or D7.  
+
+The problem with this algorithm 
+is however that the $f$ value of the intermediate nodes 
+is based on the assumption that the path would go through these nodes.  
+Consequently, the $A^*$ $f$ value computed 
+for the intermediate nodes may be higher 
+than the actual optimal path length, 
+although the intermediate nodes must be expanded 
+before reaching the goal.  
+In order to avoid this mistake, 
+we would need to explore not only the intermediate nodes, 
+but also the Y$i$ nodes presented on the figure.  
+However, the number of such Y$i$ nodes is a priori very large, 
+since the search engine does not know a priori 
+where the next interesting node (here C3) will be.  
+Assuming a map of size $W\times H$, 
+the relevant nodes could have any position 
+that is a fraction $\frac{w}{h}$ 
+where $w$ (resp. $h$) is an integer 
+in $\{0,\dots,W\}$ (resp. $\{0,\dots,H\}$).  
+
+We therefore propose to consider all the potential Y6 nodes together.  
+From C7, all the nodes that can be reached with a one step North 
+(and potentially any fraction of East steps) will be considered.  
+We call ``interval'' this set of nodes that are considered together.  
+
+How should we then compute the successors of an interval?  
+Look at Figure~\ref{fig::succ1} (left) 
+where a North step is taken from the interval [B4--E4] 
+reached from node B6.  
+The (single) successor of the interval 
+is simply computed by projecting the visibility cone 
+(represented with dashed lines)
+from B6 to the next row.  
+This leads to the interval in row 3.  
+(As a consequence, the parent B6 of the nodes in the interval 
+must be kept together with the interval.)  
+
+\begin{figure}[ht]
+  \begin{minipage}{0.5\linewidth}
+  \begin{center}
+    \includegraphics[scale=0.3]{images/ex2}
+  \end{center}
+  \end{minipage}
+  \begin{minipage}{0.5\linewidth}
+  \begin{center}
+    \includegraphics[scale=0.3]{images/ex3}
+  \end{center}
+  \end{minipage}
+  \caption{Computing the successors of an interval}
+  \label{fig::succ1}
+\end{figure}
+
+There are more complicated situations, 
+as presented in Figure~\ref{fig::succ1} (right).  
+Here, we can see that an obstacle splits the interval 
+in two separate intervals.  
+We could define disjunct intervals, 
+but it seems more natural to consider them independently.  
+Furthermore, the path might turn on mode D4 
+and go, e.g., to node D3 which is not directly accessible from B6.  
+At this stage, we just assume that two intervals 
+are built from D4; 
+both intervals stretch as far as possible left and right, 
+and the first one moves northward 
+while the second is headed south.  
+
+Let us present more precisely how the successors are splitted.  
+From the interval I = [B4,E6], 
+we assume that an epsilon step 
+(i.e., an infinitely small step North) is taken.  
+This step reveals how the interval will be splitted.  
+Therefore, we generate interval [B(4-e),(E+$\frac{3}{2}$e)(4-e)]; 
+we then remove the parts that belong to the obstacle, 
+which produces the intervals [B(4-e),C(4-e)] 
+and [D(4-e),(E+$\frac{3}{2}$e)(4-e)]; 
+finally, we split the part that is not visible from B6, 
+which leads to three intervals: [B(4-e),C(4-e)], 
+[D(4-e),(D+e)(4-e)],](D+e)(4-e),(E+$\frac{3}{2}$e)(4-e)].  
+If we project back on row 4, 
+we obtain three intervals: 
+[B4,C4], [D4,D4], and ]D4,E4].  
+We say that these intervals are ``consistent''%
+\footnote{We need a better word here.} 
+with the obstacles.  
+The first and last intervals can be delt with similarly 
+to the example in Figure~\ref{fig::succ1} (left).  
+The second interval, being a single point, 
+requires to generate new intervals.  
+
+The remaining question is what $f$ value 
+should be associated with these intervals.  
+For $A^*$ to return the optimal solution, 
+we need $f$ to be an underestimate of the actual value 
+(except for the final node).  
+The interval has the following semantics: 
+the path that is currently being constructed 
+should start from $s$, cross the parent P, 
+then cross the interval, and finally reached the goal.  
+The shortest path that belongs to this set 
+has length $g^*(P) + min_{x \in I}(d(P,x) + h^*(x))$.  
+The value $g^*(P)$ should be known at this stage 
+(this is one advantage of $A^*$).  
+However, the minimum factor is unknown, 
+but it can be lower-bounded by $min_{x \in I}(d(P,x) + h(x))$.  
+This formula is actually pretty simple to solve, as we now demonstrate.  
+
+Let $z_1$ and $z_2$ be the two extreme points of the interval.  
+Draw a direct line between the goal and the parent $P$ of the interval, 
+as shown in Figure~\ref{fig::fvalue}.  
+If the line crosses the interval in \textit{\u z}, then the value is h(P).  If the line passes on the left, 
+then the value is $d(P,z_1)+h(z_1)$; 
+otherwise, it is $d(P,z_2)+h(z_2)$.  
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.3]{images/fvalue}
+  \end{center}
+  \caption{Computing the minimum distance 
+    to go from $P$ through the interval to the goal; 
+    if the goal is G1, the direct distance between $P$ and $G1$; 
+    if the goal is G2 or G3, 
+    the shortest distance is the purple distance.}
+  \label{fig::fvalue}
+\end{figure}
