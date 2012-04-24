@@ -3,15 +3,17 @@
 \usepackage{fullpage}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{psfrag}
 
 \newtheorem{lemm}{Lemma}
 \newtheorem{defi}{Definition}
+\newenvironment{proof}{\noindent{Proof:}}{}
 
 \newcommand{\intersection}[2]{\langle #1, #2\rangle}
 
 \begin{document}
 
-\title{A Complete Any-Angle Pathfinding Algorithm}
+\title{An Optimal Any-Angle Pathfinding Algorithm}
 \maketitle
 
 \section{Introduction}
@@ -20,7 +22,7 @@
 \section{Problem Definitions}
 \input{def}
 
-\section{Examples}
+\section{Principle}
 \input{ex}
 
 \end{document}
