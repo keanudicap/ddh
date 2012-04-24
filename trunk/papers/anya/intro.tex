@@ -1,18 +1,12 @@
 bla bla bla
 
-Essentially, the reason why the existing algorithms are not complete 
+Essentially, the reason why the existing algorithms are not optimal
 is that the search is based on the grid intersections.  
 However, because the final any-angle path 
 may never cross these intersections, 
-the $A^*$ $f$ value associated with the intersection
+the $A^*$ $f$ value associated with the intersections
 is not relevant.  
 In this article, we propose to run the search not on the grid 
 but instead on the edges of the graph.  
-The semantics of the nodes of the graph, 
-an edge and the corner of an obstacle, 
-is that the path currently under consideration 
-goes from the corner and crosses the edge.  
-Because the final path will indeed cross the edge, 
-the $f$ value of the node is relevant.  
 
 % EOF
