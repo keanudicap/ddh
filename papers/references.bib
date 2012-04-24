@@ -1154,3 +1154,28 @@ annote = {Exceedingly similar to HAA* }
 			
 }
 
+@article{felner07,
+  author    = {Ariel Felner and Richard E. Korf and Ram Meshulam and
+               Robert C. Holte},
+  title     = {Compressed Pattern Databases},
+  journal   = {J. Artif. Intell. Res. (JAIR)},
+  volume    = {30},
+  year      = {2007},
+  pages     = {213-247},
+  annote = {} 
+}
+
+@inproceedings{zhou03,
+  author    = {Rong Zhou and Eric A. Hansen},
+  title     = {Sparse-Memory Graph Search},
+  booktitle = {IJCAI},
+  year      = {2003},
+  pages     = {1259-1268},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+  annote = {Proposes a mechanism for pruning the closed list. When the memory limit is reached,
+	  all nodes from closed are deleted except special "relay" nodes (which have ungenerated predecessors).
+	  The parent of every node on open is modified mapped to such an ancentral relay node (possibly the start state)
+	  and the search continues. When the goal is found a sparse path, consisting of relay nodes, is returned 
+	  and must be refined via further search. }
+}
+		
