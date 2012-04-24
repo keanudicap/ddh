@@ -10,10 +10,6 @@
 
 
 @incollection{karp70,
-	Abstract = {This paper explores new approaches to the symmetric traveling-salesman problem in which 1-trees, which are a slight variant of spanning trees, play an essential role. A 1-tree is a tree together with an additional vertex connected to the tree by two edges. We observe that (i) a tour is precisely a 1-tree in which each vertex has degree 2, (ii) a minimum 1-tree is easy to compute, and (iii) the transformation on "intercity distances" cij  Cij + i + j leaves the traveling-salesman problem invariant but changes the minimum 1-tree. Using these observations, we define an infinite family of lower bounds w() on C*, the cost of an optimum tour. We show that maxw() = C* precisely when a certain well-known linear program has an optimal solution in integers. We give a column-generation method and an ascent method for computing maxw(), and construct a branch-and-bound method in which the lower bounds w() control the search for an optimum tour.},
-	Annote = {Describes the 1-Tree lowerbound for TSPs
-Discusses minimising the "gap" between the lowerbound and optimal tour.
-Proposes a formulation that weights the nodes of the TSP and then uses a variety of column generation, IP and B&B techniques to minimise the gap by penalising nodes with degree > 2 and rewaring nodes with degree < 2},
 	Author = {M. Held and R. Karp},
 	Booktitle = {Operations Research},
 	Date-Added = {2010-01-05 17:29:38 +1100},
@@ -23,12 +19,13 @@ Proposes a formulation that weights the nodes of the TSP and then uses a variety
 	Pages = {1138-1162},
 	Title = {The traveling salesman problem and minimum spanning trees},
 	Volume = {18},
-	Year = {1970}}
+	Year = {1970},
+	annote = {Describes the 1-Tree lowerbound for TSPs. Discusses minimising the "gap" between the lowerbound and optimal tour. 
+		Proposes a formulation that weights the nodes of the TSP and then uses a variety of column generation, 
+		IP and B&B techniques to minimise the gap by penalising nodes with degree > 2 and rewaring nodes with degree < 2}
+}
 
 @inproceedings{pohl73,
-	Annote = {1. Describes HPA - a weighted variant of A*
-2. Describes a TSP lowerbound that's a variation on Little's TSP lowerbound
-3. Describes a heuristic function that chooses max(Little-LB, 1treeLB)},
 	Author = {Ira Pohl},
 	Booktitle = {Proceedings of the 3rd International Joint Conference on Artificial Intelligence (IJCAI-73)},
 	Date-Added = {2010-01-05 17:17:00 +1100},
@@ -37,14 +34,14 @@ Proposes a formulation that weights the nodes of the TSP and then uses a variety
 	Keywords = {heuristics, pathfinding, tsp},
 	Publisher = {William Kaufmann},
 	Title = {The avoidance of (relative) catastrophe, heuristic competence, genuine dynamic weighting and computational issues in heuristic problem solving},
-	Year = {1973}}
+	Year = {1973},
+	annote = {
+		1. Describes HPA - a weighted variant of A*
+		2. Describes a TSP lowerbound that's a variation on Little's TSP lowerbound
+		3. Describes a heuristic function that chooses max(Little-LB, 1treeLB)}
+}
 
 @incollection{pohl77,
-	Annote = {1. Outlines HPA - a weighted A* variant.
-2. Gives an early characterisation of heurisitic function performance in the presence of a bounded error.
-3. Describes a TSP encoding which allows solving the problem with A*; the heuristic function
-is based on a 1-tree lowerbound.
-},
 	Author = {Ira Pohl},
 	Booktitle = {Machine Intelligence 8},
 	Date-Added = {2010-01-05 17:04:30 +1100},
@@ -54,7 +51,13 @@ is based on a 1-tree lowerbound.
 	Publisher = {Ellis Horwood Ltd and John Wiley \& Sons},
 	Title = {Practical and theoretical considerations in heuristic search algorithms},
 	Year = {1977},
-	Bdsk-File-1 = {YnBsaXN0MDDUAQIDBAUGCQpYJHZlcnNpb25UJHRvcFkkYXJjaGl2ZXJYJG9iamVjdHMSAAGGoNEHCFRyb290gAFfEA9OU0tleWVkQXJjaGl2ZXKoCwwXGBkdJCVVJG51bGzTDQ4PEBEUViRjbGFzc1dOUy5rZXlzWk5TLm9iamVjdHOAB6ISE4ACgAOiFRaABIAGWWFsaWFzRGF0YVxyZWxhdGl2ZVBhdGjSDRobHFdOUy5kYXRhgAVPEQF6AAAAAAF6AAIAAAxNYWNpbnRvc2ggSEQAAAAAAAAAAAAAAAAAAADCWSTVSCsAAAAcT/8OcG9obC1wcmFjdC5wZGYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHD7gMdoSlIAAAAAAAAAAAAGAAIAAAkgAAAAAAAAAAAAAAAAAAAAB0Rlc2t0b3AAABAACAAAwliYNQAAABEACAAAx2evogAAAAEADAAcT/8AHE/qAABwQgACADJNYWNpbnRvc2ggSEQ6VXNlcnM6ZGhhcmFib3I6RGVza3RvcDpwb2hsLXByYWN0LnBkZgAOAB4ADgBwAG8AaABsAC0AcAByAGEAYwB0AC4AcABkAGYADwAaAAwATQBhAGMAaQBuAHQAbwBzAGgAIABIAEQAEgAlVXNlcnMvZGhhcmFib3IvRGVza3RvcC9wb2hsLXByYWN0LnBkZgAAEwABLwAAFQACAA///wAA0h4fICFYJGNsYXNzZXNaJGNsYXNzbmFtZaMhIiNdTlNNdXRhYmxlRGF0YVZOU0RhdGFYTlNPYmplY3RfECguLi8uLi8uLi8uLi8uLi8uLi9EZXNrdG9wL3BvaGwtcHJhY3QucGRm0h4fJieiJyNcTlNEaWN0aW9uYXJ5AAgAEQAaAB8AKQAyADcAOgA/AEEAUwBcAGIAaQBwAHgAgwCFAIgAigCMAI8AkQCTAJ0AqgCvALcAuQI3AjwCRQJQAlQCYgJpAnICnQKiAqUAAAAAAAACAQAAAAAAAAAoAAAAAAAAAAAAAAAAAAACsg==}}
+	Bdsk-File-1 = {YnBsaXN0MDDUAQIDBAUGCQpYJHZlcnNpb25UJHRvcFkkYXJjaGl2ZXJYJG9iamVjdHMSAAGGoNEHCFRyb290gAFfEA9OU0tleWVkQXJjaGl2ZXKoCwwXGBkdJCVVJG51bGzTDQ4PEBEUViRjbGFzc1dOUy5rZXlzWk5TLm9iamVjdHOAB6ISE4ACgAOiFRaABIAGWWFsaWFzRGF0YVxyZWxhdGl2ZVBhdGjSDRobHFdOUy5kYXRhgAVPEQF6AAAAAAF6AAIAAAxNYWNpbnRvc2ggSEQAAAAAAAAAAAAAAAAAAADCWSTVSCsAAAAcT/8OcG9obC1wcmFjdC5wZGYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHD7gMdoSlIAAAAAAAAAAAAGAAIAAAkgAAAAAAAAAAAAAAAAAAAAB0Rlc2t0b3AAABAACAAAwliYNQAAABEACAAAx2evogAAAAEADAAcT/8AHE/qAABwQgACADJNYWNpbnRvc2ggSEQ6VXNlcnM6ZGhhcmFib3I6RGVza3RvcDpwb2hsLXByYWN0LnBkZgAOAB4ADgBwAG8AaABsAC0AcAByAGEAYwB0AC4AcABkAGYADwAaAAwATQBhAGMAaQBuAHQAbwBzAGgAIABIAEQAEgAlVXNlcnMvZGhhcmFib3IvRGVza3RvcC9wb2hsLXByYWN0LnBkZgAAEwABLwAAFQACAA///wAA0h4fICFYJGNsYXNzZXNaJGNsYXNzbmFtZaMhIiNdTlNNdXRhYmxlRGF0YVZOU0RhdGFYTlNPYmplY3RfECguLi8uLi8uLi8uLi8uLi8uLi9EZXNrdG9wL3BvaGwtcHJhY3QucGRm0h4fJieiJyNcTlNEaWN0aW9uYXJ5AAgAEQAaAB8AKQAyADcAOgA/AEEAUwBcAGIAaQBwAHgAgwCFAIgAigCMAI8AkQCTAJ0AqgCvALcAuQI3AjwCRQJQAlQCYgJpAnICnQKiAqUAAAAAAAACAQAAAAAAAAAoAAAAAAAAAAAAAAAAAAACsg==},
+	annote = {
+		1. Outlines HPA - a weighted A* variant.
+		2. Gives an early characterisation of heurisitic function performance in the presence of a bounded error.
+		3. Describes a TSP encoding which allows solving the problem with A*; the heuristic function is based on a 1-tree lowerbound.
+	}
+}
 
 @article{funke05,
 	Annote = {Supposedly has theoretical results showing LK is a subset of Glover's ECs.},
@@ -207,7 +210,7 @@ Similar to flocking but the group does not break up when encountering pointy con
 	Year = {2004}}
 
 @conference{geraerts05,
-	Abstract = {Describes a roadmap method which is complete.
+	annote = {Describes a roadmap method which is complete.
 Method uses discretisation of the map into a low resolution grid and proceeds to place "guard" points (mostly along the medial axis) until the set of guards can see every traversable cell. Guards become connected to form a roadmap and the roadmap is reduced to a (rather small) Minimium Spanning Tree. Very neat stuff!},
 	Author = {Roland Geraerts and Mark H. Overmars},
 	Booktitle = {EEE International Conference on Methods and Models in Automation and Robotics },
@@ -503,7 +506,7 @@ This paper describes several different ejection-chain based reference structures
 	Year = {2007}}
 
 @inproceedings{demyen07,
-	Author = {Douglas Demyen and                Michael Buro},
+	Author = {Douglas Demyen and Michael Buro},
 	Booktitle = {AAAI},
 	Date-Modified = {2010-01-05 16:54:06 +1100},
 	Keywords = {pathfinding},
@@ -549,20 +552,15 @@ This paper describes several different ejection-chain based reference structures
 	Year = {1984}}
 
 @article{tsplib,
-	Abstract = {This paper contains the description of a traveling salesman problem library (TSPLIB) which is meant to provide researchers with a broad set of test problems from various sources and with various properties. For every problem a short description is given along with known lower and upper bounds. Several references to computational tests on some of the problems are given.  INFORMS Journal on Computing, ISSN 1091-9856, was published as ORSA Journal on Computing from 1989 to 1995 under ISSN 0899-1499.
-},
 	Author = {Reinelt, Gerhard},
-	Doi = {10.1287/ijoc.3.4.376},
-	Eprint = {http://joc.journal.informs.org/cgi/reprint/3/4/376.pdf},
 	Journal = {INFORMS Journal on Computing},
 	Number = {4},
 	Pages = {376-384},
 	Title = {{TSPLIB--A Traveling Salesman Problem Library}},
-	Url = {http://joc.journal.informs.org/cgi/content/abstract/3/4/376},
 	Volume = {3},
 	Year = {1991},
-	Bdsk-Url-1 = {http://joc.journal.informs.org/cgi/content/abstract/3/4/376},
-	Bdsk-Url-2 = {http://dx.doi.org/10.1287/ijoc.3.4.376}}
+	doi = {10.1287/ijoc.3.4.376},
+}
 
 @book{gutin02,
 	Author = {Gregory Gutin and Abraham Punnen and Alexander Barvinok and Edward Kh. Gimadi and Anatoliy I.  Serdyukov},
@@ -669,6 +667,8 @@ title     = {Memory-Based Heuristics for Explicit State Spaces},
 booktitle = {IJCAI},
 year      = {2009},
 pages     = {609-614},
+annote = {Canonical and Differential Heuristics. Similar to ALT; requires preprocessing distances to some nearby nodes deemed important then computing and storing
+   	APSP over the important nodes.}
 }
 
 
@@ -845,7 +845,10 @@ pages     = {522-536},
     author = {Holger Bast and Stefan Funke and Domagoj Matijevic},
     title = {TRANSIT Ultrafast Shortest-Path Queries with Linear-Time Preprocessing},
     booktitle = {In 9th DIMACS Implementation Challenge},
-    year = {2006}
+    year = {2006},
+	annote = {Applies a grid over roadmaps. Identifies nearby exit nodes for all locations inside a tile (transit nodes). Computes an APSP
+		for all transit nodes and also caches some data for how to quickly reach the local set of transit nodes for each tile.
+		Really fast. Doesn't cope well with path symmetries. Needs to revert to Dijkstra if optimal path does is local (not involve any transit nodes)}
 }
 @inproceedings{wang09,
   author    = {Ko-Hsin Cindy Wang and
@@ -892,10 +895,10 @@ annote = {Exceedingly similar to HAA* }
 	year = {2010},
 	issn = {0147-6882},
 	pages = {438--447},
-	numpages = {10},
 	doi = {http://dx.doi.org/10.3103/S0147688210060092},
-	publisher = {Springer-Verlag New York, Inc.},
-	address = {Secaucus, NJ, USA},
+	annote = { Pathfinds by assuming no obstacles. When search hits an obstacle it splits and crawls along perimeter of obstacle until a move in the
+		direction of the goal is possible. This node is generated. Process is repeated, each time assuming the direct path between 
+		the latest successorand the goal is traversable. Kind of similar to jump points but the approach is suboptimal.}
 } 
 @inproceedings{sun09,
   author    = {Xiaoxun Sun and
@@ -1162,7 +1165,13 @@ annote = {Exceedingly similar to HAA* }
   volume    = {30},
   year      = {2007},
   pages     = {213-247},
-  annote = {} 
+  annote = {Discusses lossy and lossless compression techniques. The most interesting include: a lossy compression scheme that maps to the same index two 
+	  patterns if they only differ in the value of some least-signficant variable (assuming some lex-order on the variables in the pattern), 
+	  a lossless compression scheme that maps cliques of similar patterns to a single index (usually the min-cost pattern in the set) + the number of moves
+	  needed to reach any other pattern in the clique (seems like you need to know/compute also the local clique of each pattern with this approach).
+	  Finally, delta-PDBs are proposed, which only store deltas between a pattern and some standard heuristic like Manhattan distance.}
+
+
 }
 
 @inproceedings{zhou03,
@@ -1178,4 +1187,46 @@ annote = {Exceedingly similar to HAA* }
 	  and the search continues. When the goal is found a sparse path, consisting of relay nodes, is returned 
 	  and must be refined via further search. }
 }
-		
+
+@inproceedings{taylor93
+  author    = {Larry A. Taylor and Richard E. Korf},
+  title     = {Pruning Duplicate Nodes in Depth-First Search},
+  booktitle = {AAAI},
+  year      = {1993},
+  pages     = {756-761},
+  annote = {Excellent paper that describes a mechanism for the automatic construction of duplictae-detecting FSMs. 
+	  An "exploratory" BFS is initially performed over the search space up to some max depth. The BFS tree is analysed in order to identify 
+	  duplicate nodes s.t. if a node is found via two distinct paths, only one path is kept: the one which respects some given operator ordering.
+	  The sequence of operators on the other (rejected) path are used to construct a duplicate-detecting automaton. Any time a node is reached via
+	  some path in this automaton it can be pruned because an alternative path exists that respects operator ordering.
+  }
+}
+
+@inproceedings{culberson96,
+  author    = {Joseph C. Culberson and
+               Jonathan Schaeffer},
+  title     = {Searching with Pattern Databases},
+  booktitle = {Canadian Conference on AI},
+  year      = {1996},
+  pages     = {402-416},
+  ee        = {http://dx.doi.org/10.1007/3-540-61291-2_68},
+  annote = {The original PDB paper. Defines patterns as partial specifications of the goal state. i.e. a subset of the goal variables.
+	  In the case of the 15 puzzle, a partial specification is a subset of the tiles (say, {1, 2, 3, 4}). A PDB then is a database that contains,
+	  for all possible arrangements (== assignments) of these variables, an exact cost for moving them all back to the goal position.
+	  The PDB is then used as a more accurate heuristic during search. To reduce the size of PDBs, patterns that are mirrors of each other (diagonal,
+	  horizontal or vertical reflections) are combined together. 1038x reduction in node expansions but only 12x search time reduction (node expansions are 
+	  more expensive vs simpler Manhattan heuristic; lookups are needed etc).}
+}
+
+@article{korf02,
+  author    = {Richard E. Korf and
+               Ariel Felner},
+  title     = {Disjoint pattern database heuristics},
+  journal   = {Artif. Intell.},
+  volume    = {134},
+  number    = {1-2},
+  year      = {2002},
+  pages     = {9-22},
+  ee        = {http://dx.doi.org/10.1016/S0004-3702(01)00092-3},
+  annote = { Proposes an additive heuristic which is computed as the sum of heuristic values from multiple disjoint PDBs. }
+}
