@@ -1227,6 +1227,39 @@ annote = {Exceedingly similar to HAA* }
   number    = {1-2},
   year      = {2002},
   pages     = {9-22},
-  ee        = {http://dx.doi.org/10.1016/S0004-3702(01)00092-3},
+  doi        = {http://dx.doi.org/10.1016/S0004-3702(01)00092-3},
   annote = { Proposes an additive heuristic which is computed as the sum of heuristic values from multiple disjoint PDBs. }
 }
+
+@article{mitchell87,
+	author = { Joseph S. B. Mitchell and David M. Mount and Christos H. Papadimitriou },
+	title = {The Discrete Geodesic Problem},
+	journal = { SIAM J. Comput. },
+	volume = {16},
+	number = {4}, 
+	year = {1987},
+	pages = {647-668},
+	doi = {http://dx.doi.org/10.1137/0216045},
+	annote = {
+		Describes an optimal alg for pathfinding cross the surface of an arbitrary (possibly non-convex) polyhedron.
+		The surface is triangulaed. Search involves computing and propagating "intervals of optimalty" across
+		the face of each triangle in order to find a path to any point along a triangle edge.
+		The intervals are also propagated inside the triangle containing the target location in order to identify
+		the optimal path. Nice idea, but complicated. O(n^2*log(n)) worst case for running interval search.}
+}
+
+@article{mitchell91,
+	author = {Mitchell, Joseph S. B. and Papadimitriou, Christos H.},
+	title = {The weighted region problem: finding shortest paths through a weighted planar subdivision},
+	journal = {J. ACM},
+	volume = {38},
+	number = {1},
+	month = jan,
+	year = {1991},
+	pages = {18--73},
+	doi = {10.1145/102782.102784},
+	publisher = {ACM},
+	annote = {Generalises mitchell87 to weighted planar maps. Uses Snell's Law of Refraction for computing local
+		optimality. Also supports zero-cost regions.}
+} 
+
