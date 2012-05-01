@@ -1,0 +1,182 @@
+\documentclass{article}
+
+\begin{document}
+
+\title{The Jump Point Search Entry for 2012 GPPC}
+\author{Daniel Harabor \& Alban Grastien}
+\maketitle
+
+%\section{Introduction}
+
+\begin{abstract}
+  This document presents the Jump Point Search entry (WHAT NAME?) 
+  for the 2012 Grid-based path planning competition.  
+
+  Our entry is based on JPS \cite{harabor11b} 
+  (presented Section~\ref{sec::jps}) 
+  with an improvement based on a preprocessing 
+  (presented Section~\ref{sec::pre}).  
+\end{abstract}
+
+\section{Jump Point Search}
+\label{sec::jps}
+
+Jump Point Search (JPS) is an improvement of the $A^*$ algorithm 
+based on the reduction of the number of successors of the search nodes 
+in order to ``jump'' over a number of nodes.  
+
+Given a node $x$ reached from the parent node $p$, 
+we remove the neighbour $n$ of $x$ 
+from the set of successors of $x$ 
+if one of the following rule holds: 
+\begin{enumerate}
+\item 
+  there exists a path $\pi'$ from $p$ to $n$ 
+  that is strictly shorter than path $\pi = [p,x,n]$; 
+\item 
+  there exists a path $\pi'$ from $p$ to $n$ 
+  that is as long as $\pi$ but that includes a diagonal move earlier than $\pi$.  
+\end{enumerate}
+Observe that these rules can be tested by simply looking 
+at the neighbours of the current node $x$ 
+as we now illustrate.  
+
+On Figure~\ref{fig::pruning}, 
+the trimed neighbours are given in grey.  
+The remaining neighbours are called the \emph{natural} successors of node $x$.  
+The Figure~\ref{fig::forced} shows 
+that the obstacles can modify the list of successors; 
+we call \emph{forced} these additional successors.  
+
+\begin{figure}[ht]
+  INCLUDE FIGURES WITHOUT OBSTACLE
+  \caption{Pruning rules in the absence of obstacle.}
+  \label{fig::pruning}
+\end{figure}
+
+\begin{figure}[ht]
+  INCLUDE FIGURES WITH OBSTACLE
+  \caption{Pruning rules in the presence of obstacle.}
+  \label{fig::forced}
+\end{figure}
+
+As illustrated in Figure~\ref{fig::pruning}, 
+the number of successors of a node reached from a straight move 
+is often one.  
+JPS uses this property when exploring $x$ 
+to immediately and recursively explore this single successor.  
+If the recursive procedure leads to an obstacle (which is the most frequent situation), 
+the path is ignored; 
+if the procedure leads to a node $x$ with a forced neighbour 
+(or to the goal), then JPS ``jumps'' from the current node to $x$.  
+
+Consider now the diagonal move as presented in Figure~\ref{fig::pruning}.  
+A diagonal move generally leads to three successors, 
+two of which are straight moves.  
+Therefore, when a diagonal move to node $x$ is considered by JPS, 
+JPS first looks at the two straight moves from $x$ 
+and, if they both lead to obstacles, recursively considers the next diagonal move.  
+If one of the straight move cannot be ignored, 
+then JPS jumps to the current node $x$.  
+This is illustrated on Figure~\ref{fig::jump}.  
+
+\begin{figure}[ht]
+  INCLUDE FIGURE WITH A JUMP
+  \caption{Jumping in JPS.}
+  \label{fig::jump}
+\end{figure}
+
+By jumping, JPS is able to move quickly in the map 
+without inserting nodes in the queue list of $A^*$.  
+This is doubly beneficial as i) it reduces the number of operations 
+and ii) it reduces the number of nodes in the queue, 
+hence making each other operation cheaper.  
+In addition, there is no memory overhead.  
+
+In the original JPS \cite{harabor11b}, 
+we assumed possible a diagonal move
+even if one of the opposite squares was blocked 
+(see the move from ??? to ??? on Figure~\ref{fig::pruning}).  
+In the competition, it is impossible to ``cut'' the corners.  
+Therefore, we redefined the forced moves to match the competition settings.  
+
+\section{Preprocessing}
+\label{sec::pre}
+
+The main addition to JPS for GPPC is a (unpublished) preprocessing step 
+which reduces considerably the runtime of JPS.  
+We mentioned that JPS, compared to $A^*$, 
+avoids many queue list operations 
+by jumping from one jumping point to another in the grid.  
+However, the identification of these jump points 
+then becomes the bottleneck of the algorithm.  
+
+Therefore, we propose a preprocessing of the map 
+where we compute the jump point 
+for each node and each direction.  
+These off-line jump points are illustrated on Figure~\ref{fig::ojp}.  
+
+\begin{figure}[ht]
+  INCLUDE FIGURE WITH THE OFFLINE JUMP POINTS
+  \caption{Off-line jump points in all eight directions for a given node.}
+  \label{fig::ojp}
+\end{figure}
+
+The off-line jump points are computed similarly to the on-line jump points 
+with the difference that a jump point is defined before each obstacle is hit.  
+This addition is necessary 
+because the goal state is unknown at preprocessing time.  
+
+At runtime, the algorithm does not need to search for the next jump points 
+and can simply find them in the precomputed table.  
+Additional tests are however necessary to account for the goal.  
+
+If the current move is a straight move 
+and passes over the goal, 
+then the jump is stopped at the goal.  
+
+If the current move is a diagonal move 
+and crosses the row or the column that contain the goal, 
+then a test is performed to check 
+whether the goal is visible from the point 
+where the jump crosses the line.  
+If the goal is indeed visible, 
+then the jump is stopped at the crossing point; 
+otherwise, the jump continues to the precomputed point.  
+
+On the other hand, the off-line jump point are more numerous 
+that the on-line jump point, 
+since a jump point is defined even when an obstacle is hit.  
+However, it is possible to identify these spurious jump points 
+and to avoid inserting them in the queue list.  
+DANIEL: YOU PROBABLY WANT TO WRITE SOMETHING ABOUT THIS PARAGRAPH.  
+(HOW) DO YOU IDENTIFY THESE SPURIOUS JUMP POINT?  
+ARE YOU SURE YOUR IDENTIFICATION PROCEDURE IS CORRECT?  
+
+The benefit of this approach is to remove the computation of the jump point 
+and replace it with a simple table lookup.  
+The cost of the operation is the additional checks 
+presented in the previous paragraphs, 
+but it is very limited (much smaller than the gain).  
+The preprocessed table induces a limited (linear) memory overhead 
+(eight distances for each node in the graph).  
+Finally, the preprocessing itself is very low, 
+typically in the order of a few seconds.  
+
+I DON'T KNOW WHETHER WE SHOULD MENTION POTENTIAL IMPROVEMENTS HERE.  
+FOR INSTANCE, STORING THE TABLE ONLY FROM A JUMP POINT 
+(I.E., SEARCH REQUIRED ONLY FOR THE START NODE); 
+FILLING THE TABLE DURING THE SEARCH, 
+UPDATING THE TABLE WHEN OBSTACLE ARE ADDED/REMOVED.  
+
+\section{Conclusion}
+
+???
+
+\section*{Acknowledgments}
+\input{ack}
+
+\bibliographystyle{alpha}
+\bibliography{references}
+
+\end{document}
