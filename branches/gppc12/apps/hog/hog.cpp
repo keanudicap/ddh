@@ -61,6 +61,7 @@
 #include "ScenarioManager.h"
 #include "searchUnit.h"
 #include "statCollection.h"
+#include "timer.h" 
 
 #include <cstdlib>
 #include <climits>
@@ -222,7 +223,9 @@ processStats(statCollection* stat, const char* unitname)
 void 
 createSimulation(unitSimulation * &unitSim)
 {
+	Timer t;
 	Map* map = new Map(gDefaultMap);
+
 	int scalex = map->getMapWidth();
 	int scaley = map->getMapHeight();
 	if(scenariomgr.getNumExperiments() > 0)
@@ -232,6 +235,8 @@ createSimulation(unitSimulation * &unitSim)
 		if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
 			map->scale(scalex, scaley);
 	}
+	double readmap_time = t.endTimer();
+	double preproc_time = readmap_time;
 
 	// print the list of parameters in use
 	bool asserts_enabled = false;
@@ -293,6 +298,7 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout << std::endl;
 
 
+	t.startTimer();
 	mapAbstraction* aMap = 0;
 	switch(searchType)
 	{
@@ -344,6 +350,9 @@ createSimulation(unitSimulation * &unitSim)
 			aMap = new mapFlatAbstraction(map);
 			break;
 	}
+	double buildabs_time = t.endTimer();
+	preproc_time += buildabs_time;
+	std::cout << " preproc time: "<<preproc_time << std::endl;
 
 	// export the search graph
 	if(export_graph && export_graph_level < aMap->getNumAbstractGraphs())
