@@ -324,8 +324,9 @@ createSimulation(unitSimulation * &unitSim)
 			{
 				if(import_graph)
 				{
-					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
-							new EdgeFactory(), import_graph_filename,verbose);
+					aMap = new JumpPointAbstraction(map, 
+							import_graph_filename.c_str(), 
+							new NodeFactory(), new EdgeFactory(), verbose);
 				}
 				else
 				{

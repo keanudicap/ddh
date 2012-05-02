@@ -23,14 +23,14 @@ JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf,
 	verifyHierarchy();
 }
 
-JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf, 
-		IEdgeFactory* _ef, std::string filename, bool _verbose) 
+JumpPointAbstraction::JumpPointAbstraction(Map* _m, const char* graphfile, 
+		INodeFactory* _nf, IEdgeFactory* _ef, bool _verbose) 
 	: mapAbstraction(_m), verbose(_verbose)
 {
 	nf = _nf;
 	ef = _ef;
 
-	importGraph(filename);
+	importGraph(graphfile);
 	verifyHierarchy();
 }
 
@@ -205,13 +205,13 @@ JumpPointAbstraction::makeJumpPointGraph()
 }
 
 void
-JumpPointAbstraction::importGraph(std::string filename)
+JumpPointAbstraction::importGraph(const char* filename)
 {
 	// compute the set of nodes in the graph
 	graph* g = makeMapNodes(this->getMap(), nf);
 	abstractions.push_back(g);
 
-	std::ifstream fin(filename.c_str());
+	std::ifstream fin(filename);
 	std::string nextline;
 	int line_num=1;
 
@@ -242,6 +242,7 @@ JumpPointAbstraction::importGraph(std::string filename)
 			exit(1);
 		}
 
+		// read nodeId
 		intVal = atoi(nextline.substr(begin, end-begin).c_str());
 		if((intVal == 0 && nextline.at(begin) != '0') || intVal == INT_MAX || intVal == INT_MIN)
 		{
@@ -252,7 +253,7 @@ JumpPointAbstraction::importGraph(std::string filename)
 		}
 		int nodeId = intVal;
 
-		// read edge records
+		// read associated edge records
 		while(1)
 		{
 			// identify the range of the substring containing the edge record
@@ -274,27 +275,32 @@ JumpPointAbstraction::importGraph(std::string filename)
 				exit(1);
 			}
 
+			// adjust offsets to exclude record delimiters
+			begin++;
+			end--;
+
 			// read neighbour id
 			int commapos = nextline.find(",", begin);
-			intVal = atoi(nextline.substr(begin+1, commapos-(begin+1)).c_str());
-			if((intVal==0 && nextline.at(begin+1) != '0')  // a bit buggy
+			intVal = atoi(nextline.substr(begin, (commapos-begin)).c_str());
+			if((intVal==0 && nextline.at(begin) != '0')  // do not fail if id is actually 0
 					|| intVal == INT_MAX || intVal == INT_MIN)
 			{
 				std::cout << "Error importing graph: cannot read neighbourId on "
-					"line " << line_num << std::endl;
-				begin = nextline.find(" ", begin+1);
+					"line " << line_num << ": val=" 
+					<< nextline.substr(begin, (commapos-begin)).c_str() << std::endl;
 				exit(1);
 			}
 			int neighbourId = intVal;
-			assert(begin+1 < end);
+			begin = commapos+1;
+			assert(begin < end);
 
 			// read edge cost
-			begin = commapos;
-			double doubleVal = atof(nextline.substr(begin+1, (end-1)-(begin+1)).c_str());
-			if((doubleVal == 0 && nextline.at(begin+1) != '0') || doubleVal == HUGE_VAL)
+			double doubleVal = atof(nextline.substr(begin, (end+1)-begin).c_str());
+			if((doubleVal == 0 && nextline.at(begin) != '0') || doubleVal == HUGE_VAL)
 			{
 				std::cout << "Error importing graph: cannot read edge cost on "
-					"	line " << line_num << std::endl;
+					" line " << line_num << ": neighbourId=" << neighbourId << " val="
+				   	<< nextline.substr(begin+1, (end+1)-(begin)).c_str() << std::endl;
 				exit(1);
 			}
 
@@ -303,8 +309,7 @@ JumpPointAbstraction::importGraph(std::string filename)
 			g->addEdge(e);
 			assert(g->getNumEdges() > numEdges);
 
-			begin = end+1;
-			end++;
+			begin = end+2; // char after end of record delimiter '['
 		}
 		line_num++;
 		nextline.clear();

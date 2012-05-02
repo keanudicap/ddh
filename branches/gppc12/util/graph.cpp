@@ -398,14 +398,25 @@ vector<node*>* graph::getReachableNodes(node* start)
 
 void graph::print(ostream &out) const
 {
-  out << "nodes="<< this->getNumNodes() << " edges="<< this->getNumEdges() << std::endl;
-  node_iterator ni = getNodeIter();
-  while (1)
+	out << "graph v=1 ";
+	out << "nodes=" << this->getNumNodes() << " edges="<<this->getNumEdges()<<std::endl;
+
+	node_iterator ni = getNodeIter();
+	node* n = nodeIterNext(ni);
+	while (n)
 	{
-    node *n = nodeIterNext(ni);
-    if (!n) break;
-    out << *n << endl;
-  }
+		out << n->getNum() << " ";
+		edge_iterator ei = n->getEdgeIter();
+		edge* e = n->edgeIterNext(ei);
+		while(e)
+		{
+			int otherId = e->getFrom()==n->getNum()?e->getTo():e->getFrom();
+			out << "["<<otherId<<","<<e->getWeight()<<"] ";
+			e = n->edgeIterNext(ei);
+		}
+		out << std::endl;
+		n = nodeIterNext(ni);
+	}
 }
 
 void graph::printStats()
