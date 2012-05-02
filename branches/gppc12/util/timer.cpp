@@ -30,6 +30,12 @@
 Timer::Timer()
 {
 	elapsedTime = 0;
+#ifdef OS_MAC
+	startTime = UpTime();
+#else
+	CycleCounter c;
+	startTime = c.count();
+#endif
 }
 
 void Timer::startTimer()

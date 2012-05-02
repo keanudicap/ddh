@@ -224,16 +224,21 @@ void
 createSimulation(unitSimulation * &unitSim)
 {
 	Timer t;
+	t.startTimer();
 	Map* map = new Map(gDefaultMap);
 
-	int scalex = map->getMapWidth();
-	int scaley = map->getMapHeight();
-	if(scenariomgr.getNumExperiments() > 0)
+	int mapwidth = map->getMapWidth();
+	int mapheight = map->getMapHeight();
+	if(scenariomgr.getNumExperiments())
 	{
-		scalex = scenariomgr.getNthExperiment(0)->getXScale();
-		scaley = scenariomgr.getNthExperiment(0)->getYScale();
-		if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
+		// resize the map if needed
+		int scalex = scenariomgr.getNthExperiment(0)->getXScale();
+		int scaley = scenariomgr.getNthExperiment(0)->getYScale();
+		if(scalex > 1 && scaley > 1 // stupid v3 scenario files  
+				&& (scalex != mapwidth || scaley != mapheight))
+		{
 			map->scale(scalex, scaley);
+		}
 	}
 	double readmap_time = t.endTimer();
 	double preproc_time = readmap_time;
@@ -352,7 +357,7 @@ createSimulation(unitSimulation * &unitSim)
 	}
 	double buildabs_time = t.endTimer();
 	preproc_time += buildabs_time;
-	std::cout << " preproc time: "<<preproc_time << std::endl;
+	std::cout << " preproc time: "<<preproc_time << "; buildabs time: "<<buildabs_time << std::endl;
 
 	// export the search graph
 	if(export_graph && export_graph_level < aMap->getNumAbstractGraphs())
