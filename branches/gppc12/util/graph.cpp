@@ -157,11 +157,13 @@ void graph::addEdge(edge *e)
     if (e->getFrom() < _nodes.size())
       _nodes[e->getFrom()]->addEdge(e);
     else
-      cerr << "Adding edge from illegal index" << endl;
+      cerr << "Adding edge from illegal index: " << e->getFrom() << 
+	  " (max="<<_nodes.size() << ")"<< endl;
     if (e->getTo() < _nodes.size())
       _nodes[e->getTo()]->addEdge(e);
     else
-      cerr << "Adding edge to illegal index" << endl;
+      cerr << "Adding edge to illegal index: " << e->getTo() << 
+	  " (max="<<_nodes.size() << ")"<<endl;
     //edge_index++;
   }
 }

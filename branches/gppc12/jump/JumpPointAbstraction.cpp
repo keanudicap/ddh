@@ -275,9 +275,8 @@ JumpPointAbstraction::importGraph(const char* filename)
 				exit(1);
 			}
 
-			// adjust offsets to exclude record delimiters
+			// adjust begin offset to exclude delimiter char '[' 
 			begin++;
-			end--;
 
 			// read neighbour id
 			int commapos = nextline.find(",", begin);
@@ -295,12 +294,12 @@ JumpPointAbstraction::importGraph(const char* filename)
 			assert(begin < end);
 
 			// read edge cost
-			double doubleVal = atof(nextline.substr(begin, (end+1)-begin).c_str());
+			double doubleVal = atof(nextline.substr(begin, end-begin).c_str());
 			if((doubleVal == 0 && nextline.at(begin) != '0') || doubleVal == HUGE_VAL)
 			{
 				std::cout << "Error importing graph: cannot read edge cost on "
 					" line " << line_num << ": neighbourId=" << neighbourId << " val="
-				   	<< nextline.substr(begin+1, (end+1)-(begin)).c_str() << std::endl;
+				   	<< nextline.substr(begin, end-begin).c_str() << std::endl;
 				exit(1);
 			}
 
@@ -309,7 +308,7 @@ JumpPointAbstraction::importGraph(const char* filename)
 			g->addEdge(e);
 			assert(g->getNumEdges() > numEdges);
 
-			begin = end+2; // char after end of record delimiter '['
+			begin = end+1; // place begin after end-of-record delimiter '['
 		}
 		line_num++;
 		nextline.clear();

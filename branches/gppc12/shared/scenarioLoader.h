@@ -52,9 +52,9 @@ private:
   int scaleX;
   int scaleY;
   int bucket;
-  int precision;
   double distance;
   string map;
+  int precision;
 };
 
 /** A class which loads and stores scenarios from files.  

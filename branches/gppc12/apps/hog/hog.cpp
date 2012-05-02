@@ -110,7 +110,7 @@ bool import_graph=false;
 std::string import_graph_filename("");
 
 // when true this var allows diagonal shortcutting around corners.
-bool cutCorners = true;
+bool cutCorners = false;
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -345,7 +345,7 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 	}
 
-	// export the level 1 abstract graph
+	// export the search graph
 	if(export_graph && export_graph_level < aMap->getNumAbstractGraphs())
 	{
 		export_search_graph(aMap->getAbstractGraph(export_graph_level));
