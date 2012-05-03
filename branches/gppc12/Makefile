@@ -22,7 +22,7 @@ HPASTAR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HPASTAR_SRC))))
 RSR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(RSR_SRC))))
 JUMP_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(JUMP_SRC))))
 
-ALL_OBJ = $(DRIVER_OBJ) $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) \
+ALL_OBJ = $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) \
 		$(SHARED_OBJ) $(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) 
 
 ifeq ("$(OPENGL)", "STUB") 
@@ -38,7 +38,7 @@ CC = c++
 FAST_CFLAGS = -O3 -ansi -DNDEBUG
 DEV_CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic
 
-LIBFLAGS = -Lapps/libs
+LIBFLAGS = -Lapps/libs -Llibs
 
 # configure header and library paths for the current os (and opengl config)
 ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
@@ -93,6 +93,8 @@ endif
 # every directory in ./apps, except those filtered out, is a target for compilation
 TARGETS = $(filter-out %~ tests Makefile %.mk libs, $(notdir $(wildcard apps/*)))
 
+#entry: fast
+#	$(MAKE) -f apps/libs/libhog.a OPENGL=$(OPENGL) 
 all: fast
 targets: $(TARGETS)
 
@@ -104,17 +106,21 @@ fast: CFLAGS = $(FAST_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES)
 fast: APPSTARGET = fast
 fast: $(TARGETS)
 
-$(TARGETS) : % : cleanapps lib%.a hogcore
-	$(CC) -o $(addprefix bin/,$(@)) $(ALL_OBJ) \
-		-l$(@:.mk=) $(LIBFLAGS)
+$(TARGETS) : % : cleanapps lib%.a hogcore driver
+	$(CC) -o $(addprefix bin/,$(@)) -l$(@:.mk=) -lhogcore -ldriver $(LIBFLAGS) 
 
 $(addprefix lib, $(addsuffix .a, $(TARGETS))) : 
 	@echo "making app: "$(@)" ("$(APPSTARGET)")"
 	@echo $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 	@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 
+.PHONY: driver
+driver : $(DRIVER_OBJ)
+	ar -crs libs/lib$(@).a $(DRIVER_OBJ)
+
 .PHONY: hogcore
 hogcore : $(ALL_OBJ)
+	ar -crs libs/lib$(@).a $(ALL_OBJ)
 
 $(UTIL_OBJ) : $(UTIL_SRC) $(UTIL_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,util/,$(@)))
@@ -145,6 +151,7 @@ $(JUMP_OBJ) : $(JUMP_SRC) $(JUMP_SRC:.cpp=.h)
 
 clean: cleanapps
 	@-$(RM) objs/*.o
+	@-$(RM) libs/*
 	@-$(RM) bin/*
 
 cleanapps:
