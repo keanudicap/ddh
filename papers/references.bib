@@ -1241,11 +1241,16 @@ annote = {Exceedingly similar to HAA* }
 	pages = {647-668},
 	doi = {http://dx.doi.org/10.1137/0216045},
 	annote = {
-		Describes an optimal alg for pathfinding cross the surface of an arbitrary (possibly non-convex) polyhedron.
-		The surface is triangulaed. Search involves computing and propagating "intervals of optimalty" across
+		Describes an optimal alg for pathfinding across the surface of an arbitrary (possibly non-convex) polyhedron.
+		The surface is triangulated. Search involves computing and propagating "intervals of optimalty" across
 		the face of each triangle in order to find a path to any point along a triangle edge.
-		The intervals are also propagated inside the triangle containing the target location in order to identify
-		the optimal path. Nice idea, but complicated. O(n^2*log(n)) worst case for running interval search.}
+		The intervals are also propagated inside the triangle; creating divisions of points which are optimally reached only
+		through some given interval. 
+		If the search is exhaustive (==considers every edge-face pair) the result is a discrete data structure 
+		for efficiently extracting the path and distance-to any target from a fixed start location. 
+		Each such query runs in time O(k + log(n)). O(n^2*log(n)) is needed to run the interval search however
+		and O(n^2) space to store the data structure. Seriously nice result here. SSSP for continuous environments!
+	}
 }
 
 @article{mitchell91,
@@ -1263,3 +1268,17 @@ annote = {Exceedingly similar to HAA* }
 		optimality. Also supports zero-cost regions.}
 } 
 
+@inproceedings{surazhsky05,
+	author = {Surazhsky, Vitaly and Surazhsky, Tatiana and Kirsanov, Danil and Gortler, Steven J. and Hoppe, Hugues},
+	title = {Fast exact and approximate geodesics on meshes},
+	booktitle = {SIGGRAPH},
+	year = {2005},
+	pages = {553--560},
+	numpages = {8},
+	doi = {10.1145/1186822.1073228},
+	annote = {Implements mitchell87 and shows running time is much better 
+		than theoretical quadratic worst-case. Also develops a bounded suboptimal 
+		variant that merges	overlapping intervals from the same edge-face pair.
+		Finally, the approximation approach is used to build a heuristic for the
+		problem-at-hand so that A* can be used to answer arbitrary (s, t) queries.}
+} 
