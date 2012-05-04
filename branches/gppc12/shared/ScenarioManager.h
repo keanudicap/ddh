@@ -1,7 +1,7 @@
 #ifndef SCENARIOMANAGER_H
 #define SCENARIOMANAGER_H
 
-#include "scenarioLoader.h"
+#include "Experiment.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
