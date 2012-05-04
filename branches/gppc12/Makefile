@@ -22,11 +22,11 @@ HPASTAR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HPASTAR_SRC))))
 RSR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(RSR_SRC))))
 JUMP_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(JUMP_SRC))))
 
-ALL_OBJ = $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) \
+HOGCORE_OBJ = $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) \
 		$(SHARED_OBJ) $(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) 
 
 ifeq ("$(OPENGL)", "STUB") 
-  ALL_OBJ += $(GLSTUB_OBJ)
+  HOGCORE_OBJ += $(GLSTUB_OBJ)
 endif
 
 
@@ -91,10 +91,8 @@ ifeq ("$(CPU)", "G5")
 endif
 
 # every directory in ./apps, except those filtered out, is a target for compilation
-TARGETS = $(filter-out %~ tests Makefile %.mk libs, $(notdir $(wildcard apps/*)))
+TARGETS =  hog entry
 
-#entry: fast
-#	$(MAKE) -f apps/libs/libhog.a OPENGL=$(OPENGL) 
 all: fast
 targets: $(TARGETS)
 
@@ -106,21 +104,33 @@ fast: CFLAGS = $(FAST_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES)
 fast: APPSTARGET = fast
 fast: $(TARGETS)
 
-$(TARGETS) : % : cleanapps lib%.a hogcore driver
-	$(CC) -o $(addprefix bin/,$(@)) -l$(@:.mk=) -lhogcore -ldriver $(LIBFLAGS) 
 
-$(addprefix lib, $(addsuffix .a, $(TARGETS))) : 
-	@echo "making app: "$(@)" ("$(APPSTARGET)")"
-	@echo $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
-	@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
+.PHONY: hog
+hog : hogcore driver 
+	@echo "### Building target: "$(@)"  ###"
+	cd apps; $(MAKE) -f hog.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
+	$(CC) -o $(addprefix bin/,$(@)) -lhogcore -ldriver -l$(@) $(LIBFLAGS) 
+
+.PHONY: entry
+entry : hogcore 
+	@echo "### Building target: "$(@)"  ###"
+	cd apps; $(MAKE) -f entry.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
+	$(CC) -o $(addprefix bin/,$(@)) -lhogcore -l$(@) $(LIBFLAGS) 
 
 .PHONY: driver
 driver : $(DRIVER_OBJ)
-	ar -crs libs/lib$(@).a $(DRIVER_OBJ)
+	@echo "### Creating libdriver.a ###"
+	@ar -crs libs/lib$(@).a $(DRIVER_OBJ)
 
 .PHONY: hogcore
-hogcore : $(ALL_OBJ)
-	ar -crs libs/lib$(@).a $(ALL_OBJ)
+hogcore : $(HOGCORE_OBJ)
+	@echo "### Creating libhogcore.a ###"
+	@ar -crs libs/lib$(@).a $(HOGCORE_OBJ)
+
+$(addprefix lib, $(addsuffix .a, $(TARGETS))) : 
+	@echo "making app: "$(@)" ("$(APPSTARGET)")"
+	cd apps; $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) ; cd ..
+	#@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 
 $(UTIL_OBJ) : $(UTIL_SRC) $(UTIL_SRC:.cpp=.h)
 	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,util/,$(@)))
