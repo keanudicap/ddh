@@ -1282,3 +1282,17 @@ annote = {Exceedingly similar to HAA* }
 		Finally, the approximation approach is used to build a heuristic for the
 		problem-at-hand so that A* can be used to answer arbitrary (s, t) queries.}
 } 
+
+@inproceedings{anderson10,
+	author    = {Kenneth Anderson},
+	title     = {Additive Heuristic for Four-Connected Gridworlds},
+	booktitle = {SOCS},
+	year      = {2010},
+	ee        = {http://aaai.org/ocs/index.php/SOCS/SOCS10/paper/view/2075},
+	annote = {
+	   	Describes a new heuristic for 4-connected grid maps based on abstraction.
+		Map is decomposed into two graphs: contiguous vertical segments and contiguous horizontal.
+		Search in abstract space gives a heuristic for low-level search. Combined with PDBs for speed.
+		Quite fast in some benchmarks: 29x on rooms, 7.5x on mazes, 4x on BG }
+}
+
