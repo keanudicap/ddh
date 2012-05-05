@@ -11,6 +11,9 @@ EXTRAS_SRC = $(wildcard extras/*.cpp)
 HPASTAR_SRC = $(wildcard hpa/*.cpp)
 RSR_SRC = $(wildcard rsr/*.cpp)
 JUMP_SRC = $(wildcard jump/*.cpp)
+POLICIES_SRC = $(wildcard policies/*.cpp)
+FILTERS_SRC = $(wildcard filters/*.cpp)
+HEURISTICS_SRC = $(wildcard heuristics/*.cpp)
 
 # object targets
 DRIVER_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(DRIVER_SRC))))
@@ -23,9 +26,13 @@ EXTRAS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(EXTRAS_SRC))))
 HPASTAR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HPASTAR_SRC))))
 RSR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(RSR_SRC))))
 JUMP_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(JUMP_SRC))))
+POLICIES_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(POLICIES_SRC))))
+FILTERS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(FILTERS_SRC))))
+HEURISTICS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HEURISTICS_SRC))))
 
 HOGCORE_OBJ = $(UTIL_OBJ) $(SIMULATION_OBJ) $(ABSTRACTION_OBJ) \
-		$(SHARED_OBJ) $(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) 
+		$(SHARED_OBJ) $(HPASTAR_OBJ) $(RSR_OBJ) $(JUMP_OBJ) $(POLICIES_OBJ) \
+		$(FILTERS_OBJ) $(HEURISTICS_OBJ)
 
 ifeq ("$(OPENGL)", "STUB") 
   HOGCORE_OBJ += $(GLSTUB_OBJ)
@@ -33,7 +40,8 @@ endif
 
 
 # header file locations
-HOGINCLUDES = -I./jump -I./hpa -I./rsr -I./abstraction -I./driver -I./shared -I./simulation -I./util -I./extras
+HOGINCLUDES = -I./jump -I./hpa -I./rsr -I./abstraction -I./driver -I./shared -I./simulation -I./util \
+			  -I./extras -I./policies -I./filters -I./heuristics
 
 # compiler flags
 CC = c++
@@ -160,6 +168,15 @@ $(RSR_OBJ) : $(RSR_SRC) $(RSR_SRC:.cpp=.h)
 
 $(JUMP_OBJ) : $(JUMP_SRC) $(JUMP_SRC:.cpp=.h)
 	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,jump/,$(@))) $(CFLAGS)
+
+$(POLICIES_OBJ) : $(POLICIES_SRC) $(POLICIES_SRC:.cpp=.h)
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,policies/,$(@))) $(CFLAGS)
+
+$(HEURISTICS_OBJ) : $(HEURISTICS_SRC) $(HEURISTICS_SRC:.cpp=.h)
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,heuristics/,$(@))) $(CFLAGS)
+
+$(FILTERS_OBJ) : $(FILTERS_SRC) $(FILTERS_SRC:.cpp=.h)
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,filters/,$(@))) $(CFLAGS)
 
 $(EXTRAS_OBJ) : $(EXTRAS_SRC) $(EXTRAS_SRC:.cpp=.h)
 	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,extras/,$(@))) $(CFLAGS)

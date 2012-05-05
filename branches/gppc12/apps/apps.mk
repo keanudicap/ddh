@@ -21,13 +21,15 @@ ifeq ("$(findstring CYGWIN, $(shell uname -s))", "CYGWIN")
   _CFLAGS += -Dlinux -I/usr/include/opengl
   LIBFLAGS = -Lapps/libs -lopengl32 -lglu32 -lglut32 -L/lib/w32api
 else # Linux et al 
- LIBFLAGS = -Lapps/libs -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
+ LIBFLAGS = -Lapps/libs -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib \
+			-L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
  _CFLAGS += -Dlinux -I/usr/include/GL 
 endif
 endif
 endif
 
-HOGCORE_INCLUDE = -I../jump -I../hpa -I../rsr -I../abstraction -I../driver -I../shared -I../simulation -I../util
+HOGCORE_INCLUDE = -I../jump -I../hpa -I../rsr -I../abstraction -I../driver -I../shared \
+				  -I../simulation -I../util -I../policies -I../filters -I../heuristics
 EXTRAS_INCLUDE = -I../extras
 DRIVER_INCLUDE = -I../driver
 
