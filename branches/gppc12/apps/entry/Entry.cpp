@@ -20,9 +20,12 @@
 #include <iostream>
 #include <fstream>
 
+const char *GetName()
+{
+	return "JPS+pre";
+}
 void PreprocessMap(std::vector<bool> &bits, int width, int height, const char *filename)
 {
-	return;
 	printf("Preprocessing map...");
 	Map* themap = new Map(width, height, bits);
 	JumpPointAbstraction absMap(themap, new NodeFactory(), new EdgeFactory(), false);
@@ -56,7 +59,7 @@ void *PrepareForSearch(std::vector<bool> &bits, int w, int h, const char *filena
 bool GetPath(void *data, xyLoc s, xyLoc g, std::vector<xyLoc> &thepath)
 {
 	JumpPointAbstraction* absMap = (JumpPointAbstraction*)(data);
-	printf("%i\t%i\t%i\t%i\t", s.x, s.y, g.x, g.y);
+	//printf("%i\t%i\t%i\t%i\t", s.x, s.y, g.x, g.y);
 
 	bool online = false;
 	bool rdepth = 0;
@@ -78,12 +81,12 @@ bool GetPath(void *data, xyLoc s, xyLoc g, std::vector<xyLoc> &thepath)
 		{
 			xyLoc loc;
 			loc.x = p->n->getLabelL(kFirstData);
-			loc.x = p->n->getLabelL(kFirstData+1);
+			loc.y = p->n->getLabelL(kFirstData+1);
 			thepath.push_back(loc);
 			p = p->next;
 		}
 
-		printf("%.3f\n",goal->getLabelF(kTemporaryLabel));
+	//	printf("%.3f\n",goal->getLabelF(kTemporaryLabel));
 		delete tmp;
 	}
 	else

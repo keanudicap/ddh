@@ -26,17 +26,8 @@ else # Linux et al
 endif
 endif
 endif
-_CFLAGS += -I../jump -I../hpa -I../rsr -I../abstraction -I../driver -I../shared -I../simulation -I../util -I../competition
 
-ABSTRACTION_HDR = $(wildcard ../abstraction/*.h)
-DRIVER_HDR = $(wildcard ../driver/*.h)
-SHARED_HDR = $(wildcard ../shared/*.h)
-SIMULATION_HDR = $(wildcard ../simulation/*.h)
-UTIL_HDR = $(wildcard ../util/*.h)
-HPASTAR_HDR = $(wildcard ../hpa/*.h)
-RSR_HDR = $(wildcard ../rsr/*.h)
-JUMP_HDR = $(wildcard ../jump/*.h)
-COMPETITION_HDR = $(wildcard ../competition/*.h)
+HOGCORE_INCLUDE = -I../jump -I../hpa -I../rsr -I../abstraction -I../driver -I../shared -I../simulation -I../util
+EXTRAS_INCLUDE = -I../extras
+DRIVER_INCLUDE = -I../driver
 
-HOGCORE_HDR = $(UTIL_HDR) $(SIMULATION_HDR) $(ABSTRACTION_HDR) \
-		$(SHARED_HDR) $(HPASTAR_HDR) $(RSR_HDR) $(JUMP_HDR) $(COMPETITION_HDR)

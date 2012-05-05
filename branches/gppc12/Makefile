@@ -7,6 +7,7 @@ GLSTUB_SRC = $(wildcard driver/STUB/GL/*.cpp)
 SHARED_SRC = $(wildcard shared/*.cpp)
 SIMULATION_SRC = $(wildcard simulation/*.cpp)
 UTIL_SRC = $(wildcard util/*.cpp)
+EXTRAS_SRC = $(wildcard extras/*.cpp)
 HPASTAR_SRC = $(wildcard hpa/*.cpp)
 RSR_SRC = $(wildcard rsr/*.cpp)
 JUMP_SRC = $(wildcard jump/*.cpp)
@@ -18,6 +19,7 @@ ABSTRACTION_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(ABSTRACTION_SRC)
 SHARED_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(SHARED_SRC))))
 SIMULATION_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(SIMULATION_SRC))))
 UTIL_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(UTIL_SRC))))
+EXTRAS_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(EXTRAS_SRC))))
 HPASTAR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(HPASTAR_SRC))))
 RSR_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(RSR_SRC))))
 JUMP_OBJ = $(subst .cpp,.o,$(addprefix objs/, $(notdir $(JUMP_SRC))))
@@ -31,7 +33,7 @@ endif
 
 
 # header file locations
-HOGINCLUDES = -I./jump -I./hpa -I./rsr -I./abstraction -I./driver -I./shared -I./simulation -I./util
+HOGINCLUDES = -I./jump -I./hpa -I./rsr -I./abstraction -I./driver -I./shared -I./simulation -I./util -I./extras
 
 # compiler flags
 CC = c++
@@ -118,9 +120,9 @@ entry : hogcore
 	$(CC) -o $(addprefix bin/,$(@)) -lhogcore -l$(@) $(LIBFLAGS) 
 
 .PHONY: driver
-driver : $(DRIVER_OBJ)
+driver : $(DRIVER_OBJ) $(EXTRAS_OBJ)
 	@echo "### Creating libdriver.a ###"
-	@ar -crs libs/lib$(@).a $(DRIVER_OBJ)
+	@ar -crs libs/lib$(@).a $(DRIVER_OBJ) $(EXTRAS_OBJ)
 
 .PHONY: hogcore
 hogcore : $(HOGCORE_OBJ)
@@ -133,31 +135,34 @@ $(addprefix lib, $(addsuffix .a, $(TARGETS))) :
 	#@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 
 $(UTIL_OBJ) : $(UTIL_SRC) $(UTIL_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,util/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,util/,$(@))) $(CFLAGS)
 
 $(SIMULATION_OBJ) : $(SIMULATION_SRC) $(SIMULATION_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,simulation/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,simulation/,$(@))) $(CFLAGS)
 
 $(ABSTRACTION_OBJ) : $(ABSTRACTION_SRC) $(ABSTRACTION_SRC.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,abstraction/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,abstraction/,$(@))) $(CFLAGS)
 
 $(SHARED_OBJ) : $(SHARED_SRC) $(SHARED_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,shared/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,shared/,$(@))) $(CFLAGS)
 
 $(DRIVER_OBJ) : $(DRIVER_SRC) $(DRIVER_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,driver/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,driver/,$(@))) $(CFLAGS)
 
 $(GLSTUB_OBJ) : $(GLSTUB_SRC) $(GLSTUB_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,driver/STUB/GL/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,driver/STUB/GL/,$(@))) $(CFLAGS)
 
 $(HPASTAR_OBJ) : $(HPASTAR_SRC) $(HPASTAR_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,hpa/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,hpa/,$(@))) $(CFLAGS)
 
 $(RSR_OBJ) : $(RSR_SRC) $(RSR_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,rsr/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,rsr/,$(@))) $(CFLAGS)
 
 $(JUMP_OBJ) : $(JUMP_SRC) $(JUMP_SRC:.cpp=.h)
-	$(CC) $(CFLAGS) -c -o $(@) $(subst .o,.cpp, $(subst objs/,jump/,$(@)))
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,jump/,$(@))) $(CFLAGS)
+
+$(EXTRAS_OBJ) : $(EXTRAS_SRC) $(EXTRAS_SRC:.cpp=.h)
+	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,extras/,$(@))) $(CFLAGS)
 
 clean: cleanapps
 	@-$(RM) objs/*.o
