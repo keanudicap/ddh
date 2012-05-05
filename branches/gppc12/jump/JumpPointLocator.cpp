@@ -3,6 +3,8 @@
 #include "graph.h"
 #include "mapAbstraction.h"
 
+#include <climits>
+
 JumpPointLocator::JumpPointLocator(mapAbstraction* _map)
 {
 	this->map = _map;

@@ -83,14 +83,14 @@ ifeq ("$(findstring CYGWIN, $(shell uname -s))", "CYGWIN")
 
 else # Linux et al 
  SYS_CFLAGS = -Dlinux 
- LIBFLAGS += -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
+ LIBFLAGS += -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
 
   ifeq ("$(OPENGL)", "STUB") 
     SYS_CFLAGS += -DNO_OPENGL
     SYS_CFLAGS += -I./driver/STUB/ -I./driver/STUB/GL/ 
   else
     SYS_CFLAGS = -Dlinux -I/usr/include/GL 
-    LIBFLAGS += -lGL -lGLU -lglut 
+    LIBFLAGS += -lGL -lGLU -lglut -lXi -lXmu 
   endif
 endif
 endif
@@ -182,6 +182,7 @@ $(EXTRAS_OBJ) : $(EXTRAS_SRC) $(EXTRAS_SRC:.cpp=.h)
 	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,extras/,$(@))) $(CFLAGS)
 
 clean: cleanapps
+	@echo cleaning ./
 	@-$(RM) objs/*.o
 	@-$(RM) libs/*
 	@-$(RM) bin/*
