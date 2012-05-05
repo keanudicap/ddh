@@ -32,11 +32,11 @@ else
     endif
   else 
 	# Linux et al 
-    LIBFLAGS = -Lapps/libs -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
     _CFLAGS += -Dlinux 
+    LIBFLAGS = -Lapps/libs -L/usr/lib -L$(HOME)/lib -L/opt/local/lib -L/usr/local/lib
     ifneq ("$(OPENGL)", "STUB")
 	  _CFLAGS += -I/usr/include/GL
-      LIBFLAGS += -lGL -lGLU -lglut -lXi -lXmu -L/usr/X11R6/lib64 -L/usr/X11R6/lib
+      LIBFLAGS += -L/usr/X11R6/lib64 -L/usr/X11R6/lib -lGL -lGLU -lglut -lXi -lXmu 
     endif
   endif
 endif

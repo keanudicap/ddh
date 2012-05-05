@@ -89,7 +89,7 @@ else # Linux et al
     SYS_CFLAGS += -DNO_OPENGL
     SYS_CFLAGS += -I./driver/STUB/ -I./driver/STUB/GL/ 
   else
-    SYS_CFLAGS = -Dlinux -I/usr/include/GL 
+    SYS_CFLAGS += -I/usr/include/GL 
     LIBFLAGS += -lGL -lGLU -lglut -lXi -lXmu 
   endif
 endif
@@ -114,18 +114,21 @@ fast: CFLAGS = $(FAST_CFLAGS) $(SYS_CFLAGS) $(HOGINCLUDES)
 fast: APPSTARGET = fast
 fast: $(TARGETS)
 
-
+# NB: splitting up HOG into multiple bits (like below) creates some circular
+# dependency problems when linking on systems other than OSX.
+# The options --start-group --end-group specify a dependency closure to fix this.
+# The cost is that repeatedly searching the closure to resolve deps can be slow. 
 .PHONY: hog
 hog : hogcore driver 
 	@echo "### Building target: "$(@)"  ###"
 	cd apps; $(MAKE) -f hog.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) -lhogcore -ldriver -l$(@) $(LIBFLAGS) 
+	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -Wl,--start-group -l$(@) -lhogcore -ldriver -Wl,--end-group
 
 .PHONY: entry
 entry : hogcore 
 	@echo "### Building target: "$(@)"  ###"
 	cd apps; $(MAKE) -f entry.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) -lhogcore -l$(@) $(LIBFLAGS) 
+	$(CC) -o $(addprefix bin/,$(@)) -l$(@) -lhogcore $(LIBFLAGS) 
 
 .PHONY: driver
 driver : $(DRIVER_OBJ) $(EXTRAS_OBJ)
