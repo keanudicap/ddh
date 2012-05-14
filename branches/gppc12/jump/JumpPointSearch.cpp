@@ -10,12 +10,14 @@
 
 #include "timer.h"
 
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 
-JumpPointSearch::JumpPointSearch(bool _online, unsigned int _maxdepth, 
-	Heuristic* _heuristic, mapAbstraction* _map) : searchAlgorithm(), 
-	online(_online), maxdepth(_maxdepth), heuristic(_heuristic), map(_map)
+JumpPointSearch::JumpPointSearch(Heuristic* _heuristic, mapAbstraction* _map,
+	   	bool _online, unsigned int _maxdepth, unsigned int jumplimit)
+	: searchAlgorithm(), online(_online), maxdepth(_maxdepth), 
+	heuristic(_heuristic), map(_map)
 {
 	JumpPointLocator* jpl = 0;
 	ExpansionPolicy* expander = 0;
@@ -31,8 +33,14 @@ JumpPointSearch::JumpPointSearch(bool _online, unsigned int _maxdepth,
 		name.append("JPA");
 	}
 
+	jpl->setLimit(jumplimit);
 	std::stringstream ss;
 	ss << "R" << maxdepth;
+
+	if(jumplimit != INT_MAX)
+	{
+		ss << "J" << jumplimit;
+	}
 	name.append(ss.str());
 
 	if(maxdepth == 0)

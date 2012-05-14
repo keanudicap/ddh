@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "Entry.h"
 
+extern bool JPS::online_search;
 void LoadMap(const char *fname, std::vector<bool> &map, int &w, int &h);
 
 struct stats {
@@ -76,13 +77,14 @@ int main(int argc, char **argv)
 	bool pre = false;
 	bool run = false;
 
-	if (argc != 4)
+	if (argc < 4)
 	{
-		printf("Invalid Arguments\nUsage %s <flag> <map> <scenario>\n", argv[0]);
+		printf("Invalid Arguments\nUsage %s <flag> <map> <scenario> <online>\n", argv[0]);
 		printf("Flags:\n");
 		printf("\t-full : Preprocess map and run scenario\n");
 		printf("\t-pre : Preprocess map\n");
 		printf("\t-run : Run scenario without preprocessing\n");
+		printf("\tonline : (optional) switches between JPS+pre (default) to pure online JPS\n");
 		exit(0);
 	}
 	if (strcmp(argv[1], "-full") == 0)
@@ -98,13 +100,20 @@ int main(int argc, char **argv)
 		run = true;
 	}
 	else {
-        printf("Invalid Arguments\nUsage %s <flag> <map> <scenario>\n", argv[0]);
+        printf("Invalid Arguments\nUsage %s <flag> <map> <scenario> <online>\n", argv[0]);
 		printf("Flags:\n");
         printf("\t-full : Preprocess map and run scenario\n");
         printf("\t-pre : Preprocess map\n");
-        printf("\t-run : Run scenario without preprocessing\n");
+        printf("\t-run : Run scenario without preprocessing [online]\n");
+		printf("\tonline : (optional) switches between JPS+pre (default) to pure online JPS\n");
         exit(0);
 	}
+
+	if(argc == 5 && strcmp(argv[4], "online") == 0)
+	{
+		JPS::online_search = true;
+	}
+	//printf("online: %i\n", JPS::online_search);
 	
 	LoadMap(argv[2], mapData, width, height);
 	sprintf(filename, "%s-%s", GetName(), argv[2]);

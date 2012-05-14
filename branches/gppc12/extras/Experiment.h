@@ -5,6 +5,9 @@
 //
 // An object for holding experiments read from .scenario files
 //
+// NB: "scale" is misleading; it refers to the dimension of the
+// scaled map, not the scaling factor!
+//
 // @author: Renee Jansen
 // @created: 5/2/2006
 //

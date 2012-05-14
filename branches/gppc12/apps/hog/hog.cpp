@@ -90,6 +90,7 @@ HOG::SearchMethod searchType = HOG::ASTAR;
 
 // JPS default parameters
 int jps_recursion_depth = 0;
+int jps_jumplimit = INT_MAX;
 bool jps_online = true;
 
 // RSR default parameters
@@ -262,6 +263,7 @@ createSimulation(unitSimulation * &unitSim)
 		else
 			std::cout << "fast" << std::endl;
 	}
+	std::cout << " verbose: "<<verbose <<std::endl;
 	std::cout << " gui: "<<(getDisableGUI()?"false":"true") << std::endl;
 	std::cout << " map file: "<<gDefaultMap << 
 		" ("<<map->getMapWidth()<<"x"<<map->getMapHeight() << ")"<<std::endl;
@@ -291,7 +293,7 @@ createSimulation(unitSimulation * &unitSim)
 			if(!jps_online)
 				std::cout << "+preprocessing";
 			std::cout << "(recursion_depth="<<jps_recursion_depth
-				<< ")";
+				<< ", jumplimit: "<<jps_jumplimit<<")";
 			break;
 		case HOG::ASTAR:
 			std::cout << "A*";
@@ -352,7 +354,7 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 		}
 		default:
-			aMap = new mapFlatAbstraction(map);
+			aMap = new mapFlatAbstraction(map, allowDiagonals, cutCorners);
 			break;
 	}
 	double buildabs_time = t.endTimer();
@@ -467,7 +469,7 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 
 		if(p)
 		{
-			distanceTravelled = aMap->distance(p);	
+			distanceTravelled = to->getLabelF(kTemporaryLabel);
 		}
 
 		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
@@ -736,6 +738,7 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 			int jps_params = 0;
 			for(int i=2; i < maxNumArgs; i++)
 			{
+				std::cout << "jps arg: "<<argument[i]<<std::endl;
 				if(*argument[i] == '-')
 					break;
 				jps_params++;
@@ -812,10 +815,8 @@ myScenarioGeneratorCLHandler(char *argument[], int maxNumArgs)
 	ScenarioManager scenariomgr;
 	int numScenarios = atoi(argument[2]);
 
-	EmptyClusterAbstraction aMap(new Map(map.c_str()), 
-			new EmptyClusterFactory(), new MacroNodeFactory(), 
-			new EdgeFactory(), allowDiagonals, reducePerimeter, bfReduction);
-	
+	mapFlatAbstraction aMap(new Map(map.c_str()), allowDiagonals, cutCorners);
+	std::cout << "allowDiagonals: "<<allowDiagonals<< "cutCorners: "<<cutCorners<<std::endl;
 	scenariomgr.generateExperiments(&aMap, numScenarios);
 
 	string outfile = map + ".scenario"; 
@@ -1118,8 +1119,8 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 
 		case HOG::JPS:
 		{
-			alg = new JumpPointSearch(jps_online, jps_recursion_depth, 
-					newHeuristic(), aMap);
+			alg = new JumpPointSearch(newHeuristic(), aMap, 
+					jps_online, jps_recursion_depth, jps_jumplimit);
 			break;
 		}
 
@@ -1127,6 +1128,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 		{
 			alg = new FlexibleAStar(new IncidentEdgesExpansionPolicy(aMap), 
 						newHeuristic());
+			//alg = new aStarOld(1, true);
 			break;
 		}
 	}
@@ -1173,6 +1175,7 @@ parse_jps_args(char** argument, int maxArgs)
 {
 	for(int i=0; i < maxArgs; i++)
 	{
+		std::cout << "\njps arg: "<<argument[i]<<std::endl;;
 		if(strncmp(argument[i], "depth=", 6) == 0)
 		{
 			int tmp = atoi(argument[i]+6);
@@ -1180,22 +1183,34 @@ parse_jps_args(char** argument, int maxArgs)
 			{
 				jps_recursion_depth = tmp;
 			}
-		}
-		else if(strcmp(argument[i], "online") == 0)
-		{
-			jps_online = true;
+			continue;
 		}
 
-		else if(strcmp(argument[i], "offline") == 0)
+		if(strncmp(argument[i], "jumplimit=", 10) == 0)
+		{
+			int tmp = atoi(argument[i]+10);
+			if(tmp != INT_MAX || tmp != INT_MIN)
+			{
+				jps_jumplimit = tmp;
+			}
+			continue;
+		}
+
+		if(strcmp(argument[i], "online") == 0)
+		{
+			jps_online = true;
+			continue;
+		}
+
+		if(strcmp(argument[i], "offline") == 0)
 		{
 			jps_online = false;
+			continue;
 		}
-		else
-		{
-			std::cerr << "unrecognised search parameter: " << argument[i]
-				<< std::endl;
-			return false;
-		}
+
+		std::cerr << "unrecognised search parameter: " << argument[i]
+			<< std::endl;
+		return false;
 	}
 	return true;
 }

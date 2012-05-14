@@ -24,11 +24,14 @@ Experiment::~Experiment()
 
 void Experiment::print(std::ostream& out)
 {
+	out << this->bucket << "\t";
 	out << this->getMapName() <<"\t";
+	out << this->getXScale() << "\t";
+	out << this->getYScale() << "\t";
 	out << this->getStartX() <<"\t";
 	out << this->getStartY()<<"\t";
 	out << this->getGoalX()<<"\t";
 	out << this->getGoalY()<<"\t";
 	out << std::fixed << std::setprecision(this->getPrecision());
-	out << this->getDistance() << "\t";
+	out << this->getDistance();
 }

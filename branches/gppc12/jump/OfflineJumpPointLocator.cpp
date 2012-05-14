@@ -124,7 +124,7 @@ OfflineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 node*
 OfflineJumpPointLocator::findSterileJumpNode(Jump::Direction d, int x, int y)
 {
-	const int jumplimit = INT_MAX;
+	//const int jumplimit = INT_MAX;
 	node* n = 0; 
 
 	switch(d)

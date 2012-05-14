@@ -60,7 +60,7 @@ class AbstractScenarioManager
 	
 	protected: 
 		std::vector<Experiment*> experiments;		
-		float version;
+		int version;
 };
 
 class ScenarioManager : public AbstractScenarioManager
@@ -79,8 +79,6 @@ class ScenarioManager : public AbstractScenarioManager
 	protected:
 		Experiment* generateSingleExperiment(mapAbstraction* absMap);
 		void loadV1ScenarioFile(std::ifstream& infile);
-		void loadV2ScenarioFile(std::ifstream& infile);
-		void loadV21ScenarioFile(std::ifstream& infile);
 		void loadV3ScenarioFile(std::ifstream& infile);
 };
 

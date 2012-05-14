@@ -414,10 +414,10 @@ graph *getMapGraph(Map *m)
 	NodeFactory nf;
 	EdgeFactory ef;
 	
-	return getMapGraph(m, &nf, &ef, true);
+	return getMapGraph(m, &nf, &ef, true, true);
 }
 
-graph* getMapGraph(Map* m, INodeFactory* nf, IEdgeFactory* ef, bool allowDiagonals)
+graph* getMapGraph(Map* m, INodeFactory* nf, IEdgeFactory* ef, bool allowDiagonals, bool cutCorners)
 {
 	// printf("Getting graph representation of world\n");
 	graph* g = makeMapNodes(m, nf);
@@ -426,7 +426,7 @@ graph* getMapGraph(Map* m, INodeFactory* nf, IEdgeFactory* ef, bool allowDiagona
 		for (int x = 0; x < m->getMapWidth(); x++)
 		{
 			//cout << "Trying (x, y) = (" << x << ", " << y << ")" << endl;
-			addMapEdges(m, g, ef, x, y, allowDiagonals);
+			addMapEdges(m, g, ef, x, y, allowDiagonals, cutCorners);
 			//			if (!g->verifyGraph())
 			//			{
 			//				cerr << "Broken at (x, y) = (" << x << ", " << y << ")" << endl;
@@ -542,88 +542,36 @@ graph* makeMapNodes(Map* m, INodeFactory* nf)
 static const int gEdgeProb = 100;
 static const int gStraightEdgeProb = 100;
 
-void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDiagonals)
+void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDiagonals, bool cutCorners)
 {
-	// check 4 surrounding edges
-	// when we get two of them, we add the corresponding diagonal edge(?)...not yet
-	// make sure the edge we add isn't there already!
-	// make sure we get the right node # when we add the edge
+	if(m->getTile(x, y).tile1.node == kNoGraphNode)
+		return;
+
 	edge *e = 0;
 	
-	// left edge is always tile1, right edge is always tile 2
-	if ((x >= 1) && (m->adjacentEdges(x, y, kLeftEdge)) && (m->getTile(x, y).tile1.node != kNoGraphNode))
+	// add edge to left neighbour
+	if ((x >= 1) && 
+		m->getTile(x-1, y).tile1.node != kNoGraphNode)
 	{
-		if (m->adjacentEdges(x-1, y, kInternalEdge) && (m->getTile(x-1, y).tile1.node != kNoGraphNode))
-		{
 			if ((rand()%100) < gStraightEdgeProb)
 			{
 				e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x-1, y).tile1.node, 1);
+				e->setLabelL(kEdgeCapacity, 1);
 				g->addEdge(e);
 			}
-		}
-		else if (m->getTile(x-1, y).tile2.node != kNoGraphNode)
-		{
-			if ((rand()%100) < gStraightEdgeProb)
-			{
-				e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x-1, y).tile2.node, 1);
-				g->addEdge(e);
-			}
-		}
-		if (e)
-			e->setLabelL(kEdgeCapacity, 1);
 	}
+
 	e = 0;
-	// top edge (may be tile 1 or tile 2)
-	if ((y >= 1) && (m->adjacentEdges(x, y, kTopEdge)))
+	// add edge to neighbour above
+	if ((y >= 1) && 
+		m->getTile(x, y-1).tile1.node != kNoGraphNode)
 	{
-		if ((m->adjacentEdges(x, y, kInternalEdge)) || (m->getSplit(x, y) == kForwardSplit))
+		if ((rand()%100) < gStraightEdgeProb)
 		{
-			if (m->getTile(x, y).tile1.node != kNoGraphNode)
-			{
-				if (m->adjacentEdges(x, y-1, kInternalEdge) || (m->getSplit(x, y-1) == kBackwardSplit))
-				{
-					if (m->getTile(x, y-1).tile1.node != kNoGraphNode)
-					{
-						if ((rand()%100) < gStraightEdgeProb)
-						{
-							e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x, y-1).tile1.node, 1);
-							g->addEdge(e);
-						}
-					}
-				}
-				else if (m->getTile(x, y-1).tile2.node != kNoGraphNode)
-				{
-					if ((rand()%100) < gStraightEdgeProb)
-					{
-						e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x, y-1).tile2.node, 1);
-						g->addEdge(e);
-					}
-				}
-			}
-		}
-		else {
-			if (m->adjacentEdges(x, y-1, kInternalEdge) || (m->getSplit(x, y-1) == kBackwardSplit))
-			{
-				if ((m->getTile(x, y).tile2.node != kNoGraphNode) && (m->getTile(x, y-1).tile1.node != kNoGraphNode))
-				{
-					if ((rand()%100) < gStraightEdgeProb)
-					{
-						e = ef->newEdge(m->getTile(x, y).tile2.node, m->getTile(x, y-1).tile1.node, 1);
-						g->addEdge(e);
-					}
-				}
-			}
-			else if ((m->getTile(x, y).tile2.node != kNoGraphNode) && (m->getTile(x, y-1).tile2.node != kNoGraphNode))
-			{
-				if ((rand()%100) < gStraightEdgeProb)
-				{
-					e = ef->newEdge(m->getTile(x, y).tile2.node, m->getTile(x, y-1).tile2.node, 1);
-					g->addEdge(e);
-				}
-			}
-		}
-		if (e)
+			e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x, y-1).tile1.node, 1);
 			e->setLabelL(kEdgeCapacity, 1);
+			g->addEdge(e);
+		}
 	}
 
 	if(allowDiagonals == false)
@@ -633,81 +581,77 @@ void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDia
 	// diagonal UpperLeft edge, always node 1...
 	// (1) we can cross each of the boundaries between tiles
 	if ((x >= 1) && (y >= 1) &&
-		(m->getTile(x, y).tile1.node != kNoGraphNode) &&
-		( 	// we can cut at least one corner 
-			(m->adjacentEdges(x, y, kLeftEdge) && m->adjacentEdges(x-1, y, kTopEdge))  ||
-			(m->adjacentEdges(x, y, kTopEdge) && m->adjacentEdges(x, y-1, kLeftEdge)) 
+		m->getTile(x-1, y-1).tile1.node != kNoGraphNode &&
+		(
+		 	// if both alternative paths are OK, diagonal transition is OK
+			(
+				m->getTile(x-1, y).tile1.node != kNoGraphNode && 
+				m->getTile(x, y-1).tile1.node != kNoGraphNode
+			)
+
+			||
+
+			// diagonal transition might still be valid if we allow corner cutting
+			(
+				cutCorners && 
+				(m->getTile(x-1, y).tile1.node != kNoGraphNode ||
+				m->getTile(x, y-1).tile1.node != kNoGraphNode)
+			)
 		))
 	{
-		// (2) we can cross the inner tile boundaries
-		if (((m->adjacentEdges(x-1, y, kInternalEdge)) || (m->getSplit(x-1, y) == kBackwardSplit)) &&
-				((m->adjacentEdges(x, y-1, kInternalEdge)) || (m->getSplit(x, y-1) == kBackwardSplit)) &&
-				((m->adjacentEdges(x-1, y-1, kInternalEdge)) || (m->getSplit(x-1, y-1) == kForwardSplit)) &&
-				((m->adjacentEdges(x, y, kInternalEdge)) || (m->getSplit(x, y) == kForwardSplit)))
-		{
-			// (3) find what tiles to connect
-			if (m->adjacentEdges(x-1, y-1, kInternalEdge))
-			{
-				if (m->getTile(x-1, y-1).tile1.node != kNoGraphNode)
-				{
-					if ((rand()%100) < gEdgeProb)
-					{
-						e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x-1, y-1).tile1.node, ROOT_TWO);
-						g->addEdge(e);
-					}
-				}
-			}
-			else if (m->getTile(x-1, y-1).tile2.node != kNoGraphNode)
-			{
 				if ((rand()%100) < gEdgeProb)
 				{
-					e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x-1, y-1).tile2.node, ROOT_TWO);
+					e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x-1, y-1).tile1.node, ROOT_TWO);
+					e->setLabelL(kEdgeCapacity, 1);
 					g->addEdge(e);
 				}
-			}
-			if (e)
-				e->setLabelL(kEdgeCapacity, 1);
-		}
 	}
+
 	e = 0;
 	// diagonal UpperRight edge
 	// (1) we can cross each of the boundaries between tiles
 	if ((y >= 1) && (x < m->getMapWidth()-1) && 
-		(m->getTile(x+1, y-1).tile1.node != kNoGraphNode) &&
+		m->getTile(x+1, y-1).tile1.node != kNoGraphNode &&
 		(
-		 	// we can cut at least one corner
-			(m->adjacentEdges(x, y, kRightEdge) && m->adjacentEdges(x+1, y, kTopEdge)) ||
-			(m->adjacentEdges(x, y, kTopEdge) && m->adjacentEdges(x, y-1, kRightEdge))
+		 	// if both alternative paths are OK, diagonal transition is OK
+			(m->getTile(x+1, y).tile1.node != kNoGraphNode &&
+			 m->getTile(x, y-1).tile1.node != kNoGraphNode)
+
+			||
+
+			// diagonal transition might still be valid if we allow corner cutting
+			(cutCorners && 
+			(m->getTile(x+1, y).tile1.node != kNoGraphNode ||
+			 m->getTile(x, y-1).tile1.node != kNoGraphNode))
 		))
 	{
-		// (2) we can cross the inner tile boundaries
-		if (((m->adjacentEdges(x+1, y, kInternalEdge)) || (m->getSplit(x+1, y) == kForwardSplit)) &&
-				((m->adjacentEdges(x, y-1, kInternalEdge)) || (m->getSplit(x, y-1) == kForwardSplit)) &&
-				((m->adjacentEdges(x+1, y-1, kInternalEdge)) || (m->getSplit(x+1, y-1) == kBackwardSplit)) &&
-				((m->adjacentEdges(x, y, kInternalEdge)) || (m->getSplit(x, y) == kBackwardSplit)))
+		if ((rand()%100) < gEdgeProb)
 		{
-			// (3) connect
-			if (m->adjacentEdges(x, y, kInternalEdge))
-			{
-				if (m->getTile(x, y).tile1.node != kNoGraphNode)
-				{
-					if ((rand()%100) < gEdgeProb)
-					{
-						e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x+1, y-1).tile1.node, ROOT_TWO);
-						g->addEdge(e);
-					}
-				}
-			}
-			else if (m->getTile(x, y).tile2.node != kNoGraphNode)
-			{
-				if ((rand()%100) < gEdgeProb)
-				{
-					e = ef->newEdge(m->getTile(x, y).tile2.node, m->getTile(x+1, y-1).tile1.node, ROOT_TWO);
-					g->addEdge(e);
-				}
-			}
-			if (e)
-				e->setLabelL(kEdgeCapacity, 1);
+			e = ef->newEdge(m->getTile(x, y).tile1.node, m->getTile(x+1, y-1).tile1.node, ROOT_TWO);
+			e->setLabelL(kEdgeCapacity, 1);
+			g->addEdge(e);
 		}
 	}	
 }
+
+// orders the neighbours of each node according to the following total order:
+// N < NE < E < SE < S < SW < W < NW
+// The index of each node in the neighbours array corresponds to its
+// position in the total order (i.e. N = 0, NE = 1, ..., NW = 7)
+// If a node is missing some neighbours, we pad out the array with dummy edges
+// that connect the node to itself.
+//void
+//mapAbstraction::reorderEdgesLexically()
+//{
+//	graph* g = abstrations[0];
+//	node_iterator it = g->getNodeIter();
+//	node* n = g->nodeIterNext(it);
+//	while(n)
+//	{
+//		while(n->getNumEdges() < 8)
+//		{
+//			e = new edge(n->getFrom(), n->getTo(), 0);
+//			n->addEdge(e);
+//		}
+//	}
+//}

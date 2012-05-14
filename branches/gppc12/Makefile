@@ -122,7 +122,8 @@ fast: $(TARGETS)
 hog : hogcore driver 
 	@echo "### Building target: "$(@)"  ###"
 	cd apps; $(MAKE) -f hog.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -Wl,--start-group -l$(@) -lhogcore -ldriver -Wl,--end-group
+	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -l$(@) -lhogcore -ldriver
+	#$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -Wl,--start-group -l$(@) -lhogcore -ldriver -Wl,--end-group
 
 .PHONY: entry
 entry : hogcore 
@@ -146,43 +147,43 @@ $(addprefix lib, $(addsuffix .a, $(TARGETS))) :
 	#@cd apps; $(MAKE) $(APPSTARGET); $(MAKE) -f $(patsubst lib%,%.mk,$(basename $(@))) OPENGL=$(OPENGL) $(@); cd ..
 
 $(UTIL_OBJ) : $(UTIL_SRC) $(UTIL_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,util/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,util/,$(@))) -o $(@) $(CFLAGS)
 
 $(SIMULATION_OBJ) : $(SIMULATION_SRC) $(SIMULATION_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,simulation/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,simulation/,$(@))) -o $(@) $(CFLAGS)
 
 $(ABSTRACTION_OBJ) : $(ABSTRACTION_SRC) $(ABSTRACTION_SRC.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,abstraction/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,abstraction/,$(@))) -o $(@) $(CFLAGS)
 
 $(SHARED_OBJ) : $(SHARED_SRC) $(SHARED_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,shared/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,shared/,$(@))) -o $(@) $(CFLAGS)
 
 $(DRIVER_OBJ) : $(DRIVER_SRC) $(DRIVER_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,driver/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,driver/,$(@))) -o $(@) $(CFLAGS)
 
 $(GLSTUB_OBJ) : $(GLSTUB_SRC) $(GLSTUB_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,driver/STUB/GL/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,driver/STUB/GL/,$(@))) -o $(@) $(CFLAGS)
 
 $(HPASTAR_OBJ) : $(HPASTAR_SRC) $(HPASTAR_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,hpa/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,hpa/,$(@))) -o $(@) $(CFLAGS)
 
 $(RSR_OBJ) : $(RSR_SRC) $(RSR_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,rsr/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,rsr/,$(@))) -o $(@) $(CFLAGS)
 
 $(JUMP_OBJ) : $(JUMP_SRC) $(JUMP_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,jump/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,jump/,$(@))) -o $(@) $(CFLAGS)
 
 $(POLICIES_OBJ) : $(POLICIES_SRC) $(POLICIES_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,policies/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,policies/,$(@))) -o $(@) $(CFLAGS)
 
 $(HEURISTICS_OBJ) : $(HEURISTICS_SRC) $(HEURISTICS_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,heuristics/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,heuristics/,$(@))) -o $(@) $(CFLAGS)
 
 $(FILTERS_OBJ) : $(FILTERS_SRC) $(FILTERS_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,filters/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,filters/,$(@))) -o $(@) $(CFLAGS)
 
 $(EXTRAS_OBJ) : $(EXTRAS_SRC) $(EXTRAS_SRC:.cpp=.h)
-	$(CC) -c -o $(@) $(subst .o,.cpp, $(subst objs/,extras/,$(@))) $(CFLAGS)
+	$(CC) -c $(subst .o,.cpp, $(subst objs/,extras/,$(@))) -o $(@) $(CFLAGS)
 
 clean: cleanapps
 	@echo cleaning ./

@@ -7,6 +7,7 @@
 #include "constants.h"
 #include "graph.h"
 #include "map.h"
+#include "mapFlatAbstraction.h"
 #include "path.h"
 
 #include "EdgeFactory.h"
@@ -20,50 +21,72 @@
 #include <iostream>
 #include <fstream>
 
+namespace JPS
+{
+	bool online_search = false;
+}
+
 const char *GetName()
 {
+	if(JPS::online_search)
+	{
+		return "JPS";
+	}
 	return "JPS+pre";
 }
 void PreprocessMap(std::vector<bool> &bits, int width, int height, const char *filename)
 {
 	printf("Preprocessing map...");
-	Map* themap = new Map(width, height, bits);
-	JumpPointAbstraction absMap(themap, new NodeFactory(), new EdgeFactory(), false);
-	printf("done.\n");
-
-	printf("Writing results to file '%s'...", filename);
-	graph* g = absMap.getAbstractGraph(0);
-	std::ofstream fout(filename);
-	if(fout.fail())
+	if(JPS::online_search)
 	{
-		printf("error. cannot open file; aborting\n");
-		exit(1);
+		std::cout << "not required\n";
 	}
-	g->print(fout);
-	fout.close();
-	printf("done\n");
+	{
+		Map* themap = new Map(width, height, bits);
+		JumpPointAbstraction absMap(themap, new NodeFactory(), new EdgeFactory(), false);
+		printf("done.\n");
+
+		printf("Writing results to file '%s'...", filename);
+		graph* g = absMap.getAbstractGraph(0);
+		std::ofstream fout(filename);
+		if(fout.fail())
+		{
+			printf("error. cannot open file; aborting\n");
+			exit(1);
+		}
+		g->print(fout);
+		fout.close();
+		printf("done\n");
+	}
 }
 
 void *PrepareForSearch(std::vector<bool> &bits, int w, int h, const char *filename)
 {
-	printf("reading from file '%s'...", filename);
+	mapAbstraction* absMap = 0;
 	Map* themap = new Map(w, h, bits);
-
-	JumpPointAbstraction* absMap = new JumpPointAbstraction(themap,
-			filename, new NodeFactory(), new EdgeFactory(), false);
-
-	printf("done\n");
+	if(JPS::online_search)
+	{
+		printf("PrepareForSearch...");
+		absMap = new mapFlatAbstraction(themap, true, false);
+		printf("done\n");
+	}
+	else
+	{
+		printf("reading from file '%s'...", filename);
+		absMap = new JumpPointAbstraction(themap,
+				filename, new NodeFactory(), new EdgeFactory(), false);
+		printf("done\n");
+	}
 	return absMap;
 }
 
 bool GetPath(void *data, xyLoc s, xyLoc g, std::vector<xyLoc> &thepath)
 {
-	JumpPointAbstraction* absMap = (JumpPointAbstraction*)(data);
-	//printf("%i\t%i\t%i\t%i\t", s.x, s.y, g.x, g.y);
-
-	bool online = false;
+	mapAbstraction* absMap = (mapAbstraction*)data;
 	bool rdepth = 0;
-	JumpPointSearch jps(online, rdepth, new OctileHeuristic(), absMap);
+	JumpPointSearch jps(new OctileHeuristic(), absMap, JPS::online_search, rdepth);
+	//printf("running %s", jps.getName());
+
 
 	node* start = absMap->getNodeFromMap(s.x, s.y);
 	node* goal = absMap->getNodeFromMap(g.x, g.y);
@@ -89,10 +112,10 @@ bool GetPath(void *data, xyLoc s, xyLoc g, std::vector<xyLoc> &thepath)
 	//	printf("%.3f\n",goal->getLabelF(kTemporaryLabel));
 		delete tmp;
 	}
-	else
-	{
-		printf("0\n");
-	}
+//	else
+//	{
+//		printf("0\n");
+//	}
 
 	return true;
 }
