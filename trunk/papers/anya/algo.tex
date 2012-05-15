@@ -1,0 +1,52 @@
+This section now presents our search algorithm, 
+dubbed {\bf anya}, 
+for any-angle pathfinding.  
+
+\begin{algorithm}[ht!]
+  \input{algo/anya}
+  \caption{Procedure {\bf anya}, an any-angle pathfinding algorithm}
+  \label{algo::anya}
+\end{algorithm}
+
+\begin{algorithm}[ht!]
+  \input{algo/expand}
+  \caption{Procedure $expand\_node(c)$}
+  \label{algo::expandnode}
+\end{algorithm}
+
+The main procedure is presented in Algorithm~\ref{algo::anya}.  
+The algorithm is a variant of $A^*$ 
+with a specific successors generation.  
+An interval can be generated from a corner $c$ 
+(or the starting node $s$) 
+through the procedure $expand\_node(c)$, 
+or as the move of an existing interval.  
+When an interval $i$ is expanded, 
+it is splited as presented in the previous section 
+via method $split\_epsilon(i)$.  
+Finally, notice that the procedure $open.insert(I)$, 
+where $I$ is a set of intervals, 
+computes the $f$ value of each interval of $I$, 
+and deals with ordering the intervals 
+(including ignoring those that have already been expanded 
+or those with existing smaller $f$ value).  
+
+The $expand\_node(c)$ procedure is presented 
+in Algorithm~\ref{algo::expandnode}.  
+From the current node, 
+the two intervals are created 
+that stretch horizontally as far possible, 
+at ordinate $y_c$, with origin $c$, and heading 
+in vertical (North or South) direction.  
+
+\begin{algorithm}[ht!]
+  \input{algo/split}
+  \caption{Procedure $split\_epsilon(c)$}
+  \label{algo::splitepsilon}
+\end{algorithm}
+
+$next\_interval([x_{\min},x_{\max}],y)$
+
+$move(i)$
+
+%EOF

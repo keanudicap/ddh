@@ -1,7 +1,7 @@
 FICHIER = main
 
 FINAL   = final
-TEXFILES = $(wildcard *.tex) $(wildcard images/*.tex)
+TEXFILES = $(wildcard *.tex) $(wildcard images/*.tex) $(wildcard algo/*.tex) $(wildcard tikz/*.tex) 
 BIBFILE  = $(wildcard *.bib)
 FIGFILES = $(wildcard images/*.fig)
 EPSFILES = $(patsubst %.fig,%.eps,$(FIGFILES))

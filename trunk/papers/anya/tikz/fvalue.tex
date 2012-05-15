@@ -1,0 +1,30 @@
+\begin{tikzpicture}
+
+\creategrid{6}{6}
+%\drawobstacle{2}{3}
+
+\draw[red,line width=2] (2,4) -- (4,4);
+
+\coordinate (root) at (2,1);
+\coordinate (g1)   at (3,5);
+\coordinate (g2)   at (1,5);
+\coordinate (g3)   at (5,5);
+
+\foreach \g in {g1, g2, g3}
+  \draw (root) -- (\g);
+
+\path[name path=direct] (root) -- (g1);
+\path[name path=interval] (2,4) -- (4,4);
+\draw[name intersections={of=direct and interval,by=zsmile}];
+\draw (zsmile) -- ++ (-0.2,0.2) + (-0.1,0.1) node {\textit{\u z}};
+
+\draw[dashed,line width=2pt] (root) -- (g1);
+\draw[dashed,line width=2pt] (root) -- (2,4) -- (g2);
+\draw[dashed,line width=2pt] (root) -- (4,4) -- (g3);
+
+\draw (g1)   + (-0.2,0.2) node {$g_1$};
+\draw (g2)   + (-0.2,0.2) node {$g_2$};
+\draw (g3)   + (-0.2,0.2) node {$g_3$};
+\draw (root) + (-0.2,-0.2) node {$p$};
+
+\end{tikzpicture}
