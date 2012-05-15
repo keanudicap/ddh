@@ -4,12 +4,18 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{psfrag}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tikz}
+\usetikzlibrary{intersections}
 
 \newtheorem{lemm}{Lemma}
 \newtheorem{defi}{Definition}
 \newenvironment{proof}{\noindent{Proof:}}{}
 
 \newcommand{\intersection}[2]{\langle #1, #2\rangle}
+
+\input{gridtikz}
 
 \begin{document}
 
@@ -24,5 +30,11 @@
 
 \section{Principle}
 \input{ex}
+
+\section{Algorithm}
+\input{algo}
+
+\bibliographystyle{alpha}
+\bibliography{references}
 
 \end{document}
