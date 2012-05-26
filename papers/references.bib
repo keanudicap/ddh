@@ -784,12 +784,11 @@ author = "John F. Dillenburg and Peter C. Nelson"
 	ee        = {http://www.aaai.org/ocs/index.php/SARA/SARA11/paper/view/4243},
 }
 
-@inproceedings{harabor11b, 
-	author = {D. Harabor and A. Grastien},
-	title = {Symmetry-Based Search Space Reduction For Grid Maps},
-	booktitle = {AAAI},
-	year = {2011},
-	pages = {},
+@inproceedings{harabor11b,
+	author = {D. {Harabor} and {\relax Al}. {Grastien}}, 
+	title = {Online graph pruning for pathfinding on grid maps}, 
+	booktitle = {25th Conference on Artificial Intelligence (AAAI-11)}, 
+	year = {2011}, 
 }
 
 @inproceedings{harabor11c, 
@@ -1294,5 +1293,67 @@ annote = {Exceedingly similar to HAA* }
 		Map is decomposed into two graphs: contiguous vertical segments and contiguous horizontal.
 		Search in abstract space gives a heuristic for low-level search. Combined with PDBs for speed.
 		Quite fast in some benchmarks: 29x on rooms, 7.5x on mazes, 4x on BG }
+}
+
+@inproceedings{abraham10,
+	author = {Abraham, Ittai and Fiat, Amos and Goldberg, Andrew V. and Werneck, Renato F.},
+	title = {Highway dimension, shortest paths, and provably efficient algorithms},
+	booktitle = {Proceedings of the Twenty-First Annual ACM-SIAM Symposium on Discrete Algorithms},
+	series = {SODA '10},
+	year = {2010},
+	location = {Austin, Texas},
+	pages = {782--793},
+	numpages = {12},
+	publisher = {Society for Industrial and Applied Mathematics},
+	address = {Philadelphia, PA, USA},
+} 
+
+@inproceedings{goldberg06,
+	author = {A.V. Goldberg and Haim Kaplan and Renato F. Werneck},
+	title = {Reach for A*: Efficient Point-to-Point Shortest Path Algorithms},
+	booktitle={ALENEX},
+	year = {2006}
+}
+
+@article{sturtevant2012benchmarks,
+	title={Benchmarks for Grid-Based Pathfinding},
+	author={Sturtevant, N.},
+	journal={Transactions on Computational Intelligence and AI in Games},
+	volume={},
+	number={},
+	pages={},
+	year={2012}
+ }
+
+@inproceedings{vion09,
+	author = {Julien Vion and Romuald Debruyne},
+	title = {Light Algorithms for Maintaining Max-RPC During Search},
+	conference = {Symposium on Abstraction, Reformulation, and Approximation},
+	year = {2009},
+	annote = {Describes several approximations of Max-RPC filtering. All use residuals
+		to speed up the search for supports. The most interesting is Light Max-RPC;
+		an approximation that propagates loss of AC supports but does not propagate
+		loss of PC witnesses. In experiments lmaxRPC is shown almost as powerful as
+		full maxRPC but with better running times. Still expensive though O(cd^4) !!
+	}
+}
+
+@incollection{margot09,
+	title={Symmetry In Integer Linear Programming},
+	author = {Margot, F.},
+	editor = {M. J\"{u}mnger and T. Liebling and D. Naddef and G. Nemhauser and W. Pulleyblank and G. Reinelt and G. Rinaldi and L. Wolsey},
+	booktitle = {50 Years of Integer Programming},
+	publisher={Springer},
+	pages={647-681},
+	year={2009},
+}
+
+@incollection{champandard09, 
+	title={Modern Pathfinding Techniques},
+	author={Alex Champandard},
+	booktitle={AIGameDev.com},
+	year={2009},
+	annote={Discussion on various challenges related to pathfinding in games. 
+		Mentions related problems too like reachability, distance-to-object and so on. Lots of great stuff!}
 }
 
