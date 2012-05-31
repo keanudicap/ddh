@@ -1,81 +1,98 @@
 \section{Jump Point Search}
 \label{sec::jps}
+Jump Point Search (JPS) is the combination of A* search with a simple
+node expansion operator that prunes potential successors if
+they can be reached by path which is shorter than, or symmetric to,
+the current path. JPS can be described in terms of two sets of 
+rules: neighbour pruning rules and recursive jumping rules.
+We describe each in turn.
 
-Jump Point Search (JPS) is an improvement of the $A^*$ algorithm 
-based on the reduction of the number of successors of the search nodes 
-in order to ``jump'' over a number of nodes.  
-
-Given a node $x$ reached from the parent node $p$, 
-we remove the neighbour $n$ of $x$ 
-from the set of successors of $x$ 
-if one of the following rule holds: 
+\textbf{Pruning Rules:}
+Given a node $x$, reached via a parent node $p$,
+we prune from the neighbours of $x$ any node $n$ for which one 
+of the following rules applies:
 \begin{enumerate}
 \item 
-  there exists a path $\pi'$ from $p$ to $n$ 
-  that is strictly shorter than path $\pi = [p,x,n]$; 
+  there exists a path $\pi' = \langle p,y,n \rangle$
+  that is strictly shorter than the path $\pi = \langle p,x,n \rangle$; 
 \item 
-  there exists a path $\pi'$ from $p$ to $n$ 
-  that is as long as $\pi$ but that includes a diagonal move earlier than $\pi$.  
+  there exists a path $\pi' = \langle p,y,n \rangle$ 
+  with the same length as $\pi = \langle p,x,n \rangle$ but $\pi'$ has a 
+  diagonal move earlier than $\pi$.  
 \end{enumerate}
-Observe that these rules can be tested by simply looking 
-at the neighbours of the current node $x$ 
-as we now illustrate.  
 
-On Figure~\ref{fig::pruning}, 
-the trimed neighbours are given in grey.  
-The remaining neighbours are called the \emph{natural} successors of node $x$.  
-The Figure~\ref{fig::forced} shows 
-that the obstacles can modify the list of successors; 
-we call \emph{forced} these additional successors.  
-
-\begin{figure}[ht]
-  INCLUDE FIGURES WITHOUT OBSTACLE
-  \caption{Pruning rules in the absence of obstacle.}
-  \label{fig::pruning}
+\begin{figure}[b]
+       \begin{center}
+		   \includegraphics[width=0.95\columnwidth]
+			{diagrams/pruning.png}
+       \end{center}
+	\vspace{-3pt}
+       \caption{(a) When the move from $p$ to $x$ is straight only one natural neighbour remains.
+(b) When the move from $p$ to $x$ is diagonal, three natural neighbours remain. (c) Obstacles around $x$
+cause some neighbours to become forced. }
+       \label{fig:pruning}
 \end{figure}
 
-\begin{figure}[ht]
-  INCLUDE FIGURES WITH OBSTACLE
-  \caption{Pruning rules in the presence of obstacle.}
-  \label{fig::forced}
+We illustrate these rules in Figure~\ref{fig:pruning}(a) and ~\ref{fig:pruning}(b).
+Observe that to test each rule we need to look only at
+the neighbours of the current node $x$. 
+Pruned neighbours are marked in grey. Remaining neighbours, marked
+white, are called the \emph{natural} successors of node $x$.  
+In Figure~\ref{fig:pruning}(c) we show
+that obstacles can modify the list of successors for $x$:
+when the hitherto alternative path $\pi' = \langle p, y, n \rangle$ is
+not valid, but $\pi = \langle p, x, n \rangle$ is, we will refer to $n$ as
+a \emph{forced} successor of $x$.
+The set of forced successors in Figure~\ref{fig:pruning}(c) is different
+to the set identified in~\cite{harabor11b}. 
+In that work we assumed corner-cutting (a.k.a taking a diagonal shortcut around a corner) is allowed.
+Here we explicitly consider any grid-specific movement rules that both $\pi$ 
+and $\pi'$ need to respect and this modifies slightly the set of forced successors.
+Note that this modification is optimality preserving.
+The argument is identical to the one given in~\cite{harabor11b}; we omit it 
+for brevity.
+
+
+\textbf{Jumping Rules:}
+JPS applies to each forced and natural neighbour of the current node $x$ a simple
+``jumping'' procedure the objective of which is to replace each neighbour $n$ with an 
+alternative successor $n'$ that is further away. Precise details are given
+in~\cite{harabor11b}; we summarise the idea here using the following example:
+
+\begin{example}
+In Figure~\ref{fig:pruning}(a) our pruning rules reduce the number
+of successors of node $x$ to a single node $n$.
+JPS exploits this property to immediately and recursively
+explore $n$ -- without necessarily adding it the open list.
+If the recursive procedure stops due to an obstacle that blocks further progress
+(which is frequently the case), all nodes on the failed path, including $n$, are ignored
+and nothing is generated.
+In the alternative case, the recursion leads to a node $n'$ which has a forced
+neighbour (or which is the goal). JPS generates $n'$ as a successor of $x$ which
+effectively allows the search to ``jump'' from $x$ directly to $n'$ -- without explicitly 
+generating the original neighbour $n$ or any of the intermediate nodes on the way to $n'$.
+In Figure~\ref{fig:pruning}(b) the current node $x$ has three natural neighbours: two straight and one diagonal.
+We recurse over the diagonal neighbour only if both straight neighbours produce
+failed paths. This ensures we do not miss any potential turning points of the optimal path.
+\end{example}
+
+\begin{figure}[tb]
+       \begin{center}
+		   \includegraphics[width=0.95\columnwidth]
+			{diagrams/jumping.png}
+       \end{center}
+	\vspace{-3pt}
+       \caption{(a) A straight jump from $x$ to $y$; the recursion stops due to node $z$ which is forced.
+(b) A diagonal jump from $x$ to $y$; the recursion stops due to a non-failed straight jump. Continuing the recursion
+would mean missing a potential turn due to $z$.}
+       \label{fig:jumping}
 \end{figure}
 
-As illustrated in Figure~\ref{fig::pruning}, 
-the number of successors of a node reached from a straight move 
-is often one.  
-JPS uses this property when exploring $x$ 
-to immediately and recursively explore this single successor.  
-If the recursive procedure leads to an obstacle (which is the most frequent situation), 
-the path is ignored; 
-if the procedure leads to a node $x$ with a forced neighbour 
-(or to the goal), then JPS ``jumps'' from the current node to $x$.  
-
-Consider now the diagonal move as presented in Figure~\ref{fig::pruning}.  
-A diagonal move generally leads to three successors, 
-two of which are straight moves.  
-Therefore, when a diagonal move to node $x$ is considered by JPS, 
-JPS first looks at the two straight moves from $x$ 
-and, if they both lead to obstacles, recursively considers the next diagonal move.  
-If one of the straight move cannot be ignored, 
-then JPS jumps to the current node $x$.  
-This is illustrated on Figure~\ref{fig::jump}.  
-
-\begin{figure}[ht]
-  INCLUDE FIGURE WITH A JUMP
-  \caption{Jumping in JPS.}
-  \label{fig::jump}
-\end{figure}
-
-By jumping, JPS is able to move quickly in the map 
-without inserting nodes in the queue list of $A^*$.  
+In Figure~\ref{fig:jumping}(a) we illustrate a straight jump and in \ref{fig:jumping}(b) a diagonal jump. 
+By jumping, JPS is able to move quickly over the map 
+without inserting nodes in the A* open list.
 This is doubly beneficial as i) it reduces the number of operations 
 and ii) it reduces the number of nodes in the queue, 
-hence making each other operation cheaper.  
-In addition, there is no memory overhead.  
+making each queue operation cheaper.  
+Notice that this version of JPS is performed entirely online, involves no preprocessing and has no memory overhead.  
 
-In the original JPS \cite{harabor11b}, 
-we assumed possible a diagonal move
-even if one of the opposite squares was blocked 
-(see the move from ??? to ??? on Figure~\ref{fig::pruning}).  
-In the competition, it is impossible to ``cut'' the corners.  
-Therefore, we redefined the forced moves to match the competition settings.  

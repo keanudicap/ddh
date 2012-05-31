@@ -1,26 +1,29 @@
 \section{Introduction}
+%Each grid path can be equivalently described as an ordered sequence of moves $D = [\vec{d_1}, \vec{d_2},\ldots,\vec{d_{k-1}}]$
+%that begins at $s$, ends at $t$ and in which each move 
+%where each $\vec{d_i}$ is a vector that is associated with one ....
 \label{sec:introduction}
-Symmetry in grid-based pathfinding manifests itself when we consider a path as an ordered 
-sequence of vectors $\vec{d}$ where each such vector
-is associated with one of the eight allowable movement directions (up, down, left, right etc.)
+
+Symmetry in grid-based pathfinding manifests itself when we consider a
+path, traditionally defined as an ordered sequence of nodes, as consisting
+instead of an ordered sequence of vectors.
+Under this alternative definition each vector $\vec{d}$ is associated with 
+one of the eight allowable movement directions (up, down, left, right etc.)
 and has a magnitude of either 1 or $\approx\sqrt 2$, depending on whether 
 it represents a straight move or a diagonal move.
-Let $\pi_{s,t} = \langle \vec{n_1}, \vec{n_2}, \ldots, \vec{n_k} \rangle$ be a path in a grid
-map which begins at node $s$, ends at node $t$ and involves $k$ distinct moves, each represented
-by one of the vectors $\vec{n_i}$.
-Informally, we will say that $\pi_{s,t}$ is symmetric to another path $\pi'_{s,t}$ if we can 
-derive $\pi'_{s,t}$ by simply permuting the sequence of vectors associated with $\pi_{s,t}$
-\footnote{Both paths need to be valid for such an operation to succeed.}.
+Such a formulation is useful because it allows us to see that 
+many paths on a grid map, which share the same start and end node but which pass through 
+different intermediate nodes, are often just symmetric permutations of each other; i.e.
+they are identical save for the order in which the individual moves occur.
 
-In the presence of symmetry popular pathfinding techniques such as 
+In the presence of symmetry, popular pathfinding techniques such as 
 A*~\cite{hart68} unnecessarily consider permutations 
 of all shortest paths: from the start node to 
 \emph{every expanded node}.
 Jump Point Search~\cite{harabor11b} is a simple but highly effective strategy that
 identifies and eliminates many such symmetries. 
-JPS appears orthogonal to recent pathfinding algorithms 
-(e.g.~\cite{bjornsson06,pochter09,goldenberg10}) and has few disadvantages:
-it is fast, optimal, requires zero preprocessing and has zero memory overhead.
+JPS is fast, optimal, requires zero preprocessing, has zero memory overhead
+and appears orthogonal to recent pathfinding algorithms; for example~\cite{bjornsson06,pochter09,goldenberg10}. 
 In this paper we adapt JPS to grid domains where ``corner-cutting'' movement is not allowed.
 We also introduce JPS+pre, a new variant search strategy which involves
 reformulating an input graph into a symmetry-reduced equivalent that can be 
