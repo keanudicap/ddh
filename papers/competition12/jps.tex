@@ -1,0 +1,81 @@
+\section{Jump Point Search}
+\label{sec::jps}
+
+Jump Point Search (JPS) is an improvement of the $A^*$ algorithm 
+based on the reduction of the number of successors of the search nodes 
+in order to ``jump'' over a number of nodes.  
+
+Given a node $x$ reached from the parent node $p$, 
+we remove the neighbour $n$ of $x$ 
+from the set of successors of $x$ 
+if one of the following rule holds: 
+\begin{enumerate}
+\item 
+  there exists a path $\pi'$ from $p$ to $n$ 
+  that is strictly shorter than path $\pi = [p,x,n]$; 
+\item 
+  there exists a path $\pi'$ from $p$ to $n$ 
+  that is as long as $\pi$ but that includes a diagonal move earlier than $\pi$.  
+\end{enumerate}
+Observe that these rules can be tested by simply looking 
+at the neighbours of the current node $x$ 
+as we now illustrate.  
+
+On Figure~\ref{fig::pruning}, 
+the trimed neighbours are given in grey.  
+The remaining neighbours are called the \emph{natural} successors of node $x$.  
+The Figure~\ref{fig::forced} shows 
+that the obstacles can modify the list of successors; 
+we call \emph{forced} these additional successors.  
+
+\begin{figure}[ht]
+  INCLUDE FIGURES WITHOUT OBSTACLE
+  \caption{Pruning rules in the absence of obstacle.}
+  \label{fig::pruning}
+\end{figure}
+
+\begin{figure}[ht]
+  INCLUDE FIGURES WITH OBSTACLE
+  \caption{Pruning rules in the presence of obstacle.}
+  \label{fig::forced}
+\end{figure}
+
+As illustrated in Figure~\ref{fig::pruning}, 
+the number of successors of a node reached from a straight move 
+is often one.  
+JPS uses this property when exploring $x$ 
+to immediately and recursively explore this single successor.  
+If the recursive procedure leads to an obstacle (which is the most frequent situation), 
+the path is ignored; 
+if the procedure leads to a node $x$ with a forced neighbour 
+(or to the goal), then JPS ``jumps'' from the current node to $x$.  
+
+Consider now the diagonal move as presented in Figure~\ref{fig::pruning}.  
+A diagonal move generally leads to three successors, 
+two of which are straight moves.  
+Therefore, when a diagonal move to node $x$ is considered by JPS, 
+JPS first looks at the two straight moves from $x$ 
+and, if they both lead to obstacles, recursively considers the next diagonal move.  
+If one of the straight move cannot be ignored, 
+then JPS jumps to the current node $x$.  
+This is illustrated on Figure~\ref{fig::jump}.  
+
+\begin{figure}[ht]
+  INCLUDE FIGURE WITH A JUMP
+  \caption{Jumping in JPS.}
+  \label{fig::jump}
+\end{figure}
+
+By jumping, JPS is able to move quickly in the map 
+without inserting nodes in the queue list of $A^*$.  
+This is doubly beneficial as i) it reduces the number of operations 
+and ii) it reduces the number of nodes in the queue, 
+hence making each other operation cheaper.  
+In addition, there is no memory overhead.  
+
+In the original JPS \cite{harabor11b}, 
+we assumed possible a diagonal move
+even if one of the opposite squares was blocked 
+(see the move from ??? to ??? on Figure~\ref{fig::pruning}).  
+In the competition, it is impossible to ``cut'' the corners.  
+Therefore, we redefined the forced moves to match the competition settings.  

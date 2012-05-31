@@ -1,0 +1,68 @@
+\section{Preprocessing}
+\label{sec::pre}
+
+The main addition to JPS for GPPC is a (unpublished) preprocessing step 
+which reduces considerably the runtime of JPS.  
+We mentioned that JPS, compared to $A^*$, 
+avoids many queue list operations 
+by jumping from one jumping point to another in the grid.  
+However, the identification of these jump points 
+then becomes the bottleneck of the algorithm.  
+
+Therefore, we propose a preprocessing of the map 
+where we compute the jump point 
+for each node and each direction.  
+These off-line jump points are illustrated on Figure~\ref{fig::ojp}.  
+
+\begin{figure}[ht]
+  INCLUDE FIGURE WITH THE OFFLINE JUMP POINTS
+  \caption{Off-line jump points in all eight directions for a given node.}
+  \label{fig::ojp}
+\end{figure}
+
+The off-line jump points are computed similarly to the on-line jump points 
+with the difference that a jump point is defined before each obstacle is hit.  
+This addition is necessary 
+because the goal state is unknown at preprocessing time.  
+
+At runtime, the algorithm does not need to search for the next jump points 
+and can simply find them in the precomputed table.  
+Additional tests are however necessary to account for the goal.  
+
+If the current move is a straight move 
+and passes over the goal, 
+then the jump is stopped at the goal.  
+
+If the current move is a diagonal move 
+and crosses the row or the column that contain the goal, 
+then a test is performed to check 
+whether the goal is visible from the point 
+where the jump crosses the line.  
+If the goal is indeed visible, 
+then the jump is stopped at the crossing point; 
+otherwise, the jump continues to the precomputed point.  
+
+On the other hand, the off-line jump point are more numerous 
+that the on-line jump point, 
+since a jump point is defined even when an obstacle is hit.  
+However, it is possible to identify these spurious jump points 
+and to avoid inserting them in the queue list.  
+DANIEL: YOU PROBABLY WANT TO WRITE SOMETHING ABOUT THIS PARAGRAPH.  
+(HOW) DO YOU IDENTIFY THESE SPURIOUS JUMP POINT?  
+ARE YOU SURE YOUR IDENTIFICATION PROCEDURE IS CORRECT?  
+
+The benefit of this approach is to remove the computation of the jump point 
+and replace it with a simple table lookup.  
+The cost of the operation is the additional checks 
+presented in the previous paragraphs, 
+but it is very limited (much smaller than the gain).  
+The preprocessed table induces a limited (linear) memory overhead 
+(eight distances for each node in the graph).  
+Finally, the preprocessing itself is very low, 
+typically in the order of a few seconds.  
+
+I DON'T KNOW WHETHER WE SHOULD MENTION POTENTIAL IMPROVEMENTS HERE.  
+FOR INSTANCE, STORING THE TABLE ONLY FROM A JUMP POINT 
+(I.E., SEARCH REQUIRED ONLY FOR THE START NODE); 
+FILLING THE TABLE DURING THE SEARCH, 
+UPDATING THE TABLE WHEN OBSTACLE ARE ADDED/REMOVED.  

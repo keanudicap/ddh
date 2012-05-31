@@ -1,0 +1,26 @@
+\begin{abstract}
+%Jump Point Search (JPS) is a method for extracting shortest paths in grid maps
+%and other regular domains commonly found in computer games, robotics and even
+%warehouse logistics.  It speeds up search by pruning any nodes on a solution
+%path which is symmetric to another path already under consideration.  In its
+%basic form, JPS can be described as a recursive pruning operator that
+%is applied online and which can be combined with any existing search algorith
+%(for example A*).  In this paper we describe a pathfinding system that
+%implements JPS and JPS+pre: a new derivative search strategy that performs
+%symmetry breaking as an offline preprocessing step.  The result of the
+%precomputation is a reformulated symmetry-reduced search space which can be
+%searched much more efficiently than the original input graph.
+%Both JPS and JPS+pre were submitted to the 2012 Grid-based Path Planning 
+%Competition.
+In this paper we describe a pathfinding system based on Jump Point Search (JPS): 
+a recent and very successful search strategy that performs symmetry
+breaking in order to speed up optimal pathfinding on grid maps.
+Our first contribution is a simple modification of JPS which 
+allows online symmetry breaking on maps where corner-cutting moves are not allowed.
+Our second contribution is JPS+pre: a new derivative search strategy that performs
+symmetry breaking as an offline preprocessing step.  The result of the
+precomputation is a reformulated symmetry-reduced graph which can be
+searched much more efficiently than the original input graph.
+Both JPS and JPS+pre were submitted to the 2012 Grid-based Path Planning 
+Competition.
+\end{abstract}
