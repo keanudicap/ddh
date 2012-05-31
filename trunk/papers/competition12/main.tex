@@ -18,6 +18,9 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{definition}{Definition}
 
+\newcounter{examplecounter} \setcounter{examplecounter}{1}
+\newenvironment{example}{\textbf{Example \arabic{examplecounter}. \stepcounter{examplecounter}}}{\qed}
+
 \renewcommand{\dblfloatpagefraction}{0.9}
 \newcommand{\figref}[1]{\figurename~\ref{#1}}
 \newenvironment{pth}{\langle}{\rangle}
