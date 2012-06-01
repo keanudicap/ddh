@@ -3,8 +3,8 @@
 %JPS+ is a previously unpublished search strategy
 %which we introduce for the 2012 Grid-based Pathfinding Competition.
 Jumping from one point to another in the grid
-avoids many unnecessary A* queue operations. However, identifying 
-these jump points becomes the bottleneck of the JPS algorithm. 
+avoids many unnecessary A* open list operations. However, identifying 
+these jump points becomes the new bottleneck of the JPS algorithm. 
 We therefore propose JPS+: an symmetry-breaking method which replaces
 each adjacent neighbour of a node with a jump point that lies in the 
 same relative direction.
@@ -14,7 +14,7 @@ single node $x$. We simply search for a jump point in the direction
 of each grid neighbour of $x$. In JPS, we discard all nodes along a failed
 path. By comparison, JPS+ must store the last node along a failed path.
 These \emph{sterile jump points} are required 
-to guarantee optimality during search but are never added to the A* priority queue.
+to guarantee optimality during search but are never added to the A* open list.
 To see why they are necessary, consider Figure~\ref{fig:preproc}(b).
 Here we reach $x$ from $p$ and try to jump from $x$ to $y$. 
 Notice that each such jump may cross the goal or column of the target node

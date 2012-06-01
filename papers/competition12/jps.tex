@@ -3,9 +3,8 @@
 Jump Point Search (JPS) is the combination of A* search with a simple
 node expansion operator that prunes potential successors if
 they can be reached by path which is shorter than, or symmetric to,
-the current path. JPS can be described in terms of two sets of 
-rules: neighbour pruning rules and recursive jumping rules.
-We describe each in turn.
+the current path. JPS employs two simple sets of rules:
+pruning rules and jumping rules. 
 
 \textbf{Pruning Rules:}
 Given a node $x$, reached via a parent node $p$,
@@ -13,7 +12,7 @@ we prune from the neighbours of $x$ any node $n$ for which one
 of the following rules applies:
 \begin{enumerate}
 \item 
-  there exists a path $\pi' = \langle p,y,n \rangle$
+  there exists a path $\pi' = \langle p,y,n \rangle$ or simply $\pi' = \langle p, n \rangle$
   that is strictly shorter than the path $\pi = \langle p,x,n \rangle$; 
 \item 
   there exists a path $\pi' = \langle p,y,n \rangle$ 
@@ -93,7 +92,7 @@ In Figure~\ref{fig:jumping}(a) we illustrate a straight jump and in \ref{fig:jum
 By jumping, JPS is able to move quickly over the map 
 without inserting nodes in the A* open list.
 This is doubly beneficial as (i) it reduces the number of operations 
-and (ii) it reduces the number of nodes in the queue, 
-making each queue operation cheaper.  
+and (ii) it reduces the number of nodes in the list, 
+making each list operation cheaper.  
 Notice that this version of JPS is performed entirely online, involves no preprocessing and has no memory overhead.  
 
