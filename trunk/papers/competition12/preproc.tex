@@ -1,23 +1,39 @@
-\section{Preprocessing}
-\label{sec::pre}
+\section{JPS+}
+\label{sec:pre}
 
-The main addition to JPS for GPPC is a (unpublished) preprocessing step 
-which reduces considerably the runtime of JPS.  
-We mentioned that JPS, compared to $A^*$, 
-avoids many queue list operations 
-by jumping from one jumping point to another in the grid.  
-However, the identification of these jump points 
-then becomes the bottleneck of the algorithm.  
-
-Therefore, we propose a preprocessing of the map 
-where we compute the jump point 
-for each node and each direction.  
+NEED TO SPELL OUT FORCED NEIS ONLY FOR STRAIGHT MOVES
+%JPS+ is a previously unpublished search strategy
+%which we introduce for the 2012 Grid-based Pathfinding Competition.
+As we have discussed, jumping from one point to another in the grid
+avoids many unnecessary A* queue operations. However, the identification
+of these jump points then becomes the bottleneck of the algorithm. 
+We therefore propose a preprocessing step during which we reformulate
+the input map by replacing each adjacent neighbour of a node with
+a jump point that lies in the same relative direction.
 These off-line jump points are illustrated on Figure~\ref{fig::ojp}.  
 
-\begin{figure}[ht]
-  INCLUDE FIGURE WITH THE OFFLINE JUMP POINTS
-  \caption{Off-line jump points in all eight directions for a given node.}
-  \label{fig::ojp}
+\textbf{JPS vs JPS+:} 
+Where JPS performs symmetry breaking online, JPS+ differs by breaking
+symmetries during an offline preprocessing step. 
+The precomputation runs in time linear to the size of the input graph
+and produces a reformulated symmetry-reduced graph which is much faster
+to search. JPS+ requires very little memory: the reformulated search space
+is stored as an adjacency list that replaces the original input graph.
+In cases where the input graph is also stored as an adjacency list, JPS+
+can retain a zero memory overhead.
+
+
+\begin{figure}[tb]
+       \begin{center}
+		   \includegraphics[width=0.95\columnwidth]
+			{diagrams/preproc.png}
+       \end{center}
+	\vspace{-3pt}
+       \caption{(a) A jump point is computed in place of each grid neighbour of node $x$.
+		the set of neighbours from the grid. (b) In order to reach a jump point $y$ from $x$ it may be
+necessary to cross the row or column of the target $t$ (here, both). To make sure we do not jump over 
+the target we insert an intermediate successor $y'$ on the row or column of the target (whichever is closest to $x$).}
+       \label{fig:preproc}
 \end{figure}
 
 The off-line jump points are computed similarly to the on-line jump points 
