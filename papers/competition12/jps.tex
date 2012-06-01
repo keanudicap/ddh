@@ -46,12 +46,13 @@ a \emph{forced} successor of $x$.
 The set of forced successors in Figure~\ref{fig:pruning}(c) is different
 to the set identified in~\cite{harabor11b}. 
 In that work we assumed corner-cutting (a.k.a taking a diagonal shortcut around a corner) is allowed.
-Here we explicitly consider any grid-specific movement rules that both $\pi$ 
-and $\pi'$ need to respect and this modifies slightly the set of forced successors.
-Note that this modification is optimality preserving.
-The argument is identical to the one given in~\cite{harabor11b}; we omit it 
-for brevity.
-
+Here we generalise that idea and explicitly require that both $\pi$ and $\pi'$  respect 
+any such domain-specific movement rules.
+When corner-cutting is not allowed this change has the following effect:
+only straight steps from $p$ to $x$ may produce forced neighbours and each $x$ may have 
+up to 4 such neighbours.
+This change is optimality preserving; the argument is identical to 
+the one given in~\cite{harabor11b}.
 
 \textbf{Jumping Rules:}
 JPS applies to each forced and natural neighbour of the current node $x$ a simple
