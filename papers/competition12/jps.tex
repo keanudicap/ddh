@@ -40,39 +40,39 @@ Pruned neighbours are marked in grey. Remaining neighbours, marked
 white, are called the \emph{natural} successors of node $x$.  
 In Figure~\ref{fig:pruning}(c) we show
 that obstacles can modify the list of successors for $x$:
-when the hitherto alternative path $\pi' = \langle p, y, n \rangle$ is
+when the alternative path $\pi' = \langle p, y, n \rangle$ is
 not valid, but $\pi = \langle p, x, n \rangle$ is, we will refer to $n$ as
 a \emph{forced} successor of $x$.
 The set of forced successors in Figure~\ref{fig:pruning}(c) is different
 to the set identified in~\cite{harabor11b}. 
 In that work we assumed corner-cutting (a.k.a taking a diagonal shortcut around a corner) is allowed.
-Here we generalise that idea and explicitly require that both $\pi$ and $\pi'$  respect 
+Here we explicitly require that both $\pi$ and $\pi'$ respect 
 any such domain-specific movement rules.
 When corner-cutting is not allowed this change has the following effect:
 only straight steps from $p$ to $x$ may produce forced neighbours and each $x$ may have 
 up to 4 such neighbours.
-This change is optimality preserving; the argument is identical to 
-the one given in~\cite{harabor11b}.
+This change preserves optimality; the argument is identical to 
+the one in~\cite{harabor11b}.
 
 \textbf{Jumping Rules:}
 JPS applies to each forced and natural neighbour of the current node $x$ a simple
-``jumping'' procedure the objective of which is to replace each neighbour $n$ with an 
+``jumping'' procedure; the objective is to replace each neighbour $n$ with an 
 alternative successor $n'$ that is further away. Precise details are given
-in~\cite{harabor11b}; we summarise the idea here using the following example:
+in~\cite{harabor11b}; we summarise the idea here using a short example:
 
 \begin{example}
-In Figure~\ref{fig:pruning}(a) our pruning rules reduce the number
-of successors of node $x$ to a single node $n$.
+In Figure~\ref{fig:pruning}(a) pruning reduces the number
+of successors of $x$ to a single node $n$.
 JPS exploits this property to immediately and recursively
-explore $n$ -- without necessarily adding it the open list.
-If the recursive procedure stops due to an obstacle that blocks further progress
+explore $n$.
+If the recursion stops due to an obstacle that blocks further progress
 (which is frequently the case), all nodes on the failed path, including $n$, are ignored
 and nothing is generated.
-In the alternative case, the recursion leads to a node $n'$ which has a forced
-neighbour (or which is the goal). JPS generates $n'$ as a successor of $x$ which
-effectively allows the search to ``jump'' from $x$ directly to $n'$ -- without explicitly 
-generating the original neighbour $n$ or any of the intermediate nodes on the way to $n'$.
-In Figure~\ref{fig:pruning}(b) the current node $x$ has three natural neighbours: two straight and one diagonal.
+Otherwise the recursion leads to a node $n'$ which has a forced
+neighbour (or which is the goal). JPS generates $n'$ as a successor of $x$; 
+effectively allowing the search to ``jump'' from $x$ directly to $n'$ -- without adding
+to the open list any intermediate nodes from along the way.
+In Figure~\ref{fig:pruning}(b) node $x$ has three natural neighbours: two straight and one diagonal.
 We recurse over the diagonal neighbour only if both straight neighbours produce
 failed paths. This ensures we do not miss any potential turning points of the optimal path.
 \end{example}
@@ -92,8 +92,8 @@ would mean missing a potential turn due to $z$.}
 In Figure~\ref{fig:jumping}(a) we illustrate a straight jump and in \ref{fig:jumping}(b) a diagonal jump. 
 By jumping, JPS is able to move quickly over the map 
 without inserting nodes in the A* open list.
-This is doubly beneficial as i) it reduces the number of operations 
-and ii) it reduces the number of nodes in the queue, 
+This is doubly beneficial as (i) it reduces the number of operations 
+and (ii) it reduces the number of nodes in the queue, 
 making each queue operation cheaper.  
 Notice that this version of JPS is performed entirely online, involves no preprocessing and has no memory overhead.  
 
