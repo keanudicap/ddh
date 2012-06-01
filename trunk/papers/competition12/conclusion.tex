@@ -1,12 +1,12 @@
 \section{Discussion}
-For the 2012 Grid-based Path Planning Competition we perform the entire 
-reformulation step of JPS+ during an offline precompuation phase. 
-An alternative approach would be to perform the reformulation online by
-replacing, during search, each forced or natural neighbour with a newly
-identified jump point successor located in the same relative direction.
+For the 2012 GPPC we configured 
+JPS+ to reformulate the entire map during an offline phase.
 The precomputation runs in time linear to the size of the input graph
-and produces a reformulated symmetry-reduced graph which is much faster
-to search. JPS+ requires very little memory: the reformulated search space
+and produces a symmetry-reduced graph which is much faster
+to search. 
+An alternative approach is to replace, during search, each forced or 
+natural neighbour with a newly identified jump point successor.
+JPS+ requires very little memory: the reformulated graph
 is stored as an adjacency list that replaces the original input graph.
-In cases where the input graph is also stored as an adjacency list, JPS+
-can retain a zero memory overhead.
+When the input graph is also stored as an adjacency list, JPS+
+has zero memory overhead.

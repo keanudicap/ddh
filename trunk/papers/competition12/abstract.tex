@@ -12,15 +12,13 @@
 %searched much more efficiently than the original input graph.
 %Both JPS and JPS+pre were submitted to the 2012 Grid-based Path Planning 
 %Competition.
-In this paper we describe a pathfinding system based on Jump Point Search (JPS): 
+We describe a pathfinding system based on Jump Point Search (JPS): 
 a recent and very successful search strategy that performs symmetry
-breaking in order to speed up optimal pathfinding on grid maps.
-Our first contribution is a simple modification of JPS which 
-allows online symmetry breaking on maps where corner-cutting moves are not allowed.
-Our second contribution is JPS+pre: a new derivative search strategy that performs
-symmetry breaking as an offline preprocessing step.  The result of the
-precomputation is a reformulated symmetry-reduced graph which can be
-searched much more efficiently than the original input graph.
-Both JPS and JPS+pre were submitted to the 2012 Grid-based Path Planning 
+breaking to speed up optimal pathfinding on grid maps.
+We first modify JPS for grid maps where corner-cutting moves are not allowed.
+We then describe JPS+: a new derivative search strategy that 
+reformulates an input graph into an equivalent symmetry-reduced form
+that can be searched more efficiently.
+JPS and JPS+ were both submitted to the 2012 Grid-based Path Planning 
 Competition.
 \end{abstract}
