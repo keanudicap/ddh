@@ -655,7 +655,7 @@ author    = {Nir Pochter and Aviv Zohar and Jeffrey S. Rosenschein},
 title     = {Using Swamps To Improve Optimal Pathfinding},
 booktitle = {AAMAS},
 year      = {2009},
-pages     = {1163-1164},
+annote = { pages     = {1163-1164},}
 }
 @inproceedings{sturtevant09,
 author    = {Nathan R. Sturtevant and
@@ -787,7 +787,7 @@ author = "John F. Dillenburg and Peter C. Nelson"
 @inproceedings{harabor11b,
 	author = {D. {Harabor} and {\relax Al}. {Grastien}}, 
 	title = {Online graph pruning for pathfinding on grid maps}, 
-	booktitle = {25th Conference on Artificial Intelligence (AAAI-11)}, 
+	booktitle = {AAAI}, 
 	year = {2011}, 
 }
 
@@ -1315,7 +1315,7 @@ annote = {Exceedingly similar to HAA* }
 	year = {2006}
 }
 
-@article{sturtevant2012benchmarks,
+@article{sturtevant12,
 	title={Benchmarks for Grid-Based Pathfinding},
 	author={Sturtevant, N.},
 	journal={Transactions on Computational Intelligence and AI in Games},
@@ -1366,3 +1366,20 @@ annote = {Exceedingly similar to HAA* }
 		Suggests a node ranking strategy using the ratio f(n) = Lowerbound(n)/Upperbound(n).
 		Kind of interesting; unclear how it compares to DFBnB, wA* or just using h.}
 }
+
+@inproceedings{sanders05,
+	author    = {Peter Sanders and Dominik Schultes},
+	title     = {Highway Hierarchies Hasten Exact Shortest Path Queries},
+	booktitle = {ESA},
+	year      = {2005},
+	pages     = {568-579},
+	ee        = {http://dx.doi.org/10.1007/11561071_51},
+	annote = { Builds a hierarchy of graphs by identifying non-local paths that connect each node to 
+		destinations far away. Search involes running bidirectional Dijkstra at each level in a 
+		scope-limited way; if the goal cannot be found, the search moves up to the next level in the 
+		hiearchy which allows it to reach destinations further away. Really nice stuff here; the method
+		is fast (up to 2600x faster than Dijkstra) optimal and actual paths are easily extracted. 
+		Memory usage is usually only a few constant factors larger than the original graph.}
+	} 
+
+
