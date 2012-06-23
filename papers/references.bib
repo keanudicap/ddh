@@ -1379,7 +1379,20 @@ annote = {Exceedingly similar to HAA* }
 		scope-limited way; if the goal cannot be found, the search moves up to the next level in the 
 		hiearchy which allows it to reach destinations further away. Really nice stuff here; the method
 		is fast (up to 2600x faster than Dijkstra) optimal and actual paths are easily extracted. 
-		Memory usage is usually only a few constant factors larger than the original graph.}
-	} 
+		Memory usage is usually only a few constant factors larger than the original graph.
+	}
+} 
 
 
+@inproceedings{knopp07,
+	author    = {Sebastian Knopp and Peter Sanders and Dominik Schultes and Frank Schulz and Dorothea Wagner},
+	title     = {Computing Many-to-Many Shortest Paths Using Highway Hierarchies},
+	booktitle = {ALENEX},
+	year      = {2007},
+	ee        = {http://www.siam.org/proceedings/alenex/2007/alx07_004knopps.pdf},
+	annote = { Computes APSP using bidrectional search over a highway hierarchy. The main idea is to
+		search backwards from each goal up to a level K in the hierarchy, recording along the way the
+		distances-to-target for each expanded node. A forward search is then run which can terminate when it
+		expands a node having a known target distance. Pretty efficient (better than Disjkstra approach); a few 
+		minutes for a symmetric 20K node APSP instance. }
+}
