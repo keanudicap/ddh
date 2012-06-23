@@ -77,11 +77,11 @@ private:
 };
 
 // methods for creating graph objects from Map objects
-graph* getMapGraph(Map* m, INodeFactory* nf, IEdgeFactory* ef, bool allowDiagonals);
+graph* getMapGraph(Map* m, INodeFactory* nf, IEdgeFactory* ef, bool allowDiagonals, bool cutCorners=true);
 graph *getMapGraph(Map *m);
 
 // support methods for getMapGraph
-void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDiagonals);
+void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDiagonals, bool cutCorners);
 graph* makeMapNodes(Map* m, INodeFactory* nf);
 
 #endif

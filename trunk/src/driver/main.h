@@ -19,7 +19,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
 #ifndef __APPLE__
+//#define USE_CARBON_STUBS
+//#else
+//#ifdef NO_OPENGL
+//#define USE_CARBON_STUBS
+//#endif
+//#endif
+//
+//#ifdef USE_CARBON_STUBS
 
 /* Apple CGSize */
 struct CGSize {

@@ -77,6 +77,52 @@ Map::Map(long _width, long _height)
 	//	pathgraph = 0;
 }
 
+// This ctor exists to support the API for the 2012 Grid-based 
+// Pathfinding Competition (where uniform-cost maps are passed as an 
+// array of bools)
+Map::Map(long _width, long _height, std::vector<bool>& mapData)
+:width(_width), height(_height)
+{
+	mapType = kRaw;
+	tileSet = kFall;
+	map_name[0] = 0;
+	sizeMultiplier = 1;
+	land = new Tile *[width];
+	//	for (int x = 0; x < 8; x++)
+	//		g[x] = 0;
+	for (int x = 0; x < width; x++) land[x] = new Tile [height];
+	drawLand = true;
+	dList = 0;
+	updated = true;
+	revision = 0;
+	//	numAbstractions = 1;
+	//	pathgraph = 0;
+	
+	loadGPPC(mapData);
+}
+
+// Parse uniform-cost map data given in GPPC format
+// (an array of bools)
+void Map::loadGPPC(std::vector<bool>& mapData)
+{
+	for(int x=0; x < width; x++)
+	{
+		for(int y=0; y < height; y++)
+		{
+			if(mapData[y*width+x])
+			{
+				setTerrainType(x, y, kGround); 
+			}
+			else
+			{
+				setTerrainType(x, y, kOutOfBounds); 
+			}
+			land[x][y].tile1.node = kNoGraphNode;
+			land[x][y].tile2.node = kNoGraphNode;
+		}
+	}
+}
+
 /** 
 * Create a new map by copying it from another map.
 *

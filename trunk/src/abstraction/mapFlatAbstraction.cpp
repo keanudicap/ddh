@@ -27,10 +27,13 @@
 
 #include "mapFlatAbstraction.h"
 
-mapFlatAbstraction::mapFlatAbstraction(Map *_m)
+#include "NodeFactory.h"
+#include "EdgeFactory.h"
+
+mapFlatAbstraction::mapFlatAbstraction(Map *_m, bool allowDiagonals, bool cutCorners)
 :mapAbstraction(_m)
 {
-	abstractions.push_back(getMapGraph(_m));
+	abstractions.push_back(getMapGraph(_m, new NodeFactory(), new EdgeFactory(), allowDiagonals, cutCorners));
 	groupsValid = false;
 }
 

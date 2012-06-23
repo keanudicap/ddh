@@ -17,6 +17,7 @@
 // @created: 08/03/2011
 //
 
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 

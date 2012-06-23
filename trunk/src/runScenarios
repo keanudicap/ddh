@@ -29,10 +29,10 @@ else
 fi
 
 for ((x=1;x<=$runs;x++)) ; do
-	for i in $(ls $1);
+	for i in `ls $1` ;
 	do
 			echo "$i"
-			./bin/hog -scenario $i -nogui $2 >> log
+			./bin/hog -scenario $1/$i -nogui $2 >> log
 			if [ "$?" -ne "0" ]
 			then
 				err="Failed while executing: ./bin/hog -scenario $i -nogui $2";

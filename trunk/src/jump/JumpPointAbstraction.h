@@ -27,8 +27,8 @@ class JumpPointAbstraction : public mapAbstraction
 	public:
 		JumpPointAbstraction(Map*, INodeFactory*, IEdgeFactory*, 
 				bool _verbose = false);
-		JumpPointAbstraction(Map*, INodeFactory*, IEdgeFactory*, 
-				std::string filename, bool _verbose = false);
+		JumpPointAbstraction(Map*, const char* graphfile,
+				INodeFactory*, IEdgeFactory*, bool _verbose = false);
 		virtual ~JumpPointAbstraction();
 		virtual mapAbstraction *clone(Map *);
 
@@ -49,7 +49,7 @@ class JumpPointAbstraction : public mapAbstraction
 		IEdgeFactory* ef;
 
 		void makeJumpPointGraph();		
-		void importGraph(std::string filename);
+		void importGraph(const char* filename);
 		node* findJumpNode(Jump::Direction d, int x, int y);
 		node* findObstacleJumpNode(Jump::Direction d, int x, int y);
 };

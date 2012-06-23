@@ -23,17 +23,25 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef TIMER_H
+#define TIMER_H
+
 #include <stdint.h>
 #include <fstream>
-#include <string.h>
 #ifdef OS_MAC
 #include <Carbon/Carbon.h>
 #undef check
+#else
+#include <sys/time.h>
 #endif
 
-class Timer{
-
 #ifndef OS_MAC
+//#define TIMER_USE_CYCLE_COUNTER
+#endif
+
+class Timer {
+
+#if !defined( OS_MAC ) && defined( TIMER_USE_CYCLE_COUNTER )
 
 struct CycleCounter {
 public:
@@ -60,9 +68,11 @@ public:
 private:
 #ifdef OS_MAC
   AbsoluteTime startTime;
-#else
+#elif defined( TIMER_USE_CYCLE_COUNTER )
   // clock_t startTime;
   uint64_t startTime;
+#else
+  struct timeval startTime;
 #endif		
 
 	double elapsedTime;
@@ -75,6 +85,8 @@ public:
 
 	void startTimer();
 	double endTimer();
-	double getElapsedTime(){return elapsedTime;}
+	double GetElapsedTime(){return elapsedTime;}
 
 };
+
+#endif

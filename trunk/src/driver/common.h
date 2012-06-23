@@ -63,7 +63,7 @@ typedef struct {
 // per view data
 struct recContext
 {
-#ifdef OS_MAC
+#if defined (OS_MAC) && ! defined (NO_OPENGL)
 	AGLPixelFormat aglPixFmt;
 	AGLContext aglContext;
 	GLuint boldFontList;

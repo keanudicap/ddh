@@ -1,7 +1,7 @@
 #ifndef SCENARIOMANAGER_H
 #define SCENARIOMANAGER_H
 
-#include "scenarioLoader.h"
+#include "Experiment.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -56,10 +56,11 @@ class AbstractScenarioManager
 			 throw(std::invalid_argument) = 0;
 		void writeScenarioFile(const char* filelocation);
 		void clearExperiments() { experiments.clear(); }
+		void sortExperiments(); // organise by increasing solution length
 	
 	protected: 
 		std::vector<Experiment*> experiments;		
-		float version;
+		int version;
 };
 
 class ScenarioManager : public AbstractScenarioManager
@@ -78,8 +79,6 @@ class ScenarioManager : public AbstractScenarioManager
 	protected:
 		Experiment* generateSingleExperiment(mapAbstraction* absMap);
 		void loadV1ScenarioFile(std::ifstream& infile);
-		void loadV2ScenarioFile(std::ifstream& infile);
-		void loadV21ScenarioFile(std::ifstream& infile);
 		void loadV3ScenarioFile(std::ifstream& infile);
 };
 

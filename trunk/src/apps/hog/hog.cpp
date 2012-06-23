@@ -61,10 +61,12 @@
 #include "ScenarioManager.h"
 #include "searchUnit.h"
 #include "statCollection.h"
+#include "timer.h" 
 
 #include <cstdlib>
 #include <climits>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -88,6 +90,7 @@ HOG::SearchMethod searchType = HOG::ASTAR;
 
 // JPS default parameters
 int jps_recursion_depth = 0;
+int jps_jumplimit = INT_MAX;
 bool jps_online = true;
 
 // RSR default parameters
@@ -107,6 +110,9 @@ unsigned int export_graph_level = 0;
 // generating it from the map description
 bool import_graph=false;
 std::string import_graph_filename("");
+
+// when true this var allows diagonal shortcutting around corners.
+bool cutCorners = false;
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -218,16 +224,25 @@ processStats(statCollection* stat, const char* unitname)
 void 
 createSimulation(unitSimulation * &unitSim)
 {
+	Timer t;
+	t.startTimer();
 	Map* map = new Map(gDefaultMap);
-	int scalex = map->getMapWidth();
-	int scaley = map->getMapHeight();
-	if(scenariomgr.getNumExperiments() > 0)
+
+	int mapwidth = map->getMapWidth();
+	int mapheight = map->getMapHeight();
+	if(scenariomgr.getNumExperiments())
 	{
-		scalex = scenariomgr.getNthExperiment(0)->getXScale();
-		scaley = scenariomgr.getNthExperiment(0)->getYScale();
-		if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
+		// resize the map if needed
+		int scalex = scenariomgr.getNthExperiment(0)->getXScale();
+		int scaley = scenariomgr.getNthExperiment(0)->getYScale();
+		if(scalex > 1 && scaley > 1 // stupid v3 scenario files  
+				&& (scalex != mapwidth || scaley != mapheight))
+		{
 			map->scale(scalex, scaley);
+		}
 	}
+	double readmap_time = t.endTimer();
+	double preproc_time = readmap_time;
 
 	// print the list of parameters in use
 	bool asserts_enabled = false;
@@ -248,6 +263,7 @@ createSimulation(unitSimulation * &unitSim)
 		else
 			std::cout << "fast" << std::endl;
 	}
+	std::cout << " verbose: "<<verbose <<std::endl;
 	std::cout << " gui: "<<(getDisableGUI()?"false":"true") << std::endl;
 	std::cout << " map file: "<<gDefaultMap << 
 		" ("<<map->getMapWidth()<<"x"<<map->getMapHeight() << ")"<<std::endl;
@@ -257,6 +273,7 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout << "Experiment Parameters:";
 	std::cout << " repeat="<<repeat << std::endl;
 	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
+	std::cout << " cutcorners="<<(cutCorners?"true":"false") << std::endl;
 	std::cout << " search=";
 	switch(searchType)
 	{
@@ -271,11 +288,12 @@ createSimulation(unitSimulation * &unitSim)
 				std::cout << "+bfr";
 			break;
 		case HOG::JPS:
+			cutCorners = false; // TODO implement this
 			std::cout << "JPS";
 			if(!jps_online)
 				std::cout << "+preprocessing";
 			std::cout << "(recursion_depth="<<jps_recursion_depth
-				<< ")";
+				<< ", jumplimit: "<<jps_jumplimit<<")";
 			break;
 		case HOG::ASTAR:
 			std::cout << "A*";
@@ -287,6 +305,7 @@ createSimulation(unitSimulation * &unitSim)
 	std::cout << std::endl;
 
 
+	t.startTimer();
 	mapAbstraction* aMap = 0;
 	switch(searchType)
 	{
@@ -318,8 +337,9 @@ createSimulation(unitSimulation * &unitSim)
 			{
 				if(import_graph)
 				{
-					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
-							new EdgeFactory(), import_graph_filename,verbose);
+					aMap = new JumpPointAbstraction(map, 
+							import_graph_filename.c_str(), 
+							new NodeFactory(), new EdgeFactory(), verbose);
 				}
 				else
 				{
@@ -334,11 +354,14 @@ createSimulation(unitSimulation * &unitSim)
 			break;
 		}
 		default:
-			aMap = new mapFlatAbstraction(map);
+			aMap = new mapFlatAbstraction(map, allowDiagonals, cutCorners);
 			break;
 	}
+	double buildabs_time = t.endTimer();
+	preproc_time += buildabs_time;
+	std::cout << " preproc time: "<<preproc_time << "; buildabs time: "<<buildabs_time << std::endl;
 
-	// export the level 1 abstract graph
+	// export the search graph
 	if(export_graph && export_graph_level < aMap->getNumAbstractGraphs())
 	{
 		export_search_graph(aMap->getAbstractGraph(export_graph_level));
@@ -427,32 +450,8 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 {
 	int exitVal = 0;
 
-	FlexibleAStar* astar = 0;
-	//aStarOld* astar = 0;
-	mapFlatAbstraction* gridmap = 0;
-	if(checkOptimality)
-	{
-		// scale the grid map if necessary
-		Map* map = new Map(gDefaultMap);
-		int scalex = map->getMapWidth();
-		int scaley = map->getMapHeight();
-		if(scenariomgr.getNumExperiments() > 0)
-		{
-			scalex = scenariomgr.getNthExperiment(0)->getXScale();
-			scaley = scenariomgr.getNthExperiment(0)->getYScale();
-			if(scalex > 1 && scaley > 1) // stupid v3 scenario files 
-				map->scale(scalex, scaley);
-		}
-
-		// reference map and search alg for checking optimality
-		gridmap = new mapFlatAbstraction(map);
-		astar = new FlexibleAStar(new IncidentEdgesExpansionPolicy(gridmap), new OctileHeuristic());
-		//astar = new aStarOld();
-	}
-
 	searchAlgorithm* alg = newSearchAlgorithm(aMap, false);
 	statCollection stats;
-	double optlen=0;
 	
 	for(int i=0; i< scenariomgr.getNumExperiments(); i++)
 	{
@@ -470,7 +469,7 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 
 		if(p)
 		{
-			distanceTravelled = aMap->distance(p);	
+			distanceTravelled = to->getLabelF(kTemporaryLabel);
 		}
 
 		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
@@ -487,50 +486,25 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 
 		if(checkOptimality)
 		{
-			// run A* to check the optimal path length
-			node* s = gridmap->getNodeFromMap(nextExperiment->getStartX(),
-					nextExperiment->getStartY());
-			assert(s);
-			node* g = gridmap->getNodeFromMap(nextExperiment->getGoalX(),
-					nextExperiment->getGoalY());
-			assert(g);
-			optlen = 0;
+			std::stringstream stroptlen;
+			stroptlen << std::fixed << std::setprecision(nextExperiment->getPrecision());
+			stroptlen << nextExperiment->getDistance();
 
-			p = astar->getPath(gridmap, s, g);
-			if(p)
-			{
-				optlen = gridmap->distance(p);
-			}
-			delete p;
+			std::stringstream strpathlen;
+			strpathlen << std::fixed << std::setprecision(nextExperiment->getPrecision());
+			strpathlen << distanceTravelled;
 
-			if(!fequal(optlen, distanceTravelled))
+			if(stroptlen.str().compare(strpathlen.str()))
 			{
+				//std::cout << std::fixed << std::setprecision(6);
+				std::cout << std::setprecision(6);
 				std::cout << "optimality check failed!" << std::endl;
 				std::cout << "exp "<<expnum<<" ";
 				nextExperiment->print(std::cout);
-				std::cout << " " << distanceTravelled;
 				std::cout << std::endl;
-				std::cout << "optimal path length: "<<optlen<<" computed length: ";
-				std::cout << distanceTravelled<<std::endl;
-				verbose = true;
-				if(verbose)
-				{
-					std::cout << "Running A*: \n";
-					astar->verbose = true;
-					alg->verbose = true;
-					path* p = astar->getPath(gridmap, s, g);
-					double tmp = gridmap->distance(p);
-					delete p;
-					p = 0;
-
-					std::cout << "\nRunning "<<alg->getName()<<": \n";
-					p = alg->getPath(aMap, from, to);
-					double tmp2 = aMap->distance(p);
-					delete p;
-
-					std::cout << "\n optimal: "<<tmp;
-					std::cout << " computed: "<<tmp2<<std::endl;
-				}
+				std::cout << "optimal path length: "<<stroptlen.str()<<" computed length: ";
+				std::cout << strpathlen.str()<<std::endl;
+				std::cout << "precision: " << nextExperiment->getPrecision()<<std::endl;
 				exitVal = 1;
 				break;
 			}
@@ -538,13 +512,6 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 	}
 	
 	delete alg;
-
-	if(checkOptimality)
-	{
-		delete astar;
-		delete gridmap;
-	}
-
 	return exitVal;
 }
 
@@ -649,6 +616,10 @@ initializeHandlers()
 			"Disallow diagonal moves during search "
 			"(default = false)");
 
+	installCommandLineHandler(myAllPurposeCLHandler, "-cutcorners", "-cutcorners", 
+			"Enable diagonal shortcutting around corners"
+			"(default = false)");
+
 	installCommandLineHandler(myAllPurposeCLHandler, "-checkopt", "-checkopt", 
 			"Verify each experiment ran is solved optimally."
 			"(default = false)");
@@ -671,6 +642,11 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 	if(strcmp(argument[0], "-cardinal") == 0)
 	{
 		allowDiagonals = false;
+		argsParsed++;
+	}
+	if(strcmp(argument[0], "-cutcorners") == 0)
+	{
+		//cutCorners = true;
 		argsParsed++;
 	}
 	else if(strcmp(argument[0], "-nogui") == 0)
@@ -762,6 +738,7 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 			int jps_params = 0;
 			for(int i=2; i < maxNumArgs; i++)
 			{
+				std::cout << "jps arg: "<<argument[i]<<std::endl;
 				if(*argument[i] == '-')
 					break;
 				jps_params++;
@@ -838,13 +815,9 @@ myScenarioGeneratorCLHandler(char *argument[], int maxNumArgs)
 	ScenarioManager scenariomgr;
 	int numScenarios = atoi(argument[2]);
 
-	EmptyClusterAbstraction aMap(new Map(map.c_str()), 
-			new EmptyClusterFactory(), new MacroNodeFactory(), 
-			new EdgeFactory(), allowDiagonals, reducePerimeter, bfReduction);
-	
+	mapFlatAbstraction aMap(new Map(map.c_str()), allowDiagonals, cutCorners);
+	std::cout << "allowDiagonals: "<<allowDiagonals<< "cutCorners: "<<cutCorners<<std::endl;
 	scenariomgr.generateExperiments(&aMap, numScenarios);
-	std::cout << "generated: "<<scenariomgr.getNumExperiments()<< 
-		" experiments"<<std::endl;
 
 	string outfile = map + ".scenario"; 
 	scenariomgr.writeScenarioFile(outfile.c_str());
@@ -1134,7 +1107,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 					new FlexibleAStar(
 						new IncidentEdgesExpansionPolicy(map),
 						newHeuristic()),
-					newRefinementPolicy(0, map, true));
+					newRefinementPolicy(map, true));
 			((HierarchicalSearch*)alg)->setName("HPA");
 			break;
 		}
@@ -1146,15 +1119,16 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 
 		case HOG::JPS:
 		{
-			alg = new JumpPointSearch(jps_online, jps_recursion_depth, 
-					newHeuristic(), aMap);
+			alg = new JumpPointSearch(newHeuristic(), aMap, 
+					jps_online, jps_recursion_depth, jps_jumplimit);
 			break;
 		}
 
 		default:
 		{
-			alg = new FlexibleAStar(
-					new IncidentEdgesExpansionPolicy(aMap), newHeuristic());
+			alg = new FlexibleAStar(new IncidentEdgesExpansionPolicy(aMap), 
+						newHeuristic());
+			//alg = new aStarOld(1, true);
 			break;
 		}
 	}
@@ -1163,7 +1137,7 @@ newSearchAlgorithm(mapAbstraction* aMap, bool refineAbsPath)
 }
 
 RefinementPolicy*
-newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
+newRefinementPolicy(mapAbstraction* map, bool refine)
 {
 	if(!refine)
 		return new NoRefinementPolicy();
@@ -1188,7 +1162,7 @@ newRefinementPolicy(ExpansionPolicy* expander, mapAbstraction* map, bool refine)
 
 		default:
 		{
-			refPol = new NoRefinementPolicy();
+			refPol = new OctileDistanceRefinementPolicy(map);
 			break;
 		}
 	}
@@ -1201,6 +1175,7 @@ parse_jps_args(char** argument, int maxArgs)
 {
 	for(int i=0; i < maxArgs; i++)
 	{
+		std::cout << "\njps arg: "<<argument[i]<<std::endl;;
 		if(strncmp(argument[i], "depth=", 6) == 0)
 		{
 			int tmp = atoi(argument[i]+6);
@@ -1208,22 +1183,34 @@ parse_jps_args(char** argument, int maxArgs)
 			{
 				jps_recursion_depth = tmp;
 			}
-		}
-		else if(strcmp(argument[i], "online") == 0)
-		{
-			jps_online = true;
+			continue;
 		}
 
-		else if(strcmp(argument[i], "offline") == 0)
+		if(strncmp(argument[i], "jumplimit=", 10) == 0)
+		{
+			int tmp = atoi(argument[i]+10);
+			if(tmp != INT_MAX || tmp != INT_MIN)
+			{
+				jps_jumplimit = tmp;
+			}
+			continue;
+		}
+
+		if(strcmp(argument[i], "online") == 0)
+		{
+			jps_online = true;
+			continue;
+		}
+
+		if(strcmp(argument[i], "offline") == 0)
 		{
 			jps_online = false;
+			continue;
 		}
-		else
-		{
-			std::cerr << "unrecognised search parameter: " << argument[i]
-				<< std::endl;
-			return false;
-		}
+
+		std::cerr << "unrecognised search parameter: " << argument[i]
+			<< std::endl;
+		return false;
 	}
 	return true;
 }

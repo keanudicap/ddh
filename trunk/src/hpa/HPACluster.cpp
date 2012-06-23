@@ -13,13 +13,19 @@
 #include <string>
 
 #include "glUtil.h"
-#ifdef OS_MAC
-#include "GLUT/glut.h"
-#include <OpenGL/gl.h>
-#else
-#include <GL/glut.h>
-#include <GL/gl.h>
-#endif
+
+//#ifdef NO_OPENGL
+//#include "glut.h"
+//#include "gl.h"
+//#else
+//#ifdef OS_MAC
+//#include "GLUT/glut.h"
+//#include <OpenGL/gl.h>
+//#else
+//#include <GL/glut.h>
+//#include <GL/gl.h>
+//#endif
+//#endif
 
 HPACluster::HPACluster(const int _x, const int _y, const int _w, const int _h, 
 		AbstractClusterAStar* _alg, HPAClusterAbstraction* map) 

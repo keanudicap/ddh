@@ -55,7 +55,13 @@ char gDefaultMap[1024] = "";
 const recVec gOrigin = { 0.0, 0.0, 0.0 };
 
 char* HOGHOME=0;
+
+#ifdef NO_OPENGL
+bool disable_gui = true;
+#else
 bool disable_gui = false;
+#endif
+
 using namespace std;
 
 static std::vector<commandLineCallbackData *> commandLineCallbacks;
@@ -296,7 +302,7 @@ void initialConditions(pRecContext pContextInfo)
 	pContextInfo->objectRotation[2] = 0;//-0.5;
 	pContextInfo->objectRotation[3] = 0;//0.5;
 	
-#ifdef OS_MAC
+#if defined (OS_MAC) && ! defined (NO_OPENGL)
 	pContextInfo->timer = NULL;
 #endif
 	

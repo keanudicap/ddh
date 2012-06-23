@@ -3,9 +3,13 @@
 #include "graph.h"
 #include "mapAbstraction.h"
 
+#include <climits>
+
 JumpPointLocator::JumpPointLocator(mapAbstraction* _map)
 {
 	this->map = _map;
+	cutCorners = false;
+	jumplimit = INT_MAX;
 }
 
 JumpPointLocator::~JumpPointLocator()
@@ -216,6 +220,146 @@ JumpPointLocator::computeForced(Jump::Direction d, int x, int y)
 			break;
 		}
 	}
+	return retVal;
+}
+
+// this function checks whether a proposed step in the grid is allowed
+// and returns a corresponding boolean value.
+//
+// A "step" involves moving from one tile on the grid to an adjacent
+// neighbour. Usually a straightforward operation, the only possible
+// complication arises from whether or not "corner cutting" is allowed
+// when stepping diagonally. When allowed, it is possible to make a
+// diagonal move provided there is at least one valid 2-step path between
+// the source and destination. When corner cutting is disallowed, both 2-step
+// paths must be valid. 
+bool
+JumpPointLocator::canStep(int x, int y, Jump::Direction checkdir)
+{
+	assert(checkdir != Jump::NONE);
+	if(!map->getNodeFromMap(x, y))
+		return false;
+
+	bool retVal = true;
+	switch(checkdir)
+	{
+		case Jump::N:
+			if(!map->getNodeFromMap(x, y-1))
+				retVal =  false;
+			break;
+
+		case Jump::S:
+			if(!map->getNodeFromMap(x, y+1))
+				retVal =  false;
+			break;
+
+		case Jump::E:
+			if(!map->getNodeFromMap(x+1, y))
+				retVal =  false;
+			break;
+
+		case Jump::W:
+			if(!map->getNodeFromMap(x-1, y))
+				retVal =  false;
+			break;
+
+		case Jump::NE:
+			if(!map->getNodeFromMap(x+1, y-1))
+			{
+				retVal =  false;
+			}
+			else if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x+1, y) && 
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x+1, y) ||
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+			break;
+
+		case Jump::SE:
+			if(!map->getNodeFromMap(x+1, y+1))
+			{
+				retVal =  false;
+			}
+			else if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x+1, y) && 
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x+1, y) ||
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+			break;
+
+		case Jump::NW:
+			if(!map->getNodeFromMap(x-1, y-1))
+			{
+				retVal =  false;
+			}
+			else if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x-1, y) && 
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x-1, y) ||
+					!map->getNodeFromMap(x, y-1) )
+				{
+					retVal =  false;
+				}
+			}
+			break;
+
+		case Jump::SW:
+			if(!map->getNodeFromMap(x-1, y+1))
+			{
+				retVal =  false;
+			}
+			else if( cutCorners )
+			{
+				if( !map->getNodeFromMap(x-1, y) && 
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+			else
+			{
+				if( !map->getNodeFromMap(x-1, y) ||
+					!map->getNodeFromMap(x, y+1) )
+				{
+					retVal =  false;
+				}
+			}
+			break;
+
+
+		case Jump::NONE:
+			retVal = false;
+	}
+
 	return retVal;
 }
 
