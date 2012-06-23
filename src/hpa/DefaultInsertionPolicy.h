@@ -30,9 +30,6 @@ class DefaultInsertionPolicy : public InsertionPolicy
 		virtual void remove(node* n)
 			throw(std::runtime_error);
 
-		bool getVerbose() { return verbose; }
-		void setVerbose(bool _verbose) { verbose = _verbose; }
-
 	private:
 		GenericClusterAbstraction* map;
 		bool verbose;

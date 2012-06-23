@@ -32,7 +32,7 @@ DefaultInsertionPolicy::insert(node* n)
 		AbstractCluster* cluster = map->getCluster(
 			target->getParentClusterId());
 
-		if(getVerbose())
+		if(this->getVerbose())
 		{
 			const int x = target->getLabelL(kFirstData);
 			const int y = target->getLabelL(kFirstData+1);

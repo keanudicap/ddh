@@ -32,7 +32,7 @@
 
 class mapFlatAbstraction : public mapAbstraction {
 public:
-	mapFlatAbstraction(Map *_m);
+	mapFlatAbstraction(Map *_m, bool allowDiagonals=true, bool cutCorners=true);
 	~mapFlatAbstraction();
 	/** return a new abstraction map of the same type as this map abstraction */
 	virtual mapAbstraction *clone(Map *_m) { return new mapFlatAbstraction(_m); }

@@ -2,6 +2,11 @@
 #include "aStar3.h"
 #include "mapAbstraction.h"
 
+#include <cstdlib>
+#include <string>
+
+static int head_offset = 0;
+static int tail_offset = 0;
 AbstractScenarioManager::~AbstractScenarioManager()
 {
 	for(unsigned int i=0; i < experiments.size(); i++)
@@ -11,15 +16,16 @@ AbstractScenarioManager::~AbstractScenarioManager()
 	experiments.clear();
 }
 
-void AbstractScenarioManager::writeScenarioFile(const char* filelocation)
+void 
+AbstractScenarioManager::writeScenarioFile(const char* filelocation)
 {
 	if(experiments.size() == 0) // nothing to write
 		return;
-	
+
 	std::ofstream scenariofile;
 	scenariofile.precision(16);
 	scenariofile.open(filelocation, std::ios::out);
-	scenariofile << version<<std::endl;
+	scenariofile << "version " << version<<std::endl;
 
 	for(unsigned int i=0; i<experiments.size(); i++)
 	{	
@@ -31,20 +37,39 @@ void AbstractScenarioManager::writeScenarioFile(const char* filelocation)
 	scenariofile.close();		
 }
 
+void 
+AbstractScenarioManager::sortExperiments()
+{
+	for(int i=0; i < experiments.size(); i++)
+	{
+		for(int j = i; j < experiments.size(); j++)
+		{
+			if(experiments.at(j)->getDistance() < experiments.at(i)->getDistance())
+			{
+				Experiment* tmp = experiments.at(i);
+				experiments.at(i) = experiments.at(j);
+				experiments.at(j) = tmp;
+			}
+		}
+	}
+}
+
 ScenarioManager::ScenarioManager()
 {
-	version = 3.0;
+	version = 1;
 }
 
 ScenarioManager::~ScenarioManager()
 {
 }
 
-void ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments) 
+void 	
+ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments) 
 	throw(TooManyTriesException)
 {
 	assert(absMap != 0); // need a test here; throw exception if absMap is null
 	
+	head_offset = tail_offset = 0;
 	int tries=0;
 	int generated=0;
 	while(generated < numexperiments)
@@ -57,12 +82,27 @@ void ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperim
 		{
 			this->addExperiment(exp);
 			generated++;
+			if((generated % 10) == 0)
+			{
+				head_offset += 10;
+				tail_offset += 20;
+				std::cout << "\rgenerated: "<< generated << "/" << numexperiments;
+				std::cout << std::flush;
+			}
 		}
 		tries++;
+		if((tries % 5) == 0)
+		{
+			head_offset += 5;
+			tail_offset += 10;
+		}
 	}
+	std::cout << " experiments." << std::endl;
+	sortExperiments();
 }
 
-Experiment* ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
+Experiment* 
+ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 {
 	graph *g = absMap->getAbstractGraph(0);
 	const char* _map = absMap->getMap()->getMapName();
@@ -73,29 +113,43 @@ Experiment* ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 	r1 = r2 = 0;
 	path *p=0;
 
-	r1 = g->getRandomNode();
-	r2 = g->getRandomNode();
+	if(head_offset + 100 >= g->getNumNodes())
+		head_offset = 0;
+	if(tail_offset + 100 >= g->getNumNodes())
+		tail_offset = 0;
 
-	//ClusterAStar searchalg;
-	//searchalg.cardinal = true;
+	int id1 = (rand() % 100) + head_offset;
+	int id2 = g->getNumNodes() - ((rand() % 100) + tail_offset);
+	//std::cout << "id1: "<<id1 << " id2: "<< id2;
+
+	r1 = g->getNode(id1);
+	r2 = g->getNode(id2);
+
 	aStarOld searchalg;
 	p = searchalg.getPath(absMap, r1, r2);
 
 	if(!p)
+	{
+	//	std::cout << " no path;" <<std::endl;
 		return NULL;
+	}
+	//std::cout << " found path;" << std::endl;
 		
-	double dist = absMap->distance(p);
+	double dist = r2->getLabelF(kTemporaryLabel); // fValue
 	int x1, x2, y1, y2;
+	int mapwidth = absMap->getMap()->getMapWidth();
+	int mapheight = absMap->getMap()->getMapHeight();
 	
 	x1 = r1->getLabelL(kFirstData); y1 = r1->getLabelL(kFirstData+1);
 	x2 = r2->getLabelL(kFirstData); y2 = r2->getLabelL(kFirstData+1);
-	newexp = new Experiment(x1, y1, x2, y2, 1, 1, 0, dist, _map);
+	newexp = new Experiment(x1, y1, x2, y2, mapwidth, mapheight, 0, dist, _map);
 	
 	delete p;
 	return newexp;
 }
 
-void ScenarioManager::loadScenarioFile(const char* filelocation)
+void 
+ScenarioManager::loadScenarioFile(const char* filelocation)
 	throw(std::invalid_argument)
 {
 	std::ifstream infile;
@@ -124,15 +178,6 @@ void ScenarioManager::loadScenarioFile(const char* filelocation)
 	{
 		loadV1ScenarioFile(infile);
 	}
-	else if(version == 2.0)
-	{
-		loadV2ScenarioFile(infile);
-	}
-
-	else if(version == 2.1)
-	{
-		loadV21ScenarioFile(infile);
-	}
 
 	else if(version == 3)
 	{
@@ -150,48 +195,48 @@ void ScenarioManager::loadScenarioFile(const char* filelocation)
 }
 
 // V1.0 is the version officially supported by HOG
-void ScenarioManager::loadV1ScenarioFile(std::ifstream& infile)
+void 
+ScenarioManager::loadV1ScenarioFile(std::ifstream& infile)
 {
 	int sizeX = 0, sizeY = 0; 
 	int bucket;
 	string map;  
 	int xs, ys, xg, yg;
-	double dist;
+	string dist;
 
 	while(infile>>bucket>>map>>sizeX>>sizeY>>xs>>ys>>xg>>yg>>dist)
+	{
+		double dbl_dist = strtod(dist.c_str(),0);
 		experiments.push_back(
-				new Experiment(xs,ys,xg,yg,sizeX,sizeY,bucket,dist,map));
+				new Experiment(xs,ys,xg,yg,sizeX,sizeY,bucket,dbl_dist,map));
+
+		int precision = 0;
+		if(dist.find(".") != string::npos)
+		{
+			precision = dist.size() - (dist.find(".")+1);
+		}
+		experiments.back()->setPrecision(precision);
+	}
 }
 
-// V2.0 scenario files are generated by AHAScenarioManager; ignore size/capability
-void ScenarioManager::loadV21ScenarioFile(std::ifstream& infile)
-{
-	int xs, ys, xg, yg, capability, agentsize;
-	float dist;
-	string mapfile;
-	while(infile>>mapfile>>xs>>ys>>xg>>yg>>dist>>capability>>agentsize)
-		experiments.push_back(
-			new Experiment(xs, ys, xg, yg, 1, 1, 0, dist, mapfile));
-}
-
-// V2.1 scenario files are generated by AHAScenarioManager; ignore size/capability
-void ScenarioManager::loadV2ScenarioFile(std::ifstream& infile)
-{
-	int xs, ys, xg, yg, capability, agentsize;
-	float dist;
-	string mapfile;
-	while(infile>>mapfile>>xs>>ys>>xg>>yg>>capability>>agentsize>>dist)
-		experiments.push_back(
-			new Experiment(xs, ys, xg, yg, 1, 1, 0, dist, mapfile));
-}
-
-void ScenarioManager::loadV3ScenarioFile(std::ifstream& infile)
+void 
+ScenarioManager::loadV3ScenarioFile(std::ifstream& infile)
 {
 	int xs, ys, xg, yg;
-	float dist;
+	string dist;
 	string mapfile;
 	while(infile>>mapfile>>xs>>ys>>xg>>yg>>dist)
+	{
+		double dbl_dist = strtod(dist.c_str(),0);
 		experiments.push_back(
-			new Experiment(xs, ys, xg, yg, 1, 1, 0, dist, mapfile));
+			new Experiment(xs, ys, xg, yg, 1, 1, 0, dbl_dist, mapfile));
+
+		int precision = 0;
+		if(dist.find(".") != string::npos)
+		{
+			precision = dist.size() - (dist.find(".")+1);
+		}
+		experiments.back()->setPrecision(precision);
+	}
 }
 

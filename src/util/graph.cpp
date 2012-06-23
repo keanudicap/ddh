@@ -157,11 +157,13 @@ void graph::addEdge(edge *e)
     if (e->getFrom() < _nodes.size())
       _nodes[e->getFrom()]->addEdge(e);
     else
-      cerr << "Adding edge from illegal index" << endl;
+      cerr << "Adding edge from illegal index: " << e->getFrom() << 
+	  " (max="<<_nodes.size() << ")"<< endl;
     if (e->getTo() < _nodes.size())
       _nodes[e->getTo()]->addEdge(e);
     else
-      cerr << "Adding edge to illegal index" << endl;
+      cerr << "Adding edge to illegal index: " << e->getTo() << 
+	  " (max="<<_nodes.size() << ")"<<endl;
     //edge_index++;
   }
 }
@@ -398,14 +400,25 @@ vector<node*>* graph::getReachableNodes(node* start)
 
 void graph::print(ostream &out) const
 {
-  out << "nodes="<< this->getNumNodes() << " edges="<< this->getNumEdges() << std::endl;
-  node_iterator ni = getNodeIter();
-  while (1)
+	out << "graph v=1 ";
+	out << "nodes=" << this->getNumNodes() << " edges="<<this->getNumEdges()<<std::endl;
+
+	node_iterator ni = getNodeIter();
+	node* n = nodeIterNext(ni);
+	while (n)
 	{
-    node *n = nodeIterNext(ni);
-    if (!n) break;
-    out << *n << endl;
-  }
+		out << n->getNum() << " ";
+		edge_iterator ei = n->getEdgeIter();
+		edge* e = n->edgeIterNext(ei);
+		while(e)
+		{
+			int otherId = e->getFrom()==n->getNum()?e->getTo():e->getFrom();
+			out << "["<<otherId<<","<<e->getWeight()<<"] ";
+			e = n->edgeIterNext(ei);
+		}
+		out << std::endl;
+		n = nodeIterNext(ni);
+	}
 }
 
 void graph::printStats()
@@ -812,14 +825,14 @@ int node::nodeNeighborNext(neighbor_iterator& ni) const
 // dynamically when the graph is created.
 void node::print(ostream& out) const
 {
-  out << std::fixed << std::setprecision(4);
   out << getNum() << " ";
-  for(unsigned int i; i < _edgesOutgoing.size(); i++)
-  {
-	  edge* e = _edgesOutgoing[i];
-	  int nId = e->getTo();
-	  //out << "["<<nId<<","<<e->getWeight() << "] ";
-  }
+//  out << std::fixed << std::setprecision(4);
+//  for(unsigned int i; i < _edgesOutgoing.size(); i++)
+//  {
+//	  edge* e = _edgesOutgoing[i];
+//	  int nId = e->getTo();
+//	  out << "["<<nId<<","<<e->getWeight() << "] ";
+//  }
 }
 
 ostream& operator <<(ostream & out, const graph &_Graph)

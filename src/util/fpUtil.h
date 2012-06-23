@@ -27,7 +27,7 @@
 #endif
 
 // Floating point comparisons 
-static const double TOLERANCE = 0.00001;    // floating point tolerance
+static const double TOLERANCE = 0.000001;    // floating point tolerance
 
 inline bool fless(double a, double b) { return (a < b - TOLERANCE); }
 inline bool fgreater(double a, double b) { return (a > b + TOLERANCE); }

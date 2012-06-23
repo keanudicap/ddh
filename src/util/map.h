@@ -32,8 +32,9 @@ static const double ONE_OVER_ROOT_TWO = 1.0/ROOT_TWO;//0.707106781f;
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
+#include <vector>
 
 #include "glUtil.h"
 #include "graph.h"
@@ -151,6 +152,7 @@ class Map {
 
 public:
   Map(long width, long height);
+  Map(long width, long height, std::vector<bool>& mapData);
   Map(const char *filename);
 	Map(Map *);
 	Map(FILE *);
@@ -234,6 +236,7 @@ private:
 	void loadRaw(FILE *f, int height, int width);
 	void loadOctile(FILE *f, int height, int width);
 	void loadOctileCorner(FILE *f, int height, int width);
+	void loadGPPC(std::vector<bool>& mapData);
 	void saveOctile(FILE *f);
 	void saveRaw(FILE *f);
 	bool tryLoadRollingStone(FILE *f);

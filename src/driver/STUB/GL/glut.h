@@ -1,7 +1,7 @@
-#include "gl.h"
-
 #ifndef GLUT_H
 #define GLUT_H
+
+#include "gl.h"
 
 #define GLUT_DOUBLE        0
 #define GLUT_RGBA          0

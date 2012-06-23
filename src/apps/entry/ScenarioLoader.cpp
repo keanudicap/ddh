@@ -8,8 +8,9 @@
 
 #include <fstream>
 using std::ifstream;
+using std::ofstream;
 
-#include "scenarioLoader.h"
+#include "ScenarioLoader.h"
 #include <assert.h>
 
 /** 
@@ -43,7 +44,7 @@ ScenarioLoader::ScenarioLoader(const char* fname)
   if (ver==0.0){
     while(sfile>>bucket>>map>>xs>>ys>>xg>>yg>>dist) {
       Experiment exp(xs,ys,xg,yg,bucket,dist,map);
-      experiments.push_back(exp);    
+      experiments.push_back(exp);
     }
   }
   else if(ver==1.0){
@@ -53,20 +54,30 @@ ScenarioLoader::ScenarioLoader(const char* fname)
     }
   }
   else{
-    printf("Invalid version number. Exiting program\n");
-    assert(0);
+    printf("Invalid version number.\n");
+    //assert(0);
   }
 }
 
-void Experiment::print(std::ostream& out)
+void ScenarioLoader::Save(const char *fname)
 {
-	out << this->getMapName() <<"\t";
-	out << this->getStartX() <<"\t";
-	out << this->getStartY()<<"\t";
-	out << this->getGoalX()<<"\t";
-	out << this->getGoalY()<<"\t";
-	out << this->getDistance() << "\t";
+//	strncpy(scenName, fname, 1024);
+	ofstream ofile(fname);
+	
+	float ver = 1.0;
+	ofile<<"version "<<ver<<std::endl;
+	
+	
+	for (unsigned int x = 0; x < experiments.size(); x++)
+	{
+		ofile<<experiments[x].bucket<<"\t"<<experiments[x].map<<"\t"<<experiments[x].scaleX<<"\t";
+		ofile<<experiments[x].scaleY<<"\t"<<experiments[x].startx<<"\t"<<experiments[x].starty<<"\t";
+		ofile<<experiments[x].goalx<<"\t"<<experiments[x].goaly<<"\t"<<experiments[x].distance<<std::endl;
+	}
 }
-    
 
-  
+void ScenarioLoader::AddExperiment(Experiment which)
+{
+	experiments.push_back(which);
+}
+

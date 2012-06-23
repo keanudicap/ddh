@@ -12,6 +12,8 @@
 
 #include "searchAlgorithm.h"
 
+#include <climits>
+
 class FlexibleAStar;
 class Heuristic;
 class mapAbstraction;
@@ -19,8 +21,9 @@ class path;
 class JumpPointSearch : public searchAlgorithm
 {
 	public:
-		JumpPointSearch(bool online, unsigned int maxdepth, 
-				Heuristic* heuristic, mapAbstraction* map);
+		JumpPointSearch(Heuristic* heuristic, mapAbstraction* map, 
+				bool online=true, unsigned int maxdepth=0, 
+				unsigned int jumplimit=INT_MAX);
 		virtual ~JumpPointSearch();
 
 		virtual const char *getName() { return name.c_str(); }
