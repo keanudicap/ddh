@@ -1396,3 +1396,15 @@ annote = {Exceedingly similar to HAA* }
 		expands a node having a known target distance. Pretty efficient (better than Disjkstra approach); a few 
 		minutes for a symmetric 20K node APSP instance. }
 }
+
+@inproceedings{sanders06,
+author    = {Peter Sanders and Dominik Schultes},
+title     = {Engineering Highway Hierarchies},
+booktitle = {ESA},
+year      = {2006},
+pages     = {804-816},
+ee        = {http://dx.doi.org/10.1007/11841036_71},
+annote = { Generalises sanders05 to directed graphs, introduces a simpler and more effective contraction
+		   process and adds an APSP cost matrix to avoid search in the top level of the hierarchy. ~10x faster than
+		   sanders05 (query times, preproc time).  }
+}
