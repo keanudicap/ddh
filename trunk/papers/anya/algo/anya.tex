@@ -1,6 +1,6 @@
 \begin{algorithmic}
 \STATE {\bf input}: Graph $G$, source $s$, target $t$
-\STATE $open := expand\_node(s)$
+\STATE $open := expand\_node(s,t)$
 \LOOP
   \STATE $i := pop(open)$
   \IF{$i = t$}
@@ -11,7 +11,7 @@
     \STATE $open.insert(move(i'))$
   \ENDFOR
   \FORALL{$c \in C$}
-    \STATE $open.insert(expand\_node(c))$
+    \STATE $open.insert(expand\_node(c),t)$
   \ENDFOR
 \ENDLOOP
 \end{algorithmic}
