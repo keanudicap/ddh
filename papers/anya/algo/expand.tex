@@ -1,7 +1,11 @@
 \begin{algorithmic}
-\STATE {\bf input}: node $c$
+\STATE {\bf input}: node $c$, target $t$
+\IF{$c = t$}
+\RETURN $c$
+\ELSE
 \RETURN  $\{
            \langle [0,W], y_c, c, \uparrow\rangle,
            \langle [0,W], y_c, c, \downarrow\rangle
          \}$  
+\ENDIF
 \end{algorithmic}
