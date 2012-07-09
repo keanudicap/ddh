@@ -1,0 +1,25 @@
+List of ideas for pathfinding.  This list is also used to decide
+publication strategy.
+
+* JPS + improvements (JAIR)
++ pre-processing
++ multiple terrain (large uniform-cost areas)
++ different types de grids (hexa, 4-connected, octile, ?)
++ (longer term) informed multiple jump point (certain jump points are
+  flagged as ``jumpable'', which means that we believe it will be
+  beneficial to do a multiple jump on them; typically points that
+  lead to dead-ends or to places with a single exit)
+
+* Any-angle: anya, interval-based algorithm.  
+
+* Weighted grids (?)
+
+* Complexity analysis 
++ Determine how hard path planning will be on a given map
++ On-line estimate of planning complexity for a given problem (this
+  can trigger a switch to a non-optimal algorithm)
+
+* JPS + CPD
++ Only store the CPD for jump points (requires to compute 8 paths)
++ Only store the parts of the CPD where the decision differs from the
+  previous node
