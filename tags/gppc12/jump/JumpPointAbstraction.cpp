@@ -20,7 +20,7 @@ JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf,
 	ef = _ef;
 
 	makeJumpPointGraph();
-	verifyHierarchy();
+	//verifyHierarchy();
 }
 
 JumpPointAbstraction::JumpPointAbstraction(Map* _m, const char* graphfile, 
@@ -31,7 +31,7 @@ JumpPointAbstraction::JumpPointAbstraction(Map* _m, const char* graphfile,
 	ef = _ef;
 
 	importGraph(graphfile);
-	verifyHierarchy();
+	//verifyHierarchy();
 }
 
 JumpPointAbstraction::~JumpPointAbstraction()
@@ -305,7 +305,7 @@ JumpPointAbstraction::importGraph(const char* filename)
 
 			edge* e = new edge(nodeId, neighbourId, doubleVal);
 			int numEdges = g->getNumEdges();
-			g->addEdge(e);
+			g->addDirectedEdge(e);
 			assert(g->getNumEdges() > numEdges);
 
 			begin = end+1; // place begin after end-of-record delimiter '['
