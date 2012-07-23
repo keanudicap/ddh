@@ -41,7 +41,7 @@ void PreprocessMap(std::vector<bool> &bits, int width, int height, const char *f
 	{
 		std::cout << "not required\n";
 	}
-	{
+	else{
 		Map* themap = new Map(width, height, bits);
 		JumpPointAbstraction absMap(themap, new NodeFactory(), new EdgeFactory(), false);
 		printf("done.\n");
