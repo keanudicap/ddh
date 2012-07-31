@@ -6,7 +6,6 @@ GridMapExpansionPolicy::GridMapExpansionPolicy(unsigned int max)
 {
 	this->max = max;	
 	which = 0;
-	cost = 0;
 }
 
 GridMapExpansionPolicy::~GridMapExpansionPolicy()
@@ -21,10 +20,10 @@ node* GridMapExpansionPolicy::first()
 {
 	which = 0;
 	node* retVal = n();
-	cost = problem->getHeuristic()->h(target, retVal);
-
 	if(retVal == 0)
+	{
 		retVal = next();
+	}
 
 	return retVal;
 }
@@ -38,7 +37,6 @@ node* GridMapExpansionPolicy::next()
 		which++;
 		retVal = n();
 	}
-	cost = problem->getHeuristic()->h(target, retVal);
 	return retVal;
 }
 
@@ -49,7 +47,3 @@ bool GridMapExpansionPolicy::hasNext()
 	return false;
 }
 
-double GridMapExpansionPolicy::cost_to_n()
-{
-	return cost;
-}

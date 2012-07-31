@@ -45,28 +45,96 @@ node* OctileExpansionPolicy::n()
 			break;
 
 		case 4: // nw
-			n = map->getNodeFromMap(
-					target->getLabelL(kFirstData)-1,
-					target->getLabelL(kFirstData+1)-1);
+		{
+			int tx = target->getLabelL(kFirstData);
+			int ty = target->getLabelL(kFirstData+1);
+			n = map->getNodeFromMap(tx-1, ty-1);
+			if( ! map->getCutCorners() )
+			{
+				if(!map->getNodeFromMap(tx-1, ty) || 
+				   !map->getNodeFromMap(tx, ty-1))
+				{
+					n = 0;
+				}
+			}
 			break;
+		}
 
 		case 5: // ne
-			n = map->getNodeFromMap(
-					target->getLabelL(kFirstData)+1,
-					target->getLabelL(kFirstData+1)-1);
+		{
+			int tx = target->getLabelL(kFirstData);
+			int ty = target->getLabelL(kFirstData+1);
+			n = map->getNodeFromMap(tx+1, ty-1);
+			if( ! map->getCutCorners() )
+			{
+				if(!map->getNodeFromMap(tx+1, ty) || 
+				   !map->getNodeFromMap(tx, ty-1))
+				{
+					n = 0;
+				}
+			}
 			break;
+		}
 
 		case 6: // se
-			n = map->getNodeFromMap(
-					target->getLabelL(kFirstData)+1,
-					target->getLabelL(kFirstData+1)+1);
+		{
+			int tx = target->getLabelL(kFirstData);
+			int ty = target->getLabelL(kFirstData+1);
+			n = map->getNodeFromMap(tx+1, ty+1);
+			if( ! map->getCutCorners() )
+			{
+				if(!map->getNodeFromMap(tx+1, ty) || 
+				   !map->getNodeFromMap(tx, ty+1))
+				{
+					n = 0;
+				}
+			}
 			break;
+		}
 
 		case 7: // sw
-			n = map->getNodeFromMap(
-					target->getLabelL(kFirstData)-1,
-					target->getLabelL(kFirstData+1)+1);
+		{
+			int tx = target->getLabelL(kFirstData);
+			int ty = target->getLabelL(kFirstData+1);
+			n = map->getNodeFromMap(tx-1, ty+1);
+			if( ! map->getCutCorners() )
+			{
+				if(!map->getNodeFromMap(tx-1, ty) || 
+				   !map->getNodeFromMap(tx, ty+1))
+				{
+					n = 0;
+				}
+			}
 			break;
+		}
 	}
 	return n;
+}
+
+void OctileExpansionPolicy::label_n()
+{
+
+	node* tmp = this->n();
+	if(tmp)
+		tmp->backpointer = this->target;
+}
+
+double OctileExpansionPolicy::cost_to_n()
+{
+	node* tmp = this->n();
+	if(tmp)
+	{
+		int absx = abs(tmp->getLabelL(kFirstData) - target->getLabelL(kFirstData));
+		int absy = abs(tmp->getLabelL(kFirstData+1) - target->getLabelL(kFirstData+1));
+		if(absx+absy == 1)
+		{
+			return 1;
+		}
+		if(absx+absy == 2)
+		{
+			return ROOT_TWO;
+		}
+		std::cerr << "OctileExpansionPolicy::cost_to_n current node has non-adjacent neighbour??!? \n";
+	}
+	return 0;
 }

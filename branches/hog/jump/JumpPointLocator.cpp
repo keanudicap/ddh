@@ -8,7 +8,6 @@
 JumpPointLocator::JumpPointLocator(mapAbstraction* _map)
 {
 	this->map = _map;
-	cutCorners = false;
 	jumplimit = INT_MAX;
 }
 
@@ -268,7 +267,7 @@ JumpPointLocator::canStep(int x, int y, Jump::Direction checkdir)
 			{
 				retVal =  false;
 			}
-			else if( cutCorners )
+			else if( map->getCutCorners() )
 			{
 				if( !map->getNodeFromMap(x+1, y) && 
 					!map->getNodeFromMap(x, y-1) )
@@ -291,7 +290,7 @@ JumpPointLocator::canStep(int x, int y, Jump::Direction checkdir)
 			{
 				retVal =  false;
 			}
-			else if( cutCorners )
+			else if( map->getCutCorners() )
 			{
 				if( !map->getNodeFromMap(x+1, y) && 
 					!map->getNodeFromMap(x, y+1) )
@@ -314,7 +313,7 @@ JumpPointLocator::canStep(int x, int y, Jump::Direction checkdir)
 			{
 				retVal =  false;
 			}
-			else if( cutCorners )
+			else if( map->getCutCorners() )
 			{
 				if( !map->getNodeFromMap(x-1, y) && 
 					!map->getNodeFromMap(x, y-1) )
@@ -337,7 +336,7 @@ JumpPointLocator::canStep(int x, int y, Jump::Direction checkdir)
 			{
 				retVal =  false;
 			}
-			else if( cutCorners )
+			else if( map->getCutCorners() )
 			{
 				if( !map->getNodeFromMap(x-1, y) && 
 					!map->getNodeFromMap(x, y+1) )

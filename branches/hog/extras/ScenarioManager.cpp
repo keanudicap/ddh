@@ -1,6 +1,10 @@
 #include "ScenarioManager.h"
 #include "aStar3.h"
 #include "mapAbstraction.h"
+#include "FlexibleAStar.h"
+#include "OctileExpansionPolicy.h"
+#include "TileExpansionPolicy.h"
+#include "ManhattanHeuristic.h"
 
 #include <cstdlib>
 #include <string>
@@ -72,10 +76,13 @@ ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments)
 	head_offset = tail_offset = 0;
 	int tries=0;
 	int generated=0;
+	int fails=0;
 	while(generated < numexperiments)
 	{	
-		if(tries >= MAXTRIES)
+		if(fails > MAX_CONSECUTIVE_FAILS)
+		{
 			throw TooManyTriesException(generated, numexperiments);
+		}
 		
 		Experiment* exp = generateSingleExperiment(absMap); 
 		if(exp != NULL) 
@@ -89,6 +96,11 @@ ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments)
 				std::cout << "\rgenerated: "<< generated << "/" << numexperiments;
 				std::cout << std::flush;
 			}
+			fails=0;
+		}
+		else
+		{
+			fails++;
 		}
 		tries++;
 		if((tries % 5) == 0)
@@ -125,8 +137,23 @@ ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 	r1 = g->getNode(id1);
 	r2 = g->getNode(id2);
 
-	aStarOld searchalg;
-	p = searchalg.getPath(absMap, r1, r2);
+	FlexibleAStar* searchalg;
+	if(absMap->getAllowDiagonals())
+	{
+		//std::cout << "allowing diagonals\n";
+		searchalg = new FlexibleAStar(
+				new OctileExpansionPolicy(),
+				new ManhattanHeuristic());
+	}
+	else
+	{
+		searchalg = new FlexibleAStar(
+				new TileExpansionPolicy(),
+				new ManhattanHeuristic());
+	}
+
+	//aStarOld searchalg;
+	p = searchalg->getPath(absMap, r1, r2);
 
 	if(!p)
 	{
@@ -145,6 +172,7 @@ ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 	newexp = new Experiment(x1, y1, x2, y2, mapwidth, mapheight, 0, dist, _map);
 	
 	delete p;
+	delete searchalg;
 	return newexp;
 }
 

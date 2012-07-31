@@ -14,7 +14,7 @@ ManhattanHeuristic::~ManhattanHeuristic()
 double ManhattanHeuristic::h(node* a, node* b) const
 {
 	if(a == NULL || b == NULL) 
-		throw std::invalid_argument("null node");
+		throw std::invalid_argument("ManhattanHeuristic::h null node");
 
 	double answer = 0.0;
 

@@ -43,7 +43,9 @@ class IEdgeFactory;
 
 class mapAbstraction : public graphAbstraction {
 public:
-	mapAbstraction(Map *_m) :m(_m), levelDraw(0) {}
+	mapAbstraction(Map *_m, bool diag, bool corners) :
+		m(_m), allow_diagonals_(diag), cut_corners_(corners), levelDraw(0) {}
+
 	virtual ~mapAbstraction();
 	/** return a new abstraction map of the same type as this map abstraction */
 	virtual mapAbstraction *clone(Map *) = 0;
@@ -57,6 +59,8 @@ public:
 	Map* getMap() { return m; }
 	
 	virtual double h(node *a, node *b);
+	bool getAllowDiagonals() { return this->allow_diagonals_; }
+	bool getCutCorners() { return this->cut_corners_; }
 	
 	double octileDistance(double,double,double,double);
 	
@@ -73,6 +77,8 @@ private:
 	void drawGraph(graph *g);
 	
 	Map *m;
+	bool allow_diagonals_;
+	bool cut_corners_;
 	unsigned long levelDraw;
 };
 

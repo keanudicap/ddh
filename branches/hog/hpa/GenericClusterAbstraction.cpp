@@ -11,7 +11,7 @@
 
 GenericClusterAbstraction::GenericClusterAbstraction(Map* m, IClusterFactory* cf, 
 		INodeFactory* nf, IEdgeFactory* ef, bool allowDiagonals_) throw(std::invalid_argument)
-	: mapAbstraction(m), allowDiagonals(allowDiagonals_)
+	: mapAbstraction(m, allowDiagonals_, true)
 {
 	node* n = nf->newNode("test");
 	if(!dynamic_cast<ClusterNode*>(n))
@@ -26,12 +26,12 @@ GenericClusterAbstraction::GenericClusterAbstraction(Map* m, IClusterFactory* cf
 	this->nf = nf;
 	this->ef = ef;
 		
-	abstractions.push_back(getMapGraph(this->getMap(), nf, ef, allowDiagonals)); 
+	abstractions.push_back(getMapGraph(this->getMap(), nf, ef, this->getAllowDiagonals())); 
 	abstractions.push_back(new graph());	
 	drawClusters=true;
 	verbose = false;
 
-	if(allowDiagonals)
+	if(this->getAllowDiagonals())
 		heuristic = new OctileHeuristic();
 	else
 		heuristic = new ManhattanHeuristic();

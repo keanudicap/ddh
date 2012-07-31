@@ -29,7 +29,7 @@
 #include "graph.h"
 
 mapQuadTreeAbstraction::mapQuadTreeAbstraction(Map *_m, int _sectorSize)
-:mapAbstraction(_m), sectorSize(_sectorSize)
+:mapAbstraction(_m, true, true), sectorSize(_sectorSize)
 {
 	assert(_sectorSize>1);
 	buildAbstraction();

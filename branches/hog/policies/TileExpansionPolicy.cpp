@@ -53,3 +53,8 @@ void TileExpansionPolicy::label_n()
 		tmp->backpointer = this->target;
 }
 
+double TileExpansionPolicy::cost_to_n()
+{
+	node* tmp = this->n();
+	problem->getHeuristic()->h(this->target, tmp);
+}
