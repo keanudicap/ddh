@@ -77,6 +77,7 @@ ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments)
 	int tries=0;
 	int generated=0;
 	int fails=0;
+	int num_nodes = absMap->getAbstractGraph(0)->getNumNodes();
 	while(generated < numexperiments)
 	{	
 		if(fails > MAX_CONSECUTIVE_FAILS)
@@ -91,8 +92,8 @@ ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments)
 			generated++;
 			if((generated % 10) == 0)
 			{
-				head_offset += 10;
-				tail_offset += 20;
+				head_offset += num_nodes*0.01;
+				tail_offset += num_nodes*0.1;
 				std::cout << "\rgenerated: "<< generated << "/" << numexperiments;
 				std::cout << std::flush;
 			}
@@ -105,8 +106,8 @@ ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments)
 		tries++;
 		if((tries % 5) == 0)
 		{
-			head_offset += 5;
-			tail_offset += 10;
+			head_offset += num_nodes*0.005;
+			tail_offset += num_nodes*0.01;
 		}
 	}
 	std::cout << " experiments." << std::endl;
@@ -122,16 +123,17 @@ ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 	node *r1, *r2;
 	Experiment* newexp;
 
+	int range = g->getNumNodes()*0.01;
 	r1 = r2 = 0;
 	path *p=0;
 
-	if(head_offset + 100 >= g->getNumNodes())
-		head_offset = 0;
-	if(tail_offset + 100 >= g->getNumNodes())
-		tail_offset = 0;
+	if(head_offset + range >= g->getNumNodes())
+		head_offset = (rand()%range);
+	if(tail_offset + range >= g->getNumNodes())
+		tail_offset = (rand()%range);
 
-	int id1 = (rand() % 100) + head_offset;
-	int id2 = g->getNumNodes() - ((rand() % 100) + tail_offset);
+	int id1 = (rand() % range) + head_offset;
+	int id2 = g->getNumNodes() - ((rand() % range) + tail_offset);
 	//std::cout << "id1: "<<id1 << " id2: "<< id2;
 
 	r1 = g->getNode(id1);
