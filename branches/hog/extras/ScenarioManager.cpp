@@ -92,8 +92,8 @@ ScenarioManager::generateExperiments(mapAbstraction* absMap, int numexperiments)
 			generated++;
 			if((generated % 10) == 0)
 			{
-				head_offset += num_nodes*0.01;
-				tail_offset += num_nodes*0.1;
+				head_offset += num_nodes*0.005;
+				tail_offset += num_nodes*0.025;
 				std::cout << "\rgenerated: "<< generated << "/" << numexperiments;
 				std::cout << std::flush;
 			}
@@ -123,7 +123,7 @@ ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 	node *r1, *r2;
 	Experiment* newexp;
 
-	int range = g->getNumNodes()*0.01;
+	int range = g->getNumNodes()*0.005;
 	r1 = r2 = 0;
 	path *p=0;
 
@@ -133,7 +133,8 @@ ScenarioManager::generateSingleExperiment(mapAbstraction* absMap)
 		tail_offset = (rand()%range);
 
 	int id1 = (rand() % range) + head_offset;
-	int id2 = g->getNumNodes() - ((rand() % range) + tail_offset);
+	//int id2 = g->getNumNodes() - ((rand() % range) + tail_offset);
+	int id2 = ((rand() % range) + tail_offset);
 	//std::cout << "id1: "<<id1 << " id2: "<< id2;
 
 	r1 = g->getNode(id1);
