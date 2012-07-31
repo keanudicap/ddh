@@ -81,7 +81,6 @@ class GenericClusterAbstraction : public mapAbstraction
 
 		inline bool getVerbose() { return verbose; }
 		inline void setVerbose(bool _v) { verbose = _v; }
-		inline bool getAllowDiagonals() { return allowDiagonals; }
 		virtual void print(std::ostream& out);
 		
 	protected:
@@ -91,7 +90,6 @@ class GenericClusterAbstraction : public mapAbstraction
 
 		bool drawClusters; 
 		bool verbose;
-		bool allowDiagonals;
 	
 	private:
 		Heuristic* heuristic;

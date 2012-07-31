@@ -10,7 +10,7 @@
 
 namespace ScenarioManagerNS
 {
-	const int MAXTRIES=10000000;
+	const int MAX_CONSECUTIVE_FAILS=1000;
 }
 
 using namespace ScenarioManagerNS;

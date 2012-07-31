@@ -42,7 +42,7 @@ JumpPointExpansionPolicy::computeNeighbourSet()
 	mapAbstraction* map = problem->getMap();
 	int x = target->getLabelL(kFirstData);
 	int y = target->getLabelL(kFirstData+1);
-	bool cutCorners = jpl->getCutCorners();
+	bool cutCorners = map->getCutCorners();
 
 	// Compute the direction of travel used to reach the current node.
 	// We look for successors in this same direction as well as in the direction of

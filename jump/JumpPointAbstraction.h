@@ -26,9 +26,12 @@ class JumpPointAbstraction : public mapAbstraction
 {
 	public:
 		JumpPointAbstraction(Map*, INodeFactory*, IEdgeFactory*, 
+				bool _allowDiagonals = true, bool _cutCorners = true,
 				bool _verbose = false);
 		JumpPointAbstraction(Map*, const char* graphfile,
-				INodeFactory*, IEdgeFactory*, bool _verbose = false);
+				INodeFactory*, IEdgeFactory*, 
+				bool _allowDiagonals = true, bool _cutCorners = true,
+				bool _verbose = false);
 		virtual ~JumpPointAbstraction();
 		virtual mapAbstraction *clone(Map *);
 

@@ -13,8 +13,8 @@
 #include <fstream>
 
 JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf, 
-		IEdgeFactory* _ef, bool _verbose) : mapAbstraction(_m), 
-	verbose(_verbose)
+		IEdgeFactory* _ef, bool _diags, bool _corners, bool _verbose) 
+	: mapAbstraction(_m, _diags, _corners), verbose(_verbose)
 {
 	nf = _nf;
 	ef = _ef;
@@ -24,8 +24,8 @@ JumpPointAbstraction::JumpPointAbstraction(Map* _m, INodeFactory* _nf,
 }
 
 JumpPointAbstraction::JumpPointAbstraction(Map* _m, const char* graphfile, 
-		INodeFactory* _nf, IEdgeFactory* _ef, bool _verbose) 
-	: mapAbstraction(_m), verbose(_verbose)
+		INodeFactory* _nf, IEdgeFactory* _ef, bool _diags, bool _corners, bool _verbose) 
+	: mapAbstraction(_m, _diags, _corners), verbose(_verbose)
 {
 	nf = _nf;
 	ef = _ef;

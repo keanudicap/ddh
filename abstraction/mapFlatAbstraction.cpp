@@ -31,9 +31,22 @@
 #include "EdgeFactory.h"
 
 mapFlatAbstraction::mapFlatAbstraction(Map *_m, bool allowDiagonals, bool cutCorners)
-:mapAbstraction(_m)
+:mapAbstraction(_m, allowDiagonals, cutCorners)
 {
 	abstractions.push_back(getMapGraph(_m, new NodeFactory(), new EdgeFactory(), allowDiagonals, cutCorners));
+	std::cout << std::endl;
+//	for(int i=0; i < getMap()->getMapWidth(); i++)
+//	{
+//		for(int j=0; j < getMap()->getMapHeight(); j++)
+//		{
+//			node* n = getNodeFromMap(i, j);
+//			if(n)
+//				std::cout << ".";
+//			else
+//				std::cout << "@";
+//		}
+//		std::cout << std::endl;
+//	}
 	groupsValid = false;
 }
 

@@ -294,6 +294,12 @@ void Map::load(FILE *f)
 			loadOctileCorner(f, height, width);
 		else if (strcmp(format, "raw") == 0)
 			loadRaw(f, height, width);
+		else
+		{
+			std::cerr <<format<< " is an unrecognised map format."
+				<< " trying to load with format \"octile\"" << std::endl;
+			loadOctile(f, height, width);
+		}
 	}
 	else if (!tryLoadRollingStone(f))
 	{
@@ -342,58 +348,89 @@ void Map::loadOctile(FILE *f, int high, int wide)
 	drawLand = true;
 	dList = 0;
 	updated = true;
-	for (int y = 0; y < high; y++)
+
+	
+	const int CHARS_TO_READ = high*wide;
+	int chars_read = 0;
+	char what;
+	while( fscanf(f, "%c", &what) != EOF )
 	{
-		for (int x = 0; x < wide; x++)
+		if(chars_read > CHARS_TO_READ)
 		{
-			char what;
-			fscanf(f, "%c", &what);
-			char upperWhat = toupper(what);
-	//		if(upperWhat == '@')
-	//			upperWhat = 'W';
-				
-// dharabor: disabled terrain types (only traversable and obstacle exists)
-			switch (upperWhat)
-			{
-				case 'S':
-				case 'W': 
-				case 'T':
-				case '@':
-				case 'O':
-					for (int r = 0; r < sizeMultiplier; r++)
-						for (int s = 0; s < sizeMultiplier; s++)
-							setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
-														 kOutOfBounds); break;
-//				case 'S':
-//					for (int r = 0; r < sizeMultiplier; r++)
-//						for (int s = 0; s < sizeMultiplier; s++)
-//							setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
-//														 kSwamp); break;
-//				case 'W':
-//					for (int r = 0; r < sizeMultiplier; r++)
-//						for (int s = 0; s < sizeMultiplier; s++)
-//							setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
-//														 kWater); break;
-//				case 'T':
-//					for (int r = 0; r < sizeMultiplier; r++)
-//						for (int s = 0; s < sizeMultiplier; s++)
-//							setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
-//														 kTrees); break;
-				default:
-					for (int r = 0; r < sizeMultiplier; r++)
-						for (int s = 0; s < sizeMultiplier; s++)
-							setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
-														 kGround); break;
-			}
-			for (int r = 0; r < sizeMultiplier; r++)
-				for (int s = 0; s < sizeMultiplier; s++)
-				{
-					land[x*sizeMultiplier+r][y*sizeMultiplier+s].tile1.node = kNoGraphNode;
-					land[x*sizeMultiplier+r][y*sizeMultiplier+s].tile2.node = kNoGraphNode;
-				}
+			std::cerr << "map has too many tiles! \n";
+			std::cerr << "read "<< chars_read << "; expected " << CHARS_TO_READ;
+			std::cerr << " (check height and width values in header) \n";
+			exit(1);
 		}
-			fscanf(f, "\n");
+
+		if(what == '\r' || what == ' ' || what == '\t' || what == '\n')
+		{
+			continue;
+		}
+		chars_read++;
+
+		// NB: not height and width!
+		int y = (chars_read-1) / wide;
+		int x = (chars_read-1) % wide;
+		char upperWhat = toupper(what);
+			
+		switch (upperWhat)
+		{
+			// ignore whitespace
+			case '\r':
+			case '\t':
+			case '\n':
+			case ' ':
+				continue;
+				break;
+
+			case 'S':
+			case 'W': 
+			case 'T':
+			case '@':
+			case 'O':
+				for (int r = 0; r < sizeMultiplier; r++)
+					for (int s = 0; s < sizeMultiplier; s++)
+						setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
+												 kOutOfBounds); 
+				break;
+
+			default:
+				for (int r = 0; r < sizeMultiplier; r++)
+					for (int s = 0; s < sizeMultiplier; s++)
+						setTerrainType(x*sizeMultiplier+r, y*sizeMultiplier+s,
+													 kGround);
+			   	break;
+		}
+		for (int r = 0; r < sizeMultiplier; r++)
+		{
+			for (int s = 0; s < sizeMultiplier; s++)
+			{
+				land[x*sizeMultiplier+r][y*sizeMultiplier+s].tile1.node = kNoGraphNode;
+				land[x*sizeMultiplier+r][y*sizeMultiplier+s].tile2.node = kNoGraphNode;
+			}
+		}
 	}
+
+	if(chars_read < CHARS_TO_READ)
+	{
+		std::cerr << "map has too few tiles! (check height and width values in header) \n";
+		exit(1);
+	}
+
+//	std::cout << std::endl;
+//	for(int i=0; i < getMapWidth(); i++)
+//	{
+//		for(int j=0; j < getMapHeight(); j++)
+//		{
+//			if(getTerrainType(i, j) == kOutOfBounds)
+//				std::cout << "@";
+//			else
+//				std::cout << ".";
+//
+//		}
+//		std::cout << std::endl;
+//	}
 }
 
 void Map::loadOctileCorner(FILE *f, int high, int wide)

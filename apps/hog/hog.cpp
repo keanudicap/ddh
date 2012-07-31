@@ -77,10 +77,16 @@ int absDispType = 3;
 ScenarioManager scenariomgr;
 Experiment* nextExperiment;
 int expnum=0;
-bool scenario=false;
+
 bool verbose = false;
+
 bool allowDiagonals = true;
+
+// when true this var allows diagonal shortcutting around corners.
+bool cutCorners = false;
+
 bool checkOptimality = false;
+
 bool runNext = false;
 
 std::string scenarioFile;
@@ -111,8 +117,10 @@ unsigned int export_graph_level = 0;
 bool import_graph=false;
 std::string import_graph_filename("");
 
-// when true this var allows diagonal shortcutting around corners.
-bool cutCorners = false;
+HOG::RunMode mode = HOG::MAP;
+int num_exp_to_generate=0;
+
+
 
 /**
  * This function is called each time a unitSimulation is deallocated to
@@ -224,6 +232,21 @@ processStats(statCollection* stat, const char* unitname)
 void 
 createSimulation(unitSimulation * &unitSim)
 {
+	switch(mode)
+	{
+		case HOG::GENERATE:
+			generateScenarios();
+			break;
+		case HOG::SCENARIO:
+		case HOG::MAP:
+			runScenario(unitSim);
+			break;
+	}
+
+}
+
+void runScenario(unitSimulation * &unitSim)
+{
 	Timer t;
 	t.startTimer();
 	Map* map = new Map(gDefaultMap);
@@ -288,7 +311,6 @@ createSimulation(unitSimulation * &unitSim)
 				std::cout << "+bfr";
 			break;
 		case HOG::JPS:
-			cutCorners = false; // TODO implement this
 			std::cout << "JPS";
 			if(!jps_online)
 				std::cout << "+preprocessing";
@@ -339,17 +361,19 @@ createSimulation(unitSimulation * &unitSim)
 				{
 					aMap = new JumpPointAbstraction(map, 
 							import_graph_filename.c_str(), 
-							new NodeFactory(), new EdgeFactory(), verbose);
+							new NodeFactory(), new EdgeFactory(), 
+							allowDiagonals, cutCorners, verbose);
 				}
 				else
 				{
 					aMap = new JumpPointAbstraction(map, new NodeFactory(), 
-							new EdgeFactory(), verbose);
+							new EdgeFactory(), 
+							allowDiagonals, cutCorners, verbose);
 				}
 			}
 			else
 			{
-				aMap = new mapFlatAbstraction(map);
+				aMap = new mapFlatAbstraction(map, allowDiagonals, cutCorners);
 			}
 			break;
 		}
@@ -425,7 +449,7 @@ createSimulation(unitSimulation * &unitSim)
 
 		unitSim = new unitSimulation(aMap);	
 		unitSim->setCanCrossDiagonally(true);
-		if(scenario)
+		if(mode == HOG::SCENARIO)
 			unitSim->setNextExperimentPtr(&runNextExperiment);
 	}
 	else
@@ -644,9 +668,9 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 		allowDiagonals = false;
 		argsParsed++;
 	}
-	if(strcmp(argument[0], "-cutcorners") == 0)
+	else if(strcmp(argument[0], "-cutcorners") == 0)
 	{
-		//cutCorners = true;
+		cutCorners = true;
 		argsParsed++;
 	}
 	else if(strcmp(argument[0], "-nogui") == 0)
@@ -762,7 +786,7 @@ myAllPurposeCLHandler(char* argument[], int maxNumArgs)
 	}
 	else
 	{
-		std::cout << argument[0] << ": invalid parameter. \n";
+		std::cout << "myAllPurposeCLHandler invalid param: "<<argument[0] << "\n";
 		printCommandLineArguments();
 		exit(1);
 	}
@@ -801,25 +825,63 @@ myCLHandler(char *argument[], int maxNumArgs)
 int 
 myScenarioGeneratorCLHandler(char *argument[], int maxNumArgs)
 {
-	if (maxNumArgs < 2)
+	if (maxNumArgs < 3)
 	{
 		std::cout << "-genscenarios invoked with insufficient parameters\n";
 		printCommandLineArguments();
 		exit(1);
 	}
 
-	std::string map(argument[1]);
-	std::string genscen(argument[0]);
-	std::cout << "call: "<<genscen<<" "<<map<<" "<<argument[2]<<std::endl;
+	mode = HOG::GENERATE;
+
+	FILE* fMap = fopen(argument[1], "r");
+	if(!fMap)
+	{
+		strncpy(gDefaultMap, getHome(), 1024);
+		strcat(gDefaultMap, argument[1]);
+		fMap = fopen(gDefaultMap, "r");
+		if(!fMap)
+		{
+			std::cerr << "Err: could not read map file "<<gDefaultMap<<std::endl;
+			exit(1);
+		}
+	}
+	else
+	{
+		strncpy(gDefaultMap, argument[1], 1024);
+	}
+
+	int tmp = atoi(argument[2]);
+	if(tmp != INT_MAX || tmp != INT_MIN)
+	{
+		num_exp_to_generate = tmp;
+	}
+	else
+	{
+		std::cerr <<"Invalid number of experiments: "<<argument[2]<<". aborting.\n";
+		exit(1);
+	}
+
+	if(num_exp_to_generate == 0)
+	{
+		std::cerr << "missing arg: # of experiments to generate\n";
+	}
+
+	return 3;
+}
+
+void
+generateScenarios()
+{
+	std::cout << "call: -genscenarios "<<gDefaultMap<<" "<<num_exp_to_generate<<std::endl;
+	std::cout << "allowDiagonals: "<<allowDiagonals<< " cutCorners: "<<cutCorners<<std::endl;
 		
 	ScenarioManager scenariomgr;
-	int numScenarios = atoi(argument[2]);
+	mapFlatAbstraction aMap(new Map(gDefaultMap), allowDiagonals, cutCorners);
+	scenariomgr.generateExperiments(&aMap, num_exp_to_generate);
 
-	mapFlatAbstraction aMap(new Map(map.c_str()), allowDiagonals, cutCorners);
-	std::cout << "allowDiagonals: "<<allowDiagonals<< "cutCorners: "<<cutCorners<<std::endl;
-	scenariomgr.generateExperiments(&aMap, numScenarios);
-
-	string outfile = map + ".scenario"; 
+	string outfile = std::string(gDefaultMap);
+	outfile.append(".scenario");
 	scenariomgr.writeScenarioFile(outfile.c_str());
 	std::cout << "writing scenario file: "<<outfile<<std::endl;
 	exit(1);
@@ -872,7 +934,7 @@ myExecuteScenarioCLHandler(char *argument[], int maxNumArgs)
 		strncpy(gDefaultMap, scenariomgr.getNthExperiment(0)->getMapName(), 1024);
 	}
 	
-	scenario=true;
+	mode = HOG::SCENARIO;
 	return 2;
 }
 

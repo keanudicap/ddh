@@ -29,6 +29,11 @@ namespace HOG
 		ASTAR, HPA, RSR, JPS
 	} 
 	SearchMethod;
+
+	typedef enum 
+	{
+		GENERATE, SCENARIO, MAP
+	} RunMode;
 }
 
 void myDisplayHandler(unitSimulation *, tKeyboardModifier, char key);
@@ -47,3 +52,5 @@ RefinementPolicy* newRefinementPolicy(mapAbstraction*, bool);
 bool parse_jps_args(char** argument, int maxArgs);
 bool parse_rsr_args(char** argument, int maxArgs);
 void export_search_graph(graph* g);
+void generateScenarios();
+void runScenario(unitSimulation * &unitSim);

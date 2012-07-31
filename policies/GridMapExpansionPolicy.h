@@ -23,16 +23,11 @@ class GridMapExpansionPolicy : public ExpansionPolicy
 	
 		virtual node* first();
 		virtual node* next();
-		virtual node* n() = 0;
 		virtual bool hasNext();
-		virtual double cost_to_n();
 
 	protected:
 		int which;
 		int max; // maximum degree of a grid node
-
-	private:
-		double cost; // heuristic cost estimate; d(target, n()) 
 };
 
 #endif

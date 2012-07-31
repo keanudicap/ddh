@@ -12,6 +12,8 @@ class OctileExpansionPolicy : public GridMapExpansionPolicy
 		virtual ~OctileExpansionPolicy();
 
 		virtual node* n();
+		virtual void label_n();
+		virtual double cost_to_n();
 };
 
 #endif
