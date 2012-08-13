@@ -1,3 +1,6 @@
+#ifndef WARTHOG_GRIDMAP_PARSER_H
+#define WARTHOG_GRIDMAP_PARSER_H
+
 // gm_parser.h
 //
 // A parser for gridmap files written in Nathan Sturtevant's HOG format.
@@ -5,8 +8,6 @@
 // @author: dharabor
 // @created: 08/08/2012
 //
-#ifndef WARTHOG_GRIDMAP_PARSER_H
-#define WARTHOG_GRIDMAP_PARSER_H
 
 #include <fstream>
 #include <iostream>
@@ -26,7 +27,7 @@ namespace warthog
 				(*this) = other;
 			}
 
-			~gm_header() 
+			virtual ~gm_header() 
 			{ 
 			}
 
