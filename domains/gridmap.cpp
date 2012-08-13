@@ -1,6 +1,20 @@
 #include "gm_parser.h"
 #include "gridmap.h"
 
+warthog::gridmap::gridmap(unsigned int h, unsigned int w, bool uniform)
+	: uniform_(uniform), header_(h, w, "octile")
+{
+	this->db_ = new warthog::dbword*[this->dbwidth()];
+	for(unsigned int i=0; i < this->dbwidth(); i++)
+	{
+		this->db_[i] = new warthog::dbword[this->dbheight()];
+		for(unsigned int j=0; j < this->dbheight(); j++)
+		{
+			db_[i][j] = 0;
+		}
+	}
+}
+
 warthog::gridmap::gridmap(const char* filename, bool uniform)
 	: uniform_(uniform)
 {
@@ -18,6 +32,10 @@ warthog::gridmap::gridmap(const char* filename, bool uniform)
 	for(unsigned int i=0; i < this->dbwidth(); i++)
 	{
 		this->db_[i] = new warthog::dbword[this->dbheight()];
+		for(unsigned int j=0; j < this->dbheight(); j++)
+		{
+			db_[i][j] = 0;
+		}
 	}
 
 	// populate matrix
