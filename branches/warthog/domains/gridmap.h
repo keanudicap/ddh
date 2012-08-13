@@ -37,6 +37,7 @@ namespace warthog
 class gridmap
 {
 	public:
+		gridmap(unsigned int height, unsigned int width, bool uniform);
 		gridmap(const char* filename, bool uniform);
 		virtual ~gridmap();
 

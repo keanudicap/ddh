@@ -18,6 +18,11 @@ namespace warthog
 	class gm_header
 	{
 		public:
+			gm_header(unsigned int height, unsigned int width, const char* type)
+				: height_(height), width_(width), type_(type)
+			{
+			}
+
 			gm_header() : height_(0), width_(0), type_("") 
 			{ 
 			}
