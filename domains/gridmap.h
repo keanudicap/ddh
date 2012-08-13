@@ -1,3 +1,6 @@
+#ifndef WARTHOG_GRIDMAP_H
+#define WARTHOG_GRIDMAP_H
+
 // gridmap.h
 //
 // A gridmap for simple uniform cost or weighted cost gridmaps.
@@ -22,8 +25,6 @@
 // @author: dharabor
 // @created: 08/08/2012
 // 
-#ifndef WARTHOG_GRIDMAP_H
-#define WARTHOG_GRIDMAP_H
 
 #include "constants.h"
 #include "gm_parser.h"
@@ -37,7 +38,7 @@ class gridmap
 {
 	public:
 		gridmap(const char* filename, bool uniform);
-		~gridmap();
+		virtual ~gridmap();
 
 		inline warthog::dbword get_label(unsigned int x, unsigned int y)
 		{
