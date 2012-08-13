@@ -19,10 +19,12 @@ class search_node
 	public:
 		search_node(unsigned int id) : id_(id), f_(0), g_(0), backpointer_(0)
 		{
+			refcount_++;
 		}
 
 		virtual ~search_node()
 		{
+			refcount_--;
 		}
 
 		inline void print(std::ostream&  out)
@@ -111,12 +113,16 @@ class search_node
 			return false;
 		}
 
+		static unsigned int get_refcount() { return refcount_; }
+
 	private:
 		unsigned int id_;
 		double f_;
 		double g_;
 		warthog::search_node* backpointer_;
+		static unsigned int refcount_;
 };
+
 
 }
 

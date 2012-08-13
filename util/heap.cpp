@@ -20,7 +20,7 @@ warthog::heap::push(warthog::search_node *val)
 		return;
 	}
 
-	if(heapsize_+1 >= maxsize_)
+	if(heapsize_+1 > maxsize_)
 	{
 		resize(maxsize_*2);
 	}
@@ -136,6 +136,7 @@ warthog::heap::increase_key(warthog::search_node* val)
 void
 warthog::heap::resize(unsigned int newsize)
 {
+//	std::cout << "heap::resize oldsize: "<<heapsize_<<" newsize " << newsize<<std::endl;
 	if(newsize < heapsize_)
 	{
 		std::cerr << "err; heap::resize newsize < heapsize " << std::endl;

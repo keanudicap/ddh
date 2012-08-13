@@ -16,23 +16,30 @@ int main(int argc, int** argv)
 void heap_insert_test()
 {
 	std::cout << "heap_insert_test...\n";
-	int heapnodes = 5;
-	warthog::heap myheap(heapnodes, false);
+	unsigned int heapnodes = 1000000;
+	warthog::heap myheap(2, true);
 	warthog::search_node** nodes = new warthog::search_node*[heapnodes];
-	for(int i=0; i < heapnodes; i++)
+	for(int i=heapnodes; i > 0 ; i--)
 	{
 		nodes[i] = new warthog::search_node(i);
 		nodes[i]->update(0, i, 0);
 		myheap.push(nodes[i]);
-		std::cout << "iteration "<<i<<std::endl;
-		myheap.print(std::cout);
 	}
-	myheap.print(std::cout);
-	for(int i=0; i < heapnodes; i++)
+	// test duplicate detection
+	for(int i=heapnodes; i > 0 ; i--)
 	{
+		myheap.push(nodes[i]);
+	}
+	assert(myheap.size() == heapnodes);
+
+	// test pop
+	for(unsigned int i=0; i < heapnodes; i++)
+	{
+		assert(myheap.size() == heapnodes-i);
 		delete myheap.pop();
 	}
 	delete [] nodes;
+	assert(warthog::search_node::get_refcount() == 0);
 	std::cout << "/heap_insert_test...\n";
 }
 
