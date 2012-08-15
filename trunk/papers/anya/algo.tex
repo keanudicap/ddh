@@ -1,52 +1,74 @@
 This section now presents our search algorithm, 
-dubbed {\bf anya}, 
-for any-angle pathfinding.  
+dubbed \anya, for any-angle pathfinding.  
+\anya{} is a variant of A* that does not search 
+on the space of intervals of the grid, 
+but instead on the space of intervals and corners.  
 
 \begin{algorithm}[ht!]
   \input{algo/anya}
-  \caption{Procedure {\bf anya}, an any-angle pathfinding algorithm}
+  \caption{Procedure \anya, an any-angle pathfinding algorithm}
   \label{algo::anya}
 \end{algorithm}
 
-\begin{algorithm}[ht!]
-  \input{algo/expand}
-  \caption{Procedure $expand\_node(c)$}
-  \label{algo::expandnode}
+The general layout of \anya{} is given in Algorithm~\ref{algo::anya}.  
+Like A*, \anya{} keeps a priority queue called $open$ 
+and based on the $f$ value.  
+The algorithm stops when the target is poped from the queue.  
+Now, whether the current node is a corner or an interval 
+is dealt with differently by \anya: 
+\begin{itemize}
+\item 
+  For a corner, the successors of the corner are computed 
+  (method successors\_of\_corner presented later) 
+  and are added to the priority queue --- 
+  the method add\_edge deals with computing the $f$ value 
+  (presented later), updating if necessary the parent of a node, 
+  and sorting the priority queue.  
+\item 
+  If the node is an interval, \anya{} moves it 
+  and computes the corners of the new interval 
+  (for this purpose, the target is seen as a corner).  
+  Then, the interval is split according to the corners, 
+  i.e., producing all the intervals between two consecutive corners.  
+  All these corners and intervals 
+  are potential successors of the current interval; 
+  however, we need to check that they are visible from parent $p$.  
+  To check whether an interval is visible, 
+  we check whether its middle point is.  
+\end{itemize}
+
+We illustrate the computation of the successors 
+of interval $i = \langle [1,2],3,p\langle$ 
+where $p = \langle1,1\rangle$ 
+(cf. Figure~\ref{fig::succ1}, right).  
+The move of $i$ produces 
+the interval $i' = \langle [1,2.5],4,p\rangle$.  
+The set of corners of $i'$ is $\{\langle 2,4\rangle\}$.  
+The split of $i'$ hence produces two intervals: 
+$is = \{
+\langle [1,2],4,p\rangle,  
+\langle [2,2.5],4,p\rangle
+\}$.  
+The single corner is visible from $p$.  
+The point $c' = \langle 1.5,4\rangle$ is also visible from $p$, 
+which means that the first interval is visible from $p$.  
+On the other hand, the point $\langle 2.25,4\rangle$ 
+is not visible from $p$, 
+which means that the second interval is not visible from $p$.  
+The successors of $i$ are therefore $c'$ 
+and $\langle [1,2],4,p\rangle$.  
+
+\paragraph*{}
+
+A corner $\langle x,y\rangle$ has potentially four successors.  
+The first two obvious successors 
+are the intervals at rows $y-1$ and $y+1$.  
+However, the optimal path may follow a horizontal section, 
+and the corner could have a successor on the left or on the right.  
+
+\begin{algorithm}
+  \input{algo/successorsofcorner}
+  \caption{Computing the successors of a corner.}
+  \label{algo::successorsofacorner}
 \end{algorithm}
 
-The main procedure is presented in Algorithm~\ref{algo::anya}.  
-The algorithm is a variant of $A^*$ 
-with a specific successors generation.  
-An interval can be generated from a corner $c$ 
-(or the starting node $s$) 
-through the procedure $expand\_node(c)$, 
-or as the move of an existing interval.  
-When an interval $i$ is expanded, 
-it is splited as presented in the previous section 
-via method $split\_epsilon(i)$.  
-Finally, notice that the procedure $open.insert(I)$, 
-where $I$ is a set of intervals, 
-computes the $f$ value of each interval of $I$, 
-and deals with ordering the intervals 
-(including ignoring those that have already been expanded 
-or those with existing smaller $f$ value).  
-
-The $expand\_node(c)$ procedure is presented 
-in Algorithm~\ref{algo::expandnode}.  
-From the current node, 
-the two intervals are created 
-that stretch horizontally as far possible, 
-at ordinate $y_c$, with origin $c$, and heading 
-in vertical (North or South) direction.  
-
-\begin{algorithm}[ht!]
-  \input{algo/split}
-  \caption{Procedure $split\_epsilon(c)$}
-  \label{algo::splitepsilon}
-\end{algorithm}
-
-$next\_interval([x_{\min},x_{\max}],y)$
-
-$move(i)$
-
-%EOF

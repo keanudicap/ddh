@@ -27,4 +27,13 @@
 \draw (g3)   + (-0.2,0.2) node {$g_3$};
 \draw (root) + (-0.2,-0.2) node {$p$};
 
+\coordinate (g4)   at (4,2);
+\draw (g4)   + (+0.2,0.2) node {$g_4$};
+\coordinate (g4mirror) at (4,6);
+\draw (g4mirror) + (+0.2,-0.2) node {$g'_4$};
+\path[name path=directtwo] (root) -- (g4mirror);
+\draw[name intersections={of=directtwo and interval,by=zsmiletwo}];
+\draw[dashed,line width=2pt] (root) -- (zsmiletwo) -- (g4);
+\draw[dashed,line width=2pt] (root) -- (g4mirror);
+
 \end{tikzpicture}

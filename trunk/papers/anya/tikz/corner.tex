@@ -15,10 +15,10 @@
 \coordinate (plm1)   at (6,0);
 \coordinate (pl)     at (2,1);
 \coordinate (plp1)   at (1,6);
-\coordinate (corner) at (0,2); % Actually, further away
+\coordinate (redpathdirection) at (0,1.8); % Actually, further away
 \coordinate (actualcorner) at (3,1); 
 \path[name path=uppath] (pl) -- (plp1);
-\path[name path=shortcut] (plm1) -- (corner);
+\path[name path=shortcut] (plm1) -- (redpathdirection);
 \draw[name intersections={of=uppath and shortcut, by=plp'}];
 
 \draw[red, line width=2pt]   (plm1) -- (plp');
@@ -29,6 +29,6 @@
 \draw (pl) +(-0.3,-0.2)   node {$p_{l}$};
 \draw (plp1) +(-0.3,0.2) node {$p_{l+1}$};
 \draw (plp') +(-0.3,0) node {$p'_l$};
-\draw (actualcorner) +(-0.3,0.3) node {$c$};
+%\draw (actualcorner) +(-0.3,0.3) node {$c$};
 
 \end{tikzpicture}
