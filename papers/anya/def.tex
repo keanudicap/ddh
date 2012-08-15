@@ -60,35 +60,29 @@ that are exclusively composed of turning point.
   Hence $\pi$ is suboptimal.  
 
   If $p_{l+1}$ is not visible from $p_{l-1}$, 
-  then let $p'_l$ be the point from the segment $[p_l-p_{l+1}]$ 
-  by moving the segment $[p_{l-1},p_{l}]$ towards $p_{l+1}$ 
-  until it hits a corner $c$ (cf. Figure~\ref{fig::corner}).  
-  Then the sequence $p_1,\dots,p_{l-1},c,p'_l,p_{l+1},\dots,p_k$ 
-  is a path between $p_1$ and $p_k$ 
-  that is strictly shorter than $\pi$.  
-  Hence, $\pi$ is suboptimal.  
+  then let $p'_l$ be a point from the segment $(p_l,p_{l+1})$ 
+  that i) is visible from $p_{l-1}$ 
+  and ii) is different from $p_l$.  
+  Because $p_l$ is not a corner, 
+  then such a $p'_l$ exists.  
+  The subpath $(p_{l-1},p_l,p'_l,p_{l+1})$ 
+  is as long as $(p_{l-1},p_l,p_{l+1})$ 
+  since $p'_l$ lies between $p_l$ and $p_{l+1}$.  
+  The triangle inequality, however, 
+  tells us that $(p_{l-1},p'_l,p_{l+1})$ is shorter than the subpath, 
+  which proves that $\pi$ is suboptimal.
+
+  This is illustrated on Figrure~\ref{fig::corner}  
+  where the point $p'_l$ is chosen 
+  as close as possible from the corner $c$.  
 }
 
-%\begin{figure}[ht]
-%  \begin{center}
-%    \psfrag{a}{$p_{l-1}$}
-%    \psfrag{b}{$p_l$}
-%    \psfrag{c}{$p_{l+1}$}
-%    \psfrag{d}{$c$}
-%    \psfrag{e}{$p'_l$}
-%    \includegraphics[scale=0.3]{images/corner}
-%  \end{center}
-%  \caption{Illustration that 
-%    if $p_l$ is a turning point that is not a corner, 
-%    then a shorter path can be found.}
-%  \label{fig::corner}
-%\end{figure}
 \begin{figure}[ht]
   \begin{center}
     \input{tikz/corner}
   \end{center}
-  \caption{Illustration that a turning point in an optimal path 
-  is in corner: 
+  \caption{Illustration that making the path turn 
+  outside a corner is suboptimal: 
   the blue and green path is longer than the red and green path.}
   \label{fig::corner}
 \end{figure}
