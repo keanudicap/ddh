@@ -39,9 +39,10 @@ class gridmap
 	public:
 		gridmap(unsigned int height, unsigned int width, bool uniform);
 		gridmap(const char* filename, bool uniform);
-		virtual ~gridmap();
+		~gridmap();
 
-		inline warthog::dbword get_label(unsigned int x, unsigned int y)
+		inline warthog::dbword 
+		get_label(unsigned int x, unsigned int y)
 		{
 			if(x >= 0 && y >= 0 && x < this->width() && y < this->height())
 			{
@@ -59,7 +60,8 @@ class gridmap
 			return false;
 		}
 
-		inline void set_label(unsigned int x, unsigned int y, warthog::dbword label)
+		inline void 
+		set_label(unsigned int x, unsigned int y, warthog::dbword label)
 		{
 			if(x >= 0 && y >= 0 && x < this->width() && y < this->height())
 			{
@@ -83,17 +85,20 @@ class gridmap
 			}
 		}
 
-		inline unsigned int height() 
+		inline unsigned int 
+		height() const
 		{ 
 			return this->header_.height_; 
 		} 
 
-		inline unsigned int width() 
+		inline unsigned int 
+		width() const 
 		{ 
 			return this->header_.width_;
 		}
 
-		void print(std::ostream&);
+		void 
+		print(std::ostream&);
 
 	private:
 		gridmap(const warthog::gridmap& other) {}

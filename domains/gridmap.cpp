@@ -45,25 +45,25 @@ warthog::gridmap::gridmap(const char* filename, bool uniform)
 		unsigned int x = i % this->width();
 		unsigned int y = i / this->width();
 
-		if(this->uniform_)
+		switch(c)
 		{
-			switch(c)
-			{
-				case 'S':
-				case 'W': 
-				case 'T':
-				case '@':
-				case 'O':
-					this->set_label(x, y, false); // obstacle
-					break;
-				default:
-					this->set_label(x, y, true); // traversable
-					break;
-			}
-		}
-		else
-		{
-			this->set_label(x, y, c);
+			case 'S':
+			case 'W': 
+			case 'T':
+			case '@':
+			case 'O': // these terrain types are obstacles
+				this->set_label(x, y, false); 
+				break;
+			default: // everything else is traversable
+				if(uniform_)
+				{
+					this->set_label(x, y, true); 
+				}
+				else
+				{
+					this->set_label(x, y, c);
+				}
+				break;
 		}
 	}
 }

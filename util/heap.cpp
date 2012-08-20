@@ -74,8 +74,8 @@ warthog::heap::heapify_down(unsigned int index)
 	while(index < (heapsize_ >> 1))
 	{
 		// find smallest (or largest, depending on heap type) child
-		unsigned int child1 = index*2+1;
-		unsigned int child2 = index*2+2;
+		unsigned int child1 = (index<<1)+1;
+		unsigned int child2 = (index<<1)+2;
 		unsigned int which = child1;
 		if ((child2 < heapsize_) && rotate(*elts_[child1], *elts_[child2]))
 		{
