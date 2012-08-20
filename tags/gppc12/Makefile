@@ -49,6 +49,8 @@ FAST_CFLAGS = -O3 -ansi -DNDEBUG
 DEV_CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic
 
 LIBFLAGS = -Lapps/libs -Llibs
+STARTGROUPFLAG=-Wl,--start-group
+ENDGROUPFLAG=-Wl,--end-group
 
 # configure header and library paths for the current os (and opengl config)
 ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
@@ -57,6 +59,8 @@ ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
   SYS_CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/
   SYS_CFLAGS += -I/opt/local/include/ -I/usr/local/include/ 
   LIBFLAGS += -framework AppKit -framework Foundation
+  STARTGROUPFLAG=
+  ENDGROUPFLAG=
 
   ifeq ("$(OPENGL)", "STUB") 
     SYS_CFLAGS += -DNO_OPENGL
@@ -123,13 +127,13 @@ fast: $(TARGETS)
 entry_jps : hogcore 
 	@echo "### Building target: "$(@)"  ###"
 	cd apps; $(MAKE) -f entry_jps.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) -l$(@) -lhogcore $(LIBFLAGS) 
+	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) $(STARTGROUPFLAG) -l$(@) -lhogcore $(ENDGROUPFLAG)
 
 .PHONY: entry_jps_plus
 entry_jps_plus : hogcore 
 	@echo "### Building target: "$(@)"  ###"
 	cd apps; $(MAKE) -f entry_jps_plus.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) -l$(@) -lhogcore $(LIBFLAGS) 
+	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) $(STARTGROUPFLAG) -l$(@) -lhogcore $(ENDGROUPFLAG)
 
 .PHONY: driver
 driver : $(DRIVER_OBJ) $(EXTRAS_OBJ)
