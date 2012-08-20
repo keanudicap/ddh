@@ -49,6 +49,8 @@ FAST_CFLAGS = -O3 -ansi -DNDEBUG
 DEV_CFLAGS = -Wall -Wno-long-long -Wno-deprecated -g -ggdb -ansi -pedantic
 
 LIBFLAGS = -Lapps/libs -Llibs
+STARTGROUPFLAG=-Wl,--start-group
+ENDGROUPFLAG=-Wl,--end-group
 
 # configure header and library paths for the current os (and opengl config)
 ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
@@ -57,6 +59,8 @@ ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
   SYS_CFLAGS += -I/System/Library/Frameworks/AppKit.framework/Versions/A/Headers/
   SYS_CFLAGS += -I/opt/local/include/ -I/usr/local/include/ 
   LIBFLAGS += -framework AppKit -framework Foundation
+  STARTGROUPFLAG=
+  ENDGROUPFLAG=
 
   ifeq ("$(OPENGL)", "STUB") 
     SYS_CFLAGS += -DNO_OPENGL
@@ -101,7 +105,7 @@ ifeq ("$(CPU)", "G5")
 endif
 
 # every directory in ./apps, except those filtered out, is a target for compilation
-TARGETS =  hog entry
+TARGETS =  hog
 
 all: fast
 targets: $(TARGETS)
@@ -122,14 +126,7 @@ fast: $(TARGETS)
 hog : hogcore driver 
 	@echo "### Building target: "$(@)"  ###"
 	cd apps; $(MAKE) -f hog.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -l$(@) -lhogcore -ldriver
-	#$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -Wl,--start-group -l$(@) -lhogcore -ldriver -Wl,--end-group
-
-.PHONY: entry
-entry : hogcore 
-	@echo "### Building target: "$(@)"  ###"
-	cd apps; $(MAKE) -f entry.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) -l$(@) -lhogcore $(LIBFLAGS) 
+	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) $(STARTGROUPFLAG) -l$(@) -lhogcore -ldriver $(ENDGROUPFLAG)
 
 .PHONY: driver
 driver : $(DRIVER_OBJ) $(EXTRAS_OBJ)
