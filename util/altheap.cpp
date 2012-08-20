@@ -1,7 +1,7 @@
 #include "altheap.h"
 #include "constants.h"
 #include "fpUtil.h"
-#include "HPAUtil.h"
+//#include "HPAUtil.h"
 #include "Heuristic.h"
 #include "graph.h"
 
