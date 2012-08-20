@@ -4,7 +4,6 @@
 #include "graph.h"
 #include "graphAbstraction.h"
 #include "Heuristic.h"
-#include "MacroNode.h"
 #include "path.h"
 
 DebugUtility::DebugUtility(graphAbstraction* map, Heuristic* h)

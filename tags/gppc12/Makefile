@@ -101,7 +101,7 @@ ifeq ("$(CPU)", "G5")
 endif
 
 # every directory in ./apps, except those filtered out, is a target for compilation
-TARGETS =  hog entry
+TARGETS =  entry_jps entry_jps_plus
 
 all: fast
 targets: $(TARGETS)
@@ -118,17 +118,17 @@ fast: $(TARGETS)
 # dependency problems when linking on systems other than OSX.
 # The options --start-group --end-group specify a dependency closure to fix this.
 # The cost is that repeatedly searching the closure to resolve deps can be slow. 
-.PHONY: hog
-hog : hogcore driver 
-	@echo "### Building target: "$(@)"  ###"
-	cd apps; $(MAKE) -f hog.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
-	$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -l$(@) -lhogcore -ldriver
-	#$(CC) -o $(addprefix bin/,$(@)) $(LIBFLAGS) -Wl,--start-group -l$(@) -lhogcore -ldriver -Wl,--end-group
 
-.PHONY: entry
-entry : hogcore 
+.PHONY: entry_jps
+entry_jps : hogcore 
 	@echo "### Building target: "$(@)"  ###"
-	cd apps; $(MAKE) -f entry.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
+	cd apps; $(MAKE) -f entry_jps.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
+	$(CC) -o $(addprefix bin/,$(@)) -l$(@) -lhogcore $(LIBFLAGS) 
+
+.PHONY: entry_jps_plus
+entry_jps_plus : hogcore 
+	@echo "### Building target: "$(@)"  ###"
+	cd apps; $(MAKE) -f entry_jps_plus.mk $(APPSTARGET) OPENGL=$(OPENGL); cd ..
 	$(CC) -o $(addprefix bin/,$(@)) -l$(@) -lhogcore $(LIBFLAGS) 
 
 .PHONY: driver
