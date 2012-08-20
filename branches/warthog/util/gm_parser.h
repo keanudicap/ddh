@@ -9,6 +9,7 @@
 // @created: 08/08/2012
 //
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <vector>

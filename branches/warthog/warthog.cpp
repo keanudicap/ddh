@@ -2,18 +2,106 @@
 #define WARTHOG_H
 
 #include "blockmap.h"
+#include "cuckoo_table.h"
 #include "gridmap.h"
+#include "gridmap_expansion_policy.h"
+#include "hash_table.h"
 #include "heap.h"
 
 #include "getopt.h"
 
+#include <tr1/unordered_map>
+#include <memory>
+
 void blockmap_access_test();
 void gridmap_access_test();
 void heap_insert_test();
-int main(int argc, int** argv)
+void cuckoo_table_test();
+void unordered_map_test();
+void hash_table_test();
+void gridmap_expansion_policy_test();
+int main(int argc, char** argv)
 {
-	//blockmap_access_test();
-	gridmap_access_test();
+	gridmap_expansion_policy_test();
+}
+
+void gridmap_expansion_policy_test()
+{
+	std::shared_ptr<warthog::gridmap> map(
+			new warthog::gridmap("CSC2F.map", true));
+
+	warthog::gridmap_expansion_policy policy(map);
+	unsigned int nodeid[2] = {89, 0};
+
+	for(int i=0; i < 2; i++)
+	{
+		std::cout << "nid: "<<nodeid[i]<<std::endl;
+		unsigned int mapwidth = map->width();
+		policy.expand(nodeid[i], 0);
+		for(unsigned int nid = policy.first();
+				nid != warthog::UNDEF;
+				nid = policy.next())
+		{
+			unsigned int x = UINT_MAX;
+			unsigned int y = UINT_MAX;
+			x = nid % mapwidth;
+			y = nid / mapwidth;
+			std::cout << "neighbour: " << nid << " (" << x << ", "<<y
+				<< ") cost: " << policy.cost_to_n() << std::endl;
+		}
+	}
+}
+
+void hash_table_test()
+{
+	warthog::hash_table mytable;
+	for(int i=0; i < 10000000; i++)
+	{
+		mytable.insert(i);
+	}
+	for(int i=0; i < 10000000; i++)
+	{
+		if(!mytable.contains(i))
+		{
+			std::cerr << "table does not contain "<<i<<std::endl;
+			exit(1);
+		}
+	}
+	//mytable.print();
+}
+
+void unordered_map_test()
+{
+	std::tr1::unordered_map<unsigned int, unsigned int> mymap;
+	mymap.rehash(1024);
+	for(int i=0; i < 10000000; i++)
+	{
+		mymap[i] = i;
+	}
+
+	for(int i=0; i < 10000000; i++)
+	{
+		mymap.find(i);
+	}
+}
+
+void cuckoo_table_test()
+{
+	std::cout << "cuckoo_table_test\n";
+	warthog::cuckoo_table table(1024);
+	//table.set_verbose(true);
+	int errors = 0;
+	for(int i=0; i < 10000000; i++)
+	{
+		table.insert(i);
+		if(!table.contains(i))
+		{
+			errors++;
+		}
+	}
+	table.metrics(std::cout);
+	std::cout << "errors: "<<errors<<std::endl;
+	std::cout << "/cuckoo_table_test\n";
 }
 
 void blockmap_access_test()
