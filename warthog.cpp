@@ -9,6 +9,7 @@
 #include "hash_table.h"
 #include "heap.h"
 #include "octile_heuristic.h"
+#include "scenario_manager.h"
 
 #include "getopt.h"
 
@@ -31,7 +32,7 @@ int main(int argc, char** argv)
 void flexible_astar_test()
 {
 	std::shared_ptr<warthog::gridmap>
-	   	map(new warthog::gridmap("CSC2F.map", true));
+	   	map(new warthog::gridmap("rmtst01.map", true));
 
 	std::shared_ptr<warthog::gridmap_expansion_policy>
 	   	expander(new warthog::gridmap_expansion_policy(map));
@@ -47,6 +48,27 @@ void flexible_astar_test()
 	unsigned int goalid =  7*map->width() + 1;
 	double len = astar.get_length(startid, goalid);
 	std::cout << "path length: "<<len<<std::endl;
+
+	warthog::scenario_manager scenmgr;
+	scenmgr.load_scenario("rmtst01.map.scen");
+	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
+	{
+		warthog::experiment* exp = scenmgr.get_experiment(i);
+		int startid = exp->starty() * exp->mapwidth() + exp->startx();
+		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
+		len = astar.get_length(startid, goalid);
+		std::cout << "len: "<<len<<" optlen: "<<exp->distance()<<std::endl;
+		int l1 = len*pow(10,exp->precision());
+		int l2 = exp->distance()*pow(10,exp->precision());
+		if(l1 != l2)
+		{
+			std::cerr << "len != optlen"<<std::endl;
+			std::cerr << l1 << " vs " << l2 << std::endl;
+		}
+	}
+
+
+	
 
 }
 
