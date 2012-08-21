@@ -45,7 +45,7 @@ class scenario_manager
 			experiments_.push_back(newexp); 
 		}
 
-		inline int 
+		inline unsigned int 
 		num_experiments() 
 		{ 
 			return experiments_.size(); 
