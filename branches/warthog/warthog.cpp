@@ -3,10 +3,12 @@
 
 #include "blockmap.h"
 #include "cuckoo_table.h"
+#include "flexible_astar.h"
 #include "gridmap.h"
 #include "gridmap_expansion_policy.h"
 #include "hash_table.h"
 #include "heap.h"
+#include "octile_heuristic.h"
 
 #include "getopt.h"
 
@@ -20,9 +22,32 @@ void cuckoo_table_test();
 void unordered_map_test();
 void hash_table_test();
 void gridmap_expansion_policy_test();
+void flexible_astar_test();
 int main(int argc, char** argv)
 {
-	gridmap_expansion_policy_test();
+	flexible_astar_test();
+}
+
+void flexible_astar_test()
+{
+	std::shared_ptr<warthog::gridmap>
+	   	map(new warthog::gridmap("CSC2F.map", true));
+
+	std::shared_ptr<warthog::gridmap_expansion_policy>
+	   	expander(new warthog::gridmap_expansion_policy(map));
+
+	std::shared_ptr<warthog::octile_heuristic>
+		heuristic(new warthog::octile_heuristic(map->width(), map->height()));
+
+	warthog::flexible_astar<
+		warthog::octile_heuristic,
+	   	warthog::gridmap_expansion_policy> astar(heuristic, expander);
+
+	unsigned int startid = 1*map->width() + 1;
+	unsigned int goalid =  7*map->width() + 1;
+	double len = astar.get_length(startid, goalid);
+	std::cout << "path length: "<<len<<std::endl;
+
 }
 
 void gridmap_expansion_policy_test()

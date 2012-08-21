@@ -18,8 +18,9 @@ namespace warthog
 class manhattan_heuristic
 {
 	public:
-		manhattan_heuristic();
-		~manhattan_heuristic();
+		manhattan_heuristic(unsigned int mapwidth, unsigned int mapheight)
+		 : mapwidth_(mapwidth), mapheight_(mapheight_) {}
+		~manhattan_heuristic() {}
 
 		inline double
 		h(unsigned int x, unsigned int y, unsigned int x2, unsigned int y2)
@@ -28,14 +29,17 @@ class manhattan_heuristic
 		}
 
 		inline double
-		h(unsigned int id, unsigned int id2, unsigned int mapwidth)
+		h(unsigned int id, unsigned int id2)
 		{
 			unsigned int x, x2;
 			unsigned int y, y2;
-			warthog::helpers::index_to_xy(id, mapwidth, x, y);
-			warthog::helpers::index_to_xy(id2,mapwidth, x2, y2);
+			warthog::helpers::index_to_xy(id, mapwidth_, x, y);
+			warthog::helpers::index_to_xy(id2,mapwidth_, x2, y2);
 			return this->h(x, y, x2, y2);
 		}
+
+	private:
+		unsigned int mapwidth_, mapheight_;
 };
 
 }
