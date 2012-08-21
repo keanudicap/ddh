@@ -29,33 +29,48 @@ class heap
 
 	public:
 		heap(unsigned int size, bool minheap);
-		virtual ~heap();
+		~heap();
 
 		// removes all elements from the heap
-		void clear();
+		void 
+		clear();
 
 		// reprioritise the specified element (up or down)
-		void decrease_key(warthog::search_node* val);
-		void increase_key(warthog::search_node* val);
+		void
+		decrease_key(warthog::search_node* val);
+
+		void 
+		increase_key(warthog::search_node* val);
 
 		// add a new element to the heap
-		void push(warthog::search_node* val);
+		void 
+		push(warthog::search_node* val);
 
 		// remove the top element from the heap
-		warthog::search_node* pop();
+		warthog::search_node*
+		pop();
+
+		// remove the last  element from the heap
+		warthog::search_node*
+		pop_tail();
 		
-		// check if the heap contains the specified element
-		inline bool contains(warthog::search_node *val)
+		// look for the specified element in the heap.
+		// @return a pointer to the element if it exists; otherwise null
+		warthog::search_node*	
+		find(unsigned int id)
 		{
-			if(this->keymap_.find(val->id()) != this->keymap_.end())
+			std::tr1::unordered_map<unsigned int, unsigned int>
+				::iterator it =  keymap_.find(id);
+			if(it != this->keymap_.end())
 			{
-				return true;
+				return elts_[(*it).second];
 			}
-			return false;
+			return 0;
 		}
 
 		// retrieve the top element without removing it
-		inline warthog::search_node* peek()
+		inline warthog::search_node*
+		peek()
 		{
 			if(heapsize_ > 0)
 			{
@@ -64,17 +79,20 @@ class heap
 			return 0;
 		}
 
-		inline unsigned int size()
+		inline unsigned int
+		size()
 		{
 			return heapsize_;
 		}
 
-		inline bool is_minheap() 
+		inline bool
+		is_minheap() 
 		{ 
 			return minheap_; 
 		} 
 		
-		void print(std::ostream& out);
+		void
+		print(std::ostream& out);
 
 	private:
 		// reorders the subheap containing elts_[index]

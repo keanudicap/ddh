@@ -17,40 +17,57 @@ namespace warthog
 class search_node
 {
 	public:
-		search_node(unsigned int id) : id_(id), f_(0), g_(0), backpointer_(0)
+		search_node(unsigned int id) 
+			: id_(id), h_(0), g_(0), pid_(warthog::UNDEF)
 		{
 			refcount_++;
 		}
 
-		virtual ~search_node()
+		~search_node()
 		{
 			refcount_--;
 		}
 
-		inline void print(std::ostream&  out)
-		{
-			out << "search_node id:" << id_ << " f: "<<f_<<" g: "<<g_<<" ";
-		}
+		inline unsigned int 
+		id() const { return id_; }
 
-		inline unsigned int id() { return id_; }
-		inline double f() { return f_; }
-		inline double g() { return g_; }
-		inline warthog::search_node* backpointer() { return backpointer_; }
+		inline unsigned int
+		pid() { return pid_; }
 
-		inline void update(double f, double g, warthog::search_node* ptr)
+		inline double 
+		f() const { return g_ + h_; }
+
+		inline double
+		g() const { return g_; }
+
+		inline double
+		h() const { return h_; }
+
+
+		inline void 
+		update(double g, double h, unsigned int pid)
 		{
-			f_ = f;
 			g_ = g;
-			backpointer_ = ptr;
+			h_ = h;
+			pid_ = pid;
 		}
 
-		inline bool operator<(const warthog::search_node& other)
+		// use this version if heuristic value is unchanged
+		inline void 
+		update(double g, unsigned int pid)
 		{
-			if((f_ + warthog::EPSILON) < other.f_)
+			g_ = g;
+			pid_ = pid;
+		}
+
+		inline bool
+		operator<(const warthog::search_node& other) const
+		{
+			if((this->f() + warthog::EPSILON) < other.f())
 			{
 				return true;
 			}
-			if(!((other.f_ + warthog::EPSILON) < f_))
+			if(!((other.f() + warthog::EPSILON) < this->f()))
 			{
 				// break ties in favour of smaller g
 				if((g_ + warthog::EPSILON) < other.g_)
@@ -61,13 +78,14 @@ class search_node
 			return false;
 		}
 
-		inline bool operator>(const warthog::search_node& other)
+		inline bool
+		operator>(const warthog::search_node& other) const
 		{
-			if((f_ - warthog::EPSILON) > other.f_)
+			if((this->f() - warthog::EPSILON) > other.f())
 			{
 				return true;
 			}
-			if(!((other.f_ - warthog::EPSILON) > f_))
+			if(!((other.f() - warthog::EPSILON) > this->f()))
 			{
 				// break ties in favour of smaller g
 				if((g_ - warthog::EPSILON) > other.g_)
@@ -78,7 +96,8 @@ class search_node
 			return false;
 		}
 
-		inline bool operator==(const warthog::search_node& other)
+		inline bool
+		operator==(const warthog::search_node& other) const
 		{
 			if( !(*this < other) && !(*this > other))
 			{
@@ -87,7 +106,8 @@ class search_node
 			return false;
 		}
 
-		inline bool operator<=(const warthog::search_node& other)
+		inline bool
+		operator<=(const warthog::search_node& other) const
 		{
 			if(*this < other)
 			{
@@ -100,7 +120,8 @@ class search_node
 			return false;
 		}
 
-		inline bool operator>=(const warthog::search_node& other)
+		inline bool
+		operator>=(const warthog::search_node& other) const
 		{
 			if(*this > other)
 			{
@@ -113,16 +134,23 @@ class search_node
 			return false;
 		}
 
-		static unsigned int get_refcount() { return refcount_; }
+		inline void 
+		print(std::ostream&  out) const
+		{
+			out << "search_node id:" << id_ << " g: "<<g_
+				<<" h: "<<h_<<" f: "<<this->f() << " ";
+		}
+
+		static unsigned int 
+		get_refcount() { return refcount_; }
 
 	private:
 		unsigned int id_;
-		double f_;
+		double h_;
 		double g_;
-		warthog::search_node* backpointer_;
+		unsigned int pid_; // parent id
 		static unsigned int refcount_;
 };
-
 
 }
 

@@ -1,4 +1,5 @@
 #include "gridmap_expansion_policy.h"
+#include "helpers.h"
 #include "problem_instance.h"
 
 warthog::gridmap_expansion_policy::gridmap_expansion_policy(
@@ -14,15 +15,9 @@ void
 warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 		warthog::problem_instance* problem)
 {
-	cx_ = nodeid;
-	cy_ = 0;
 	unsigned int map_width = map_->width();
 	unsigned int map_height = map_->height();
-
-	for( ; cx_ >= map_width ; cx_ -= map_width)
-	{
-		cy_++; // sub faster than div
-	}
+	warthog::helpers::index_to_xy(nodeid, map_width, cx_, cy_);
 
 	// get terrain type of each tile in the 3x3 square around (x, y)
 	unsigned int index = 0;

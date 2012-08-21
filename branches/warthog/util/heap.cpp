@@ -13,9 +13,9 @@ warthog::heap::~heap()
 }
 
 void 
-warthog::heap::push(warthog::search_node *val)
+warthog::heap::push(warthog::search_node* val)
 {
-	if(contains(val))
+	if(find(val->id()))
 	{
 		return;
 	}
@@ -47,6 +47,20 @@ warthog::heap::pop()
 		elts_[0] = elts_[heapsize_];
 		heapify_down(0);
 	}
+	return ans;
+}
+
+warthog::search_node*
+warthog::heap::pop_tail()
+{
+	if (heapsize_ == 0)
+	{
+		return 0;
+	}
+
+	heapsize_--;
+	warthog::search_node *ans = elts_[heapsize_];
+	keymap_.erase(ans->id());
 	return ans;
 }
 

@@ -23,8 +23,7 @@ class gridmap_expansion_policy
 	public:
 		gridmap_expansion_policy(std::shared_ptr<warthog::gridmap> map);
 		~gridmap_expansion_policy();
-	
-		// generate all neighbours of current and their transition costs
+
 		void 
 		expand(unsigned int, warthog::problem_instance*);
 
@@ -141,12 +140,13 @@ class gridmap_expansion_policy
 			return warthog::INF;
 		}
 
-		inline std::unique_ptr<warthog::search_node>
-		new_node(unsigned int id)
-		{
-			return std::unique_ptr<warthog::search_node>(
-					new warthog::search_node(id));
+		inline unsigned int
+		get_max_node_id()
+	   	{
+			return map_->height() * map_->width();
 		}
+	
+		// generate all neighbours of current and their transition costs
 
 	private:
 		std::shared_ptr<warthog::gridmap> map_;

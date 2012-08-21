@@ -1,7 +1,7 @@
-WARTHOG_SRC = $(wildcard domains/*.cpp) $(wildcard util/*.cpp) $(wildcard search/*.cpp) $(wildcard experimental/*)
+WARTHOG_SRC = $(wildcard domains/*.cpp) $(wildcard util/*.cpp) $(wildcard search/*.cpp) $(wildcard experimental/*) $(wildcard heuristics/*)
 WARTHOG_OBJ = $(subst .cpp,.o, $(addprefix obj/, $(notdir $(WARTHOG_SRC))))
 
-D_WARTHOG_INCLUDES = -I./domains -I./util -I./search -I./experimental
+D_WARTHOG_INCLUDES = -I./domains -I./util -I./search -I./experimental -I./heuristics
 D_INCLUDES = -I/usr/include -I/opt/local/include $(D_WARTHOG_INCLUDES)
 D_LIBS = -L/usr/local/lib -L./lib
 
