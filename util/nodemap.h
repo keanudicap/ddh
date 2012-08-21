@@ -1,0 +1,67 @@
+#ifndef WARTHOG_NODEMAP_H
+#define WARTHOG_NODEMAP_H
+
+#include "gridmap.h"
+
+#include <cassert>
+
+// nodemap.h
+//
+// Maps integer values from [0, N) to [0, N).
+// This implementation is not hash-based and requires N * sizeof(int) space
+//
+// @author: dharabor
+// 19/08/2012
+//
+
+namespace warthog
+{
+
+class nodemap
+{
+	public:
+		nodemap(unsigned int size) 
+			: size_(size), map_(new unsigned int[size_])
+		{
+			reset();
+		}
+		~nodemap()
+		{
+			delete [] map_;
+		}
+
+		inline unsigned int&
+		operator[](unsigned int index)
+		{
+			assert(index < size);
+			return map_[index];
+		}
+
+		inline unsigned int
+		get_value(unsigned int index)
+		{
+			if(index < size_)
+			{
+				return map_[index];
+			}
+			return warthog::UNDEF;
+		}
+
+		void
+		reset()
+		{
+			for(unsigned int i=0; i < size_; i++)
+			{
+				map_[i] = warthog::UNDEF;
+			}
+		}
+
+	private:
+		unsigned int size_;
+		unsigned int* map_;
+};
+
+}
+
+#endif
+

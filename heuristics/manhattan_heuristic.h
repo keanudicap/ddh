@@ -1,0 +1,44 @@
+#ifndef WARTHOG_MANHATTAN_HEURISTIC_H
+#define WARTHOG_MANHATTAN_HEURISTIC_H
+
+// manhattan_heuristic.h
+//
+// @author: dharabor
+// @created: 21/08/2012
+//
+
+#include "constants.h"
+#include "helpers.h"
+
+#include <cstdlib>
+
+namespace warthog
+{
+
+class manhattan_heuristic
+{
+	public:
+		manhattan_heuristic();
+		~manhattan_heuristic();
+
+		inline double
+		h(unsigned int x, unsigned int y, unsigned int x2, unsigned int y2)
+		{
+			return abs(x-x2) + abs(y-y2);
+		}
+
+		inline double
+		h(unsigned int id, unsigned int id2, unsigned int mapwidth)
+		{
+			unsigned int x, x2;
+			unsigned int y, y2;
+			warthog::helpers::index_to_xy(id, mapwidth, x, y);
+			warthog::helpers::index_to_xy(id2,mapwidth, x2, y2);
+			return this->h(x, y, x2, y2);
+		}
+};
+
+}
+
+#endif
+
