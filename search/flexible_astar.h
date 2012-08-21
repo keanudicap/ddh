@@ -14,6 +14,7 @@
 
 #include "heap.h"
 #include "nodemap.h"
+#include "problem_instance.h"
 
 #include <memory>
 #include <stack>
@@ -26,13 +27,13 @@ namespace warthog
 template <class H, class E>
 class flexible_astar 
 {
-	using H::h;
-	using E::first;
-	using E::expand;
-	using E::next;
-	using E::n;
-	using E::new_node;
-	using E::get_max_node_id;
+//	using H::h;
+//	using E::first;
+//	using E::expand;
+//	using E::next;
+//	using E::n;
+//	using E::new_node;
+//	using E::get_max_node_id;
 
 	public:
 		flexible_astar(std::shared_ptr<H> heuristic, std::shared_ptr<E> expander)
@@ -75,6 +76,10 @@ class flexible_astar
 		search(unsigned int startid, unsigned int goalid, 
 				warthog::heap& open, warthog::nodemap& closed)
 		{
+			warthog::problem_instance instance;
+			instance.set_goal(goalid);
+			instance.set_start(startid);
+
 			double len = DBL_MAX;
 			warthog::search_node* start = new warthog::search_node(startid);
 			start->update(0, heuristic_->h(startid, goalid), warthog::UNDEF);
@@ -91,7 +96,7 @@ class flexible_astar
 
 				warthog::search_node* current = open.pop();
 				closed[current->id()] = current->pid();
-				expander_->expand(current->id());
+				expander_->expand(current->id(), &instance);
 				for(unsigned int nid = expander_->first(); 
 						nid != expander_->end();
 					   	nid = expander_->next())

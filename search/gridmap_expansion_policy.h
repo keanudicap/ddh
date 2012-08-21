@@ -27,6 +27,12 @@ class gridmap_expansion_policy
 		void 
 		expand(unsigned int, warthog::problem_instance*);
 
+		unsigned int
+		end() 
+		{ 
+			return warthog::UNDEF; 
+		}
+
 		// fetches the first neighbour of (cx_, cy_). 
 		// also resets the current neigbour iterator
 		inline unsigned int
@@ -42,7 +48,7 @@ class gridmap_expansion_policy
 
 		// @return the id of the current neighbour of (cx_, cy_) -- the node
 		// being expanded. 
-		// warthog::UNDEF is returned if all neighbours have been processed.
+		// ::end is returned if all neighbours have been processed.
 		inline unsigned int 
 		n()
 		{
@@ -96,12 +102,12 @@ class gridmap_expansion_policy
 					return (ny*map_->width())+nx;
 				}
 			}
-			return warthog::UNDEF;
+			return this->end();
 		}
 
 
 		// @return the node id of the next neighbour of (cx_, cy_)
-		// warthog::UNDEF is returned if there is no next neighbour
+		// ::end() is returned if there is no next neighbour
 		inline unsigned int
 		next()
 		{
@@ -112,7 +118,7 @@ class gridmap_expansion_policy
 					return n();
 				}
 			}
-			return warthog::UNDEF;
+			return this->end();
 		}
 
 		// @return true if (cx_, cy_) has more neighbours to process.
