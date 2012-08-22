@@ -151,9 +151,14 @@ class gridmap_expansion_policy
 	   	{
 			return map_->height() * map_->width();
 		}
-	
-		// generate all neighbours of current and their transition costs
 
+		unsigned int
+		mem()
+		{
+			return map_->mem() + 
+			sizeof(*this);
+		}
+	
 	private:
 		std::shared_ptr<warthog::gridmap> map_;
 		unsigned int cx_, cy_;

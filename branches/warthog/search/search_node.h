@@ -144,6 +144,12 @@ class search_node
 		static unsigned int 
 		get_refcount() { return refcount_; }
 
+		unsigned int
+		mem()
+		{
+			return sizeof(*this);
+		}
+
 	private:
 		unsigned int id_;
 		double h_;

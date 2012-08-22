@@ -23,18 +23,19 @@ class nodemap
 		nodemap(unsigned int size) 
 			: size_(size), map_(new unsigned int[size_])
 		{
-			reset();
+			clear();
 		}
+
 		~nodemap()
 		{
 			delete [] map_;
 		}
 
-		inline unsigned int&
-		operator[](unsigned int index)
+		void
+		set_value(unsigned int index, unsigned int value)
 		{
-			assert(index < size);
-			return map_[index];
+			assert(index < size_);
+			map_[index] = value;
 		}
 
 		inline unsigned int
@@ -48,7 +49,7 @@ class nodemap
 		}
 
 		void
-		reset()
+		clear()
 		{
 			for(unsigned int i=0; i < size_; i++)
 			{
