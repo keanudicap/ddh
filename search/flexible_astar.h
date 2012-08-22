@@ -5,8 +5,8 @@
 //
 // A* implementation that allows arbitrary combinations of 
 // heuristic functions and node expansion policies.
-// This implementation uses a binary heap for the open list
-// and a bit array for the closed list.
+// This implementation uses a binary heap for the open_ list
+// and a bit array for the closed_ list.
 // 
 // @author: dharabor
 // @created: 21/08/2012
@@ -37,22 +37,28 @@ class flexible_astar
 
 	public:
 		flexible_astar(std::shared_ptr<H> heuristic, std::shared_ptr<E> expander)
-			: heuristic_(heuristic), expander_(expander) { }
-		~flexible_astar() { }
+			: heuristic_(heuristic), expander_(expander)
+		{
+			open_ = new warthog::heap(1024, true);
+			closed_ = new warthog::nodemap(expander_->get_max_node_id());
+		}
+
+		~flexible_astar()
+		{
+			delete open_;
+			delete closed_;
+		}
 
 		std::stack<unsigned int>
 		get_path(unsigned int startid, unsigned int goalid)
 		{
-			warthog::heap open(1024, true);
-			warthog::nodemap closed(expander_->get_max_node_id());
-
 			std::stack<unsigned int> path;
-			double len = search(startid, goalid, open, closed);
+			double len = search(startid, goalid);
 			if(len != warthog::INF)
 			{
 				for(unsigned int id = goalid;
 					   	id != startid;
-					   	id = closed[id])
+					   	id = closed_[id])
 				{
 					path.push(id);
 				}
@@ -63,18 +69,17 @@ class flexible_astar
 		double
 		get_length(unsigned int startid, unsigned int goalid)
 		{
-			warthog::heap open(1024, true);
-			warthog::nodemap closed(expander_->get_max_node_id());
-			return search(startid, goalid, open, closed);
+			return search(startid, goalid);
 		}
 
 	private:
 		std::shared_ptr<H> heuristic_;
 		std::shared_ptr<E> expander_;
+		warthog::heap* open_;
+		warthog::nodemap* closed_;
 
 		double 
-		search(unsigned int startid, unsigned int goalid, 
-				warthog::heap& open, warthog::nodemap& closed)
+		search(unsigned int startid, unsigned int goalid)
 		{
 			warthog::problem_instance instance;
 			instance.set_goal(goalid);
@@ -83,31 +88,31 @@ class flexible_astar
 			double len = DBL_MAX;
 			warthog::search_node* start = new warthog::search_node(startid);
 			start->update(0, heuristic_->h(startid, goalid), warthog::UNDEF);
-			open.push(start);
-			closed[startid] = startid;
+			open_->push(start);
+			closed_->set_value(startid, startid);
 
-			while(open.size())
+			while(open_->size())
 			{
-				if(open.peek()->id() == goalid)
+				if(open_->peek()->id() == goalid)
 				{
-					len = open.peek()->g();
+					len = open_->peek()->g();
 					break;
 				}
 
-				warthog::search_node* current = open.pop();
-				closed[current->id()] = current->pid();
+				warthog::search_node* current = open_->pop();
+				closed_->set_value(current->id(),current->pid());
 				expander_->expand(current->id(), &instance);
 				for(unsigned int nid = expander_->first(); 
 						nid != expander_->end();
 					   	nid = expander_->next())
 				{
-					if(!(closed.get_value(nid) == warthog::UNDEF))
+					if(!(closed_->get_value(nid) == warthog::UNDEF))
 					{
 						// skip neighbours already expanded
 						continue;
 					}
 
-					warthog::search_node* n = open.find(nid);
+					warthog::search_node* n = open_->find(nid);
 					if(n)
 					{
 						// update a node from the fringe
@@ -115,7 +120,7 @@ class flexible_astar
 						if(gVal < n->g())
 						{
 							n->update(gVal, current->id());
-							open.decrease_key(n);
+							open_->decrease_key(n);
 						}
 					}
 					else
@@ -124,18 +129,19 @@ class flexible_astar
 						n = new warthog::search_node(nid);
 						n->update(current->g() + expander_->cost_to_n(), 
 								heuristic_->h(nid, goalid), current->id());
-						open.push(n);
+						open_->push(n);
 					}
 				}
 				delete current;
 			}
 
 			// cleanup
-			while(open.size())
+			while(open_->size())
 			{
-				delete open.pop_tail();
+				delete open_->pop_tail();
 			}
-			closed.reset();
+			open_->clear();
+			closed_->clear();
 
 			return len;
 		}

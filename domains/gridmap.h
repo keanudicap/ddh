@@ -100,6 +100,14 @@ class gridmap
 		void 
 		print(std::ostream&);
 
+		unsigned int 
+		mem()
+		{
+			return sizeof(*this) +
+			sizeof(warthog::dbword) * this->dbwidth() * this->dbheight();
+		}
+
+
 	private:
 		gridmap(const warthog::gridmap& other) {}
 		gridmap& operator=(const warthog::gridmap& other) { return *this; }

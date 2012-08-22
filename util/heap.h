@@ -94,7 +94,22 @@ class heap
 		void
 		print(std::ostream& out);
 
+		unsigned int
+		mem()
+		{
+			return maxsize_*sizeof(warthog::search_node*)
+				+ keymap_.size()*8
+				+ sizeof(*this) 
+				- sizeof(elts_); // double counted
+		}
+
 	private:
+		unsigned int maxsize_;
+		bool minheap_;
+		unsigned int heapsize_;
+		warthog::search_node** elts_;
+		node_list keymap_;
+
 		// reorders the subheap containing elts_[index]
 		void heapify_up(unsigned int index);
 		
@@ -139,12 +154,6 @@ class heap
 			elts_[index2] = tmp;
 			keymap_[tmp->id()] = index2;
 		}
-
-		unsigned int maxsize_;
-		bool minheap_;
-		unsigned int heapsize_;
-		warthog::search_node** elts_;
-		node_list keymap_;
 };
 
 }
