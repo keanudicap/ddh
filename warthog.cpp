@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
 void flexible_astar_test()
 {
-	bool check_opt = true;
+	bool check_opt = false;
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario("orz700d.map.scen");
 
@@ -49,6 +49,7 @@ void flexible_astar_test()
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
 	   	warthog::gridmap_expansion_policy> astar(heuristic, expander);
+	//astar.set_verbose(true);
 
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{

@@ -45,6 +45,7 @@ warthog::heap::pop()
 	if(heapsize_ > 0)
 	{
 		elts_[0] = elts_[heapsize_];
+		keymap_[elts_[0]->id()] = 0;
 		heapify_down(0);
 	}
 	return ans;
