@@ -16,6 +16,7 @@
 #include "nodemap.h"
 #include "problem_instance.h"
 
+#include <iostream>
 #include <memory>
 #include <stack>
 
@@ -41,6 +42,7 @@ class flexible_astar
 		{
 			open_ = new warthog::heap(1024, true);
 			closed_ = new warthog::nodemap(expander_->get_max_node_id());
+			verbose_ = false;
 		}
 
 		~flexible_astar()
@@ -49,7 +51,15 @@ class flexible_astar
 			delete closed_;
 		}
 
-		std::stack<unsigned int>
+		#ifndef NDEBUG
+		inline bool
+		get_verbose() { return verbose_; }
+
+		inline void
+		set_verbose(bool verbose) { verbose_ = verbose; } 
+		#endif
+
+		inline std::stack<unsigned int>
 		get_path(unsigned int startid, unsigned int goalid)
 		{
 			std::stack<unsigned int> path;
@@ -57,11 +67,12 @@ class flexible_astar
 			if(len != warthog::INF)
 			{
 				for(unsigned int id = goalid;
-					   	id != startid;
+					   	id != warthog::UNDEF;
 					   	id = closed_[id])
 				{
 					path.push(id);
 				}
+				assert(path.top() == startid);
 			}
 			return path;
 		}
@@ -77,6 +88,12 @@ class flexible_astar
 		std::shared_ptr<E> expander_;
 		warthog::heap* open_;
 		warthog::nodemap* closed_;
+		bool verbose_;
+
+		// no copy
+		flexible_astar(const flexible_astar& other) { } 
+		flexible_astar& 
+		operator=(const flexible_astar& other) { return *this; }
 
 		double 
 		search(unsigned int startid, unsigned int goalid)
@@ -89,7 +106,6 @@ class flexible_astar
 			warthog::search_node* start = new warthog::search_node(startid);
 			start->update(0, heuristic_->h(startid, goalid), warthog::UNDEF);
 			open_->push(start);
-			closed_->set_value(startid, startid);
 
 			while(open_->size())
 			{
@@ -100,7 +116,15 @@ class flexible_astar
 				}
 
 				warthog::search_node* current = open_->pop();
+				#ifndef NDEBUG
+				if(verbose_)
+				{
+					current->print(std::cerr << "expanding...");
+					std::cerr << std::endl;
+				}
+				#endif
 				closed_->set_value(current->id(),current->pid());
+				assert(closed_->get_value(current->id() == current->pid()));
 				expander_->expand(current->id(), &instance);
 				for(unsigned int nid = expander_->first(); 
 						nid != expander_->end();
@@ -115,12 +139,30 @@ class flexible_astar
 					warthog::search_node* n = open_->find(nid);
 					if(n)
 					{
+						assert(n->id() == nid);
 						// update a node from the fringe
 						double gVal = current->g() + expander_->cost_to_n();
 						if(gVal < n->g())
 						{
 							n->update(gVal, current->id());
 							open_->decrease_key(n);
+							#ifndef NDEBUG
+							if(verbose_)
+							{
+								n->print(std::cerr << "  updating...");
+								std::cerr << std::endl;
+							}
+							#endif
+						}
+						else
+						{
+							#ifndef NDEBUG
+							if(verbose_)
+							{
+								n->print(std::cerr << "  ignoring...");
+								std::cerr << std::endl;
+							}
+							#endif
 						}
 					}
 					else
@@ -130,8 +172,22 @@ class flexible_astar
 						n->update(current->g() + expander_->cost_to_n(), 
 								heuristic_->h(nid, goalid), current->id());
 						open_->push(n);
+						#ifndef NDEBUG
+						if(verbose_)
+						{
+							n->print(std::cerr << "  generating...");
+							std::cerr << std::endl;
+						}
+						#endif
 					}
 				}
+				#ifndef NDEBUG
+				if(verbose_)
+				{
+					current->print(std::cerr << "closing...");
+					std::cerr << std::endl;
+				}
+				#endif
 				delete current;
 			}
 
@@ -145,11 +201,6 @@ class flexible_astar
 
 			return len;
 		}
-
-		flexible_astar(const flexible_astar& other) { } 
-		flexible_astar& 
-		operator=(const flexible_astar& other) { return *this; }
-
 
 };
 

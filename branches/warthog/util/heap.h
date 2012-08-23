@@ -63,6 +63,7 @@ class heap
 				::iterator it =  keymap_.find(id);
 			if(it != this->keymap_.end())
 			{
+				assert((*it).second < heapsize_);
 				return elts_[(*it).second];
 			}
 			return 0;
