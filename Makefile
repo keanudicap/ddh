@@ -28,7 +28,7 @@ tags:
 
 .PHONY: clean
 clean:
-	@-$(RM) ./bin/*
+	@rm -rf ./bin/*
 	@-$(RM) ./obj/*
 	@-$(RM) ./lib/*
 

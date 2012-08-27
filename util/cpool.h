@@ -57,6 +57,13 @@ class cchunk
 		inline char*
 		allocate()
 		{
+			if((next_addr_ + obj_size_) <= max_addr_)
+			{
+				char* retval = next_addr_;
+				next_addr_ += obj_size_;
+				return retval;
+			}
+
 			if(stack_size_ > 0)
 			{
 				char* retval = &mem_[freed_stack_[stack_size_-1]];
@@ -64,18 +71,13 @@ class cchunk
 				return retval;
 			}
 
-			if((next_addr_ + obj_size_) <= max_addr_)
-			{
-				char* retval = next_addr_;
-				next_addr_ += obj_size_;
-				return retval;
-			}
 			return 0;
 		}
 
 		inline void
 		deallocate(char* addr)
 		{
+			#ifndef NDEBUG
 			if(addr < mem_ || (addr+obj_size_) > max_addr_)
 			{
 				std::cerr << "err; warthog::mem::cchunk; freeing memory outside"
@@ -87,15 +89,16 @@ class cchunk
 				std::cerr << "err; warthog::mem::cchunk freeing "
 					<< "unallocated memory in chunk at addr "<<&mem_<<"\n";
 			}
+			#endif
 
 			freed_stack_[stack_size_] = addr - mem_;
 			stack_size_++;
-			if(stack_size_*obj_size_ == pool_size_)
-			{
-				// mark the entire chunk as free
-				next_addr_ = mem_;
-				stack_size_ = 0;
-			}
+			//if(stack_size_*obj_size_ == pool_size_)
+			//{
+			//	// mark the entire chunk as free
+			//	next_addr_ = mem_;
+			//	stack_size_ = 0;
+			//}
 		}
 
 		inline bool
@@ -153,13 +156,13 @@ class cpool
 {
 	public:
 		cpool(size_t obj_size) :
-		   	num_chunks_(0), max_chunks_(1), obj_size_(obj_size)
+		   	num_chunks_(0), max_chunks_(2), obj_size_(obj_size)
 		{
 			chunks_ = new cchunk*[max_chunks_];
 			chunk_faddr_ = new char*[max_chunks_];
 			chunk_size_ = new size_t[max_chunks_];
 
-			for(int i = 0; i < (int) num_chunks_; i++)
+			for(int i = 0; i < (int) max_chunks_; i++)
 			{
 				add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
 			}
@@ -188,16 +191,13 @@ class cpool
 				mem_ptr = chunks_[i]->allocate();
 				if(mem_ptr)
 				{
-					break;
+					return mem_ptr;
 				}
 			}
 
-			if(!mem_ptr)
-			{
-				// not enough space in any existing chunk; make a new one
-				add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
-				mem_ptr = chunks_[num_chunks_-1]->allocate();
-			}
+			// not enough space in any existing chunk; make a new one
+			add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
+			mem_ptr = chunks_[num_chunks_-1]->allocate();
 			return mem_ptr;
 		}
 
@@ -211,10 +211,9 @@ class cpool
 				// it would be better if the values of these address were 
 				// part of a header struct which could all be initialised 
 				// and stored separately.
-				if(addr >= chunk_faddr_[i] && (addr+obj_size_) <= (chunk_faddr_[i]+chunk_size_[i]))
+				if((addr - chunk_faddr_[i]) < warthog::mem::DEFAULT_CHUNK_SIZE);
 				{
 					chunks_[i]->deallocate(addr);
-					return;
 				}
 			}
 			std::cerr << "err; cpool::free "
