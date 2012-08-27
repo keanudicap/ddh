@@ -3,12 +3,14 @@
 
 #include "blockmap.h"
 #include "cuckoo_table.h"
+#include "cpool.h"
 #include "flexible_astar.h"
 #include "gridmap.h"
 #include "gridmap_expansion_policy.h"
 #include "hash_table.h"
 #include "heap.h"
 #include "octile_heuristic.h"
+#include "search_node.h"
 #include "scenario_manager.h"
 
 #include "getopt.h"
@@ -26,9 +28,61 @@ void unordered_map_test();
 void hash_table_test();
 void gridmap_expansion_policy_test();
 void flexible_astar_test();
+void test_alloc();
 int main(int argc, char** argv)
 {
-	flexible_astar_test();
+	test_alloc();
+}
+
+void test_alloc()
+{
+
+	warthog::mem::cpool pool(sizeof(warthog::search_node));
+	char** nodes = new char*[10000];
+
+	for(int i=0; i < 5000; i++)
+	{
+		for(int j = 0; j < 10000; j++)
+		{
+			nodes[j] = pool.allocate();
+		}
+		for(int j = 0; j < 10000; j++)
+		{
+			pool.deallocate(nodes[j]);
+		}
+	}
+	//std::cerr << "cpool::mem: "<<pool.mem()<<std::endl;
+//	pool.print(std::cerr);
+//	std::cerr << std::endl;
+	delete [] nodes;
+
+//	for(int i=0; i < 5000; i++)
+//	{
+//		char** c = new char*[10];
+//		for(int i=0; i < 10; i++)
+//		{
+//			c[i] = new char[sizeof(warthog::search_node)*10000];
+//		}
+//		for(int i=0; i < 10; i++)
+//		{
+//			delete [] c[i];
+//		}
+//		delete [] c;
+//	}
+
+//	for(int i=0; i < 5000; i++)
+//	{
+//		warthog::search_node** c = new warthog::search_node*[10000];
+//		for(int i=0; i < 10000; i++)
+//		{
+//			c[i] = new warthog::search_node(i);	
+//		}
+//		for(int i=0; i < 10000; i++)
+//		{
+//			delete c[i];
+//		}
+//		delete [] c;
+//	}
 }
 
 void flexible_astar_test()
