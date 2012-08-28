@@ -31,7 +31,7 @@ class cchunk
 	public:
 
 		cchunk(size_t obj_size, size_t pool_size) :
-			obj_size_(obj_size), pool_size_(pool_size)
+			next_offset_(0), obj_size_(obj_size), pool_size_(pool_size)
 		{
 			if(pool_size_ < obj_size_)
 			{
@@ -41,8 +41,6 @@ class cchunk
 			}
 
 			mem_ = new char[pool_size_];
-			next_addr_ = mem_;
-			max_addr_ = mem_ + pool_size_;
 
 			freed_stack_ = new int[(pool_size_/obj_size)];
 			stack_size_ = 0;
@@ -57,18 +55,17 @@ class cchunk
 		inline char*
 		allocate()
 		{
-			if((next_addr_ + obj_size_) <= max_addr_)
+			if(next_offset_ < pool_size_)
 			{
-				char* retval = next_addr_;
-				next_addr_ += obj_size_;
+				char* retval = mem_ + next_offset_;
+				next_offset_ += obj_size_;
 				return retval;
 			}
 
 			if(stack_size_ > 0)
 			{
-				char* retval = &mem_[freed_stack_[stack_size_-1]];
 				--stack_size_;
-				return retval;
+				return mem_ + freed_stack_[stack_size_];
 			}
 
 			return 0;
@@ -92,7 +89,7 @@ class cchunk
 		inline bool
 		contains(char* addr)
 		{
-			if(addr >= mem_ && (addr + obj_size_) <= max_addr_)
+			if((addr-mem_) < pool_size_)
 			{
 				return true;
 			}
@@ -129,8 +126,7 @@ class cchunk
 
 	private:
 		char* mem_;
-		char* next_addr_;
-		char* max_addr_;
+		size_t next_offset_;
 
 		size_t obj_size_;  
 		size_t pool_size_; 
