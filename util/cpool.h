@@ -41,6 +41,8 @@ class cchunk
 			}
 
 			mem_ = new char[pool_size_];
+			next_ = mem_;
+			max_ = mem_ + pool_size_;
 
 			freed_stack_ = new int[(pool_size_/obj_size)];
 			stack_size_ = 0;
@@ -55,10 +57,10 @@ class cchunk
 		inline char*
 		allocate()
 		{
-			if(next_offset_ < pool_size_)
+			if(next_ < max_)
 			{
-				char* retval = mem_ + next_offset_;
-				next_offset_ += obj_size_;
+				char* retval = next_;
+				next_ += obj_size_;
 				return retval;
 			}
 
@@ -126,7 +128,8 @@ class cchunk
 
 	private:
 		char* mem_;
-		size_t next_offset_;
+		char* next_;
+		char* max_;
 
 		size_t obj_size_;  
 		size_t pool_size_; 
@@ -147,7 +150,7 @@ class cpool
 			{
 				add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
 			}
-			current_chunk_ = 0;
+			current_chunk_ = chunks_[0];
 		}
 
 		~cpool()
@@ -162,7 +165,7 @@ class cpool
 		inline char*
 		allocate()
 		{
-			char* mem_ptr = chunks_[current_chunk_]->allocate();
+			char* mem_ptr = current_chunk_->allocate();
 			if(!mem_ptr)
 			{
 				// look for space in an existing chunk
@@ -173,15 +176,15 @@ class cpool
 					mem_ptr = chunks_[i]->allocate();
 					if(mem_ptr)
 					{
-						current_chunk_ = i;
+						current_chunk_ = chunks_[i];
 						return mem_ptr;
 					}
 				}
 
 				// not enough space in any existing chunk; make a new one
 				add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
-				current_chunk_ = num_chunks_-1;
-				mem_ptr = chunks_[current_chunk_]->allocate();
+				current_chunk_ = chunks_[num_chunks_-1];
+				mem_ptr = current_chunk_->allocate();
 			}
 			return mem_ptr;
 		}
@@ -231,7 +234,7 @@ class cpool
 
 	private:
 		warthog::mem::cchunk** chunks_;
-		size_t current_chunk_;
+		warthog::mem::cchunk* current_chunk_;
 
 		size_t num_chunks_;
 		size_t max_chunks_;
