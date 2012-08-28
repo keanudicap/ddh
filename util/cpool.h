@@ -31,7 +31,8 @@ class cchunk
 	public:
 
 		cchunk(size_t obj_size, size_t pool_size) :
-			next_offset_(0), obj_size_(obj_size), pool_size_(pool_size)
+			obj_size_(obj_size), 
+			pool_size_(pool_size - (pool_size % obj_size)) // round down
 		{
 			if(pool_size_ < obj_size_)
 			{
