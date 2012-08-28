@@ -6,9 +6,9 @@ D_INCLUDES = -I/usr/include -I/opt/local/include $(D_WARTHOG_INCLUDES)
 D_LIBS = -L/usr/local/lib -L./lib
 
 CC = c++
-CFLAGS = -std=gnu++0x -pedantic -Wall -Wno-long-long -Wno-deprecated
+CFLAGS = -std=gnu++0x -pedantic -Wall -Wno-long-long -Wno-deprecated -Werror
 FAST_CFLAGS = -O3 -DNDEBUG 
-DEV_CFLAGS = -g -ggdb 
+DEV_CFLAGS = -g -ggdb -O0
 
 .PHONY: all
 all: fast
