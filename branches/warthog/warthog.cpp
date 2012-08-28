@@ -51,7 +51,7 @@ void test_alloc()
 			pool.deallocate(nodes[j]);
 		}
 	}
-	//std::cerr << "cpool::mem: "<<pool.mem()<<std::endl;
+//	std::cerr << "cpool::mem: "<<pool.mem()<<std::endl;
 //	pool.print(std::cerr);
 //	std::cerr << std::endl;
 	delete [] nodes;
