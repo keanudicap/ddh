@@ -19,12 +19,14 @@ inline void
 index_to_xy(unsigned int id, unsigned int mapwidth, 
 		unsigned int& x, unsigned int& y)
 {	
-	x = id;
-	y = 0;
-	for( ; x >= mapwidth ; x -= mapwidth)
-	{
-		y++; 
-	}
+	y = id / mapwidth;
+	x = id % mapwidth;
+//	x = id;
+//	y = 0;
+//	for( ; x >= mapwidth ; x -= mapwidth)
+//	{
+//		y++; 
+//	}
 }
 
 }

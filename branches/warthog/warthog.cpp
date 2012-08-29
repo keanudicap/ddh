@@ -31,7 +31,8 @@ void flexible_astar_test();
 void test_alloc();
 int main(int argc, char** argv)
 {
-	test_alloc();
+	//test_alloc();
+	flexible_astar_test();
 }
 
 void test_alloc()

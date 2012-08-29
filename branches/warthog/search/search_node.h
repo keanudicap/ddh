@@ -8,6 +8,7 @@
 //
 
 #include "constants.h"
+#include "cpool.h"
 
 #include <iostream>
 
@@ -59,6 +60,19 @@ class search_node
 			g_ = g;
 			pid_ = pid;
 		}
+
+		inline void* 
+		operator new(size_t s)
+		{
+			return (void*) warthog::search_node::mem_.allocate();
+		}
+
+		inline void  
+		operator delete(void* addr, size_t bytes)
+		{
+			warthog::search_node::mem_.deallocate((char*)addr);
+		}
+
 
 		inline bool
 		operator<(const warthog::search_node& other) const
@@ -156,6 +170,7 @@ class search_node
 		double g_;
 		unsigned int pid_; // parent id
 		static unsigned int refcount_;
+		static warthog::mem::cpool mem_;
 };
 
 }
