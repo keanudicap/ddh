@@ -51,13 +51,11 @@ class flexible_astar
 			delete closed_;
 		}
 
-		#ifndef NDEBUG
 		inline bool
 		get_verbose() { return verbose_; }
 
 		inline void
 		set_verbose(bool verbose) { verbose_ = verbose; } 
-		#endif
 
 		inline std::stack<unsigned int>
 		get_path(unsigned int startid, unsigned int goalid)
