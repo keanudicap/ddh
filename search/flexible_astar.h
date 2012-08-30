@@ -130,7 +130,7 @@ class flexible_astar
 			warthog::search_node* goal = 0;
 			warthog::search_node* start = generate(startid);
 			start->set_g(0);
-			start->set_h(heuristic_->h(startid, goalid));
+			start->set_f(heuristic_->h(startid, goalid));
 			open_->push(start);
 
 			while(open_->size())
@@ -167,10 +167,10 @@ class flexible_astar
 					if(open_->contains(n))
 					{
 						// update a node from the fringe
-						double gVal = current->get_g() + expander_->cost_to_n();
-						if(gVal < n->get_g())
+						double gval = current->get_g() + expander_->cost_to_n();
+						if(gval < n->get_g())
 						{
-							n->relax(gVal, current);
+							n->relax(gval, current);
 							open_->decrease_key(n);
 							#ifndef NDEBUG
 							if(verbose_)
@@ -194,8 +194,9 @@ class flexible_astar
 					else
 					{
 						// add a new node to the fringe
-						n->set_g(current->get_g() + expander_->cost_to_n());
-						n->set_h(heuristic_->h(nid, goalid));
+						double gval = current->get_g() + expander_->cost_to_n();
+						n->set_g(gval);
+						n->set_f(gval + heuristic_->h(nid, goalid));
 					   	n->set_parent(current);
 						open_->push(n);
 						#ifndef NDEBUG
