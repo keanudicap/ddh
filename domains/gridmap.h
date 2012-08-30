@@ -41,10 +41,18 @@ class gridmap
 		gridmap(const char* filename, bool uniform);
 		~gridmap();
 
+//		inline warthog::dbword
+//		get_label(unsigned int index)
+//		{
+//			unsigned int word_index = index >> warthog::LOG2_DBWORD_BITS;
+//			dbword bitmask = (1 << (index & (warthog::DBWORD_BITS-1)));
+//
+//		}
+
 		inline warthog::dbword 
 		get_label(unsigned int x, unsigned int y)
 		{
-			if(x >= 0 && y >= 0 && x < this->width() && y < this->height())
+			if(x < header_.width_ && y < header_.height_)
 			{
 				if(this->uniform_)
 				{

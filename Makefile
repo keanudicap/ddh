@@ -9,9 +9,10 @@ CC = c++
 CFLAGS = -std=gnu++0x -pedantic -Wall -Wno-long-long -Wno-deprecated -Werror
 FAST_CFLAGS = -O3 -DNDEBUG
 DEV_CFLAGS = -g -ggdb -O0
+PROFILE_CFLAGS = -g -ggdb -O0 -DNDEBUG
 
 .PHONY: all
-all: fast
+all: dev
 
 .PHONY: fast
 fast: CFLAGS += $(FAST_CFLAGS) $(D_INCLUDES) $(D_LIBS)
@@ -21,9 +22,12 @@ fast: main
 dev: CFLAGS += $(DEV_CFLAGS) $(D_INCLUDES) $(D_LIBS)
 dev: main
 
+.PHONY: profile
+profile: CFLAGS += $(PROFILE_CFLAGS) $(D_INCLUDES) $(D_LIBS)
+profile: main
+
 .PHONY: tags
 tags:
-	rm tags
 	ctags -R .
 
 .PHONY: clean

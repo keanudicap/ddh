@@ -45,7 +45,7 @@ class nodemap
 			{
 				return map_[index];
 			}
-			return warthog::UNDEF;
+			return warthog::INF;
 		}
 
 		void
@@ -53,7 +53,7 @@ class nodemap
 		{
 			for(unsigned int i=0; i < size_; i++)
 			{
-				map_[i] = warthog::UNDEF;
+				map_[i] = warthog::INF;
 			}
 		}
 

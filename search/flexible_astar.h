@@ -7,18 +7,24 @@
 // heuristic functions and node expansion policies.
 // This implementation uses a binary heap for the open_ list
 // and a bit array for the closed_ list.
+//
+// TODO: is it better to store a separate closed list and ungenerate nodes
+// or use more memory and not ungenerate until the end of search??
+// 32bytes vs... whatever unordered_map overhead is a two integer key/value pair
 // 
 // @author: dharabor
 // @created: 21/08/2012
 //
 
+#include "cpool.h"
 #include "heap.h"
-#include "nodemap.h"
 #include "problem_instance.h"
+#include "search_node.h"
 
 #include <iostream>
 #include <memory>
 #include <stack>
+#include <unordered_map>
 
 namespace warthog
 {
@@ -28,27 +34,30 @@ namespace warthog
 template <class H, class E>
 class flexible_astar 
 {
-//	using H::h;
-//	using E::first;
-//	using E::expand;
-//	using E::next;
-//	using E::n;
-//	using E::new_node;
-//	using E::get_max_node_id;
+	typedef std::unordered_map<
+		unsigned int, warthog::search_node*> node_table;
 
 	public:
 		flexible_astar(std::shared_ptr<H> heuristic, std::shared_ptr<E> expander)
 			: heuristic_(heuristic), expander_(expander)
 		{
 			open_ = new warthog::heap(1024, true);
-			closed_ = new warthog::nodemap(expander_->get_max_node_id());
 			verbose_ = false;
+			nodepool_ = new warthog::mem::cpool(sizeof(warthog::search_node));
+			//nodeheap_ = new node_table(1024);
+			nodeheap_ = new warthog::search_node*[expander_->get_max_node_id()];
+			for(unsigned int i = 0; i < expander_->get_max_node_id(); i++)
+			{
+				nodeheap_[i] = 0;
+			}
+
 		}
 
 		~flexible_astar()
 		{
+			cleanup();
 			delete open_;
-			delete closed_;
+			delete nodeheap_;
 		}
 
 		inline bool
@@ -61,55 +70,74 @@ class flexible_astar
 		get_path(unsigned int startid, unsigned int goalid)
 		{
 			std::stack<unsigned int> path;
-			double len = search(startid, goalid);
-			if(len != warthog::INF)
+			warthog::search_node* goal = search(startid, goalid);
+			if(goal)
 			{
-				for(unsigned int id = goalid;
-					   	id != warthog::UNDEF;
-					   	id = closed_[id])
+				// follow backpointers to extract the path
+				assert(goal->get_id() == goalid);
+				for(warthog::search_node* cur = goal;
+						cur != 0;
+					    cur = cur->get_parent())
 				{
-					path.push(id);
+					path.push(cur->get_id());
 				}
 				assert(path.top() == startid);
 			}
+			cleanup();
 			return path;
 		}
 
 		double
 		get_length(unsigned int startid, unsigned int goalid)
 		{
-			return search(startid, goalid);
+			warthog::search_node* goal = search(startid, goalid);
+			double len = warthog::INF;
+			if(goal)
+			{
+				assert(goal->get_id() == goalid);
+				len = goal->get_g();
+			}
+			cleanup();
+			return len;
 		}
 
 	private:
 		std::shared_ptr<H> heuristic_;
 		std::shared_ptr<E> expander_;
 		warthog::heap* open_;
-		warthog::nodemap* closed_;
 		bool verbose_;
+		//node_table* nodeheap_;
+		warthog::search_node** nodeheap_;
+		warthog::mem::cpool* nodepool_;
 
 		// no copy
 		flexible_astar(const flexible_astar& other) { } 
 		flexible_astar& 
 		operator=(const flexible_astar& other) { return *this; }
 
-		double 
+		warthog::search_node*
 		search(unsigned int startid, unsigned int goalid)
 		{
+//			if(nodeheap_ == 0)
+//			{
+//				nodeheap_ = new node_table(1024);
+//			}
+
 			warthog::problem_instance instance;
 			instance.set_goal(goalid);
 			instance.set_start(startid);
 
-			double len = DBL_MAX;
-			warthog::search_node* start = new warthog::search_node(startid);
-			start->update(0, heuristic_->h(startid, goalid), warthog::UNDEF);
+			warthog::search_node* goal = 0;
+			warthog::search_node* start = generate(startid);
+			start->set_g(0);
+			start->set_h(heuristic_->h(startid, goalid));
 			open_->push(start);
 
 			while(open_->size())
 			{
-				if(open_->peek()->id() == goalid)
+				if(open_->peek()->get_id() == goalid)
 				{
-					len = open_->peek()->g();
+					goal = open_->peek();
 					break;
 				}
 
@@ -121,28 +149,28 @@ class flexible_astar
 					std::cerr << std::endl;
 				}
 				#endif
-				closed_->set_value(current->id(),current->pid());
-				assert(closed_->get_value(current->id() == current->pid()));
-				expander_->expand(current->id(), &instance);
+				current->set_expanded(true); // NB: set this before calling expander_ 
+				assert(current->get_expanded());
+				expander_->expand(current->get_id(), &instance);
 				for(unsigned int nid = expander_->first(); 
-						nid != expander_->end();
+						nid != warthog::INF;
 					   	nid = expander_->next())
 				{
-					if(!(closed_->get_value(nid) == warthog::UNDEF))
+					warthog::search_node* n = this->generate(nid);
+					assert(n->get_id() == nid);
+					if(n->get_expanded())
 					{
 						// skip neighbours already expanded
 						continue;
 					}
 
-					warthog::search_node* n = open_->find(nid);
-					if(n)
+					if(open_->contains(n))
 					{
-						assert(n->id() == nid);
 						// update a node from the fringe
-						double gVal = current->g() + expander_->cost_to_n();
-						if(gVal < n->g())
+						double gVal = current->get_g() + expander_->cost_to_n();
+						if(gVal < n->get_g())
 						{
-							n->update(gVal, current->id());
+							n->relax(gVal, current);
 							open_->decrease_key(n);
 							#ifndef NDEBUG
 							if(verbose_)
@@ -166,9 +194,9 @@ class flexible_astar
 					else
 					{
 						// add a new node to the fringe
-						n = new warthog::search_node(nid);
-						n->update(current->g() + expander_->cost_to_n(), 
-								heuristic_->h(nid, goalid), current->id());
+						n->set_g(current->get_g() + expander_->cost_to_n());
+						n->set_h(heuristic_->h(nid, goalid));
+					   	n->set_parent(current);
 						open_->push(n);
 						#ifndef NDEBUG
 						if(verbose_)
@@ -186,19 +214,60 @@ class flexible_astar
 					std::cerr << std::endl;
 				}
 				#endif
-				delete current;
 			}
-
-			// cleanup
-			while(open_->size())
-			{
-				delete open_->pop_tail();
-			}
-			open_->clear();
-			closed_->clear();
-
-			return len;
+			return goal;
 		}
+
+		// return a warthog::search_node object corresponding to the given id.
+		// if the node has already been generated, return a pointer to the 
+		// previous instance; otherwise allocate memory for a new object.
+		warthog::search_node*
+		generate(unsigned int node_id)
+		{
+//			node_table::iterator it = nodeheap_->find(node_id);
+//			if(it != nodeheap_->end())
+//			{
+//				return (*it).second;
+//			}
+			warthog::search_node* mynode = nodeheap_[node_id];
+			if(mynode)
+			{
+				return mynode;
+			}
+
+			mynode = new (nodepool_->allocate()) warthog::search_node(node_id);
+			//nodeheap_->insert(std::make_pair(node_id, mynode));
+			nodeheap_[node_id] = mynode;
+			return mynode;
+		}
+
+		void
+		cleanup()
+		{
+			unsigned int maxid = expander_->get_max_node_id(); 
+			unsigned int i;
+			for(i = 0; i < maxid; i+= 8)
+			{
+				nodeheap_[i] = 0;
+				nodeheap_[i+1] = 0;
+				nodeheap_[i+2] = 0;
+				nodeheap_[i+3] = 0;
+				nodeheap_[i+4] = 0;
+				nodeheap_[i+5] = 0;
+				nodeheap_[i+6] = 0;
+				nodeheap_[i+7] = 0;
+			}
+			for(i -=8 ; i < maxid; i++)
+			{
+				nodeheap_[i] = 0;
+			}
+
+		//	delete nodeheap_;
+		//	nodeheap_ = 0;
+			open_->clear();
+			nodepool_->reclaim();
+		}
+
 
 };
 

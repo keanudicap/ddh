@@ -15,129 +15,62 @@ void
 warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 		warthog::problem_instance* problem)
 {
-	unsigned int map_width = map_->width();
-	unsigned int map_height = map_->height();
-	warthog::helpers::index_to_xy(nodeid, map_width, cx_, cy_);
+	warthog::helpers::index_to_xy(nodeid, map_->width(), cx_, cy_);
 
 	// get terrain type of each tile in the 3x3 square around (x, y)
-	unsigned int index = 0;
-	int foo = (int)cx_-1; 
-	int bar = (int)cy_-1; 
-	for(int i = foo; i <= foo+2; i++)
-	{
-		for(int j = bar; j <= bar+2; j++)
-		{
-			if(!(i < 0 || j < 0 || i >= (int)map_width || j >= (int)map_height))
-			{
-				tiles_[index] = map_->get_label(i, j);
-			}
-			else
-			{
-				tiles_[index] = 0;
-			}
-			index++;
-		}
-	}
+	tiles_[0] = map_->get_label(cx_-1, cy_-1);
+	tiles_[1] = map_->get_label(cx_-1, cy_);
+	tiles_[2] = map_->get_label(cx_-1, cy_+1);
+	tiles_[3] = map_->get_label(cx_, cy_-1);
+	tiles_[4] = map_->get_label(cx_, cy_);
+	tiles_[5] = map_->get_label(cx_, cy_+1);
+	tiles_[6] = map_->get_label(cx_+1, cy_-1);
+	tiles_[7] = map_->get_label(cx_+1, cy_);
+	tiles_[8] = map_->get_label(cx_+1, cy_+1);
 
 	// calculate transition costs; from (x, y) to each adjacent tile
 	// this value is just an average of terrain costs weighted by the 
 	// transition type (straight or diagonal)
-	for(int i=0; i < 9; i++)
+	if(!tiles_[4])
 	{
-		costs_[i] = warthog::INF;
-		switch(i)
-		{
-			case 0: // (x-1, y-1)
-				if(tiles_[4] && tiles_[1] && tiles_[3] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[1] + tiles_[3] + tiles_[i]);
-					costs_[i] *= 0.25 * warthog::ROOT_TWO;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 1: // (x-1, y)
-				if(tiles_[4] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[i]) * 0.5;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 2: // (x-1, y+1)
-				if(tiles_[4] && tiles_[1] && tiles_[5] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[1] + tiles_[5] + tiles_[i]);
-					costs_[i] *= 0.25 * warthog::ROOT_TWO;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 3: // (x, y-1)
-				if(tiles_[4] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[i])*0.5;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 4: // (x, y)
-				costs_[i] = 0;
-				break;
-			case 5: //  (x, y+1)
-				if(tiles_[4] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[i])*0.5;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 6: // (x+1, y-1)
-				if(tiles_[4] && tiles_[7] && tiles_[3] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[7] + tiles_[3] + tiles_[i]);
-					costs_[i] *= 0.25 * warthog::ROOT_TWO;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 7: // (x+1, y)
-				if(tiles_[4] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[i])*0.5;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			case 8: // (x+1, y+1)
-				if(tiles_[4] && tiles_[7] && tiles_[5] && tiles_[i])
-				{
-					costs_[i] = (tiles_[4] + tiles_[7] + tiles_[5] + tiles_[i]);
-					costs_[i] *= 0.25 * warthog::ROOT_TWO;
-				}
-				else // neighbour cannot be reached; mark it as an obstacle
-				{
-					tiles_[i] = 0;
-				}
-				break;
-			default:
-				break;
-		}
+		// if current tile is an obstacle, it infinite cost transitions
+		costs_[0] = costs_[1] = costs_[2] = costs_[3] = warthog::INF;
+		costs_[4] = costs_[5] = costs_[6] = costs_[7] = warthog::INF;
+		costs_[8] = warthog::INF;
+		return;
 	}
+	costs_[4] = 0;  // zero cost to move from (cx, cy) to (cx, cy)
+
+	// cost to step in direction N 
+	costs_[3] = tiles_[3] ? ((tiles_[3] + tiles_[4]) * 0.5) : warthog::INF;
+	// cost to step in direction E
+	costs_[7] = tiles_[7] ? ((tiles_[7] + tiles_[4]) * 0.5) : warthog::INF;
+	// cost to step in direction S
+	costs_[5] = tiles_[5] ? ((tiles_[5] + tiles_[4]) * 0.5) : warthog::INF;
+	// cost to step in direction W
+	costs_[1] = tiles_[1] ? ((tiles_[1] + tiles_[4]) * 0.5) : warthog::INF;
+	
+	// cost to step in direction NE
+	costs_[6] = (tiles_[6] & tiles_[3] & tiles_[7]) ? 
+		((tiles_[6] + tiles_[3] + tiles_[7] + tiles_[4]) 
+		 * 0.25 * warthog::ROOT_TWO ) : (warthog::INF);
+	
+	// cost to step in direction SE
+	costs_[8] = (tiles_[8] & tiles_[7] & tiles_[5]) ? 
+		((tiles_[8] + tiles_[7] + tiles_[5] + tiles_[4]) 
+		 * 0.25 * warthog::ROOT_TWO ) : (warthog::INF);
+
+	// cost to step in direction SW
+	costs_[2] = (tiles_[2] & tiles_[1] & tiles_[5]) ? 
+		((tiles_[2] + tiles_[1] + tiles_[5] + tiles_[4]) 
+		 * 0.25 * warthog::ROOT_TWO ) : (warthog::INF);
+	
+	// cost to step in direction NW
+	costs_[0] = (tiles_[0] & tiles_[1] & tiles_[3]) ? 
+		((tiles_[0] + tiles_[1] + tiles_[3] + tiles_[4]) 
+		 * 0.25 * warthog::ROOT_TWO ) : (warthog::INF);
+	
+	// set index of first neighbour
 	which_ = 0;
 }
 
