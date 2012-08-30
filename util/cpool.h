@@ -55,6 +55,13 @@ class cchunk
 			delete [] freed_stack_;
 		}
 
+		inline void
+		reclaim()
+		{
+			next_ = mem_;
+			stack_size_ = 0;
+		}
+
 		inline char*
 		allocate()
 		{
@@ -161,6 +168,15 @@ class cpool
 				delete chunks_[i];
 			}
 			delete [] chunks_;
+		}
+
+		inline void
+		reclaim()
+		{
+			for(size_t i=0; i < num_chunks_; i++)
+			{
+				chunks_[i]->reclaim();
+			}
 		}
 
 		inline char*
