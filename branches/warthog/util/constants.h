@@ -25,8 +25,8 @@ namespace warthog
 	static const double TWO = 2.0f;
 	static const double ROOT_TWO = 1.414213562f;
 	static const double ONE_OVER_ROOT_TWO = 1.0/ROOT_TWO;//0.707106781f;
-	static const double INF = DBL_MAX;
-	static const unsigned int UNDEF = UINT_MAX;
+	//static const double INF = DBL_MAX;
+	static const unsigned int INF = UINT_MAX;
 
 	// hashing constants
 	static const unsigned int FNV32_offset_basis = 2166136261;

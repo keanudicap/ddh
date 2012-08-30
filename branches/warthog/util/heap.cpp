@@ -8,14 +8,13 @@ warthog::heap::heap(unsigned int s, bool minheap)
 
 warthog::heap::~heap()
 {
-	keymap_.clear();
 	delete [] elts_;
 }
 
 void 
 warthog::heap::push(warthog::search_node* val)
 {
-	if(find(val->id()))
+	if(contains(val))
 	{
 		return;
 	}
@@ -24,10 +23,11 @@ warthog::heap::push(warthog::search_node* val)
 	{
 		resize(maxsize_*2);
 	}
-	elts_[heapsize_] = val;
-	keymap_[val->id()] = heapsize_;
+	unsigned int priority = heapsize_;
+	elts_[priority] = val;
+	val->set_priority(priority);
 	heapsize_++;
-	heapify_up(heapsize_-1);
+	heapify_up(priority);
 }
 
 warthog::search_node*
@@ -40,34 +40,20 @@ warthog::heap::pop()
 
 	warthog::search_node *ans = elts_[0];
 	heapsize_--;
-	keymap_.erase(ans->id());
 
 	if(heapsize_ > 0)
 	{
 		elts_[0] = elts_[heapsize_];
-		keymap_[elts_[0]->id()] = 0;
+		elts_[0]->set_priority(0);
 		heapify_down(0);
 	}
-	return ans;
-}
-
-warthog::search_node*
-warthog::heap::pop_tail()
-{
-	if (heapsize_ == 0)
-	{
-		return 0;
-	}
-
-	heapsize_--;
-	warthog::search_node *ans = elts_[heapsize_];
-	keymap_.erase(ans->id());
 	return ans;
 }
 
 void 
 warthog::heap::heapify_up(unsigned int index)
 {
+	assert(index < heapsize_);
 	while(index > 0)
 	{
 		unsigned int parent = (index-1) >> 1;
@@ -86,19 +72,25 @@ warthog::heap::heapify_up(unsigned int index)
 void 
 warthog::heap::heapify_down(unsigned int index)
 {
-	while(index < (heapsize_ >> 1))
+	unsigned int first_leaf_index = heapsize_ >> 1;
+	while(index < first_leaf_index)
 	{
 		// find smallest (or largest, depending on heap type) child
 		unsigned int child1 = (index<<1)+1;
 		unsigned int child2 = (index<<1)+2;
 		unsigned int which = child1;
-		if ((child2 < heapsize_) && rotate(*elts_[child1], *elts_[child2]))
+		if((child2 < heapsize_) && *elts_[child2] < *elts_[child1])
 		{
 			which = child2;
 		}
+//		if ((child2 < heapsize_) && rotate(*elts_[child1], *elts_[child2]))
+//		{
+//			which = child2;
+//		}
 
 		// swap child with parent if necessary
-		if (rotate(*elts_[index], *elts_[which]))
+		if(*elts_[which] < *elts_[index])
+		//if (rotate(*elts_[index], *elts_[which]))
 		{
 			swap(index, which);
 			index = which;
@@ -113,38 +105,28 @@ warthog::heap::heapify_down(unsigned int index)
 void 
 warthog::heap::decrease_key(warthog::search_node* val)
 {	
- 	warthog::heap::node_list::const_iterator it = keymap_.find(val->id());
-	if(it == keymap_.end())
-	{
-		return;
-	}
-
+	assert(val->get_priority() < heapsize_);
 	if(minheap_)
 	{
-		heapify_up((*it).second);
+		heapify_up(val->get_priority());
 	}
 	else
 	{
-		heapify_down((*it).second);
+		heapify_down(val->get_priority());
 	}
 }
 
 void 
 warthog::heap::increase_key(warthog::search_node* val)
 {
-	warthog::heap::node_list::const_iterator it = keymap_.find(val->id());
-	if(it == keymap_.end())
-	{
-		return;
-	}
-
+	assert(val->get_priority() < heapsize_);
 	if(minheap_)
 	{
-		heapify_down((*it).second);
+		heapify_down(val->get_priority());
 	}
 	else
 	{
-		heapify_up((*it).second);
+		heapify_up(val->get_priority());
 	}
 }
 
@@ -158,7 +140,6 @@ warthog::heap::resize(unsigned int newsize)
 		exit(1);
 	}
 
-	keymap_.rehash(newsize);
  	warthog::search_node** tmp = new search_node*[newsize];
 	for(unsigned int i=0; i < heapsize_; i++)
 	{
@@ -172,11 +153,11 @@ warthog::heap::resize(unsigned int newsize)
 void
 warthog::heap::clear()
 {
-	keymap_.clear();
 	for(unsigned int i=0; i < heapsize_; i++)
 	{
 		elts_[i] = 0;
 	}
+	heapsize_ = 0;
 }
 
 void 

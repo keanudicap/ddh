@@ -6,9 +6,6 @@
 // A min priority queue. Loosely based on an implementation from HOG
 // by Nathan Sturtevant.
 //
-// TODO: Custom hash table that maps node ids to key values without
-// the iterator/pair overhead of unordered_map.
-//
 // @author: dharabor
 // @created: 09/08/2012
 //
@@ -17,7 +14,6 @@
 
 #include <cassert>
 #include <iostream>
-#include <tr1/unordered_map>
 
 namespace warthog
 {
@@ -25,8 +21,6 @@ namespace warthog
 class search_node;
 class heap 
 {
-	typedef std::tr1::unordered_map<unsigned int, unsigned int> node_list;
-
 	public:
 		heap(unsigned int size, bool minheap);
 		~heap();
@@ -50,23 +44,17 @@ class heap
 		warthog::search_node*
 		pop();
 
-		// remove the last  element from the heap
-		warthog::search_node*
-		pop_tail();
-		
-		// look for the specified element in the heap.
-		// @return a pointer to the element if it exists; otherwise null
-		warthog::search_node*	
-		find(unsigned int id)
+		// @return true if the priority of the element is 
+		// otherwise
+		inline bool
+		contains(warthog::search_node* n)
 		{
-			std::tr1::unordered_map<unsigned int, unsigned int>
-				::iterator it =  keymap_.find(id);
-			if(it != this->keymap_.end())
+			unsigned int priority = n->get_priority();
+			if(priority < heapsize_ && &*n == &*elts_[priority])
 			{
-				assert((*it).second < heapsize_);
-				return elts_[(*it).second];
+				return true;
 			}
-			return 0;
+			return false;
 		}
 
 		// retrieve the top element without removing it
@@ -99,9 +87,7 @@ class heap
 		mem()
 		{
 			return maxsize_*sizeof(warthog::search_node*)
-				+ keymap_.size()*8
-				+ sizeof(*this) 
-				- sizeof(elts_); // double counted
+				+ sizeof(*this);
 		}
 
 	private:
@@ -109,22 +95,24 @@ class heap
 		bool minheap_;
 		unsigned int heapsize_;
 		warthog::search_node** elts_;
-		node_list keymap_;
 
 		// reorders the subheap containing elts_[index]
-		void heapify_up(unsigned int index);
+		void 
+		heapify_up(unsigned int);
 		
 		// reorders the subheap under elts_[index]
-		void heapify_down(unsigned int index);
+		void 
+		heapify_down(unsigned int);
 
 		// allocates more memory so the heap can grow
-		void resize(unsigned int newsize);
+		void 
+		resize(unsigned int newsize);
 	
 		// returns true if:
 		//   minheap is true and the priority of second < first
 		//   minheap is false and the priority of second > first
-		inline bool rotate(warthog::search_node& first,
-				warthog::search_node& second)
+		inline bool 
+		rotate(warthog::search_node& first, warthog::search_node& second)
 		{
 			if(minheap_)
 			{
@@ -144,16 +132,16 @@ class heap
 		}
 
 		// swap the positions of two nodes in the underlying array
-		inline void swap(unsigned int index1, unsigned int index2)
+		inline void 
+		swap(unsigned int index1, unsigned int index2)
 		{
 			assert(index1 < heapsize_ && index2 < heapsize_);
 
 			warthog::search_node* tmp = elts_[index1];
 			elts_[index1] = elts_[index2];
-			keymap_[elts_[index2]->id()] = index1;
-
+			elts_[index1]->set_priority(index1);
 			elts_[index2] = tmp;
-			keymap_[tmp->id()] = index2;
+			tmp->set_priority(index2);
 		}
 };
 

@@ -89,6 +89,7 @@ void test_alloc()
 void flexible_astar_test()
 {
 	bool check_opt = false;
+	//bool check_opt = true;
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario("orz700d.map.scen");
 
@@ -113,7 +114,7 @@ void flexible_astar_test()
 		int startid = exp->starty() * exp->mapwidth() + exp->startx();
 		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
 		double len = astar.get_length(startid, goalid);
-		if(len == DBL_MAX)
+		if(len == warthog::INF)
 		{
 			len = 0;
 		}
@@ -165,7 +166,7 @@ void gridmap_expansion_policy_test()
 		unsigned int mapwidth = map->width();
 		policy.expand(nodeid[i], 0);
 		for(unsigned int nid = policy.first();
-				nid != warthog::UNDEF;
+				nid != warthog::INF;
 				nid = policy.next())
 		{
 			unsigned int x = UINT_MAX;
@@ -261,7 +262,7 @@ void heap_insert_test()
 	for(int i=heapnodes; i > 0 ; i--)
 	{
 		nodes[i] = new warthog::search_node(i);
-		nodes[i]->update(0, i, 0);
+		nodes[i]->set_g(i);
 		myheap.push(nodes[i]);
 	}
 	// test duplicate detection

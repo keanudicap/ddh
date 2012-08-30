@@ -19,8 +19,10 @@ class search_node
 {
 	public:
 		search_node(unsigned int id) 
-			: id_(id), h_(0), g_(0), pid_(warthog::UNDEF)
+			: id_and_status_(id << 1), h_(0), g_(0), parent_(0), 
+			priority_(warthog::INF)
 		{
+			assert(this->get_id() < ((1ul<<31)-1));
 			refcount_++;
 		}
 
@@ -30,64 +32,89 @@ class search_node
 		}
 
 		inline unsigned int 
-		id() const { return id_; }
+		get_id() const { return (id_and_status_ >> 1); }
+
+		inline void
+		set_id(unsigned int id) 
+		{ 
+			id_and_status_ = (id << 1) | (id_and_status_ & 1); 
+		} 
+
+		inline bool
+		get_expanded() const { return (id_and_status_ & 1); }
+
+		inline void
+		set_expanded(bool expanded) 
+		{ 
+			id_and_status_ = ((id_and_status_ >> 1) << 1) |
+			   	(unsigned int)(expanded?1:0);
+		}
+
+		inline warthog::search_node* 
+		get_parent() const { return parent_; }
+
+		inline void
+		set_parent(warthog::search_node* parent) { parent_ = parent; } 
 
 		inline unsigned int
-		pid() { return pid_; }
+		get_priority() const { return priority_; }
+
+		inline void
+		set_priority(unsigned int priority) { priority_ = priority; } 
+
+		inline double
+		get_g() const { return g_; }
+
+		inline void
+		set_g(double g) { g_ = g; }
+
+		inline double
+		get_h() const { return h_; }
+
+		inline void
+		set_h(double h) { h_ = h; }
 
 		inline double 
-		f() const { return g_ + h_; }
-
-		inline double
-		g() const { return g_; }
-
-		inline double
-		h() const { return h_; }
-
+		get_f() const { return g_ + h_; }
 
 		inline void 
-		update(double g, double h, unsigned int pid)
+		relax(double g, warthog::search_node* parent)
 		{
+			assert(g < g_);
 			g_ = g;
-			h_ = h;
-			pid_ = pid;
+			parent_ = parent;
 		}
 
-		// use this version if heuristic value is unchanged
-		inline void 
-		update(double g, unsigned int pid)
-		{
-			g_ = g;
-			pid_ = pid;
-		}
+		//inline void* 
+		//operator new(size_t s)
+		//{
+		//	return (void*) warthog::search_node::mem_.allocate();
+		//}
 
-		inline void* 
-		operator new(size_t s)
-		{
-			return (void*) warthog::search_node::mem_.allocate();
-		}
-
-		inline void  
-		operator delete(void* addr, size_t bytes)
-		{
-			warthog::search_node::mem_.deallocate((char*)addr);
-		}
-
+		//inline void  
+		//operator delete(void* addr, size_t bytes)
+		//{
+		//	warthog::search_node::mem_.deallocate((char*)addr);
+		//}
 
 		inline bool
 		operator<(const warthog::search_node& other) const
 		{
-			if((this->f() + warthog::EPSILON) < other.f())
+			double myf = g_ + h_ + warthog::EPSILON;
+			double otherf = other.g_ + other.h_;
+			if(myf < otherf)
 			{
 				return true;
 			}
-			if(!((other.f() + warthog::EPSILON) < this->f()))
+			if(myf > otherf)
 			{
-				// break ties in favour of smaller g
-				if((g_ + warthog::EPSILON) < other.g_)
-				{
-					return true;
-				}
+				return false;
+			}
+
+			// break ties in favour of smaller g
+			if((g_ + warthog::EPSILON) < other.g_)
+			{
+				return true;
 			}
 			return false;
 		}
@@ -95,11 +122,11 @@ class search_node
 		inline bool
 		operator>(const warthog::search_node& other) const
 		{
-			if((this->f() - warthog::EPSILON) > other.f())
+			if((this->get_f() - warthog::EPSILON) > other.get_f())
 			{
 				return true;
 			}
-			if(!((other.f() - warthog::EPSILON) > this->f()))
+			if(!((other.get_f() - warthog::EPSILON) > this->get_f()))
 			{
 				// break ties in favour of smaller g
 				if((g_ - warthog::EPSILON) > other.g_)
@@ -151,8 +178,9 @@ class search_node
 		inline void 
 		print(std::ostream&  out) const
 		{
-			out << "search_node id:" << id_ << " g: "<<g_
-				<<" h: "<<h_<<" f: "<<this->f() << " ";
+			out << "search_node id:" << get_id() << " g: "<<g_
+				<<" h: "<<h_<<" f: "<<this->get_f()
+				<< " expanded: " << get_expanded() << " ";
 		}
 
 		static unsigned int 
@@ -165,10 +193,12 @@ class search_node
 		}
 
 	private:
-		unsigned int id_;
+		unsigned int id_and_status_; // bit 0 is expansion status; 1-31 are id
 		double h_;
 		double g_;
-		unsigned int pid_; // parent id
+		warthog::search_node* parent_;
+		unsigned int priority_; // expansion priority
+
 		static unsigned int refcount_;
 		static warthog::mem::cpool mem_;
 };
