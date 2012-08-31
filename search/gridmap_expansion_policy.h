@@ -21,7 +21,7 @@ class problem_instance;
 class gridmap_expansion_policy 
 {
 	public:
-		gridmap_expansion_policy(std::shared_ptr<warthog::gridmap> map);
+		gridmap_expansion_policy(warthog::gridmap* map);
 		~gridmap_expansion_policy();
 
 		void 
@@ -33,11 +33,7 @@ class gridmap_expansion_policy
 		first()
 		{
 			which_ = 0;
-			if(tiles_[which_])
-			{
-				return this->n();
-			}
-			return this->next();
+			return this->n();
 		}
 
 		// @return the id of the current neighbour of (cx_, cy_) -- the node
@@ -46,57 +42,7 @@ class gridmap_expansion_policy
 		inline unsigned int 
 		n()
 		{
-			int nx = cx_;
-			int ny = cy_;
-			if(which_ < 9)
-			{
-				switch(which_)
-				{
-					case 0: // (x-1, y-1)
-						nx += -1;
-						ny += -1;
-						break;
-					case 1: // (x-1 y)
-						nx += -1;
-						ny += 0;
-						break;
-					case 2: // (x-1, y+1)
-						nx += -1; 
-						ny += 1;
-						break;
-					case 3: // (x, y-1)
-						nx += 0;
-						ny += -1;
-						break;
-					case 4: // (x, y)
-						nx += 0;
-						ny += 0;
-						break;
-					case 5: // (x, y+1)
-						nx += 0;
-						ny += 1;
-						break;
-					case 6: // (x+1, y-1)
-						nx += 1;
-						ny += -1;
-						break;
-					case 7: // (x+1, y)
-						nx += 1;
-						ny += 0;
-						break;
-					case 8: // (x+1, y+1)
-						nx += 1;
-						ny += 1;
-						break;
-					default:
-						break;
-				}
-				if(nx >= 0 && nx < (int)map_->width() && ny >= 0 && ny < (int)map_->height())	
-				{
-					return (ny*map_->width())+nx;
-				}
-			}
-			return warthog::INF;
+			return neis_[which_];
 		}
 
 
@@ -105,14 +51,8 @@ class gridmap_expansion_policy
 		inline unsigned int
 		next()
 		{
-			while(++which_ < 9)	
-			{
-				if(tiles_[which_])
-				{
-					return n();
-				}
-			} 
-			return warthog::INF;
+			if(which_ < num_neis_) { which_++; }
+			return this->n();
 		}
 
 		// @return true if (cx_, cy_) has more neighbours to process.
@@ -120,12 +60,9 @@ class gridmap_expansion_policy
 		bool 
 		has_next()
 		{
-			for(int i=which_+1; i < 9; i++)
+			if((which_+1) < num_neis_)
 			{
-				if(tiles_[i])
-				{
-					return true;
-				}
+				return true;
 			}
 			return false;
 		}
@@ -133,11 +70,7 @@ class gridmap_expansion_policy
 		inline double
 		cost_to_n()
 		{
-			if(which_ < 9)
-			{
-				return costs_[which_];
-			}
-			return warthog::INF;
+			return costs_[which_];
 		}
 
 		inline unsigned int
@@ -154,11 +87,13 @@ class gridmap_expansion_policy
 		}
 	
 	private:
-		std::shared_ptr<warthog::gridmap> map_;
+		warthog::gridmap* map_;
 		unsigned int cx_, cy_;
-		warthog::dbword tiles_[9]; // 3x3 square of tiles around node (cx_, cy_)
-		double costs_[9];
+		// 3x3 square of tiles + one terminal element
+		unsigned int neis_[10]; 
+		double costs_[10];
 		unsigned int which_; // current neighbour
+		unsigned int num_neis_; // might have < 9 (some could be blocked)
 };
 
 }

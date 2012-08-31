@@ -24,7 +24,6 @@
 #include <iostream>
 #include <memory>
 #include <stack>
-#include <unordered_map>
 
 namespace warthog
 {
@@ -34,17 +33,13 @@ namespace warthog
 template <class H, class E>
 class flexible_astar 
 {
-	typedef std::unordered_map<
-		unsigned int, warthog::search_node*> node_table;
-
 	public:
-		flexible_astar(std::shared_ptr<H> heuristic, std::shared_ptr<E> expander)
+		flexible_astar(H* heuristic, E* expander)
 			: heuristic_(heuristic), expander_(expander)
 		{
 			open_ = new warthog::heap(1024, true);
 			verbose_ = false;
 			nodepool_ = new warthog::mem::cpool(sizeof(warthog::search_node));
-			//nodeheap_ = new node_table(1024);
 			nodeheap_ = new warthog::search_node*[expander_->get_max_node_id()];
 			for(unsigned int i = 0; i < expander_->get_max_node_id(); i++)
 			{
@@ -102,13 +97,14 @@ class flexible_astar
 		}
 
 	private:
-		std::shared_ptr<H> heuristic_;
-		std::shared_ptr<E> expander_;
+		H* heuristic_;
+		E* expander_;
 		warthog::heap* open_;
 		bool verbose_;
 		//node_table* nodeheap_;
 		warthog::search_node** nodeheap_;
 		warthog::mem::cpool* nodepool_;
+		static unsigned int searchid_;
 
 		// no copy
 		flexible_astar(const flexible_astar& other) { } 
@@ -118,10 +114,13 @@ class flexible_astar
 		warthog::search_node*
 		search(unsigned int startid, unsigned int goalid)
 		{
-//			if(nodeheap_ == 0)
-//			{
-//				nodeheap_ = new node_table(1024);
-//			}
+			#ifndef NDEBUG
+			if(verbose_)
+			{
+				std::cerr << "search: startid="<<startid<<" goalid=" <<goalid
+					<< std::endl;
+			}
+			#endif
 
 			warthog::problem_instance instance;
 			instance.set_goal(goalid);
@@ -195,6 +194,7 @@ class flexible_astar
 					{
 						// add a new node to the fringe
 						double gval = current->get_g() + expander_->cost_to_n();
+						assert(gval != warthog::INF);
 						n->set_g(gval);
 						n->set_f(gval + heuristic_->h(nid, goalid));
 					   	n->set_parent(current);
@@ -225,11 +225,6 @@ class flexible_astar
 		warthog::search_node*
 		generate(unsigned int node_id)
 		{
-//			node_table::iterator it = nodeheap_->find(node_id);
-//			if(it != nodeheap_->end())
-//			{
-//				return (*it).second;
-//			}
 			warthog::search_node* mynode = nodeheap_[node_id];
 			if(mynode)
 			{
@@ -237,7 +232,6 @@ class flexible_astar
 			}
 
 			mynode = new (nodepool_->allocate()) warthog::search_node(node_id);
-			//nodeheap_->insert(std::make_pair(node_id, mynode));
 			nodeheap_[node_id] = mynode;
 			return mynode;
 		}
@@ -271,6 +265,9 @@ class flexible_astar
 
 
 };
+
+template <class H, class E>
+unsigned int warthog::flexible_astar<H, E>::searchid_ = warthog::FNV32_prime;
 
 }
 
