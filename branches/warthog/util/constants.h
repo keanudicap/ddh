@@ -1,6 +1,12 @@
 #ifndef WARTHOG_CONSTANTS_H
 #define WARTHOG_CONSTANTS_H
 
+// constants.h
+//
+// @author: dharabor
+// @created: 01/08/2012
+//
+
 #include <cfloat>
 #include <cmath>
 #include <climits>
@@ -10,14 +16,9 @@ namespace warthog
 	typedef unsigned char dbword;
 
 	// gridmap constants
-	static const int DBWORD_BITS = sizeof(warthog::dbword)*8;
-	static const int LOG2_DBWORD_BITS = ceil(log10(warthog::DBWORD_BITS) / log10(2));
-	//static unsigned char DBWORD_MAX = (char)((1 << DBWORD_BITS)-1);
-	//static const int BYTES_PER_INT = sizeof(int);
-
-	// blockmap constants
-	static const unsigned int BLOCKSIZE = 256; // NB: must be a power of 2!!
-	static const unsigned int LOG_BLOCKSIZE = ceil(log10(BLOCKSIZE) / log10(2));
+	static const unsigned int DBWORD_BITS = sizeof(warthog::dbword)*8;
+	static const unsigned int DBWORD_BITS_MASK = (warthog::DBWORD_BITS-1);
+	static const unsigned int LOG2_DBWORD_BITS = ceil(log10(warthog::DBWORD_BITS) / log10(2));
 
 	// search and sort constants
 	static const double EPSILON = 0.000001;

@@ -85,7 +85,8 @@ class cchunk
 		deallocate(char* addr)
 		{
 			#ifndef NDEBUG
-			if((addr-mem_) >= pool_size_)
+			assert(mem_ >= addr);
+			if((unsigned)(addr-mem_) >= pool_size_)
 			{
 				std::cerr << "err; warthog::mem::cchunk; freeing memory outside"
 					" range of the chunk at addr: "<<&mem_ << "\n";
@@ -99,7 +100,10 @@ class cchunk
 		inline bool
 		contains(char* addr)
 		{
-			if((addr-mem_) < pool_size_)
+			#ifndef NDEBUG
+			assert(mem_ >= addr);
+			#endif
+			if((unsigned)(addr-mem_) < pool_size_)
 			{
 				return true;
 			}
@@ -211,7 +215,8 @@ class cpool
 		{
 			for(unsigned int i=0; i < num_chunks_; i++)
 			{
-				if((addr-chunks_[i]->first_addr()) < chunks_[i]->pool_size())
+				if((unsigned)(addr-chunks_[i]->first_addr()) 
+						< chunks_[i]->pool_size())
 				{
 					chunks_[i]->deallocate(addr);
 					return;

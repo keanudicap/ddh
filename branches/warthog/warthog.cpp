@@ -33,6 +33,7 @@ int main(int argc, char** argv)
 {
 	//test_alloc();
 	flexible_astar_test();
+	//gridmap_access_test();
 }
 
 void test_alloc()
@@ -93,18 +94,13 @@ void flexible_astar_test()
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario("orz700d.map.scen");
 
-	std::shared_ptr<warthog::gridmap>
-	   	map(new warthog::gridmap(scenmgr.get_experiment(0)->map().c_str(), true));
-
-	std::shared_ptr<warthog::gridmap_expansion_policy>
-	   	expander(new warthog::gridmap_expansion_policy(map));
-
-	std::shared_ptr<warthog::octile_heuristic>
-		heuristic(new warthog::octile_heuristic(map->width(), map->height()));
+	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str(), true);
+	warthog::gridmap_expansion_policy expander(&map);
+	warthog::octile_heuristic heuristic(map.width(), map.height());
 
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
-	   	warthog::gridmap_expansion_policy> astar(heuristic, expander);
+	   	warthog::gridmap_expansion_policy> astar(&heuristic, &expander);
 	//astar.set_verbose(true);
 
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
@@ -154,16 +150,14 @@ void flexible_astar_test()
 
 void gridmap_expansion_policy_test()
 {
-	std::shared_ptr<warthog::gridmap> map(
-			new warthog::gridmap("CSC2F.map", true));
-
-	warthog::gridmap_expansion_policy policy(map);
+	warthog::gridmap map("CSC2F.map", true);
+	warthog::gridmap_expansion_policy policy(&map);
 	unsigned int nodeid[2] = {89, 0};
 
 	for(int i=0; i < 2; i++)
 	{
 		std::cout << "nid: "<<nodeid[i]<<std::endl;
-		unsigned int mapwidth = map->width();
+		unsigned int mapwidth = map.width();
 		policy.expand(nodeid[i], 0);
 		for(unsigned int nid = policy.first();
 				nid != warthog::INF;
@@ -286,12 +280,14 @@ void heap_insert_test()
 void gridmap_access_test()
 {
 	std::cout << "gridmap_access_test..."<<std::endl;
-	const char* file = "orz700d.map";
+	//const char* file = "orz700d.map";
+	const char* file = "CSC2F.map";
 	std::cout << "loading map..."<<file<<std::endl;
-	warthog::gridmap mymap(file, false);
-//	std::cout << "map\n";
-	//mymap.print(std::cout);
-//	std::cout << "done."<<std::endl;
+	warthog::gridmap mymap(file, true);
+	std::cout << "map\n";
+	mymap.print(std::cout);
+	std::cout << "done."<<std::endl;
+	return;
 
 	for(int i=0; i < 1<<28; i++)
 	{
