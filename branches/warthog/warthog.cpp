@@ -89,8 +89,8 @@ void test_alloc()
 
 void flexible_astar_test()
 {
-	bool check_opt = false;
-	//bool check_opt = true;
+	//bool check_opt = false;
+	bool check_opt = true;
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario("orz700d.map.scen");
 
@@ -115,12 +115,12 @@ void flexible_astar_test()
 			len = 0;
 		}
 
-		if(!check_opt)
-			continue;
-
 		std::cerr << "exp "<<i<<" ";
 		exp->print(std::cerr);
 		std::cerr << std::endl;
+
+		if(!check_opt)
+			continue;
 
 		std::stringstream stroptlen;
 		stroptlen << std::fixed << std::setprecision(exp->precision());
@@ -142,9 +142,7 @@ void flexible_astar_test()
 			exit(1);
 		}
 	}
-
-
-	
+	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
 
 }
 

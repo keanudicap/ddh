@@ -52,8 +52,8 @@ warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 	if(tiles[0] && tiles[1] && tiles[3]) // NW
 	{ 
 		neis_[num_neis_] = nid_m_w - 1;
-		costs_[num_neis_] = (tiles[0] + tiles[1] + tiles[3] + tiles[4])
-			 * 0.25 * warthog::ROOT_TWO;
+		costs_[num_neis_] =  (tiles[0] + tiles[1] + tiles[3] + tiles[4])
+			 * warthog::ROOT_TWO_OVER_FOUR;
 		num_neis_++;
 	}
 
@@ -67,8 +67,8 @@ warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 	if(tiles[2] && tiles[1] && tiles[5]) // NE
 	{ 
 		neis_[num_neis_] = nid_m_w + 1;
-		costs_[num_neis_] =	(tiles[2] + tiles[1] + tiles[5] + tiles[4])
-			 * 0.25 * warthog::ROOT_TWO;
+		costs_[num_neis_] = (tiles[2] + tiles[1] + tiles[5] + tiles[4])
+			* warthog::ROOT_TWO_OVER_FOUR;
 		num_neis_++;
 	}
 
@@ -90,7 +90,7 @@ warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 	{	
 		neis_[num_neis_] = nid_p_w - 1;
 		costs_[num_neis_] = (tiles[6] + tiles[3] + tiles[7] + tiles[4]) 
-			 * 0.25 * warthog::ROOT_TWO;
+			* warthog::ROOT_TWO_OVER_FOUR;
 		num_neis_++;
 	}
 
@@ -105,7 +105,7 @@ warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 	{ 
 		neis_[num_neis_] = nid_p_w + 1;
 		costs_[num_neis_] = (tiles[8] + tiles[7] + tiles[5] + tiles[4]) 
-			 * 0.25 * warthog::ROOT_TWO; 
+			* warthog::ROOT_TWO_OVER_FOUR;
 		num_neis_++;
 	}
 }

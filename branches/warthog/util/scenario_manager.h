@@ -50,6 +50,13 @@ class scenario_manager
 		{ 
 			return experiments_.size(); 
 		}
+
+		inline size_t 
+		mem()
+		{
+			return sizeof(*this) + 
+				sizeof(warthog::experiment) * experiments_.size();
+		}
 		
 		void generate_experiments(warthog::gridmap*, int num);
 		void load_scenario(const char* filelocation);
