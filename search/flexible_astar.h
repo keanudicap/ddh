@@ -51,8 +51,26 @@ class flexible_astar
 		~flexible_astar()
 		{
 			cleanup();
-			delete open_;
 			delete nodeheap_;
+			delete nodepool_;
+			delete open_;
+		}
+
+		inline size_t
+		mem()
+		{
+			size_t bytes = 
+				// node objects allocated during search
+				nodepool_->mem() + 
+				// pointers to allocated node objects
+				sizeof(nodeheap_) * expander_->get_max_node_id() + 
+				// memory for the priority quete
+				open_->mem() + 
+				// gridmap size and other stuff needed to expand nodes
+				expander_->mem() +
+				// misc
+				sizeof(*this);
+			return bytes;
 		}
 
 		inline bool
