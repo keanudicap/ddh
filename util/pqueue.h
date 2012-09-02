@@ -1,7 +1,7 @@
-#ifndef WARTHOG_HEAP_H
-#define WARTHOG_HEAP_H
+#ifndef WARTHOG_PQUEUE_H
+#define WARTHOG_PQUEUE_H
 
-// heap.h
+// pqueue.h
 //
 // A min priority queue. Loosely based on an implementation from HOG
 // by Nathan Sturtevant.
@@ -19,13 +19,13 @@ namespace warthog
 {
 
 class search_node;
-class heap 
+class pqueue 
 {
 	public:
-		heap(unsigned int size, bool minheap);
-		~heap();
+		pqueue(unsigned int size, bool minqueue);
+		~pqueue();
 
-		// removes all elements from the heap
+		// removes all elements from the pqueue
 		void 
 		clear();
 
@@ -36,11 +36,11 @@ class heap
 		void 
 		increase_key(warthog::search_node* val);
 
-		// add a new element to the heap
+		// add a new element to the pqueue
 		void 
 		push(warthog::search_node* val);
 
-		// remove the top element from the heap
+		// remove the top element from the pqueue
 		warthog::search_node*
 		pop();
 
@@ -50,7 +50,7 @@ class heap
 		contains(warthog::search_node* n)
 		{
 			unsigned int priority = n->get_priority();
-			if(priority < heapsize_ && &*n == &*elts_[priority])
+			if(priority < queuesize_ && &*n == &*elts_[priority])
 			{
 				return true;
 			}
@@ -61,7 +61,7 @@ class heap
 		inline warthog::search_node*
 		peek()
 		{
-			if(heapsize_ > 0)
+			if(queuesize_ > 0)
 			{
 				return this->elts_[0];
 			}
@@ -71,13 +71,13 @@ class heap
 		inline unsigned int
 		size()
 		{
-			return heapsize_;
+			return queuesize_;
 		}
 
 		inline bool
-		is_minheap() 
+		is_minqueue() 
 		{ 
-			return minheap_; 
+			return minqueue_; 
 		} 
 		
 		void
@@ -92,29 +92,29 @@ class heap
 
 	private:
 		unsigned int maxsize_;
-		bool minheap_;
-		unsigned int heapsize_;
+		bool minqueue_;
+		unsigned int queuesize_;
 		warthog::search_node** elts_;
 
-		// reorders the subheap containing elts_[index]
+		// reorders the subpqueue containing elts_[index]
 		void 
 		heapify_up(unsigned int);
 		
-		// reorders the subheap under elts_[index]
+		// reorders the subpqueue under elts_[index]
 		void 
 		heapify_down(unsigned int);
 
-		// allocates more memory so the heap can grow
+		// allocates more memory so the pqueue can grow
 		void 
 		resize(unsigned int newsize);
 	
 		// returns true if:
-		//   minheap is true and the priority of second < first
-		//   minheap is false and the priority of second > first
+		//   minqueue is true and the priority of second < first
+		//   minqueue is false and the priority of second > first
 		inline bool 
 		rotate(warthog::search_node& first, warthog::search_node& second)
 		{
-			if(minheap_)
+			if(minqueue_)
 			{
 				if(second < first)
 				{
@@ -135,7 +135,7 @@ class heap
 		inline void 
 		swap(unsigned int index1, unsigned int index2)
 		{
-			assert(index1 < heapsize_ && index2 < heapsize_);
+			assert(index1 < queuesize_ && index2 < queuesize_);
 
 			warthog::search_node* tmp = elts_[index1];
 			elts_[index1] = elts_[index2];

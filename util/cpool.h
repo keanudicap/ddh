@@ -155,7 +155,7 @@ class cpool
 {
 	public:
 		cpool(size_t obj_size) :
-		   	num_chunks_(0), max_chunks_(2), obj_size_(obj_size)
+		   	num_chunks_(0), max_chunks_(20), obj_size_(obj_size)
 		{
 			chunks_ = new cchunk*[max_chunks_];
 			for(int i = 0; i < (int) max_chunks_; i++)
