@@ -8,7 +8,7 @@
 #include "gridmap.h"
 #include "gridmap_expansion_policy.h"
 #include "hash_table.h"
-#include "heap.h"
+#include "pqueue.h"
 #include "octile_heuristic.h"
 #include "search_node.h"
 #include "scenario_manager.h"
@@ -22,7 +22,7 @@
 
 void blockmap_access_test();
 void gridmap_access_test();
-void heap_insert_test();
+void pqueue_insert_test();
 void cuckoo_table_test();
 void unordered_map_test();
 void hash_table_test();
@@ -245,34 +245,34 @@ void blockmap_access_test()
 	std::cout << "/blockmap_access_test..."<<std::endl;
 }
 
-void heap_insert_test()
+void pqueue_insert_test()
 {
-	std::cout << "heap_insert_test...\n";
-	unsigned int heapnodes = 1000000;
-	warthog::heap myheap(heapnodes, true);
-	warthog::search_node** nodes = new warthog::search_node*[heapnodes];
-	for(int i=heapnodes; i > 0 ; i--)
+	std::cout << "pqueue_insert_test...\n";
+	unsigned int pqueuenodes = 1000000;
+	warthog::pqueue mypqueue(pqueuenodes, true);
+	warthog::search_node** nodes = new warthog::search_node*[pqueuenodes];
+	for(int i=pqueuenodes; i > 0 ; i--)
 	{
 		nodes[i] = new warthog::search_node(i);
 		nodes[i]->set_g(i);
-		myheap.push(nodes[i]);
+		mypqueue.push(nodes[i]);
 	}
 	// test duplicate detection
-	for(int i=heapnodes; i > 0 ; i--)
+	for(int i=pqueuenodes; i > 0 ; i--)
 	{
-		myheap.push(nodes[i]);
+		mypqueue.push(nodes[i]);
 	}
-	assert(myheap.size() == heapnodes);
+	assert(mypqueue.size() == pqueuenodes);
 
 	// test pop
-	for(unsigned int i=0; i < heapnodes; i++)
+	for(unsigned int i=0; i < pqueuenodes; i++)
 	{
-		assert(myheap.size() == heapnodes-i);
-		delete myheap.pop();
+		assert(mypqueue.size() == pqueuenodes-i);
+		delete mypqueue.pop();
 	}
 	delete [] nodes;
 	assert(warthog::search_node::get_refcount() == 0);
-	std::cout << "/heap_insert_test...\n";
+	std::cout << "/pqueue_insert_test...\n";
 }
 
 void gridmap_access_test()

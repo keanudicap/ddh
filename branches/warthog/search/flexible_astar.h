@@ -17,7 +17,7 @@
 //
 
 #include "cpool.h"
-#include "heap.h"
+#include "pqueue.h"
 #include "problem_instance.h"
 #include "search_node.h"
 
@@ -37,7 +37,7 @@ class flexible_astar
 		flexible_astar(H* heuristic, E* expander)
 			: heuristic_(heuristic), expander_(expander)
 		{
-			open_ = new warthog::heap(1024, true);
+			open_ = new warthog::pqueue(1024, true);
 			verbose_ = false;
 			nodepool_ = new warthog::mem::cpool(sizeof(warthog::search_node));
 			nodeheap_ = new warthog::search_node*[expander_->get_max_node_id()];
@@ -117,7 +117,7 @@ class flexible_astar
 	private:
 		H* heuristic_;
 		E* expander_;
-		warthog::heap* open_;
+		warthog::pqueue* open_;
 		bool verbose_;
 		//node_table* nodeheap_;
 		warthog::search_node** nodeheap_;
