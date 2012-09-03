@@ -73,10 +73,16 @@ class gridmap_expansion_policy
 			return costs_[which_];
 		}
 
-		inline unsigned int
-		get_max_node_id()
-	   	{
-			return map_->height() * map_->width();
+		inline uint32_t
+		mapwidth()
+		{
+			return map_->width();
+		}
+
+		inline uint32_t 
+		mapheight()
+		{
+			return map_->height();
 		}
 
 		unsigned int
