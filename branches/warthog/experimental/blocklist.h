@@ -31,9 +31,9 @@ namespace warthog
 
 namespace blocklist_ns
 {
-	static const uint32_t NBS = 16; // node block size; set this >= 8
-	static const uint32_t LOG2_NBS = 4;
-	static const uint32_t NBS_MASK = 15;
+	static const uint32_t NBS = 64; // node block size; set this >= 8
+	static const uint32_t LOG2_NBS = 6;
+	static const uint32_t NBS_MASK = 63;
 }
 
 class blocklist
