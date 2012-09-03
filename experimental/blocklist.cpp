@@ -11,6 +11,8 @@ warthog::blocklist::blocklist(uint32_t mapheight, uint32_t mapwidth)
 	{
 		blocks_[i] = 0;
 	}
+	blockspool_ = 
+		new warthog::mem::cpool(sizeof(void*)*warthog::blocklist_ns::NBS, 1);
 	pool_ = new warthog::mem::cpool(sizeof(warthog::search_node));
 }
 
@@ -18,6 +20,7 @@ warthog::blocklist::~blocklist()
 {
 	clear();
 	delete pool_;
+	delete blockspool_;
 }
 
 warthog::search_node*
@@ -31,8 +34,8 @@ warthog::blocklist::generate(uint32_t node_id)
 	{
 		// add a new block of nodes
 		//std::cerr << "generating block: "<<block_id<<std::endl;
-		warthog::search_node** list =
-		   	new warthog::search_node*[warthog::blocklist_ns::NBS];
+		warthog::search_node** list = new (blockspool_->allocate())
+		   	warthog::search_node*[warthog::blocklist_ns::NBS];
 		uint32_t i = 0;
 		for( ; i < warthog::blocklist_ns::NBS; i+=8)
 		{
@@ -74,25 +77,18 @@ warthog::blocklist::clear()
 		if(blocks_[i] != 0)
 		{
 			//std::cerr << "deleting block: "<<i<<std::endl;
-			delete [] blocks_[i];
 			blocks_[i] = 0;
 		}
 	}
 	pool_->reclaim();
+	blockspool_->reclaim();
 }
 
 uint32_t
 warthog::blocklist::mem()
 {
-	uint32_t bytes = sizeof(*this);
-	for(uint32_t i=0; i < num_blocks_; i++)
-	{
-		if(blocks_[i])
-		{
-			bytes+= warthog::blocklist_ns::NBS *
-				sizeof(warthog::search_node*);
-		}
-	}
-	bytes += num_blocks_*sizeof(warthog::search_node**);
+	uint32_t bytes = sizeof(*this) + blockspool_->mem() +
+		pool_->mem() + num_blocks_*sizeof(warthog::search_node**);
+
 	return bytes;
 }
