@@ -19,6 +19,7 @@
 #include "cpool.h"
 #include "pqueue.h"
 #include "problem_instance.h"
+#include "blocklist.h"
 #include "search_node.h"
 
 #include <iostream>
@@ -39,19 +40,13 @@ class flexible_astar
 		{
 			open_ = new warthog::pqueue(1024, true);
 			verbose_ = false;
-			nodepool_ = new warthog::mem::cpool(sizeof(warthog::search_node));
-			nodeheap_ = new warthog::search_node*[expander_->get_max_node_id()];
-			for(unsigned int i = 0; i < expander_->get_max_node_id(); i++)
-			{
-				nodeheap_[i] = 0;
-			}
-
+			nodepool_ = new warthog::blocklist(
+					expander_->mapwidth(), expander_->mapheight());
 		}
 
 		~flexible_astar()
 		{
 			cleanup();
-			delete nodeheap_;
 			delete nodepool_;
 			delete open_;
 		}
@@ -62,8 +57,6 @@ class flexible_astar
 			size_t bytes = 
 				// node objects allocated during search
 				nodepool_->mem() + 
-				// pointers to allocated node objects
-				sizeof(nodeheap_) * expander_->get_max_node_id() + 
 				// memory for the priority quete
 				open_->mem() + 
 				// gridmap size and other stuff needed to expand nodes
@@ -119,9 +112,7 @@ class flexible_astar
 		E* expander_;
 		warthog::pqueue* open_;
 		bool verbose_;
-		//node_table* nodeheap_;
-		warthog::search_node** nodeheap_;
-		warthog::mem::cpool* nodepool_;
+		warthog::blocklist* nodepool_;
 		static unsigned int searchid_;
 
 		// no copy
@@ -145,7 +136,7 @@ class flexible_astar
 			instance.set_start(startid);
 
 			warthog::search_node* goal = 0;
-			warthog::search_node* start = generate(startid);
+			warthog::search_node* start = nodepool_->generate(startid);
 			start->set_g(0);
 			start->set_f(heuristic_->h(startid, goalid));
 			open_->push(start);
@@ -173,7 +164,7 @@ class flexible_astar
 						nid != warthog::INF;
 					   	nid = expander_->next())
 				{
-					warthog::search_node* n = this->generate(nid);
+					warthog::search_node* n = nodepool_->generate(nid);
 					assert(n->get_id() == nid);
 					if(n->get_expanded())
 					{
@@ -237,48 +228,11 @@ class flexible_astar
 			return goal;
 		}
 
-		// return a warthog::search_node object corresponding to the given id.
-		// if the node has already been generated, return a pointer to the 
-		// previous instance; otherwise allocate memory for a new object.
-		warthog::search_node*
-		generate(unsigned int node_id)
-		{
-			warthog::search_node* mynode = nodeheap_[node_id];
-			if(mynode)
-			{
-				return mynode;
-			}
-
-			mynode = new (nodepool_->allocate()) warthog::search_node(node_id);
-			nodeheap_[node_id] = mynode;
-			return mynode;
-		}
-
 		void
 		cleanup()
 		{
-			unsigned int maxid = expander_->get_max_node_id(); 
-			unsigned int i;
-			for(i = 0; i < maxid; i+= 8)
-			{
-				nodeheap_[i] = 0;
-				nodeheap_[i+1] = 0;
-				nodeheap_[i+2] = 0;
-				nodeheap_[i+3] = 0;
-				nodeheap_[i+4] = 0;
-				nodeheap_[i+5] = 0;
-				nodeheap_[i+6] = 0;
-				nodeheap_[i+7] = 0;
-			}
-			for(i -=8 ; i < maxid; i++)
-			{
-				nodeheap_[i] = 0;
-			}
-
-		//	delete nodeheap_;
-		//	nodeheap_ = 0;
 			open_->clear();
-			nodepool_->reclaim();
+			nodepool_->clear();
 		}
 
 

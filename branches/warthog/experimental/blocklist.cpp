@@ -3,8 +3,9 @@
 #include "search_node.h"
 
 warthog::blocklist::blocklist(uint32_t mapheight, uint32_t mapwidth)
-	: num_blocks_((mapheight*mapwidth)+1), blocks_(0), pool_(0)
+	: blocks_(0), pool_(0)
 {
+	num_blocks_ = ((mapwidth*mapheight) >> warthog::blocklist_ns::LOG2_NBS)+1;
 	blocks_ = new warthog::search_node**[num_blocks_];
 	for(uint32_t i=0; i < num_blocks_; i++)
 	{
@@ -22,16 +23,18 @@ warthog::blocklist::~blocklist()
 warthog::search_node*
 warthog::blocklist::generate(uint32_t node_id)
 {
-	uint32_t block_id = node_id >> 12;
-	uint32_t list_id = node_id & 4095; // i.e. lower 12 bits
+	uint32_t block_id = node_id >> warthog::blocklist_ns::LOG2_NBS;
+	uint32_t list_id = node_id &  warthog::blocklist_ns::NBS_MASK;
 	assert(block_id <= num_blocks_);
 
 	if(!blocks_[block_id])
 	{
-		//std::cerr << "generating block: "<<block_id<<std::endl;
 		// add a new block of nodes
-		warthog::search_node** list = new warthog::search_node*[4096];
-		for(int i=0; i < 4096; i+=8)
+		//std::cerr << "generating block: "<<block_id<<std::endl;
+		warthog::search_node** list =
+		   	new warthog::search_node*[warthog::blocklist_ns::NBS];
+		uint32_t i = 0;
+		for( ; i < warthog::blocklist_ns::NBS; i+=8)
 		{
 			list[i] = 0;
 			list[i+1] = 0;
@@ -86,7 +89,8 @@ warthog::blocklist::mem()
 	{
 		if(blocks_[i])
 		{
-			bytes+= 4096*sizeof(warthog::search_node*);
+			bytes+= warthog::blocklist_ns::NBS *
+				sizeof(warthog::search_node*);
 		}
 	}
 	bytes += num_blocks_*sizeof(warthog::search_node**);
