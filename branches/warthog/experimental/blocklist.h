@@ -57,6 +57,7 @@ class blocklist
 	private:
 		uint32_t num_blocks_;
 		warthog::search_node*** blocks_;
+		warthog::mem::cpool* blockspool_;
 		warthog::mem::cpool* pool_;
 };
 

@@ -154,15 +154,16 @@ class cchunk
 class cpool
 {
 	public:
+		cpool (size_t obj_size, size_t max_chunks) :
+		   	num_chunks_(0), max_chunks_(max_chunks), obj_size_(obj_size)
+		{
+			init();
+		}
+
 		cpool(size_t obj_size) :
 		   	num_chunks_(0), max_chunks_(20), obj_size_(obj_size)
 		{
-			chunks_ = new cchunk*[max_chunks_];
-			for(int i = 0; i < (int) max_chunks_; i++)
-			{
-				add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
-			}
-			current_chunk_ = chunks_[0];
+			init();
 		}
 
 		~cpool()
@@ -266,6 +267,18 @@ class cpool
 		cpool(const warthog::mem::cpool& other) { } 
 		warthog::mem::cpool&
 		operator=(const warthog::mem::cpool& other) { return *this; }
+
+		void
+		init()
+		{
+			chunks_ = new cchunk*[max_chunks_];
+			for(int i = 0; i < (int) max_chunks_; i++)
+			{
+				add_chunk(warthog::mem::DEFAULT_CHUNK_SIZE);
+			}
+			current_chunk_ = chunks_[0];
+		}
+
 
 		void
 		add_chunk(size_t pool_size)
