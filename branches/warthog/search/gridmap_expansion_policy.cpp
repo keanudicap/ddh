@@ -23,7 +23,7 @@ warthog::gridmap_expansion_policy::expand(unsigned int nodeid,
 	which_ = 0;
 
 	// get terrain type of each tile in the 3x3 square around (x, y)
-	warthog::dbword tiles[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	char tiles[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	map_->get_neighbours(nodeid, tiles);
 
 	#ifndef NDEBUG
