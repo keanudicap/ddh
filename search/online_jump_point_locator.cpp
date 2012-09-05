@@ -1,0 +1,110 @@
+#include "gridmap.h"
+#include "jps.h"
+#include "online_jump_point_locator.h"
+
+#include <climits>
+
+warthog::online_jump_point_locator::online_jump_point_locator(warthog::gridmap* map)
+	: map_(map), jumplimit_(UINT32_MAX)
+{
+}
+
+warthog::online_jump_point_locator::~online_jump_point_locator()
+{
+}
+
+
+// Finds a jump point successor of node (x, y) in Direction d.
+// Also given is the location of the goal node (goalx, goaly) for a particular
+// search instance. If encountered, the goal node is always returned as a 
+// jump point successor.
+//
+// @return: the id of a jump point successor or warthog::INF if no jp exists.
+uint32_t
+warthog::online_jump_point_locator::jump(warthog::jps::direction d,
+	   	uint32_t node_id, uint32_t goal_id)
+{
+	char tiles[9];
+	uint32_t mapw = map_->width();
+	uint32_t next_id = node_id;
+	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	{
+		switch(d)
+		{
+			case warthog::jps::NORTH:
+				next_id -= mapw;
+				break;
+			case warthog::jps::SOUTH:
+				next_id += mapw;
+				break;
+			case warthog::jps::EAST:
+				next_id++;
+				break;
+			case warthog::jps::WEST:
+				next_id--;
+				break;
+			case warthog::jps::NORTHEAST:
+				next_id -= (mapw+1);
+				break;
+			case warthog::jps::SOUTHEAST:
+				next_id += (mapw+1);
+				break;
+			case warthog::jps::NORTHWEST:
+				next_id -= (mapw-1);
+				break;
+			case warthog::jps::SOUTHWEST:
+				next_id += (mapw-1);
+				break;
+			default:
+				break;
+		}
+
+		// the goal is always a jump point
+		if(next_id == goal_id) { break; }
+
+		// stop jumping if we hit an obstacle
+		map_->get_neighbours(next_id, tiles);
+		if(tiles[4] == 0)
+		{
+			next_id = warthog::INF;
+			break;
+		}
+
+		// next_id is a jump node if it has >=1 forced neighbours.
+		// TODO: subset of get_neighbours that returns a contiguous triple
+		// of nodes. we can then do just 2 such lookups instead of the 3 that
+		// get_neighbours otherwise does.
+		// maybe pass in the address of row of nodes inside tiles array.
+		// then tiles array is always up to date.
+		if(warthog::jps::compute_forced(d, tiles)) { break; }
+
+		// recurse straight before stepping diagonally;
+		// next_id is a jump point if the recursion finds a node
+		// with a forced neighbour (cannot step beyond next_id; it might
+		// be a potential turning point on the optimal path).
+		switch(d)
+		{
+			case warthog::jps::NORTHEAST:
+				if(jump(warthog::jps::NORTH, next_id, goal_id)) { break; }
+				if(jump(warthog::jps::EAST, next_id, goal_id)) { break; }
+				break;
+			case warthog::jps::NORTHWEST:
+				if(jump(warthog::jps::NORTH, next_id, goal_id)) { break; }
+				if(jump(warthog::jps::WEST, next_id, goal_id)) { break; }
+				break;
+			case warthog::jps::SOUTHEAST:
+				if(jump(warthog::jps::SOUTH, next_id, goal_id)) { break; }
+				if(jump(warthog::jps::EAST, next_id, goal_id)) { break; }
+				break;
+			case warthog::jps::SOUTHWEST:
+				if(jump(warthog::jps::SOUTH, next_id, goal_id)) { break; }
+				if(jump(warthog::jps::WEST, next_id, goal_id)) { break; }
+				break;
+			default:
+				break;
+		}
+	}
+	return next_id;
+}
+
+
