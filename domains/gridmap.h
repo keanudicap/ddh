@@ -18,10 +18,6 @@
 // and use sizeof(T) to compute indexes. Remember to add some specialised
 // versions for bool (don't want to lose bitpacking).
 //
-// TODO: Compress y-dimension in addition to x when working with uniform grids
-// i.e. each entry in ::db_[x][y] should contain a square block of bits of size
-// DBWORD_BITS*DBWORD_BITS
-//
 // @author: dharabor
 // @created: 08/08/2012
 // 
@@ -45,7 +41,7 @@ class gridmap
 		// node (x-1, y-1) (relative to node_id) and steps through the
 		// list of adjacent tiles in left-to-right, top-to-bottom order
 		inline void
-		get_neighbours(unsigned int node_id, warthog::dbword tiles_[9])
+		get_neighbours(unsigned int node_id, char tiles_[9])
 		{
 			if(node_id >= max_id_) { return; }
 			if(uniform_)
