@@ -96,3 +96,15 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 	}
 	return ret;
 }
+
+uint32_t 
+warthog::jps::compute_natural(warthog::jps::direction d, char tiles[9])
+{
+	return 0;
+}
+
+uint32_t
+warthog::jps::compute_successors(warthog::jps::direction d, char tiles[9])
+{
+	return 0;
+}

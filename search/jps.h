@@ -20,14 +20,15 @@ namespace jps
 
 typedef enum
 {
-	NORTH = 0,
-	SOUTH = 1,
-	EAST = 2,
-	WEST = 4,
-	NORTHEAST = 8,
-	NORTHWEST = 16, 
-	SOUTHEAST = 32,
-	SOUTHWEST = 64
+	NONE = 0,
+	NORTH = 1,
+	SOUTH = 2,
+	EAST = 4,
+	WEST = 8,
+	NORTHEAST = 16,
+	NORTHWEST = 32, 
+	SOUTHEAST = 64,
+	SOUTHWEST = 128
 } direction;
 
 // Computes the set of "forced" directions in which to search for jump points
@@ -44,6 +45,22 @@ typedef enum
 //
 uint32_t
 compute_forced(warthog::jps::direction d, char tiles[9]);
+
+// Computes the set of "natural" neighbours for a given location
+// (x, y).
+//
+// @param d: the direction of travel used to reach (x, y)
+// @param tiles: the square of cells having (x, y) at its centre.
+uint32_t 
+compute_natural(warthog::jps::direction d, char tiles[9]);
+
+// Computes all successors (forced \union natural) of a node (x, y)
+//
+// @param d: the direction of travel used to reach (x, y)
+// @param tiles: the square of cells having (x, y) at its centre.
+uint32_t
+compute_successors(warthog::jps::direction d, char tiles[9]);
+
 
 }
 }

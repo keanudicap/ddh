@@ -156,17 +156,20 @@ void gridmap_expansion_policy_test()
 	{
 		std::cout << "nid: "<<nodeid[i]<<std::endl;
 		unsigned int mapwidth = map.width();
-		policy.expand(nodeid[i], 0);
-		for(unsigned int nid = policy.first();
-				nid != warthog::INF;
-				nid = policy.next())
+		policy.expand(policy.generate(nodeid[i]), 0);
+		warthog::search_node* n = 0;
+		double cost_to_n = warthog::INF;
+		for(policy.first(n, cost_to_n);
+				n != 0;
+				policy.next(n, cost_to_n))
 		{
+			uint32_t nid = n->get_id();
 			unsigned int x = UINT_MAX;
 			unsigned int y = UINT_MAX;
 			x = nid % mapwidth;
 			y = nid / mapwidth;
 			std::cout << "neighbour: " << nid << " (" << x << ", "<<y
-				<< ") cost: " << policy.cost_to_n() << std::endl;
+				<< ") cost: " << cost_to_n << std::endl;
 		}
 	}
 }
