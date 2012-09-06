@@ -19,7 +19,6 @@
 #include "cpool.h"
 #include "pqueue.h"
 #include "problem_instance.h"
-#include "blocklist.h"
 #include "search_node.h"
 
 #include <iostream>
@@ -40,14 +39,11 @@ class flexible_astar
 		{
 			open_ = new warthog::pqueue(1024, true);
 			verbose_ = false;
-			nodepool_ = new warthog::blocklist(
-					expander_->mapwidth(), expander_->mapheight());
 		}
 
 		~flexible_astar()
 		{
 			cleanup();
-			delete nodepool_;
 			delete open_;
 		}
 
@@ -55,8 +51,6 @@ class flexible_astar
 		mem()
 		{
 			size_t bytes = 
-				// node objects allocated during search
-				nodepool_->mem() + 
 				// memory for the priority quete
 				open_->mem() + 
 				// gridmap size and other stuff needed to expand nodes
@@ -112,7 +106,6 @@ class flexible_astar
 		E* expander_;
 		warthog::pqueue* open_;
 		bool verbose_;
-		warthog::blocklist* nodepool_;
 		static unsigned int searchid_;
 
 		// no copy
@@ -136,7 +129,7 @@ class flexible_astar
 			instance.set_start(startid);
 
 			warthog::search_node* goal = 0;
-			warthog::search_node* start = nodepool_->generate(startid);
+			warthog::search_node* start = expander_->generate(startid);
 			start->set_g(0);
 			start->set_f(heuristic_->h(startid, goalid));
 			open_->push(start);
@@ -159,13 +152,14 @@ class flexible_astar
 				#endif
 				current->set_expanded(true); // NB: set this before calling expander_ 
 				assert(current->get_expanded());
-				expander_->expand(current->get_id(), &instance);
-				for(unsigned int nid = expander_->first(); 
-						nid != warthog::INF;
-					   	nid = expander_->next())
+				expander_->expand(current, &instance);
+
+				warthog::search_node* n = 0;
+				double cost_to_n = warthog::INF;
+				for(expander_->first(n, cost_to_n); 
+						n != 0;
+					   	expander_->next(n, cost_to_n))
 				{
-					warthog::search_node* n = nodepool_->generate(nid);
-					assert(n->get_id() == nid);
 					if(n->get_expanded())
 					{
 						// skip neighbours already expanded
@@ -175,7 +169,7 @@ class flexible_astar
 					if(open_->contains(n))
 					{
 						// update a node from the fringe
-						double gval = current->get_g() + expander_->cost_to_n();
+						double gval = current->get_g() + cost_to_n;
 						if(gval < n->get_g())
 						{
 							n->relax(gval, current);
@@ -202,10 +196,10 @@ class flexible_astar
 					else
 					{
 						// add a new node to the fringe
-						double gval = current->get_g() + expander_->cost_to_n();
+						double gval = current->get_g() + cost_to_n;
 						assert(gval != warthog::INF);
 						n->set_g(gval);
-						n->set_f(gval + heuristic_->h(nid, goalid));
+						n->set_f(gval + heuristic_->h(n->get_id(), goalid));
 					   	n->set_parent(current);
 						open_->push(n);
 						#ifndef NDEBUG
@@ -232,7 +226,7 @@ class flexible_astar
 		cleanup()
 		{
 			open_->clear();
-			nodepool_->clear();
+			expander_->clear();
 		}
 
 
