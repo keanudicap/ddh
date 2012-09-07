@@ -23,6 +23,7 @@
 // 
 
 #include "constants.h"
+#include "helpers.h"
 #include "gm_parser.h"
 
 #include <climits>
@@ -33,7 +34,7 @@ namespace warthog
 class gridmap
 {
 	public:
-		gridmap(unsigned int height, unsigned int width, bool uniform);
+		gridmap(uint32_t height, unsigned int width, bool uniform);
 		gridmap(const char* filename, bool uniform);
 		~gridmap();
 
@@ -41,24 +42,26 @@ class gridmap
 		// node (x-1, y-1) (relative to node_id) and steps through the
 		// list of adjacent tiles in left-to-right, top-to-bottom order
 		inline void
-		get_neighbours(unsigned int node_id, char tiles_[9])
+		get_neighbours(uint32_t node_id, char tiles_[9])
 		{
 			if(node_id >= max_id_) { return; }
 			if(uniform_)
 			{
-				unsigned int offset = (node_id & warthog::DBWORD_BITS_MASK) ;
+				uint32_t bit_offset = (node_id & warthog::DBWORD_BITS_MASK) ;
 
 				// NB: the location of words in the original w*h
 				// grid must be converted to their location in
 				// the dbwidth*dbheight grid
-				node_id = (node_id >> warthog::LOG2_DBWORD_BITS);
-				unsigned int pos = node_id+1;
-				unsigned int pos2 = node_id + dbwidth_;
-				unsigned int pos3 = node_id + (dbwidth_<<1) - 1;
+				uint32_t index_offset = (node_id / header_.width_) + dbwidth_;
+				node_id = (node_id >> warthog::LOG2_DBWORD_BITS) + index_offset;
 
-				if(offset == 0)
+				uint32_t pos = node_id - dbwidth_;
+				uint32_t pos2 = node_id;
+				uint32_t pos3 = node_id + dbwidth_;
+
+				if(bit_offset == 0)
 				{
-					// NB: implicit bitmask: 1 << offset
+					// NB: implicit bitmask: 1 << bit_offset
 					tiles_[0] = (db_[pos-1] & 128) ? 1:0;
 					tiles_[1] = (db_[pos] & 1) ? 1:0;
 					tiles_[2] = (db_[pos] & 2) ? 1:0;
@@ -70,9 +73,9 @@ class gridmap
 					tiles_[8] = (db_[pos3] & 2) ? 1:0;
 					return;
 				}
-				if(offset == 7) 
+				if(bit_offset == 7) 
 				{
-					// NB: implicit bitmask: 1 << offset
+					// NB: implicit bitmask: 1 << bit_offset
 					tiles_[0] = (db_[pos] & 64) ? 1:0;
 					tiles_[1] = (db_[pos] & 128) ? 1:0;
 					tiles_[2] = (db_[pos+1] & 1) ? 1:0;
@@ -85,9 +88,9 @@ class gridmap
 					return;
 				}	
 
-				unsigned int bitmask1 = (1 << (offset-1));
-				unsigned int bitmask2 = (1 << offset);
-				unsigned int bitmask3 = (1 << (offset+1));
+				uint32_t bitmask1 = (1 << (bit_offset-1));
+				uint32_t bitmask2 = (1 << bit_offset);
+				uint32_t bitmask3 = (1 << (bit_offset+1));
 				tiles_[0] = (db_[pos] & bitmask1) ? 1:0;
 				tiles_[1] = (db_[pos] & bitmask2) ? 1:0;
 				tiles_[2] = (db_[pos] & bitmask3) ? 1:0;
@@ -104,9 +107,9 @@ class gridmap
 				// grid must be converted to their location in
 				// the dbwidth*dbheight grid
 				node_id = (node_id >> warthog::LOG2_DBWORD_BITS);
-				unsigned int pos = node_id+1;
-				unsigned int pos2 = node_id + dbwidth_;
-				unsigned int pos3 = node_id + (dbwidth_<<1)-1;
+				uint32_t pos = node_id+1;
+				uint32_t pos2 = node_id + dbwidth_;
+				uint32_t pos3 = node_id + (dbwidth_<<1)-1;
 				tiles_[0] = db_[pos];
 				tiles_[1] = db_[pos+1];
 				tiles_[2] = db_[pos+2];
@@ -120,7 +123,7 @@ class gridmap
 		}
 
 		inline warthog::dbword
-		get_label(unsigned int x, unsigned int y)
+		get_label(uint32_t x, unsigned int y)
 		{
 			if(x >= header_.width_ || y >= header_.height_)
 			{
@@ -130,95 +133,86 @@ class gridmap
 		}
 
 		inline warthog::dbword 
-		get_label(unsigned int node_id)
+		get_label(uint32_t node_id)
 		{
 			if(node_id >= max_id_)
 			{
 				return 0;
 			}
 
+			// here we convert the offset to go from the coordinate space of 
+			// the grid to the coordinate space of db_
+			uint32_t offset = (node_id / header_.width_) + dbwidth_; 
+
+			// now we can fetch the label
 			if(uniform_)
 			{
 				warthog::dbword bitmask = 1;
-//				if(node_id == 938418)
-//				{
-//				std::cerr << "\ndbword_bits_mask "<<warthog::DBWORD_BITS_MASK<< 
-//				"; bitmask inital: "<<(int)bitmask;
-//				}
 				bitmask <<= (node_id & warthog::DBWORD_BITS_MASK);
-//				if(node_id == 938418)
-//				{
-//				std::cerr << " after & "<<(int)bitmask << "; nodeid: "<<node_id;
-//				}
 				node_id >>= warthog::LOG2_DBWORD_BITS;
-//				if(node_id == (938418 >> warthog::LOG2_DBWORD_BITS))
-//				{
-//					std::cerr << " shifted id: "<<node_id;
-//					std::cerr << " lookup id: "<<node_id<<
-//						" raw lookup value: "<< (int)db_[node_id+dbwidth_]
-//						<< "; extracted bit: "<<(int)(db_[node_id+dbwidth_] & bitmask)<<std::endl;
-//					std::cerr<<std::flush;
-//				}
-				node_id += dbwidth_;
-				return (db_[node_id] & bitmask) != 0;
+				return (db_[node_id + offset] & bitmask) != 0;
 			}
-			return db_[node_id + dbwidth_];
+			return db_[node_id + offset];
 		}
 
 		inline void
-		set_label(unsigned int x, unsigned int y, warthog::dbword label)
+		set_label(uint32_t x, unsigned int y, warthog::dbword label)
 		{
 			this->set_label(y*header_.width_+x, label);
 		}
 
 		inline void 
-		set_label(unsigned int node_id, warthog::dbword label)
+		set_label(uint32_t node_id, warthog::dbword label)
 		{
 			if(node_id >= max_id_)
 			{
 				return;
 			}
 
+			// here we convert the offset to go from the coordinate space of 
+			// the grid to the coordinate space of db_
+			uint32_t offset = (node_id / header_.width_) + dbwidth_; 
+			
+			// now can fetch the label
 			if(uniform_)
 			{
 				warthog::dbword bitmask =
 				   	(1 << (node_id & warthog::DBWORD_BITS_MASK));
 				node_id >>= warthog::LOG2_DBWORD_BITS;
-				node_id += dbwidth_;
 				if(label)
 				{
-					db_[node_id] |= bitmask;
+					db_[node_id + offset] |= bitmask;
 				}
 				else
 				{
-					db_[node_id] &= ~bitmask;
+					db_[node_id + offset] &= ~bitmask;
 				}
 			}
 			else
 			{
-				db_[node_id + dbwidth_] = label;
+				db_[node_id + offset] = label;
 			}
 		}
 
-		inline unsigned int 
+		inline uint32_t 
 		height() const
 		{ 
 			return this->header_.height_; 
 		} 
 
-		inline unsigned int 
+		inline uint32_t 
 		width() const 
 		{ 
 			return this->header_.width_;
 		}
 
-		inline unsigned int
+		inline uint32_t
 		db_width()
 		{
 			return dbwidth_;
 		}
 
-		inline unsigned int
+		inline uint32_t
 		db_height()
 		{
 			return dbheight_;
@@ -226,8 +220,11 @@ class gridmap
 
 		void 
 		print(std::ostream&);
+		
+		void
+		printdb(std::ostream& out);
 
-		unsigned int 
+		uint32_t 
 		mem()
 		{
 			return sizeof(*this) +
@@ -239,10 +236,10 @@ class gridmap
 		bool uniform_;
 		warthog::gm_header header_;
 		warthog::dbword* db_;
-		unsigned int dbsize_;
-		unsigned int dbheight_;
-		unsigned int dbwidth_;
-		unsigned int max_id_;
+		uint32_t dbsize_;
+		uint32_t dbheight_;
+		uint32_t dbwidth_;
+		uint32_t max_id_;
 
 		gridmap(const warthog::gridmap& other) {}
 		gridmap& operator=(const warthog::gridmap& other) { return *this; }
