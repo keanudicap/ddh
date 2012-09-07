@@ -1,0 +1,9 @@
+\begin{thebibliography}{1}
+
+\bibitem{bast06}
+Holger Bast, Stefan Funke, and Domagoj Matijevic.
+\newblock Transit ultrafast shortest-path queries with linear-time
+  preprocessing.
+\newblock In {\em In 9th DIMACS Implementation Challenge}, 2006.
+
+\end{thebibliography}
