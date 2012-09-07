@@ -91,3 +91,10 @@ warthog::gridmap::print(std::ostream& out)
 		out << std::endl;
 	}	
 }
+
+void 
+warthog::gridmap::printdb(std::ostream& out)
+{
+	char tiles[9] = {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'};
+	tiles[0] = tiles[0];
+}
