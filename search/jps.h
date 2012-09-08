@@ -58,9 +58,12 @@ compute_natural(warthog::jps::direction d, char tiles[9]);
 //
 // @param d: the direction of travel used to reach (x, y)
 // @param tiles: the square of cells having (x, y) at its centre.
-uint32_t
-compute_successors(warthog::jps::direction d, char tiles[9]);
-
+inline uint32_t
+compute_successors(warthog::jps::direction d, char tiles[9])
+{
+	return warthog::jps::compute_forced(d, tiles) |
+	   	warthog::jps::compute_natural(d, tiles);
+}
 
 }
 }

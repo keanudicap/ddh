@@ -2,6 +2,7 @@
 
 warthog::jps_expansion_policy::jps_expansion_policy(warthog::gridmap* map)
 {
+	map_ = map;
 	nodepool_ = new blocklist(map->height(), map->width());
 	jpl_ = new online_jump_point_locator(map);
 	reset();
@@ -40,8 +41,8 @@ warthog::jps_expansion_policy::expand(
 			jpl_->jump(d, current_id, goal_id, succ_id, jumpcost);
 			if(succ_id != warthog::INF)
 			{
-				neighbours_[i] = nodepool_->generate(succ_id);
-				costs_[i] = jumpcost;
+				neighbours_[num_neighbours_] = nodepool_->generate(succ_id);
+				costs_[num_neighbours_] = jumpcost;
 				num_neighbours_++;
 			}
 		}
