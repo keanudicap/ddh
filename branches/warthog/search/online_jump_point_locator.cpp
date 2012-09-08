@@ -31,6 +31,8 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 	jumpcost = 0;
 	for(uint32_t steps=1; steps <= jumplimit_; steps++)
 	{
+		// TODO: get triples instead of neighbours
+		// TODO: optimised function for uniform cost maps
 		switch(d)
 		{
 			case warthog::jps::NORTH:
@@ -94,11 +96,6 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 
 
 		// next_id is a jump node if it has >=1 forced neighbours.
-		// TODO: subset of get_neighbours that returns a contiguous triple
-		// of nodes. we can then do just 2 such lookups instead of the 3 that
-		// get_neighbours otherwise does.
-		// maybe pass in the address of row of nodes inside tiles array.
-		// then tiles array is always up to date.
 		if(warthog::jps::compute_forced(d, tiles)) { break; }
 
 		// recurse straight before stepping diagonally;

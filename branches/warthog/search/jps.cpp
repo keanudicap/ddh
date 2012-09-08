@@ -100,11 +100,38 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 uint32_t 
 warthog::jps::compute_natural(warthog::jps::direction d, char tiles[9])
 {
-	return 0;
+	uint32_t ret = d;
+	switch(d)
+	{
+		case warthog::jps::NORTHWEST:
+			ret |= warthog::jps::NORTH;
+			ret |= warthog::jps::WEST;
+			break;
+		case warthog::jps::NORTHEAST:
+			ret |= warthog::jps::NORTH;
+			ret |= warthog::jps::WEST;
+			break;
+		case warthog::jps::SOUTHWEST:
+			ret |= warthog::jps::SOUTH;
+			ret |= warthog::jps::WEST;
+			break;
+		case warthog::jps::SOUTHEAST:
+			ret |= warthog::jps::SOUTH;
+			ret |= warthog::jps::WEST;
+			break;
+		case warthog::jps::NONE:
+			ret |= warthog::jps::NORTH;
+			ret |= warthog::jps::SOUTH;
+			ret |= warthog::jps::EAST;
+			ret |= warthog::jps::WEST;
+			ret |= warthog::jps::NORTHEAST;
+			ret |= warthog::jps::NORTHWEST;
+			ret |= warthog::jps::SOUTHEAST;
+			ret |= warthog::jps::SOUTHWEST;
+			break;
+		default:
+			ret |= d;
+	}
+	return ret;
 }
 
-uint32_t
-warthog::jps::compute_successors(warthog::jps::direction d, char tiles[9])
-{
-	return 0;
-}

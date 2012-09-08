@@ -59,7 +59,7 @@ class jps_expansion_policy
 		expand(warthog::search_node*, warthog::problem_instance*);
 
 		inline void
-		first(warthog::search_node* ret, double& cost)
+		first(warthog::search_node*& ret, double& cost)
 		{
 			which_ = 0;
 			ret = neighbours_[which_];
@@ -74,14 +74,14 @@ class jps_expansion_policy
 		}
 
 		inline void
-		n(warthog::search_node* ret, double& cost)
+		n(warthog::search_node*& ret, double& cost)
 		{
 			ret = neighbours_[which_];
 			cost = costs_[which_];
 		}
 
 		inline void
-		next(warthog::search_node* ret, double& cost)
+		next(warthog::search_node*& ret, double& cost)
 		{
 			if(which_ < num_neighbours_)
 			{
@@ -111,11 +111,11 @@ class jps_expansion_policy
 		inline warthog::jps::direction
 		compute_direction(warthog::search_node* n1, warthog::search_node* n2)
 		{
-			assert(n1 != 0 && n2 != 0);
+			if(n1 == 0) { return warthog::jps::NONE; }
+
 			uint32_t x, y, x2, y2;
 			warthog::helpers::index_to_xy(n1->get_id(), map_->width(), x, y);
 			warthog::helpers::index_to_xy(n2->get_id(), map_->width(), x2, y2);
-
 			warthog::jps::direction dir = warthog::jps::NONE;
 			if(y2 == y)
 			{
@@ -142,7 +142,7 @@ class jps_expansion_policy
 				else // x2 > x
 					dir = warthog::jps::SOUTHEAST;
 			}
-
+			assert(dir != warthog::jps::NONE);
 			return dir;
 		}
 
