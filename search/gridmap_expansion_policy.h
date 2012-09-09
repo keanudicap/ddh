@@ -102,8 +102,9 @@ class gridmap_expansion_policy
 		uint32_t
 		mem()
 		{
-			return map_->mem() + 
-			sizeof(*this);
+			return sizeof(*this) +
+				map_->mem() + 
+				nodepool_->mem();
 		}
 	
 	private:
