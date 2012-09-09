@@ -9,6 +9,7 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 	double pcost;
 	switch(d)
 	{
+		// NB: need to check that the step to each forced neighbour is allowed
 		case warthog::jps::NORTH:
 			if(tiles[3])
 			{
@@ -131,34 +132,59 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 uint32_t 
 warthog::jps::compute_natural(warthog::jps::direction d, char tiles[9])
 {
-	uint32_t ret = d;
+	// NB: need to check that the step to each natural neighbour is allowed
+	uint32_t ret = 0;
 	switch(d)
 	{
+		case warthog::jps::NORTH:
+			ret |= tiles[1] ? warthog::jps::NORTH : 0;
+			break;
+		case warthog::jps::SOUTH:
+			ret |= tiles[7] ? warthog::jps::SOUTH : 0;
+			break;
+		case warthog::jps::EAST: 
+			ret |= tiles[5] ? warthog::jps::EAST : 0;
+			break;
+		case warthog::jps::WEST:
+			ret |= tiles[3] ? warthog::jps::WEST : 0;
+			break;
 		case warthog::jps::NORTHWEST:
-			ret |= warthog::jps::NORTH;
-			ret |= warthog::jps::WEST;
+			ret |= tiles[1] ? warthog::jps::NORTH : 0;
+			ret |= tiles[3] ? warthog::jps::WEST : 0;
+			ret |= (tiles[1] && tiles[3] && tiles[0]) ?
+			   	warthog::jps::NORTHWEST : 0;
 			break;
 		case warthog::jps::NORTHEAST:
-			ret |= warthog::jps::NORTH;
-			ret |= warthog::jps::WEST;
+			ret |= tiles[1] ? warthog::jps::NORTH : 0;
+			ret |= tiles[5] ? warthog::jps::EAST : 0;
+			ret |= (tiles[1] && tiles[5] && tiles[2]) ?
+			   	warthog::jps::NORTHEAST : 0;
 			break;
 		case warthog::jps::SOUTHWEST:
-			ret |= warthog::jps::SOUTH;
-			ret |= warthog::jps::WEST;
+			ret |= tiles[7] ? warthog::jps::SOUTH : 0;
+			ret |= tiles[3] ? warthog::jps::WEST : 0;
+			ret |= (tiles[7] && tiles[3] && tiles[6]) ?
+			   	warthog::jps::SOUTHWEST : 0;
 			break;
 		case warthog::jps::SOUTHEAST:
-			ret |= warthog::jps::SOUTH;
-			ret |= warthog::jps::EAST;
+			ret |= tiles[7] ? warthog::jps::SOUTH : 0;
+			ret |= tiles[5] ? warthog::jps::EAST : 0;
+			ret |= (tiles[7] && tiles[5] && tiles[8]) ?
+			   	warthog::jps::SOUTHEAST : 0;
 			break;
 		case warthog::jps::NONE:
-			ret |= warthog::jps::NORTH;
-			ret |= warthog::jps::SOUTH;
-			ret |= warthog::jps::EAST;
-			ret |= warthog::jps::WEST;
-			ret |= warthog::jps::NORTHEAST;
-			ret |= warthog::jps::NORTHWEST;
-			ret |= warthog::jps::SOUTHEAST;
-			ret |= warthog::jps::SOUTHWEST;
+			ret |= tiles[1] ? warthog::jps::NORTH : 0;
+			ret |= tiles[6] ? warthog::jps::SOUTH : 0;
+			ret |= tiles[5] ? warthog::jps::EAST : 0;
+			ret |= tiles[3] ? warthog::jps::WEST : 0;
+			ret |= (tiles[1] && tiles[5] && tiles[2]) ?
+			   	warthog::jps::NORTHEAST : 0;
+			ret |= (tiles[1] && tiles[3] && tiles[0]) ?
+			   	warthog::jps::NORTHWEST : 0;
+			ret |= (tiles[7] && tiles[5] && tiles[8]) ?
+			   	warthog::jps::SOUTHEAST : 0;
+			ret |= (tiles[7] && tiles[3] && tiles[6]) ?
+			   	warthog::jps::SOUTHWEST : 0;
 			break;
 		default:
 			ret |= d;
