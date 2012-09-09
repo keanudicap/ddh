@@ -5,6 +5,11 @@
 //
 // This file contains the namespace for common definitions
 // required by the various classes that use Jump Points.
+// Note that the operations defined here assume corner
+// cutting is not allowed. This change requires some slight 
+// modification to the basic Jump Point Search method. 
+// For details see:
+// [D Harabor and A Grastien, The JPS+ Pathfinding System, SoCS, 2012]
 //
 // @author: dharabor
 // @created: 04/09/2012
