@@ -174,7 +174,7 @@ warthog::jps::compute_natural(warthog::jps::direction d, char tiles[9])
 			break;
 		case warthog::jps::NONE:
 			ret |= tiles[1] ? warthog::jps::NORTH : 0;
-			ret |= tiles[6] ? warthog::jps::SOUTH : 0;
+			ret |= tiles[7] ? warthog::jps::SOUTH : 0;
 			ret |= tiles[5] ? warthog::jps::EAST : 0;
 			ret |= tiles[3] ? warthog::jps::WEST : 0;
 			ret |= (tiles[1] && tiles[5] && tiles[2]) ?

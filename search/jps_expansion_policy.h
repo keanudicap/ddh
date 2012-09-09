@@ -97,6 +97,12 @@ class jps_expansion_policy
 			return sizeof(*this) + map_->mem() + nodepool_->mem();
 		}
 
+		uint32_t 
+		mapwidth()
+		{
+			return map_->width();
+		}
+
 	private:
 		warthog::gridmap* map_;
 		warthog::blocklist* nodepool_;
