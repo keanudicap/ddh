@@ -8,6 +8,7 @@
 #include "gridmap.h"
 #include "gridmap_expansion_policy.h"
 #include "hash_table.h"
+#include "jps_expansion_policy.h"
 #include "pqueue.h"
 #include "octile_heuristic.h"
 #include "search_node.h"
@@ -29,11 +30,12 @@ void hash_table_test();
 void gridmap_expansion_policy_test();
 void flexible_astar_test();
 void test_alloc();
+void online_jps_test();
+
 int main(int argc, char** argv)
 {
-	//test_alloc();
-	flexible_astar_test();
-	//gridmap_access_test();
+	//flexible_astar_test();
+	online_jps_test();
 }
 
 void test_alloc()
@@ -87,14 +89,84 @@ void test_alloc()
 //	}
 }
 
-void flexible_astar_test()
+void online_jps_test()
 {
 	bool check_opt = false;
 	//bool check_opt = true;
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario("orz700d.map.scen");
+	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str(), true);
+
+//	warthog::gridmap map("CSC2F.map", true);
+//	map.printdb(std::cerr);
+//	map.print(std::cerr);
+//	exit(1);
+
+	warthog::jps_expansion_policy expander(&map);
+	warthog::octile_heuristic heuristic(map.width(), map.height());
+
+	warthog::flexible_astar<
+		warthog::octile_heuristic,
+	   	warthog::jps_expansion_policy> astar(&heuristic, &expander);
+	//astar.set_verbose(true);
+
+	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
+	{
+		warthog::experiment* exp = scenmgr.get_experiment(i);
+
+		int startid = exp->starty() * exp->mapwidth() + exp->startx();
+		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
+		double len = astar.get_length(startid, goalid);
+		if(len == warthog::INF)
+		{
+			len = 0;
+		}
+
+		if(!check_opt)
+			continue;
+
+		std::cerr << "exp "<<i<<" ";
+		exp->print(std::cerr);
+		std::cerr << " (ne=" << astar.get_nodes_expanded() << 
+			" ng=" << astar.get_nodes_generated() << 
+			" nt=" << astar.get_nodes_touched() <<
+			" st=" << astar.get_search_time() <<")";
+		std::cerr << std::endl;
+
+		std::stringstream stroptlen;
+		stroptlen << std::fixed << std::setprecision(exp->precision());
+		stroptlen << exp->distance();
+
+		std::stringstream strpathlen;
+		strpathlen << std::fixed << std::setprecision(exp->precision());
+		strpathlen << len;
+
+		if(stroptlen.str().compare(strpathlen.str()))
+		{
+			std::cerr << std::setprecision(6);
+			std::cerr << "optimality check failed!" << std::endl;
+			std::cerr << std::endl;
+			std::cerr << "optimal path length: "<<stroptlen.str()
+				<<" computed length: ";
+			std::cerr << strpathlen.str()<<std::endl;
+			std::cerr << "precision: " << exp->precision()<<std::endl;
+			exit(1);
+		}
+	}
+	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
+
+}
+
+void flexible_astar_test()
+{
+	bool check_opt = false;
+	//bool check_opt = true;
+	warthog::scenario_manager scenmgr;
+	//scenmgr.load_scenario("CSC2F.map.scen");
+	scenmgr.load_scenario("orz700d.map.scen");
 
 	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str(), true);
+	//map.print(std::cerr << "\n");
 	warthog::gridmap_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
@@ -120,6 +192,10 @@ void flexible_astar_test()
 
 		std::cerr << "exp "<<i<<" ";
 		exp->print(std::cerr);
+		std::cerr << " (ne=" << astar.get_nodes_expanded() << 
+			" ng=" << astar.get_nodes_generated() << 
+			" nt=" << astar.get_nodes_touched() <<
+			" st=" << astar.get_search_time() <<")";
 		std::cerr << std::endl;
 
 		std::stringstream stroptlen;
