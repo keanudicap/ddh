@@ -17,7 +17,6 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[6] ?
 				   	((tiles[3] + tiles[6] + tiles[7] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(!tiles[6]) { pcost = warthog::INF; }
 				if(cost < pcost) { ret |= warthog::jps::WEST; }
 			}
 			if(tiles[5])

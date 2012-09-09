@@ -104,34 +104,33 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 		// be a potential turning point on the optimal path).
 		uint32_t jp_id; 
 		double jp_cost;
-		switch(d)
+		if(d == warthog::jps::NORTHEAST)
 		{
-			case warthog::jps::NORTHEAST:
-				jump(warthog::jps::NORTH, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				jump(warthog::jps::EAST, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				break;
-			case warthog::jps::NORTHWEST:
-				jump(warthog::jps::NORTH, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				jump(warthog::jps::WEST, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				break;
-			case warthog::jps::SOUTHEAST:
-				jump(warthog::jps::SOUTH, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				jump(warthog::jps::EAST, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				break;
-			case warthog::jps::SOUTHWEST:
-				jump(warthog::jps::SOUTH, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				jump(warthog::jps::WEST, next_id, goal_id, jp_id, jp_cost);
-				if(jp_id != warthog::INF) { break; }
-				break;
-			default:
-				break;
+			jump(warthog::jps::NORTH, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+			jump(warthog::jps::EAST, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+		}
+		else if(d == warthog::jps::NORTHWEST)
+		{
+			jump(warthog::jps::NORTH, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+			jump(warthog::jps::WEST, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+		}
+		else if(d == warthog::jps::SOUTHEAST)
+		{
+			jump(warthog::jps::SOUTH, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+			jump(warthog::jps::EAST, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+		}
+		else if(d == warthog::jps::SOUTHWEST)
+		{
+			jump(warthog::jps::SOUTH, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
+			jump(warthog::jps::WEST, next_id, goal_id, jp_id, jp_cost);
+			if(jp_id != warthog::INF) { break; }
 		}
 	}
 	jumpnode_id = next_id;
