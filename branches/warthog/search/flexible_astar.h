@@ -47,29 +47,10 @@ class flexible_astar
 			delete open_;
 		}
 
-		inline size_t
-		mem()
+		inline std::stack<uint32_t>
+		get_path(uint32_t startid, uint32_t goalid)
 		{
-			size_t bytes = 
-				// memory for the priority quete
-				open_->mem() + 
-				// gridmap size and other stuff needed to expand nodes
-				expander_->mem() +
-				// misc
-				sizeof(*this);
-			return bytes;
-		}
-
-		inline bool
-		get_verbose() { return verbose_; }
-
-		inline void
-		set_verbose(bool verbose) { verbose_ = verbose; } 
-
-		inline std::stack<unsigned int>
-		get_path(unsigned int startid, unsigned int goalid)
-		{
-			std::stack<unsigned int> path;
+			std::stack<uint32_t> path;
 			warthog::search_node* goal = search(startid, goalid);
 			if(goal)
 			{
@@ -88,7 +69,7 @@ class flexible_astar
 		}
 
 		double
-		get_length(unsigned int startid, unsigned int goalid)
+		get_length(uint32_t startid, uint32_t goalid)
 		{
 			warthog::search_node* goal = search(startid, goalid);
 			double len = warthog::INF;
@@ -101,12 +82,49 @@ class flexible_astar
 			return len;
 		}
 
+		inline size_t
+		mem()
+		{
+			size_t bytes = 
+				// memory for the priority quete
+				open_->mem() + 
+				// gridmap size and other stuff needed to expand nodes
+				expander_->mem() +
+				// misc
+				sizeof(*this);
+			return bytes;
+		}
+
+		inline uint32_t 
+		get_nodes_expanded() { return nodes_expanded_; }
+
+		inline uint32_t
+		get_nodes_generated() { return nodes_generated_; }
+
+		inline uint32_t
+		get_nodes_touched() { return nodes_touched_; }
+
+		inline double
+		get_search_time() { return search_time_; }
+
+
+		inline bool
+		get_verbose() { return verbose_; }
+
+		inline void
+		set_verbose(bool verbose) { verbose_ = verbose; } 
+
+
 	private:
 		H* heuristic_;
 		E* expander_;
 		warthog::pqueue* open_;
 		bool verbose_;
-		static unsigned int searchid_;
+		static uint32_t searchid_;
+		uint32_t nodes_expanded_;
+		uint32_t nodes_generated_;
+		uint32_t nodes_touched_;
+		double search_time_;
 
 		// no copy
 		flexible_astar(const flexible_astar& other) { } 
@@ -114,8 +132,11 @@ class flexible_astar
 		operator=(const flexible_astar& other) { return *this; }
 
 		warthog::search_node*
-		search(unsigned int startid, unsigned int goalid)
+		search(uint32_t startid, uint32_t goalid)
 		{
+			nodes_expanded_ = nodes_generated_ = nodes_touched_ = 0;
+			search_time_ = 0;
+
 			#ifndef NDEBUG
 			if(verbose_)
 			{
@@ -136,6 +157,7 @@ class flexible_astar
 
 			while(open_->size())
 			{
+				nodes_expanded_++;
 				if(open_->peek()->get_id() == goalid)
 				{
 					goal = open_->peek();
@@ -160,6 +182,7 @@ class flexible_astar
 						n != 0;
 					   	expander_->next(n, cost_to_n))
 				{
+					nodes_touched_++;
 					if(n->get_expanded())
 					{
 						// skip neighbours already expanded
@@ -209,6 +232,7 @@ class flexible_astar
 							std::cerr << std::endl;
 						}
 						#endif
+						nodes_generated_++;
 					}
 				}
 				#ifndef NDEBUG
@@ -233,7 +257,7 @@ class flexible_astar
 };
 
 template <class H, class E>
-unsigned int warthog::flexible_astar<H, E>::searchid_ = warthog::FNV32_prime;
+uint32_t warthog::flexible_astar<H, E>::searchid_ = warthog::FNV32_prime;
 
 }
 
