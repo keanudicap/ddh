@@ -17,7 +17,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[6] ?
 				   	((tiles[3] + tiles[6] + tiles[7] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::WEST; }
+				if(cost < pcost) 
+				{ 
+					ret |= warthog::jps::WEST; 
+					ret |= warthog::jps::NORTHWEST;
+				}
 			}
 			if(tiles[5])
 			{
@@ -26,7 +30,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[8] ?
 				   	((tiles[5] + tiles[8] + tiles[7] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::EAST; }
+				if(cost < pcost) 
+				{ 
+					ret |= warthog::jps::EAST; 
+					ret |= warthog::jps::NORTHEAST;
+				}
 			}
 			break;
 		case warthog::jps::SOUTH:
@@ -37,7 +45,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[0] ?
 				   	((tiles[3] + tiles[0] + tiles[1] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::WEST; }
+				if(cost < pcost) 
+				{
+				   	ret |= warthog::jps::WEST; 
+					ret |= warthog::jps::SOUTHWEST;
+				}
 			}
 			if(tiles[5])
 			{
@@ -46,7 +58,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[2] ?
 				   	((tiles[5] + tiles[2] + tiles[1] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::EAST; }
+				if(cost < pcost) 
+				{ 
+					ret |= warthog::jps::EAST; 
+					ret |= warthog::jps::SOUTHEAST;
+				}
 			}
 			break;
 		case warthog::jps::EAST:
@@ -57,7 +73,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[0] ?
 				   	((tiles[3] + tiles[0] + tiles[1] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::NORTH; }
+				if(cost < pcost) 
+				{ 
+					ret |= warthog::jps::NORTH; 
+					ret |= warthog::jps::NORTHEAST;
+				}
 			}
 			if(tiles[7])
 			{
@@ -66,7 +86,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[6] ?
 				   	((tiles[3] + tiles[6] + tiles[7] + tiles[4]) * 
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::SOUTH; }
+				if(cost < pcost) 
+				{ 
+					ret |= warthog::jps::SOUTH; 
+					ret |= warthog::jps::SOUTHEAST;
+				}
 
 			}
 			break;
@@ -78,7 +102,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[2] ?
 				   	((tiles[5] + tiles[2] + tiles[1] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::NORTH; }
+				if(cost < pcost) 
+				{
+				   	ret |= warthog::jps::NORTH; 
+					ret |= warthog::jps::NORTHWEST;
+				}
 			}
 			if(tiles[7])
 			{
@@ -87,7 +115,11 @@ warthog::jps::compute_forced(warthog::jps::direction d, char tiles[9])
 				pcost = tiles[8] ?
 				   	((tiles[5] + tiles[8] + tiles[7] + tiles[4]) * 
 					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF;
-				if(cost < pcost) { ret |= warthog::jps::SOUTH; }
+				if(cost < pcost) 
+				{ 
+					ret |= warthog::jps::SOUTH; 
+					ret |= warthog::jps::SOUTHWEST;
+				}
 			}
 			break;
 		default:

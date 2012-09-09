@@ -56,25 +56,25 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 				jumpcost += (tiles[4] + tiles[5]) * warthog::ONE_OVER_TWO;
 				break;
 			case warthog::jps::NORTHEAST:
-				next_id -= (mapw+1);
+				next_id = next_id - mapw + 1;
 				map_->get_neighbours(next_id, tiles);
 				jumpcost += (tiles[3] + tiles[6] + tiles[7] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR;
 				break;
 			case warthog::jps::SOUTHEAST:
-				next_id += (mapw+1);
+				next_id = next_id + mapw + 1;
 				map_->get_neighbours(next_id, tiles);
 				jumpcost += (tiles[3] + tiles[0] + tiles[1] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR;
 				break;
 			case warthog::jps::NORTHWEST:
-				next_id -= (mapw-1);
+				next_id = next_id - mapw - 1;
 				map_->get_neighbours(next_id, tiles);
 				jumpcost += (tiles[5] + tiles[8] + tiles[7] + tiles[4]) * 
 					warthog::ROOT_TWO_OVER_FOUR;
 				break;
 			case warthog::jps::SOUTHWEST:
-				next_id += (mapw-1);
+				next_id = next_id + mapw - 1;
 				map_->get_neighbours(next_id, tiles);
 				jumpcost += (tiles[5] + tiles[2] + tiles[1] + tiles[4]) *
 					warthog::ROOT_TWO_OVER_FOUR;
