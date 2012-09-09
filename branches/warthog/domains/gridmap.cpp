@@ -56,8 +56,12 @@ warthog::gridmap::init_db()
 	// locations (e.g the node left of (0, 0))
 	
 	dbheight_ = header_.height_ + 2;
-	dbwidth_ = (uniform_ ? ((header_.width_ >> warthog::LOG2_DBWORD_BITS)+1) :
-			(header_.width_+1));
+	dbwidth_ = header_.width_ + 2;
+	if(uniform_)
+	{
+		dbwidth_ >>= warthog::LOG2_DBWORD_BITS;
+		dbwidth_++; // round up
+	}
 	db_size_ = dbwidth_*dbheight_;
 
 	// some padding constants

@@ -65,9 +65,15 @@ class gridmap
 				return;
 			}
 
+			// here we convert from the coordinate space of 
+			// the grid to the coordinate space of db_. 
 			uint32_t padded_id = node_id + 
-				(node_id / header_.width_) * padding_ + // each row is padded
-				+ padded_width_; // id also offset by one full padded row
+				// add one full padded row
+				padded_width_ +
+			   	// padding from each row of data before this one
+				(node_id / header_.width_) * padding_ + 
+				// padding at the front of the current row
+				1;
 
 			if(uniform_)
 			{
@@ -165,8 +171,12 @@ class gridmap
 			// here we convert from the coordinate space of 
 			// the grid to the coordinate space of db_. 
 			uint32_t padded_id = node_id + 
-				(node_id / header_.width_) * padding_ + // each row is padded
-				+ padded_width_; // id also offset by one full padded row
+				// add one full padded row
+				padded_width_ +
+			   	// padding from each row of data before this one
+				(node_id / header_.width_) * padding_ + 
+				// padding at the front of the current row
+				1;
 
 			// now we can fetch the label
 			if(uniform_)
@@ -196,8 +206,12 @@ class gridmap
 			// here we convert from the coordinate space of 
 			// the grid to the coordinate space of db_. 
 			uint32_t padded_id = node_id + 
-				(node_id / header_.width_) * padding_ + // each row is padded
-				+ padded_width_; // id also offset by one full padded row
+				// add one full padded row
+				padded_width_ +
+			   	// padding from each row of data before this one
+				(node_id / header_.width_) * padding_ + 
+				// padding at the front of the current row
+				1;
 
 			if(uniform_)
 			{
