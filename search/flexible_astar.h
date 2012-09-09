@@ -168,7 +168,11 @@ class flexible_astar
 				#ifndef NDEBUG
 				if(verbose_)
 				{
-					current->print(std::cerr << "expanding...");
+					uint32_t x, y;
+					y = current->get_id() / expander_->mapwidth();
+					x = current->get_id() % expander_->mapwidth();
+					std::cerr << "expanding ("<<x<<", "<<y<<")...";
+					current->print(std::cerr);
 					std::cerr << std::endl;
 				}
 				#endif
@@ -200,7 +204,11 @@ class flexible_astar
 							#ifndef NDEBUG
 							if(verbose_)
 							{
-								n->print(std::cerr << "  updating...");
+								uint32_t x, y;
+								y = n->get_id() / expander_->mapwidth();
+								x = n->get_id() % expander_->mapwidth();
+								std::cerr << "  updating ("<<x<<", "<<y<<")...";
+								n->print(std::cerr);
 								std::cerr << std::endl;
 							}
 							#endif
@@ -210,7 +218,11 @@ class flexible_astar
 							#ifndef NDEBUG
 							if(verbose_)
 							{
-								n->print(std::cerr << "  ignoring...");
+								uint32_t x, y;
+								y = n->get_id() / expander_->mapwidth();
+								x = n->get_id() % expander_->mapwidth();
+								std::cerr << "  updating ("<<x<<", "<<y<<")...";
+								n->print(std::cerr);
 								std::cerr << std::endl;
 							}
 							#endif
@@ -228,7 +240,11 @@ class flexible_astar
 						#ifndef NDEBUG
 						if(verbose_)
 						{
-							n->print(std::cerr << "  generating...");
+							uint32_t x, y;
+							y = n->get_id() / expander_->mapwidth();
+							x = n->get_id() % expander_->mapwidth();
+							std::cerr << "  generating ("<<x<<", "<<y<<")...";
+							n->print(std::cerr);
 							std::cerr << std::endl;
 						}
 						#endif
@@ -238,10 +254,14 @@ class flexible_astar
 				#ifndef NDEBUG
 				if(verbose_)
 				{
-					current->print(std::cerr << "closing...");
+					uint32_t x, y;
+					y = current->get_id() / expander_->mapwidth();
+					x = current->get_id() % expander_->mapwidth();
+					std::cerr <<"closing ("<<x<<", "<<y<<")...";
+					current->print(std::cerr);
 					std::cerr << std::endl;
-				}
-				#endif
+			}
+			#endif
 			}
 			return goal;
 		}
