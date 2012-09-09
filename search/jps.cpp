@@ -148,7 +148,7 @@ warthog::jps::compute_natural(warthog::jps::direction d, char tiles[9])
 			break;
 		case warthog::jps::SOUTHEAST:
 			ret |= warthog::jps::SOUTH;
-			ret |= warthog::jps::WEST;
+			ret |= warthog::jps::EAST;
 			break;
 		case warthog::jps::NONE:
 			ret |= warthog::jps::NORTH;
