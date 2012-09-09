@@ -106,6 +106,12 @@ class gridmap_expansion_policy
 				map_->mem() + 
 				nodepool_->mem();
 		}
+
+		uint32_t 
+		mapwidth()
+		{
+			return map_->width();
+		}
 	
 	private:
 		warthog::gridmap* map_;
