@@ -27,8 +27,8 @@
 %\usepackage{caption}
 
 \usepackage{url}
-\urldef{\mailsa}\path|{leonid.antsfeld, daniel.harabor, toby.walsh}@nicta.com.au|
-\urldef{\mailsb}\path|adibotea@yahoo.com|
+\urldef{\mailsa}\path|{leonid.antsfeld, daniel.harabor, toby.walsh}@nicta.com.au, adibotea@yahoo.com|
+\urldef{\mailsb}\path||
 \urldef{\mailsc}\path||
 \newcommand{\keywords}[1]{\par\addvspace\baselineskip
 \noindent\keywordname\enspace\ignorespaces#1}
@@ -49,23 +49,24 @@
 % their surnames. This ensures that the names appear correctly in
 % the running heads and the author index.
 %
-\author{
-Leonid Antsfeld \and Daniel Harabor \and Adi  Botea  \and Toby Walsh}
+\author{Leonid Antsfeld \and Daniel Harabor \and Adi  Botea  \and Toby Walsh}
 
 \institute{
-\mailsa\\
 UNSW, Sydney NSW 2052 Australia\\
+ANU, Canberra, ACT, Australia\\
 NICTA, Kensington NSW 2052 Australia\\
-IBM, Dublin, Ireland
-
-%\mailsb
+IBM, Dublin, Ireland\\
+\vspace{0.4cm}
+\hspace{-0.4cm}
+\mailsa\\
 }
 
 
 \maketitle
 
 \section{Introduction}
-bla bla
+We present a new algorithm for fast extraction of the shortest path in a grid video game maps.
+The presented algorithm combines strength of two well know algorithms TRANSIT~\cite{bast06} and CPD~cite{sanka05}
 
 \section{Conclusions}
 bla bla~\cite{bast06}
