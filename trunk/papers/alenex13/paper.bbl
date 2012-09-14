@@ -6,4 +6,14 @@ Holger Bast, Stefan Funke, and Domagoj Matijevic.
   preprocessing.
 \newblock In {\em In 9th DIMACS Implementation Challenge}, 2006.
 
+\bibitem{leon_daniel}
+Philip Kilby Toby~Walsh Leonid~Antsfeld, Daniel~Harabor.
+\newblock Transit routing on video game maps.
+\newblock In {\em AIIDE}, 2012.
+
+\bibitem{sanka05}
+Jagan Sankaranarayanan, Houman Alborzi, and Hanan Samet.
+\newblock Efficient query processing on spatial networks.
+\newblock In {\em GIS}, pages 200--209, 2005.
+
 \end{thebibliography}
