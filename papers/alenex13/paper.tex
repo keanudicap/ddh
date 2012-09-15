@@ -25,6 +25,7 @@
 \usepackage{float}
 \usepackage{alltt}
 \usepackage{algorithm}
+%\usepackage[sans]{dsfont}
 %\usepackage{caption}
 
 \usepackage{url}
@@ -71,6 +72,8 @@ The presented algorithm combines strength of two well know algorithms TRANSIT~\c
 The first one is a well established technique used for very fast shortest path distance (or travel time) queries in road networks.
 The later is very efficient algorithm for fast path extraction in grid networks.
 
+\section{Related work}
+
 \section{TRANSIT routing}\label{sec:transit}
 
 
@@ -81,8 +84,8 @@ The endpoints of such edges constitute a set of so-called ``transit nodes'' for 
 TRANSIT proceeds in two phases: (i) an offline precomputation phase and (ii) an online query phase.
 
 \subsection {Offline Precomputation Phase}\label{sub:precomputation}
-TRANSIT's offline precomputation phase consist of two main steps. In the first step we identify the aforesaid transit nodes 
-and in the second step we build a database of exact distances between every node and its associated transit nodes, as well as between all transit nodes. 
+TRANSIT's offline precomputation phase consists of two main steps. At the first step we identify the aforesaid transit nodes
+and in the second step we build a database of exact distances between every node and its associated transit nodes, as well as between all transit nodes.
 We will describe each step in turn.
 
 \subsubsection{Identifying Transit Nodes}\label{sub:determine}
@@ -90,9 +93,9 @@ TRANSIT starts by dividing an input map into a grid of equal-sized cells~
 \footnote{ This grid is distinct from the one representing the input map.}.
 To achieve this TRANSIT computes a bounding box for the entire map and divides this box
 into $g \times g$ equal-size cells. Let $C$ denote such a cell. Further, let $I$ (Inner) and $O$ (Outer)
-be squares having $C$ in the center, as depicted in Fig. \ref{fig:example}.
+be squares having $C$ in the center, as depicted in Fig. \ref{fig:example} below.
 
-\begin{figure}[tb]
+\begin{figure}[H]
 \centering
 \includegraphics[height=5cm]{transit_example3.PNG}
 \caption{Example of the TRANSIT grid; also cells and inner and outer squares. }
@@ -101,12 +104,11 @@ be squares having $C$ in the center, as depicted in Fig. \ref{fig:example}.
 
 The size of the squares $C$, $I$ and $O$ can be arbitrary without compromising correctness. Their exact
 values however will directly impact factors such as TRANSIT's preprocessing time, storage requirements and
-online query times. In ~\cite{leon_daniel} we discuss how those parameters can be tuned and the tradeoff 
+online query times. In ~\cite{leon_daniel} we discuss how those parameters can be tuned and the tradeoff
 between precomputation time, memory requirements and finally the query time.
 
-
 In what follows we will compute shortest paths between nodes that resides on border of $C$ and $O$ and choose as
-transit nodes one of the endpoints of the edges that cross the border of $I$. More precisely, 
+transit nodes one of the endpoints of the edges that cross the border of $I$. More precisely,
 let $V_C$ be set of nodes as follows: for every link that has one of its endpoints inside $C$ and the other outside $C$,
 $V_C$ will contain the endpoint inside $C$. Similarly, define $V_{I}$ and $V_{O}$ by considering links that cross $I$ and $O$ accordingly.
 Now, the set of transit nodes for the cell $C$ is the set of nodes $v \in V_{I}$ with the property that there exists a shortest path from
@@ -133,54 +135,71 @@ This definition guarantees that for each global query two important conditions a
 (ii) their corresponding inner squares do not overlap.
 Both conditions are necessary to ensure the TRANSIT algorithm is correct and optimal.
 
-\subsection{Online Query Phase}
+\subsection{Online Query Phase}\label{sub:query}
 For every global query from $src$ to $dst$ we fetch the transit nodes associated with cells containing
 $src$ and $dst$ and choose those two that will give us a minimal cost of the combined three subpaths:
 $src \rightsquigarrow T_{src}$, $T_{src} \rightsquigarrow T_{dst}$, $T_{dst} \rightsquigarrow dst$.
 For all local queries the inventors of TRANSIT suggested to apply any efficient search algorithm; A* for example \cite{bast06}.
 In what follows we will present a new, more efficient technique, using CPDs for dealing with local queries.
 
-\subsection{Shortest Path Extraction}
-Until now, not much work have been done on efficient path extraction using precomputed databases.
+\subsection{Shortest Path Extraction}\label{sub:path_extraction}
+Until now, not much work have been done on efficient path extraction using TRANSIT precomputed databases.
 The intuitive and somewhat naive way would be performing a series of repeated distance queries of TRANSIT.
-In the original paper the authors suggested apply TRANSIT iteratively by finding the next adjecent nodes to the source. 
-An immediate improvement of this approach is that we can store the first link (or the immediate next node) of every precomputed 
-shortest path. Than we aplpy similar technique, but without need to search to the next adjacent node.
-More sophisticated improvement can be achieved by observing that actually the transit nodes associated with destination 
-is not changed for all the sequential queries. Therefore we can exploit this fact and use the 
-to find the next 
-
-In section ~\ref{sec:transit_cpd} we will present in details a novel more efficient approach for the shortest path path extraction.
+In the original paper the authors suggested first finding the next adjacent node to the source on the shortest path
+and then iteratively applying TRANSIT query from that node to extract the full path ~\cite{bast06}.
+An immediate improvement of this approach would be that we can store the next node of every precomputed
+shortest path, rather than search for it.  Than we apply similar technique, by simply fetching the next adjacent node of the shortest path.
+More sophisticated improvement can be achieved by observing that actually the transit node associated with destination, $T_{dst}$,
+is not changing for all the sequential queries. Therefore we can exploit this fact and save time for looking for $T_{dst}$ every iteration, but 
+rather reuse it.
+In section ~\ref{sec:transit_cpd} we will present in details a novel, more efficient approach for the shortest path path extraction,
+which is a main contribution of this paper.
 
 \section{CPD}
 CPD (aka Compressed Path Databases) precomputes and efficiently compress all pairs shortest paths as follows.
-Daniel can you please add something here ?
+Daniel/Adi can you please add something here ?
 
 \section{TRANSIT with CPD}\label{sec:transit_cpd}
-We start with invoking basic TRANSIT query. This query 
-
-The pseudocode of the described algorithm as follows:
+The basic idea of our approach is to break a long shortest path (i.e. $src \rightsquigarrow dst$ is a global query)  
+to number of shorter, local subpaths: $$src=T_0 \rightsquigarrow T_1 \rightsquigarrow T_2 ...\rightsquigarrow... T_{k-1} \rightsquigarrow T_{k}=dst.$$
+Then we build our $src \rightsquigarrow dst$ path by sequentially extracting local subpaths $T_i \rightsquigarrow T_{i+1}, i=0...k$ from partially precomputed CPDs.
+Since CPDs queries are only local, it means that we need to precompute CPDs only for pairs of nodes which are within local search radius of each other.
+This is a major saving in both precomputation time and memory requirements of CPD.
+\\
+We start with invoking the basic TRANSIT query. From section~\ref{sub:query} we remember that every global shortest path,
+(i.e. it is longer than a local search radius) is of a form: $src \rightsquigarrow T_{src} \rightsquigarrow T_{dst} \rightsquigarrow dst$. 
+By definition, subpaths $src \rightsquigarrow T_{src}$ is local (i.e. no longer than a local search radius)
+therefore we are applying CPDs query to extract shortest path from $src$ to $T_{src}$. Next, if $T_{src} \rightsquigarrow dst$ is a local query,
+we extract this subpath from CPDs as before and we are done. 
+If $T_{src} \rightsquigarrow dst$ is a global query, then we will repeat the above procedure 
+but this time using $T_{src}$ as our new $srs$. We can improve this even more, by noticing that when running sequentials quires of TRANSIT $T_{dst}$
+and the distance from $T_{dst}$ to $dst$ are not changing. We can exploit this fact, by reusing $T_{dst}$. This will speed up the time complexity 
+of subsequent TRANSIT queries from quadratic to linear by the number of the transit nodes.
+Below we presnet the pseudocode of the described algorithm. For clarity of the idea we present the simplified version here.
 \begin{algorithm}
 \begin{alltt}
-   transit->getShortestDistance(src, dst);
-   path1 = cpd->GetPath(src, T1);
-   while (true)
-   \{
-      if (isLocalQuery(T1, T2) == true)
-	  {
-         cpd->getPath(T1, T2);
-         break;
-      }
-      transit->getShortestDistance(T1, T2);
-      T1 = tempPath->T1;
-      T2 = tempPath->T2;
-   \}
-   cpd->getShortestPath(T2, dst);
 
+   (\(T\sb{src}, T\sb{dst}) \leftarrow \) TRANSIT.query(src, dst);
+   CPD.getShortestPath(src, \(T\sb{src}\));  
+   while (true)                       
+   \{
+      if (isLocalQuery(\(T\sb{src}, dst\)) == true)
+      \{
+         CPD.getShortestPath(\(T\sb{src}, dst\));
+         break;
+      \}
+      (\(\bar{T}\sb{src}, \bar{T}\sb{dst}) \leftarrow \) TRANSIT.query(\(T\sb{src}, dst\));
+      CPD.getShortestPath(\(T\sb{src}, \bar{T}\sb{src}\));
+      \(T\sb{src} := \bar{T}\sb{src}\)  
+   \}
 
 \end{alltt}
 \caption{Pseudo code for extracting the shortest path between \textit{src} and \textit{dst}} \label{alg:transit_cpd_pseudo}
 \end{algorithm}
+
+One of the advantages of this approach over the techniques mentioned in section ~\ref{sub:path_extraction} is that we advance from $src$ to $dst$ by "chunks"
+of local subpaths, rather than by single link. In addition for every such "chunk" we exploit the strength of the CPD algorithm that is
+very efficient for local shortest path queries. In the next section we will present a comparative analysis of this algorithm.
 
 \section{Experimental setup}
 
