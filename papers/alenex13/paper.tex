@@ -29,8 +29,8 @@
 %\usepackage{caption}
 
 \usepackage{url}
-\urldef{\mailsa}\path|{leonid.antsfeld, daniel.harabor, toby.walsh}@nicta.com.au, adibotea@yahoo.com|
-\urldef{\mailsb}\path||
+\urldef{\mailsa}\path|{leonid.antsfeld, daniel.harabor,
+toby.walsh}@nicta.com.au, adibotea@ie.ibm.com| \urldef{\mailsb}\path||
 \urldef{\mailsc}\path||
 \newcommand{\keywords}[1]{\par\addvspace\baselineskip
 \noindent\keywordname\enspace\ignorespaces#1}
@@ -57,7 +57,7 @@
 UNSW, Sydney NSW 2052 Australia\\
 ANU, Canberra, ACT, 0200 Australia\\
 NICTA, Kensington NSW 2052 Australia\\
-IBM, Dublin, Ireland\\
+IBM Research, Dublin, Ireland\\
 \vspace{0.4cm}
 \hspace{-0.4cm}
 \mailsa\\
@@ -73,6 +73,17 @@ The first one is a well established technique used for very fast shortest path d
 The later is very efficient algorithm for fast path extraction in grid networks.
 
 \section{Related work}
+
+Traditionally, most pathfinding approaches are based on search.
+Differences are in heuristic used, search algorithm used, search space (e.g.,
+flat or hierarchical) and so on. This leads to different characteristics of the
+methods, such as optimal/sub-optimal, require preprocessing or not, require
+memory or not, low/big first-move lag and so on.
+
+Our approach fits here: optimality is required; move-by-move retrieval with low
+first-move lag; pre-processing is ok, memory is ok -- but we want to improve
+things.
+
 
 \section{TRANSIT routing}\label{sec:transit}
 
@@ -155,9 +166,48 @@ rather reuse it.
 In section ~\ref{sec:transit_cpd} we will present in details a novel, more efficient approach for the shortest path path extraction,
 which is a main contribution of this paper.
 
-\section{CPD}
-CPD (aka Compressed Path Databases) precomputes and efficiently compress all pairs shortest paths as follows.
-Daniel/Adi can you please add something here ?
+\section{Compresssed Path Databases}
+
+Compressed Path Databases (CPDs)~\cite{botea11,DBLP:conf/socs/Botea12} are
+all-pairs shortest path (APSP) data in a compressed form.
+A fast retrieval of individual moves contained in a solution path, and the
+optimality of moves are key strengths of CPDs. The so-called \emph{first-move
+lag}, which is the time needed until a first move can be provided, is low,
+since fetching one move is independent of subsequent moves on a path. 
+Such strengths come at the price of a
+significant pre-processing time, needed to compute all-pairs shortest path data,
+and a significant amount of memory needed to store the pre-processing results.
+
+Given a map, the pre-processing is done offline, being amortized over
+all queries on that map. As shown later in this section, pre-processing can
+easily be paralellized, since it consists of a series of independent
+iterations. Yet, the pre-processing time can be critical, for instance in
+cases such as a dynamic environment, which would require a re-computation of a CPD.
+
+Despite the ability of CPDs to compress APSP data by hundreds of
+times without any information loss,
+their size can sometimes be a performance bottleneck,
+depending on the map size, the topology, and the amount of RAM available.
+Further reducing the memory needs and the pre-processing time are main
+contributions of this work.
+
+A detailed overview of computing and using CPDs is beyond the scope of this
+paper, especially since, in our approach, the CPD method can be used as a
+blackbox tool. For a detailed description, we point the reader to the original
+publications~\cite{botea11,DBLP:conf/socs/Botea12}.
+
+% In the pre-processing phase, APSP data are computed with a series of independent
+% iterations. There is one iteration for each node $n$ on the map.
+% An invocation of the Dijkstra algorithm allows computing an optimal move
+% $\mbox{move}(n,t)$ from $n$ towards any reachable target $t$ on the map. The
+% result is two-dimentional table $T(n)$, called a first-move table, with the same
+% number of rows and columns as the map.
+% At cell $(c,r)$, it contains $\mbox{move}(n,t)$, where $t$ is the node graph
+% with column $c$ and row $r$.
+% 
+% As a second step of an iteration, a first-move table is compressed 
+
+
 
 \section{TRANSIT with CPD}\label{sec:transit_cpd}
 The basic idea of our approach is to break a long shortest path (i.e. $src \rightsquigarrow dst$ is a global query)  
@@ -213,7 +263,6 @@ bla bla~\cite{bast06}
 
 \bibliographystyle{plain}
 \bibliography{references}
-
 
 \end{document}
 
