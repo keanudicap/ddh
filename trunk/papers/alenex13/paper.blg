@@ -1,12 +1,55 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: paper.aux
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: paper.aux
 The style file: plain.bst
 Database file #1: references.bib
-I was expecting a `,' or a `}'---line 1037 of file references.bib
+I was expecting a `,' or a `}'---line 2129 of file references.bib
  :  The first keeps the same } #  of 
  :                                   routes and the second can grow or
 I'm skipping whatever remains of this entry
 Too many commas in name 1 of "Leonid Antsfeld, Daniel Harabor, Philip Kilby, Toby Walsh" for entry leon_daniel
 while executing---line 1049 of file plain.bst
+Warning--there's a number but no volume in hart68
 Too many commas in name 1 of "Leonid Antsfeld, Daniel Harabor, Philip Kilby, Toby Walsh" for entry leon_daniel
 while executing---line 1090 of file plain.bst
+You've used 13 entries,
+            2118 wiz_defined-function locations,
+            567 strings with 5930 characters,
+and the built_in function-call counts, 4824 in all, are:
+= -- 445
+> -- 209
+< -- 6
++ -- 81
+- -- 67
+* -- 289
+:= -- 749
+add.period$ -- 40
+call.type$ -- 13
+change.case$ -- 69
+chr.to.int$ -- 0
+cite$ -- 14
+duplicate$ -- 226
+empty$ -- 434
+format.name$ -- 67
+if$ -- 1080
+int.to.chr$ -- 0
+int.to.str$ -- 13
+missing$ -- 13
+newline$ -- 68
+num.names$ -- 28
+pop$ -- 103
+preamble$ -- 1
+purify$ -- 56
+quote$ -- 0
+skip$ -- 164
+stack$ -- 0
+substring$ -- 258
+swap$ -- 74
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 52
+warning$ -- 1
+while$ -- 42
+width$ -- 15
+write$ -- 141
 (There were 3 error messages)

@@ -74,15 +74,36 @@ The later is very efficient algorithm for fast path extraction in grid networks.
 
 \section{Related work}
 
-Traditionally, most pathfinding approaches are based on search.
-Differences are in heuristic used, search algorithm used, search space (e.g.,
-flat or hierarchical) and so on. This leads to different characteristics of the
-methods, such as optimal/sub-optimal, require preprocessing or not, require
-memory or not, low/big first-move lag and so on.
+Most route planning methods rely on searching online.
+On grid maps, a baseline approach uses A*~\cite{hart68} with 
+the Manhattan heuristic, on 4-connected grid maps,
+and the Octile heuristic on 8-connected maps.
+These heuristics correspond to the true distance on a map with no obstacles.
 
-Our approach fits here: optimality is required; move-by-move retrieval with low
-first-move lag; pre-processing is ok, memory is ok -- but we want to improve
-things.
+Numerous enhancements to this baseline framework can broadly be grouped into
+a few categories. Computing more informed heuristics is typically based on
+pre-processing~\cite{goldberg05,bjornsson06,sturtevant09}.
+Hierarchical abstraction replaces an original, flat search space with a
+series of smaller searches~\cite{botea04,sturtevant05}.
+Symmetry elimination can lead to strong prunning 
+capabilities~\cite{harabor10,harabor11b}.
+
+Real-time search without scrubbing
+Competition entries.
+
+Methods based on search can be relatively slow, as the number of 
+nodes visited in a search is often much larger than the actual returned path.
+Furthermore, the \emph{first-move lag}, which is the time needed before
+obtaining at least one move, could be large as well, given that a first move
+becomes available only after completing a search.
+
+Transit and CPDs do not require a graph search process at runtime.
+They pre-process and cache sufficient information to efficiently
+answer queries on all-pairs shortest path data.
+
+%Our approach fits here: optimality is required; move-by-move retrieval with low
+%first-move lag; pre-processing is ok, memory is ok -- but we want to improve
+%things.
 
 
 \section{TRANSIT routing}\label{sec:transit}
@@ -166,7 +187,7 @@ rather reuse it.
 In section ~\ref{sec:transit_cpd} we will present in details a novel, more efficient approach for the shortest path path extraction,
 which is a main contribution of this paper.
 
-\section{Compresssed Path Databases}
+\section{Compressed Path Databases}
 
 Compressed Path Databases (CPDs)~\cite{botea11,DBLP:conf/socs/Botea12} are
 all-pairs shortest path (APSP) data in a compressed form.
