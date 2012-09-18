@@ -75,11 +75,10 @@ The later is very efficient algorithm for fast path extraction in grid networks.
 \section{Related work}
 
 Most route planning methods rely on searching online.
-On grid maps, a baseline approach uses A*~\cite{hart68} with 
-the Manhattan heuristic, on 4-connected grid maps,
+On grid maps, a baseline approach uses A*~\cite{hart68}, with 
+the Manhattan heuristic on 4-connected grid maps,
 and the Octile heuristic on 8-connected maps.
 These heuristics correspond to the true distance on a map with no obstacles.
-
 Numerous enhancements to this baseline framework can broadly be grouped into
 a few categories. Computing more informed heuristics is typically based on
 pre-processing~\cite{goldberg05,bjornsson06,sturtevant09}.
@@ -87,23 +86,36 @@ Hierarchical abstraction replaces an original, flat search space with a
 series of smaller searches~\cite{botea04,sturtevant05}.
 Symmetry elimination can lead to strong prunning 
 capabilities~\cite{harabor10,harabor11b}.
-
-Real-time search without scrubbing
-Competition entries.
-
-Methods based on search can be relatively slow, as the number of 
+Search-based approaches can be relatively relatively slow, as the number of 
 nodes visited in a search is often much larger than the actual returned path.
 Furthermore, the \emph{first-move lag}, which is the time needed before
 obtaining at least one move, could be large as well, given that a first move
-becomes available only after completing a search.
+becomes available only after a seach encounters the target.
 
-Transit and CPDs do not require a graph search process at runtime.
-They pre-process and cache sufficient information to efficiently
-answer queries on all-pairs shortest path data.
+%Real-time search without scrubbing
+%Competition entries.
+Thus, it is not surprising that, in recent years,
+pathfinding research has included a focus on avoiding online search
+as much as possible.
+%kNN LRTA*~\cite{DBLP:journals/jair/BulitkoBL10}
+Transit~\cite{bast06} answers distance queries very fast, in those
+cases when the start and the target are sufficiently far from each
+other. However, for ``local'' queries, Transit resorts to search.
+Initially applied to roadmaps, Transit was recently adapted to 
+gridmaps~\cite{antsfeld12}.
+Compressed Path Databases (CPDs)~\cite{botea11,DBLP:conf/socs/Botea12}
+encode optimal moves for every start--target pair.
+Remarkably, Transit and CPDs have complementary strengths.
+Transit can be relatively slow on local queries. 
+A full-scale compressed path database can face a memory bottleneck.
+Thus, in this work we develop a hybrid method, which handles 
+``long-distance'' parts of a path retrieval in the style of Transit.
+A series of local compressed path databases, with an added size much
+smaller than a full-scale CPD, efficiently handle local portions
+of paths.
 
-%Our approach fits here: optimality is required; move-by-move retrieval with low
-%first-move lag; pre-processing is ok, memory is ok -- but we want to improve
-%things.
+
+% Discuss Transit + highway hierarchies
 
 
 \section{TRANSIT routing}\label{sec:transit}
@@ -189,7 +201,7 @@ which is a main contribution of this paper.
 
 \section{Compressed Path Databases}
 
-Compressed Path Databases (CPDs)~\cite{botea11,DBLP:conf/socs/Botea12} are
+Compressed Path Databases~\cite{botea11,DBLP:conf/socs/Botea12} are
 all-pairs shortest path (APSP) data in a compressed form.
 A fast retrieval of individual moves contained in a solution path, and the
 optimality of moves are key strengths of CPDs. The so-called \emph{first-move
@@ -280,7 +292,6 @@ very efficient for local shortest path queries. In the next section we will pres
 
 \section{Conclusions}
 
-bla bla~\cite{bast06}
 
 \bibliographystyle{plain}
 \bibliography{references}
