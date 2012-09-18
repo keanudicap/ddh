@@ -1,0 +1,28 @@
+\section{Experimental Setup}
+\label{sec:setup}
+\input table_benchmarks
+
+We evaluate TRANSIT on a subset (Table \ref{table:benchmarks})
+of Sturtevant's popular and freely
+available~\footnote{http://movingai.com/benchmarks}
+grid map benchmarks~\cite{sturtevant2012benchmarks}.
+These problem sets have appeared extensively in the literature;
+for example in~\cite{botea04,bjornsson06,sturtevant07,felner09,pochter09,goldenberg10,harabor11b}.
+Some, such as BG and DAO, are taken from real video games. The others,
+comprising Rooms-32 and Mazes-1, are synthetic.
+We selected from each benchmark set maps we considered to be challenging;
+either due to the presence of extensive uniform-cost path symmetries
+(as discussed in the preceding section)
+or due to topographic features which are likely to induce significant
+error for standard heuristics such as Manhattan Distance and Octile Distance (e.g. narrow corridors,
+dead-ends etc).
+
+
+For each map we generate 10K valid problems from across all possible problem lengths.
+Our implementation is written entirely in Java. We perform all experiments
+on an Intel Core2Duo with 8GB RAM.
+For comparative purposes we include results for a similar set of instances
+using Compressed Path Databases (CPD). This algorithm is originally described in~\cite{botea11};
+its source code was kindly made available to us by the original author.
+
+

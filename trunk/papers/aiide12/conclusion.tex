@@ -1,0 +1,18 @@
+\section{Conclusion}
+\label{sec:conclusion}
+We report the first known results of TRANSIT~\cite{bast06} route-finding to grid-based benchmarks
+from video games.  We find that on such domains the basic algorithm is impacted, in a strongly
+negative way, by the presence of uniform-cost path symmetries.  To address this, we give a new
+general symmetry breaking technique involving the random perturbation of edges in the input graph
+with small $\epsilon$-costs. We prove this technique is optimality preserving and show that it can
+reduce TRANSIT's memory overhead by several factors and improve performance by up to two orders.  We
+undertake an extensive empirical analysis of TRANSIT on a range of popular grid-based pathfinding
+benchmarks taken from video games and give a first comparison of TRANSIT with CPDs~\cite{botea11}.
+We find the two have complementary strengths and identify a class of problems to which TRANSIT
+appears better suited: distance queries involving start and goal locations that are not in close
+proximity.
+An obvious direction for future work appears to be combining TRANSIT and CPDs.  Another possibility
+is to reduce the number of nodes in the TRANSIT network; for example through the application of
+recent graph partitioning schemes~\cite{natural_cuts} or the application of systematic symmetry
+breaking in the manner of Jump Point Search~\cite{harabor11b}.  Finally we believe it may be
+possible to use a subset of the TRANSIT network as an accurate memory heuristic for A* search.

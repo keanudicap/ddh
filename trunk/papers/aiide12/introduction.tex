@@ -1,0 +1,58 @@
+\section{Introduction}
+\label{sec:introduction}
+The AI and Game Development communities have devoted much attention to the study
+of both exact and approximate techniques that speed up forward state-space search algorithms
+such as Dijkstra and A*.
+These efforts range from: \textbf{(i)} abstraction-based near-optimal techniques such as~\cite{botea04,sturtevant07}
+\textbf{(ii)} precomputation algorithms for improving heuristic estimates; for example~\cite{sturtevant09,goldenberg10}
+\textbf{(iii)} online and offline pruning and symmetry breaking methods such as~\cite{bjornsson06,pochter09,harabor11b} and
+\textbf{(iv)} compressing the entire set of All-Pairs data as in ~\cite{botea11}.
+Almost all involve a speed vs. memory tradeoff and typically deliver improvements in the
+range of one or (as in the case of \cite{botea11}) two orders of magnitude.
+
+In addition to computing shortest paths it is sometimes desirable to efficiently
+calculate the distance between two units on a map or the distance to an object
+of interest.  Support for such \emph{distance queries} is found in popular game
+libraries, including Umbra 3~\footnote{\url{http://www.umbrasoftware.com/}},
+where they are used for optimizing game logic and driving scripted events.
+Distance queries may also be useful for higher level AI; e.g. as described
+in~\cite{champandard09}.
+
+TRANSIT~\cite{bast06} is a well known and influential technique that supports both shortest
+path and distance queries.  Developed in the Algorithmics community for the
+purpose of routing on road networks, TRANSIT can be described as an optimality
+preserving abstraction technique whose primary advantages are typically modest
+memory requirements and the ability to eliminate almost entirely the need for
+state-space search.  For example, on the 24 million node US road network,
+TRANSIT requires less than 500MB of storage and answers 99\% of all distance
+queries without any state-space search in just 12 $\mu$s \footnote{The
+remaining 1\% are short local queries solved using state-space search that is
+reported to take 5 milliseconds on average.}.
+
+TRANSIT's performance is due to a natual property of most road
+networks: low \emph{highway dimension}~\cite{abraham10}.
+Intuitively, a graph has low highway dimension if, for all nodes inside an area
+of radius $r$, there are a small set of vertices that cover all shortest paths
+of length longer than $k \cdot r$, for some value $k$.  It is unclear to what extent this characteristic
+applies to grid maps. Previous work~\cite{goldberg06} has indicated that, for
+randomly-weighted grids at least, this property is unlikely to hold.
+However a recent study~\cite{sturtevant2012benchmarks} suggests that for certain
+popular grid benchmarks, particularly those drawn from video games, the opposite
+may be true.
+
+Our contribution is as follows:
+We give a first detailed evaluation of TRANSIT on popular grid domains from the AI literature.
+We find in the first instance that TRANSIT is strongly and negatively impacted,
+in terms of running time but also memory, by uniform-cost path symmetries that
+are inherent to many grid-based domains but not road networks.
+We address this with a new general technique for breaking symmetries using
+small additive $\epsilon$-costs to perturb the weights of edges in the search graph.
+Our enhancements reduce the number of nodes in the TRANSIT network by up to 4 times
+and yield running times up to \emph{4 orders of magnitude} faster than A* search.
+We also compare TRANSIT with CPDs~\cite{botea11}: a recent and very
+fast database-driven pathfinding approach. Our results indicate the two algorithms
+have complementary strengths and we suggest an approach by which they could be combined.
+However, we also identify a class of problems to which TRANSIT appears uniquely well suited.
+In these cases we report up to two orders speed improvement vs CPDs using a comparable
+amount of memory.
+
