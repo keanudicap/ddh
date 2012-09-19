@@ -1,0 +1,5 @@
+
+How the toymap.tex was generated:
+
+./cpd-converter printmovetable toymap.map 2 3 > toymap.tex
+
