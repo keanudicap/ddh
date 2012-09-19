@@ -35,6 +35,10 @@ toby.walsh}@nicta.com.au, adibotea@ie.ibm.com| \urldef{\mailsb}\path||
 \newcommand{\keywords}[1]{\par\addvspace\baselineskip
 \noindent\keywordname\enspace\ignorespaces#1}
 
+\usepackage{tikz}
+\usepackage{tabularx,colortbl}
+
+
 \begin{document}
 
 \mainmatter  % start of an individual contribution
@@ -99,7 +103,7 @@ pathfinding research has included a focus on avoiding online search
 as much as possible.
 %kNN LRTA*~\cite{DBLP:journals/jair/BulitkoBL10}
 Transit~\cite{bast06} answers distance queries very fast, in those
-cases when the start and the target are sufficiently far from each
+cases when the start and the target are sufficiently far away from each
 other. However, for ``local'' queries, Transit resorts to search.
 Initially applied to roadmaps, Transit was recently adapted to 
 gridmaps~\cite{antsfeld12}.
@@ -204,43 +208,81 @@ which is a main contribution of this paper.
 Compressed Path Databases~\cite{botea11,DBLP:conf/socs/Botea12} are
 all-pairs shortest path (APSP) data in a compressed form.
 A fast retrieval of individual moves contained in a solution path, and the
-optimality of moves are key strengths of CPDs. The so-called \emph{first-move
-lag}, which is the time needed until a first move can be provided, is low,
-since fetching one move is independent of subsequent moves on a path. 
-Such strengths come at the price of a
-significant pre-processing time, needed to compute all-pairs shortest path data,
-and a significant amount of memory needed to store the pre-processing results.
+optimality of moves are key strengths of CPDs. The {first-move
+lag} is low, since fetching one move is independent of subsequent moves on a
+path. Such strengths come at the price of a significant pre-processing time,
+needed to compute all-pairs shortest path data, and a significant amount of
+memory needed to store the pre-processing results.
 
-Given a map, the pre-processing is done offline, being amortized over
-all queries on that map. As shown later in this section, pre-processing can
-easily be paralellized, since it consists of a series of independent
-iterations. Yet, the pre-processing time can be critical, for instance in
-cases such as a dynamic environment, which would require a re-computation of a CPD.
+A brief overview of CPDs is necessary to understand how the idea is integrated
+into our architecture. For a more detailed description we point the reader to
+the original publications~\cite{botea11,DBLP:conf/socs/Botea12}.
 
-Despite the ability of CPDs to compress APSP data by hundreds of
-times without any information loss,
-their size can sometimes be a performance bottleneck,
+In the pre-processing phase, APSP data are computed with a series of independent
+iterations. There is one iteration for each node $n$ on the map.
+An invocation of the Dijkstra algorithm allows computing a \emph{first-move
+table} $T_n$ with optimal moves $\mbox{move}(n,t)$ from $n$ towards
+any reachable target $t$ on the map.\footnote{For example,
+\mbox{move}(n,t) can be the id of an outgoing edge from $n$.}
+The table's two-dimensional size mirrors the size of the map, 
+with cell $T_n[x,y]$ storing $\mbox{move}(n,t)$ for the target $t$ with map
+coordinates $(x,y)$.
+
+Figure~\ref{figure-first-move-table} shows a first-move table for a toy map and
+a given node $n$. Black cells are obstacles. Move labels are shown as arrows on
+a coloured background.
+For example, the cell at the bottom right is labelled
+``$\rightarrow$'' because the first move from $n$ towards that cell is to the right.
+Notice how move labels cluster in the figure, due to the \emph{path
+coherence}~\cite{Sankaranarayanan:2005} property: on a graph such as a gridmap
+or a roadmap, often, the first move from a given current location towards
+\emph{any} target in a remote area is the same.
+
+%The key intuition  
+The second half of an iteration is the compression, when
+a first-move table is decomposed into a list $L_n$ of disjoint
+\emph{homogeneous} rectangles, with the property that all locations $t$ within a rectangle have
+the same move label $\mbox{move}(n,t)$. The fewer the rectangles, the better
+the compression. In the example, there are 7 homogeneous rectangles.
+Part of these can be removed, without any information loss, with a
+list \emph{trimming} step, which allows removing from a list
+rectangles with the same move label $d$, called a default move.
+
+\begin{figure}
+\begin{center}
+\input example/toymap.tex
+\caption{A first-move table on a toy grid map.}
+\label{figure-first-move-table}
+\end{center}
+\vspace{-15pt}
+\end{figure}
+
+At runtime, given a current node $n$ and a target $t$, we need to retrieve an
+optimal move from $n$ towards $t$. The program searches in the list of
+rectangles in $L_n$ for the rectangle that contains $t$. The move label of that rectangle is
+precisely the sought optimal move. Ordering rectangles in $L_n$ decreasingly on
+their size improves the move fetching time. If no rectangle containing $t$ is
+found in $L_n$, it must be the case that that rectangle has been removed
+as a result of trimming. Thus, the rectangle must have the move label $d$, which
+is the move to return as an optimal step from $n$ towards $t$.
+
+%Given a map, the pre-processing is done offline, being amortized over all
+%queries on that map. 
+The offline pre-processing can easily be paralellized, since it consists of a
+series of independent iterations. Yet, the pre-processing time can be critical, for
+instance in cases such as a dynamic environment, which would require to
+occasionally re-compute a CPD.
+Despite the ability of CPDs to compress APSP data by hundreds of times without
+any information loss, their size can sometimes be a performance bottleneck,
 depending on the map size, the topology, and the amount of RAM available.
-Further reducing the memory needs and the pre-processing time are main
-contributions of this work.
-
-A detailed overview of computing and using CPDs is beyond the scope of this
-paper, especially since, in our approach, the CPD method can be used as a
-blackbox tool. For a detailed description, we point the reader to the original
-publications~\cite{botea11,DBLP:conf/socs/Botea12}.
-
-% In the pre-processing phase, APSP data are computed with a series of independent
-% iterations. There is one iteration for each node $n$ on the map.
-% An invocation of the Dijkstra algorithm allows computing an optimal move
-% $\mbox{move}(n,t)$ from $n$ towards any reachable target $t$ on the map. The
-% result is two-dimentional table $T(n)$, called a first-move table, with the same
-% number of rows and columns as the map.
-% At cell $(c,r)$, it contains $\mbox{move}(n,t)$, where $t$ is the node graph
-% with column $c$ and row $r$.
-% 
-% As a second step of an iteration, a first-move table is compressed 
-
-
+Such a limitation was obvious in the recent International Grid-Based Path
+Planning Competition\footnote{{\url {http://movingai.com/GPPC/index.html}}}, where Copa,
+a competitor that implements CPDs, was able to run only on a subset of maps.
+According to preliminary results available on the competition website, Copa
+was one of the best optimal path planners, due to its fast retrieval of
+individual moves.
+Further reducing the memory needs and the pre-processing time
+are main contributions of this work.
 
 \section{TRANSIT with CPD}\label{sec:transit_cpd}
 The basic idea of our approach is to break a long shortest path (i.e. $src \rightsquigarrow dst$ is a global query)  
