@@ -169,23 +169,6 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(nx == goalx && ny == goaly)
 					break;
 
-				if( cutCorners )
-				{
-					// stop if SE neighbour is forced
-					if(!map->getNodeFromMap(nx, ny+1) && 
-							map->getNodeFromMap(nx+1, ny+1))
-					{
-						break;
-					}
-
-					// stop if NW neighbour is forced
-					if(!map->getNodeFromMap(nx-1, ny) && 
-							map->getNodeFromMap(nx-1, ny-1))
-					{
-						break;
-					}
-				}
-			
 				// n is a jump node if we can reach other jump nodes by
 				// travelling vertically or horizontally 
 				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
@@ -218,21 +201,6 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(nx == goalx && ny == goaly)
 					break;
 				
-				if( cutCorners )
-				{
-					if(!map->getNodeFromMap(nx, ny-1) && 
-							map->getNodeFromMap(nx+1, ny-1))
-					{
-						break;
-					}
-
-					if(!map->getNodeFromMap(nx-1, ny) && 
-							map->getNodeFromMap(nx-1, ny+1))
-					{
-						break;
-					}
-				}
-
 				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) || 
 					findJumpNode(Jump::E, nx, ny, goalx, goaly))
 				{
@@ -264,21 +232,6 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 				if(nx == goalx && ny == goaly)
 					break;
 
-				if( cutCorners )
-				{
-					if(!map->getNodeFromMap(nx, ny+1) && 
-							map->getNodeFromMap(nx-1, ny+1))
-					{
-						break;
-					}
-
-					if(!map->getNodeFromMap(nx+1, ny) && 
-							map->getNodeFromMap(nx+1, ny-1))
-					{
-						break;
-					}
-				}
-
 				if(findJumpNode(Jump::N, nx, ny, goalx, goaly) || 
 					findJumpNode(Jump::W, nx, ny, goalx, goaly))
 				{
@@ -309,21 +262,6 @@ OnlineJumpPointLocator::findJumpNode(Jump::Direction d, int x, int y,
 
 				if(nx == goalx && ny == goaly)
 					break;
-
-				if( cutCorners )
-				{
-					if(!map->getNodeFromMap(nx, ny-1) && 
-							map->getNodeFromMap(nx-1, ny-1))
-					{
-						break;
-					}
-
-					if(!map->getNodeFromMap(nx+1, ny) && 
-							map->getNodeFromMap(nx+1, ny+1))
-					{
-						break;
-					}
-				}
 
 				if(findJumpNode(Jump::S, nx, ny, goalx, goaly) ||
 					findJumpNode(Jump::W, nx, ny, goalx, goaly))

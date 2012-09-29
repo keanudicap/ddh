@@ -36,15 +36,11 @@ class JumpPointLocator
 		inline int getLimit() { return jumplimit; }
 		inline void setLimit(int lim) { jumplimit = lim; }
 
-		inline bool getCutCorners() { return cutCorners; }
-		inline void setCutCorners(bool cc) { cutCorners = cc; }
-
 	protected:
 		bool canStep(int x, int y, Jump::Direction checkdir);
 
 		mapAbstraction* map;
 		int jumplimit; // max # of steps to take before giving up (default=inf)
-		bool cutCorners;
 
 };
 
