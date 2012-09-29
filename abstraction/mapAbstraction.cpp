@@ -584,19 +584,16 @@ void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDia
 		m->getTile(x-1, y-1).tile1.node != kNoGraphNode &&
 		(
 		 	// if both alternative paths are OK, diagonal transition is OK
-			(
-				m->getTile(x-1, y).tile1.node != kNoGraphNode && 
-				m->getTile(x, y-1).tile1.node != kNoGraphNode
-			)
+			(( m->getTile(x-1, y).tile1.node != kNoGraphNode && 
+				m->getTile(x, y-1).tile1.node != kNoGraphNode)
 
 			||
 
 			// diagonal transition might still be valid if we allow corner cutting
-			(
-				cutCorners && 
+			(cutCorners && 
 				(m->getTile(x-1, y).tile1.node != kNoGraphNode ||
 				m->getTile(x, y-1).tile1.node != kNoGraphNode)
-			)
+			))
 		))
 	{
 				if ((rand()%100) < gEdgeProb)
@@ -614,7 +611,7 @@ void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDia
 		m->getTile(x+1, y-1).tile1.node != kNoGraphNode &&
 		(
 		 	// if both alternative paths are OK, diagonal transition is OK
-			(m->getTile(x+1, y).tile1.node != kNoGraphNode &&
+			((m->getTile(x+1, y).tile1.node != kNoGraphNode &&
 			 m->getTile(x, y-1).tile1.node != kNoGraphNode)
 
 			||
@@ -622,7 +619,7 @@ void addMapEdges(Map *m, graph *g, IEdgeFactory* ef, int x, int y, bool allowDia
 			// diagonal transition might still be valid if we allow corner cutting
 			(cutCorners && 
 			(m->getTile(x+1, y).tile1.node != kNoGraphNode ||
-			 m->getTile(x, y-1).tile1.node != kNoGraphNode))
+			 m->getTile(x, y-1).tile1.node != kNoGraphNode)))
 		))
 	{
 		if ((rand()%100) < gEdgeProb)

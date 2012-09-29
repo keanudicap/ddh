@@ -294,16 +294,15 @@ void runScenario(unitSimulation * &unitSim)
 	std::cout << " import file: "<<import_graph_filename<<std::endl;
 	std::cout << " export file: "<<export_graph_filename<<std::endl;
 	std::cout << "Experiment Parameters:";
-	std::cout << " repeat="<<repeat << std::endl;
-	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
-	std::cout << " cutcorners="<<(cutCorners?"true":"false") << std::endl;
 	std::cout << " search=";
 	switch(searchType)
 	{
 		case HOG::HPA:
+			cutCorners = true;
 			std::cout << "HPA";
 			break;
 		case HOG::RSR:
+			cutCorners = true;
 			std::cout << "RSR";
 			if(reducePerimeter)
 				std::cout << "+pr";
@@ -311,6 +310,7 @@ void runScenario(unitSimulation * &unitSim)
 				std::cout << "+bfr";
 			break;
 		case HOG::JPS:
+			cutCorners = false; allowDiagonals = true;
 			std::cout << "JPS";
 			if(!jps_online)
 				std::cout << "+preprocessing";
@@ -324,6 +324,9 @@ void runScenario(unitSimulation * &unitSim)
 			std::cout << "Unknown?? Fix me!!";
 			exit(1);
 	}
+	std::cout << " repeat="<<repeat << std::endl;
+	std::cout << " cardinal="<<(!allowDiagonals?"true":"false") << std::endl;
+	std::cout << " cutcorners="<<(cutCorners?"true":"false") << std::endl;
 	std::cout << std::endl;
 
 
@@ -448,7 +451,7 @@ void runScenario(unitSimulation * &unitSim)
 //		}
 
 		unitSim = new unitSimulation(aMap);	
-		unitSim->setCanCrossDiagonally(true);
+		unitSim->setCanCrossDiagonally(allowDiagonals);
 		if(mode == HOG::SCENARIO)
 			unitSim->setNextExperimentPtr(&runNextExperiment);
 	}
@@ -494,13 +497,13 @@ gogoGadgetNOGUIScenario(mapAbstraction* aMap)
 		if(p)
 		{
 			distanceTravelled = to->getLabelF(kTemporaryLabel);
+			delete p;
 		}
 
 		stats.addStat("distanceMoved", alg->getName(), distanceTravelled);
 		alg->logFinalStats(&stats);
 		processStats(&stats, alg->getName());
 		stats.clearAllStats();
-		delete p;
 
 		std::cout << alg->getName() << ": ";
 		std::cout << "exp "<<expnum<<" ";

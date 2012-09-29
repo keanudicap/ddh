@@ -10,6 +10,14 @@
 // [Harabor D. and Grastien A, 2011, 
 // Online Graph Pruning Pathfinding on Grid Maps, AAAI]
 //
+// NB: As of May 2012, this class implements a revised version of JPS
+// which does not permit corner cutting. This is a small modification
+// but it changes slightly the location of forced neighbours.
+// For details see:
+//
+// [Harabor D. and Grastien A., 2012,
+// The JPS Pathfinding System, SoCS]
+//
 // @author: dharabor
 // @created: 04/06/2011
 //
