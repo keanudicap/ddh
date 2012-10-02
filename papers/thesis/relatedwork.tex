@@ -1,0 +1,39 @@
+\chapter{Related Work}
+\label{cha:related}
+
+A large number of techniques have been proposed to speed up pathfinding. Most
+can be classified as variations on three themes:
+\begin{enumerate}
+\item{Reducing the size of the search space through abstraction.}
+\item{Improving the accurary of heuristic functions that guide search.}
+\item{Dead-end detection and other state-space pruning methods. }
+\end{enumerate}
+
+\section{Abstraction}
+\label{cha:related:abs}
+Algorithms of this type are fast and use little memory but compute paths which are usually not
+optimal and must be refined via further search. Typical examples: HPA*~\cite{botea04} and
+MM-Abstraction~\cite{sturtevant07}.
+
+\section{Improved Heuristics}
+\label{cha:related:heuristics}
+Algorithms of this type usually pre-compute and store distances between key pairs of locations
+in the environment. Though fast and optimal, such methods can incur signficant
+memory overheads which is often undesirable. Typical examples: Landmarks~\cite{goldberg05} and
+True Distance Heuristics~\cite{sturtevant09}.
+
+\section{Search Space Pruning}
+\label{char:related:pruning}
+Algorithms of this type usually aim to identify areas on the map that do not need to be explored in
+order to reach the goal optimally. Though not as fast as abstraction or memory
+heuristics, such methods usually have low memory requirements and can improve
+pathfinding performance by several factors. Typical examples: Dead-end Heuristic~\cite{bjornsson06}
+Swamps~\cite{pochter09} and the Portal Heuristic~\cite{goldenberg10}.
+
+My work in this area can be broadly classified as a search space pruning
+technique. Where it differs from existing efforts is that, instead of trying to
+identify areas that do not have to be crossed during search, I aim to identify
+and prune symmetric nodes that prevent the fast exploration of an area. This
+idea nicely complements existing search-space reduction techniques and, as it
+turns out, also complements most grid-based abstraction methods and memory
+heuristic approaches.
