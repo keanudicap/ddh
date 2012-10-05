@@ -1,68 +1,73 @@
 \chapter{Rectangular Symmetry Reduction}
 \label{cha:rsr}
-In the context of single-agent pathfinding A* \cite{hart68} is regarded as 
-the gold standard search algorithm.
-It is complete, optimal and optimally efficient which makes it very attractive 
-to researchers in the area.
-Many studies exist which have attempted to improve on the performance of A*.
-The majority focus in one of two directions: reducing the search space through hierarchical 
-decomposition and identifying better heuristics to guide search. 
-In the case of hierarchical decomposition, techniques such as
-HPA*~\cite{botea04} and PRA*~\cite{sturtevant05} seek to construct and explore
-a much reduced approximate state space.
-These methods are fast and require no significant extra-memory when compared to A*.
-However, they have the disadvantage that solutions are not guaranteed to be optimal.
-Meanwhile, in case of the improved heuristics, it has been frequently shown
-that obtaining better informed results than than the popular
-Manhattan heuristic usually incurs significant memory overhead 
-\cite{sturtevant09,goldberg05,Cazenave:06,bjornsson06}.
-Furthermore it is well known that even heuristics which differ from perfect information 
-by at most a (small) additive constant, can still exhibit poor performance on a range of 
-problems such as AI planning and graph search \cite{helmert08,pohl77}.
-
 In this chapter we present Rectangular Symmetry Reduction (RSR): a graph pruning
 algorithm for undirected uniform-cost grid maps which is fast, memory efficient,
 optimality preserving and which can, in some cases, eliminate entirely the need
 to search.  The central idea that we will explore involves the identification
 and elimination of \emph{path symmetries} from the search space. 
 To deal with symmetry RSR makes use of an off-line
-empty rectangle decomposition \cite{harabor10} that converts an arbitrary
+empty rectangle decomposition that converts an arbitrary
 undirected uniform-cost grid map into an equivalent one where only nodes
 from the perimeter of each empty rectangle need to be explored during search.
-We extend this approach in several directions: (i) we generalise the method
-from 4-connected grid maps to the 8-connected case where the increase in
-branching factor makes effective symmetry elimination more challenging; (ii) we
-develop a new offline pruning technique that reduces the number of nodes which
-need to be explored during search; (iii) we give a novel online pruning strategy
-which speeds up node expansion by selectively evaluating either all neighbours
-associated with a particular node or only a small subset.  We prove that in each
-case both optimality and completeness are preserved.
+We begin by introducing our idea in the context of 4-connected grid maps, a common
+setting in video games and one which appears often in the AI literature.
+We then turn our attention to 8-connected grid maps where the increase in
+branching factor makes effective symmetry elimination more challenging. 
+For this setting we develop a stronger symmetry breaking technique which can significantly
+reduce the number of nodes that need to be explored during search. We also study a novel 
+online pruning strategy which speeds up node expansion by selectively evaluating either 
+all neighbours associated with a particular node or only a small subset.  
+We prove that in each case both optimality and completeness are preserved.
 
+The contributions described in this chapter have been presented previously in
+~\cite{harabor10, harabor11a, harabor11c}.
 
-
-
-Pathfinding systems that operate on regular grids are common in the AI literature
-and often used in real-time video games.
-Typical speed-up enhancements include reducing the size of the search space using abstraction,
-and building more informed heuristics.
-Though effective each of these strategies has shortcomings. 
-For example, pathfinding with abstraction usually involves trading away optimality
-for speed.
-Meanwhile, improving on the accuracy of the well known Manhattan heuristic usually
-requires significant extra memory.
-In this chapter we present Rectangular Symmetry Reduction (RSR): a different kind of speedup technique 
-based on the idea of identifying and eliminating symmetric path segments in grid maps.
-RSR decomposes grid maps into a set of empty rectangles,
-removing from each rectangle all interior nodes and possibly some from along the
-perimeter. We then add a series of macro-edges between selected pairs of
-remaining perimeter nodes to facilitate provably optimal traversal through each
-rectangle.  
-This process eliminates many path segments which are variations on each other
-and produces modified grid maps which are often much faster to search than
-the original versions.
-We compare RSR with Swamps, a recent search space reduction strategy from the AI literature.
-We show that RSR and Swamps have complementary strengths and identify classes of 
-instances where RSR is clearly the better choice, dominating convincingly across a 
-large number of instances.
-
-\section{
+%In the context of single-agent pathfinding A* \cite{hart68} is regarded as 
+%the gold standard search algorithm.
+%It is complete, optimal and optimally efficient which makes it very attractive 
+%to researchers in the area.
+%Many studies exist which have attempted to improve on the performance of A*.
+%The majority focus in one of two directions: reducing the search space through hierarchical 
+%decomposition and identifying better heuristics to guide search. 
+%In the case of hierarchical decomposition, techniques such as
+%HPA*~\cite{botea04} and PRA*~\cite{sturtevant05} seek to construct and explore
+%a much reduced approximate state space.
+%These methods are fast and require no significant extra-memory when compared to A*.
+%However, they have the disadvantage that solutions are not guaranteed to be optimal.
+%Meanwhile, in case of the improved heuristics, it has been frequently shown
+%that obtaining better informed results than than the popular
+%Manhattan heuristic usually incurs significant memory overhead 
+%\cite{sturtevant09,goldberg05,Cazenave:06,bjornsson06}.
+%Furthermore it is well known that even heuristics which differ from perfect information 
+%by at most a (small) additive constant, can still exhibit poor performance on a range of 
+%problems such as AI planning and graph search \cite{helmert08,pohl77}.
+%
+%
+%
+%
+%
+%Pathfinding systems that operate on regular grids are common in the AI literature
+%and often used in real-time video games.
+%Typical speed-up enhancements include reducing the size of the search space using abstraction,
+%and building more informed heuristics.
+%Though effective each of these strategies has shortcomings. 
+%For example, pathfinding with abstraction usually involves trading away optimality
+%for speed.
+%Meanwhile, improving on the accuracy of the well known Manhattan heuristic usually
+%requires significant extra memory.
+%In this chapter we present Rectangular Symmetry Reduction (RSR): a different kind of speedup technique 
+%based on the idea of identifying and eliminating symmetric path segments in grid maps.
+%RSR decomposes grid maps into a set of empty rectangles,
+%removing from each rectangle all interior nodes and possibly some from along the
+%perimeter. We then add a series of macro-edges between selected pairs of
+%remaining perimeter nodes to facilitate provably optimal traversal through each
+%rectangle.  
+%This process eliminates many path segments which are variations on each other
+%and produces modified grid maps which are often much faster to search than
+%the original versions.
+%We compare RSR with Swamps, a recent search space reduction strategy from the AI literature.
+%We show that RSR and Swamps have complementary strengths and identify classes of 
+%instances where RSR is clearly the better choice, dominating convincingly across a 
+%large number of instances.
+%
+%\section{
