@@ -1,9 +1,17 @@
-aticle.ps: *.tex references.bib
+
+all: draft
+
+full: *.tex references.bib
 	pdflatex thesis
 	bibtex thesis
 	pdflatex thesis
-	pdflatex  thesis
-	#dvips -t letter -Ppdf -G0 -o thesis.ps thesis.dvi
-	#ps2pdf14 -dPDFSETTINGS=/prepress thesis.ps
+	pdflatex thesis
+
+draft: *.tex references.bib
+	pdflatex draft
+	bibtex draft
+	pdflatex draft
+	pdflatex draft
+
 clean:
-	rm -f *.lof *.lot *.toc *.brf *.out *.idx *.aux *.bbl *.blg *.log thesis.dvi thesis.ps thesis.pdf
+	rm -f *.lof *.lot *.toc *.brf *.out *.idx *.aux *.bbl *.blg *.log thesis.pdf draft.pdf
