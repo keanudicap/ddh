@@ -1,9 +1,9 @@
-Any-angle pathfinding is a navigation problem which appears in computer
-video games. It involves finding a shortest path between an arbitrary pair of
- of points on a two-dimensional grid map but asks that movoment along the 
-path is not artifically constrained to the points of the grid. 
-Within the game development community a simple and popular solution exists
-known as \emph{string pulling}~\cite{pinter01,botea04}.
+Any-angle pathfinding is a navigation problem which appears in robotics
+and computer video games. It involves finding a shortest path between an 
+arbitrary pair of of points on a two-dimensional grid map but asks that 
+movoment along the path is not artifically constrained to the points of 
+the grid.  Within the game development community a simple and popular 
+solution exists known as \emph{string pulling}~\cite{pinter01,botea04}.
 The idea is to compute a grid-optimal path in the first
 instance and smooth the result as part of a post-processing step that improves
 both its length and aesthetic appeal. String pulling has two disadvantages: 
@@ -12,29 +12,31 @@ it can only yield approximately shortest paths.
 \\
 Theta*~\cite{nash07} and its variants~\cite{nash09,nash10} improve things 
 by integrating post-processing into node expansion during search. Their 
-idea involves updating node parent labels following a successful line-of-sight
+idea involves updating a node's parent label following a successful line-of-sight
 check to a previously expanded ancestor node.
-Block A*\cite{yap11} avoids line-of-sight checks entirely by precomputing
-a database of exact costs between pairs of points in a localised area.
-Both Theta* and Block A* signficantly improve on the running time and 
-solution quality of string pulling methods but neither guarantees optimality.
+Another approach, Block A*\cite{yap11}, avoids line-of-sight checks entirely 
+by precomputing a database of exact costs between pairs of points in a localised area.
+Both Theta* and Block A* improve on the running time and 
+solution quality of string pulling but neither guarantees optimality.
+Despite this, a number of exact solutions for the problem do exist.
 %\\
 %In computational geometry a problem similar to any-angle pathfinding exists 
 %which has been very well studied: finding Euclidean shortest paths among 
 %polygonal obstacles in the plane.
 %\\
 \\
-Visibility Graphs~\cite{lozanoperez79} can solve a generalised form of 
-the any-angle problem in time $O(n^2log{n})$ but storing such a graph 
-requires $O(n^2)$ space as each of the $n$ vertices can be adjacent to 
-every other vertex.  Tangent Graphs~\cite{liu92} are a particularly efficient 
+Visibility Graphs~\cite{lozanoperez79} solve a generalised form of 
+any-angle pathfinding in time $O(n^2\log_{2}n)$. Their primary disadvantage
+is that storing such a graph requires $O(n^2)$ space as each of the $n$ 
+vertices can be adjacent to every other vertex.  
+Tangent Graphs~\cite{liu92} are a particularly efficient 
 variant of this idea but space requirements remain worst-case quadratic. 
 Other exact approaches are based on the 
 \textit{Continuous Dijkstra}~\cite{mitchell87} paradigm.
 The most efficient of these algorithms~\cite{hershberger99} involves a
-precomputation requiring $O(nlogn)$ space and $O(nlogn)$ time.  The result 
+precomputation requiring $O(n \log_{2}{n})$ space and $O(n\log_{2}n)$ time.  The result 
 is a planar subdivision of the map that can be used to find a shortest path in 
-just $O(logn)$ but only for queries originating at a fixed source.
+just $O(\log_{2}n)$ but only for queries originating at a fixed source.
 \\
 In this work we discuss a new approach to any-angle pathfinding which
 addresses many of the shortcomings associated with existing research.
