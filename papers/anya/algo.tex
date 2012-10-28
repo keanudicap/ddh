@@ -1,8 +1,19 @@
-This section now presents our search algorithm, 
-dubbed \anya, for any-angle pathfinding.  
-\anya{} is a variant of A* that does not search 
-on the space of intervals of the grid, 
-but instead on the space of intervals and corners.  
+bla bla bla
+
+Essentially, the reason why the existing algorithms are not optimal
+is that the search is based on the grid intersections.  
+However, because the final any-angle path 
+may never cross these intersections, 
+the $A^*$ $f$ value associated with the intersections
+is not relevant.  
+In this article, we propose to run the search not on the grid 
+but instead on the edges of the graph.  
+
+% EOF
+This section now presents our search algorithm, dubbed \anya, short for
+any-angle pathfinding.  \anya{} is a variant of A* that does not search on the
+space of intervals of the grid, but instead on the space of intervals and
+corners.
 
 \begin{algorithm}[ht!]
   \input{algo/anya}

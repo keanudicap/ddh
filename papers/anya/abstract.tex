@@ -1,0 +1,17 @@
+\begin{abstract}
+Any-angle pathfinding is a common problem from robotics
+and computer games: it requires finding a Euclidean shortest path between 
+pairs of vertices in a grid map.
+Prior research has focused on approximate online solutions for the problem.
+A number of exact methods exist but they all require supra-linear space and
+preprocessing time. 
+Our contribution to this area is a new online algorithm we call Anya:
+it solves the any-angle problem optimally by searching over sets of states 
+represented as intervals.
+Each interval has a representative point used to derive an $f$-value during
+search. Also associated with each interval is a corner point which allows
+us to project intervals from one row of the grid to another.
+Anya compares favourably with existing research: it is online and 
+optimal, it does not rely on any precomputation and it does not introduce 
+any additional memory overheads.
+\end{abstract}
