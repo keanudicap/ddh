@@ -14,9 +14,9 @@ Edges in the grid can be interpreted as continuous intervals connecting two
 discrete points. Each edge is common to at most two adjacent cells. Each discrete 
 point is common to at most four adjacent cells.
 %We now define some terminology for discussing discrete points:
-An \emph{intersection} is any discrete point that is common to
-four adjacent cells. A \emph{corner} is any intersection where three of the
-adjacent cells are traversable and one is not. 
+A point which is common to exactly four adjacent cells is called an \emph{intersection}.
+Any intersection where three of the adjacent cells are traversable and one is not
+is called a \emph{corner}.
 Two points are \emph{visible} from one another if there exists a 
 straight-line path connecting them which does not pass through the interior of any
  non-traversable cell.
@@ -51,7 +51,7 @@ $(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
 
 \begin{proof}
 {
-  Assume an optimal any-angle path $\pi = (p_1,\dots,p_k)$ 
+  Assume an optimal any-angle path $\pi = \langle p_1,\dots,p_k \rangle$ 
   that includes a turning point $p_l$ ($l \not\in \{0,k\}$) 
   which is not a corner.  
   We will prove that $\pi$ is suboptimal 
@@ -61,7 +61,7 @@ $(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
   which is strictly shorter than $\pi$.  
   Hence $\pi$ is suboptimal.  
   If $p_{l+1}$ is not visible from $p_{l-1}$, 
-  then let $p'_{l}$ be a point from the segment $(p_l,p_{l+1})$ 
+  then let $p'_{l}$ be a point from the segment $\langle p_l,p_{l+1} \rangle$ 
   that (i) is visible from $p_{l-1}$ 
   and (ii) is different from $p_l$.  
   Because $p_l$ is not a corner, 
