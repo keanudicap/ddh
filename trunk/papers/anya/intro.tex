@@ -1,3 +1,4 @@
+\section{Introduction}
 Any-angle pathfinding is a navigation problem which appears in robotics
 and computer video games. It involves finding a shortest path between an 
 arbitrary pair of of points on a two-dimensional grid map but asks that 
@@ -36,13 +37,13 @@ Other exact approaches are based on the
 The most efficient of these algorithms~\cite{hershberger99} involves a
 precomputation requiring $O(n \log_{2}{n})$ space and $O(n\log_{2}n)$ time.  The result 
 is a planar subdivision of the map that can be used to find a shortest path in 
-just $O(\log_{2}n)$ but only for queries originating at a fixed source.
+just $O(\log_{2}n)$ time but only for queries originating at a fixed source.
 \\
 In this work we discuss a new approach to any-angle pathfinding which
 addresses many of the shortcomings associated with existing research.
 Our algorithm, Anya, bears some similarity with Continuous Dijkstra: 
 instead of searching over individual states from the grid we consider
-sets of states together as an interval. From each interval we select a 
+contiguous sets of states together as an interval. From each interval we select a 
 representative point that is used to derive an $f$-value for the set.
 Intervals are associated with corner points and projected from one 
 row of the grid onto another until the goal is reached.
