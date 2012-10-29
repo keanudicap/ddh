@@ -1,26 +1,25 @@
 \section{Preliminaries}
-A \emph{grid} $G$ is a $W \times H$ matrix of tiles in which each tile is either
-\emph{traversable} or \emph{non-traversable}\footnote{Such tiles are sometimes
-called obstacles.}.
+A \emph{grid} is a planar subdivision consisting of $W \times H$ square cells.
+Each cell is either \emph{traversable} or \emph{non-traversable}
+\footnote{Such cells are sometimes called obstacles.}.
 %It is common
 %in such settings for each tile to represent a unique location in the grid and to
 %assume there is an implicit vertex located at its centre~\cite{yap02}.  In this
 %paper we follow~\cite{nash07} and adopt a slightly different model: 
-Locations in the grid can be defined as a discrete set of points $p = (x, y)$
-($x \in \{0,\dots,W\}$ and $y \in \{0,\dots,H\}$)
+The set of discrete points that define the perimeter of each cell are the locations
+of the grid. Each such point $p$ has a unique coordinate $(x, y)$
+where $x \in \{0,\dots,W\}$ and $y \in \{0,\dots,H\}$.
 % refers to an explicit vertex 
-and edges can be interpreted as continuous point intervals connecting two discrete points.
-Each edge can be common to at most two adjacent tiles. Each discrete point can be common
-to at most four adjacent tiles.
-\\
-Occasionally we will find it useful to distinguish between different kinds of points.
-An \emph{intersection} is simply a discrete point that is common to four adjacent tiles.
-A \emph{corner} is an intersection where three of the adjacent tiles are traversable
-and one is not.
-We will say that two points are \emph{visibile} from one another if there exists a 
+Edges in the grid can be interpreted as continuous intervals connecting two 
+discrete points. Each edge is common to at most two adjacent cells. Each discrete 
+point is common to at most four adjacent cells.
+%We now define some terminology for discussing discrete points:
+An \emph{intersection} is any discrete point that is common to
+four adjacent cells. A \emph{corner} is any intersection where three of the
+adjacent cells are traversable and one is not. 
+Two points are \emph{visible} from one another if there exists a 
 straight-line path connecting them which does not pass through the interior of any
- non-traversable tiles.
-
+ non-traversable cell.
 %A \emph{corner} is an intersection 
 %such that only one of its four squares is non-traversable.  
 %Intersection $i'$ is \emph{visible} from intersection $i$ 
@@ -31,7 +30,7 @@ straight-line path connecting them which does not pass through the interior of a
 %(besides $i$ and $i'$), 
 %then intersection $i'$ is not visible from intersection $i$.  
 
-An \emph{any-angle path} $\pi$ is a sequence of discrete points 
+Using the above we define an \emph{any-angle path} $\pi$ as a sequence of discrete points 
 $\langle p_1,\dots,p_k \rangle$ where each $p_{i}$ is visible from both $p_{i-1}$
 and $p_{i+1}$.
 The \emph{length} of path $\pi$ 
@@ -55,8 +54,8 @@ $(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
   Assume an optimal any-angle path $\pi = (p_1,\dots,p_k)$ 
   that includes a turning point $p_l$ ($l \not\in \{0,k\}$) 
   which is not a corner.  
-  %We will prove that $\pi$ is suboptimal 
-  %which, by contradiction, will prove the lemma.  
+  We will prove that $\pi$ is suboptimal 
+  which, by contradiction, will prove the lemma.  
   If $p_{l+1}$ is visible from $p_{l-1}$, 
   then  $\pi \setminus p_l$ is a path 
   which is strictly shorter than $\pi$.  
