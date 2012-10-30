@@ -1,16 +1,18 @@
 \section{Principle Of Anya}
-Consider the example presented on Figure~\ref{fig::ex1} 
-where the path requires to travel from $(2,0)$ to $(3,4)$.  
+Consider as a motivating example the problem depicted in Figure~\ref{fig::ex1}.
+We are tasked with finding an any-angle path between node $n_1 = (2, 0)$ and
+node $n_2 = (3, 4)$.  The best online algorithm for solving this problem, to
+date, is Theta*~\cite{nash07}. It operates by looking for a solution among the
+set of discrete points that comprise the locations of the grid; i.e.,
+it successively expands nodes $(2,1)$ to $(2,4)$ and $(3,0)$ to $(3,3)$ until
+eventually $n_2$ is reached.  Notice however that the actual shortest path
+between $n_1$ and $n_2$ may not pass through any of these discrete points.  To
+account for this fact Theta* ``pulls the string'' each time a new
+point is reached.  Thus when node $n_2$ is generated its $g$-value is not
+computed as the length of the grid-constrained path used to reach it but rather
+using the direct path $\langle n_1, n_2 \rangle$.
 
-%\begin{figure}[ht]
-%  \begin{center}
-%    \includegraphics[scale=0.3]{images/ex1}
-%  \end{center}
-%  \caption{Example of an any-angle path}
-%  \label{fig::ex1}
-%\end{figure}
-
-\begin{figure}[ht]
+\begin{figure}[tb]
   \begin{center}
     \input{tikz/ex1}
   \end{center}
@@ -18,47 +20,21 @@ where the path requires to travel from $(2,0)$ to $(3,4)$.
   \label{fig::ex1}
 \end{figure}
 
-To find a path between node $n_1 = (2,0)$ and node $n_2 = (3,4)$, 
-the Theta$*$ any angle pathfinding algorithm \cite{nash10}
-successively explores nodes $(2,1)$ to $(2,4)$ and $(3,0)$ to $(3,3)$ 
-(thereafter called the intermediate nodes) until reaching $n_2$.  
-Notice that the actual shortest path between $n_1$ and $n_2$ 
-does not go through these intermediate nodes, 
-and Theta* accounts to this fact by ``pulling'' the string 
-when a new node is explored.  
-Presented differently, when $n_2$ is generated, 
-the $g$ value is computed for the direct path $(n_1,n_2)$ 
-and not based on a path that would go through e.g. $(2,1)$ or $(3,0)$.  
+The problem with this approach is that the $f$-values from a parent to each of
+its successors may not be monotonically increasing.  The monotone condition is
+necessary to guarantee that an optimal solution, if one exists, is always found.
+For instance: Theta* can generate $n_2$ from the intermediate point $p = (3,3)$.
+The $f$-value of $p$ is taken with respect to the straight-line distance from
+$n_1$ and equals 4.16. The $f$-value of $n_2$ is also taken with respect to
+$n_1$ but equals 4.12.  $p$ should be expanded after $n_2$ but the opposite
+occurs.  In order to avoid this mistake we would need to consider, in addition
+to the set of intermediate nodes, all the $y_i$ nodes shown in the figure.
+However, the number of candidate $y_i$ nodes is apriori very large: along each
+$[0, 1]$ interval represented by a grid edge we may need to consider each point
+at location $0 \leq \frac{w}{h} \leq 1$; here $w$ (resp. $h$) is an integer in
+$\{0,\dots,W\}$ (resp.  $\{0,\dots,H\}$).  We therefore propose to consider all
+the potential $y$ nodes together.
 
-The problem with this algorithm 
-is however that the $A^*$ $f$ value of the intermediate nodes 
-is based on the assumption that the path would go through these nodes.  
-For instance, assuming $n_1$ is the start node 
-and $n_2$ is the target node, 
-although node $n' = (2,1)$ needs to be expanded before $n_2$, 
-the $f$ value of $n'$ will be $1 + \sqrt{10} \simeq 4.16$ 
-while the $f$ value of $n_2$ is $\sqrt{17} \simeq 4.12$.  
-Consequently, the $f$ value computed 
-for the intermediate nodes may be higher 
-than the actual optimal path length, 
-although the intermediate nodes must be expanded 
-before reaching the goal.  
-In order to avoid this mistake, 
-we would need to explore not only the intermediate nodes, 
-but also the $y_i$ nodes presented on the figure.  
-However, the number of such $y_i$ nodes is a priori very large, 
-since the search engine does not know a priori 
-where the next interesting node (here $n_2$) will be; 
-for instance, $y_1$ has here position $(2 + \frac{1}{4},1)$, 
-but if $n_2$ was in $(3,3)$, 
-then $y_1$ would be at position $(2 + \frac{1}{3},1)$.  
-Assuming a map of size $W\times H$, 
-the relevant nodes could have any position 
-that is a fraction $\frac{w}{h}$ 
-where $w$ (resp. $h$) is an integer 
-in $\{0,\dots,W\}$ (resp. $\{0,\dots,H\}$).  
-
-We therefore propose to consider all the potential $y$ nodes together.  
 From $n_1$, all the nodes that can be reached with a one step North 
 (and potentially any fraction of West/East steps) will be considered.  
 We call ``interval'' this set of nodes that are considered together.  

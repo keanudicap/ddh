@@ -1,8 +1,8 @@
 \section{Introduction}
 Any-angle pathfinding is a navigation problem which appears in robotics
 and computer video games. It involves finding a shortest path between an 
-arbitrary pair of of points on a two-dimensional grid map but asks that 
-movoment along the path is not artifically constrained to the points of 
+arbitrary pair of points on a two-dimensional grid map but asks that 
+movement along the path is not artifically constrained to the points of 
 the grid.  Within the game development community a simple and popular 
 solution exists known as \emph{string pulling}~\cite{pinter01,botea04}.
 The idea is to compute a grid-optimal path in the first
@@ -15,7 +15,7 @@ Theta*~\cite{nash07} and its variants~\cite{nash09,nash10} improve things
 by integrating post-processing into node expansion during search. Their 
 idea involves updating a node's parent label following a successful line-of-sight
 check to a previously expanded ancestor node.
-Another approach, Block A*\cite{yap11}, avoids line-of-sight checks entirely 
+Another approach, Block A*~\cite{yap11}, avoids line-of-sight checks entirely 
 by precomputing a database of exact costs between pairs of points in a localised area.
 Both Theta* and Block A* improve on the running time and 
 solution quality of string pulling but neither guarantees optimality.
@@ -33,7 +33,7 @@ vertices can be adjacent to every other vertex.
 Tangent Graphs~\cite{liu92} are a particularly efficient 
 variant of this idea but space requirements remain worst-case quadratic. 
 Other exact approaches are based on the 
-\textit{Continuous Dijkstra}~\cite{mitchell87} paradigm.
+Continuous Dijkstra~\cite{mitchell87} paradigm.
 The most efficient of these algorithms~\cite{hershberger99} involves a
 precomputation requiring $O(n \log_{2}{n})$ space and $O(n\log_{2}n)$ time.  The result 
 is a planar subdivision of the map that can be used to find a shortest path in 
