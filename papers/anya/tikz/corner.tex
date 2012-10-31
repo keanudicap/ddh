@@ -1,6 +1,6 @@
 \begin{tikzpicture}
 
-\creategrid{7}{7}
+\creategrid{6}{6}
 
 \drawobstacle{2}{5}
 \drawobstacle{2}{4}
@@ -12,10 +12,10 @@
 \drawobstacle{4}{2}
 \drawobstacle{4}{1}
 
-\coordinate (plm1)   at (6,0);
+\coordinate (plm1)   at (5,0);
 \coordinate (pl)     at (2,1);
-\coordinate (plp1)   at (1,6);
-\coordinate (redpathdirection) at (0,1.8); % Actually, further away
+\coordinate (plp1)   at (1,5);
+\coordinate (redpathdirection) at (0,2.4); % Actually, further away
 \coordinate (actualcorner) at (3,1); 
 \path[name path=uppath] (pl) -- (plp1);
 \path[name path=shortcut] (plm1) -- (redpathdirection);

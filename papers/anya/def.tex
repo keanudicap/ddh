@@ -1,7 +1,30 @@
+
+\begin{figure*}[tb]
+ \begin{minipage}[t]{.47\linewidth}
+  \begin{center}
+    \input{tikz/corner}
+  \end{center}
+  \caption{Illustration of Lemma~\ref{lemma::corner}.
+  A similar observation has been previously made for geodesic paths \cite{mitchell87}.  }
+  \label{fig::corner}
+\end{minipage} 
+\hfill 
+ \begin{minipage}[t]{0.47\linewidth}
+  \begin{center}
+    \input{tikz/ex1}
+  \end{center}
+  \caption{When pathfinding from $n_1$ to $n_2$ online algorithms such as Theta* only consider the discrete points of 
+the grid and never any points $y_i$. 
+%This strategy is not monotonic and does not guarantee optimality.
+}
+  \label{fig::ex1}
+  \end{minipage}
+\end{figure*}
+
 \section{Preliminaries}
 A \emph{grid} is a planar subdivision consisting of $W \times H$ square cells.
 Each cell is either \emph{traversable} or \emph{non-traversable}
-\footnote{Such cells are sometimes called obstacles.}.
+%\footnote{Such cells are sometimes called obstacles.}.
 %It is common
 %in such settings for each tile to represent a unique location in the grid and to
 %assume there is an implicit vertex located at its centre~\cite{yap02}.  In this
@@ -73,16 +96,4 @@ $(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
   where the point $p'_l$ is chosen as close as possible from the corner $c$.  
 }
 \end{proof}
-
-
-\begin{figure}[tb]
-  \begin{center}
-    \input{tikz/corner}
-  \end{center}
-  \caption{Illustration of Lemma~\ref{lemma::corner}.
-  A similar observation has been previously made for geodesic paths \cite{mitchell87}.  }
-  \label{fig::corner}
-\end{figure}
-
-
 % EOF
