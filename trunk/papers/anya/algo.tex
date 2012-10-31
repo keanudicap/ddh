@@ -1,5 +1,40 @@
 \section{Algorithm}
-bla bla bla
+%The best online approaches for any-angle pathfinding consider 
+%only the set of discrete points that define the grid.
+%Since this strategy is insufficient to guarantee optimality 
+%we will consider sets of discrete and intermediate points
+%by taking them together as an interval.
+
+\begin{defi}
+A \emph{grid interval} $I$ is a closed set of points consisting of:
+(i) a single discrete corner point 
+or (ii) a contiguous set of pairwise visible points drawn from 
+the discrete and intermediate non-corner points 
+found along a single row of the grid.
+\end{defi}
+We will project intervals from one row of the grid to another.
+In particular we will say that the successors of an interval $I$
+are just those intervals $I'$ which are visibile from $I$.
+\begin{defi}
+A grid interval $I$ is visible from $I'$ iff
+there exists a pair of points $p \in I$ and $p' \in I'$ such that
+$p$ and $p'$ are visible.
+\end{defi}
+We require that visibility between intervals is non-transitive.
+Thus, the successors of each interval are found only among those 
+intervals $I'$ which are on the same row as and immediately 
+adjacent to $I$  or those intervals $I'$ located on an adjacent 
+row from $I$.
+\\
+The non-transitivity restriction 
+%may seem odd as visibility is 
+%obviously transitive in a more general sense. In this case
+%placing such an artificial limitation 
+has the benefit of reducing the branching factor during search; i.e.
+unlike visibility graphs we defer the generation of any nodes that
+ are not immediately promising.
+
+\section{Stuff that is not finished}
 
 Essentially, the reason why the existing algorithms are not optimal
 is that the search is based on the grid intersections.  
