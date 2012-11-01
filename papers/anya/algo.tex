@@ -7,24 +7,24 @@
 
 \begin{defi}
 A \emph{grid interval} $I$ is a closed set of contiguous pairwise
-visible points which are drawn from the set of discrete nodes
-and edges found along a single row of the grid. 
+visible points whose elements are either (i) a single corner 
+point or (ii) intermediate and discrete non-corner points 
+which are drawn from the set of edges found along a single row of 
+the grid. 
 \end{defi}
 We will project intervals from one row of the grid to another.
 In particular we will say that the successors of an interval $I$
-are just those intervals $I'$ which are visibile from $I$.
+are just those intervals $I'$ which are immediately adjacent
+to $I$.
 \begin{defi}
-A grid interval $I$ is \emph{visible} from $I'$ iff
-there exists a pair of points $p \in I$ and $p' \in I'$ such that
-$p$ and $p'$ are visible.
+\label{defi::intadj}
+A grid interval $I$ is \emph{adjacent} to $I'$ iff for every pair 
+of points $p \in I$ and $p' \in I'$ there exists a straight line
+path that does not pass through any interval 
+$J \not \in \lbrace I, I' \rbrace$
 \end{defi}
-We require that visibility between intervals is non-transitive;
-i.e. the successors of each interval are found only among those 
-intervals $I'$ which are on the same row as and immediately 
-adjacent to $I$  or those intervals $I'$ located on an adjacent 
-row from $I$.
-This is an artificial restriction with an important benefit: 
-it bounds the branching factor to $O(W)$ and allows us to defer 
+Definition~\ref{defi::intadj} has two important properties: it bounds 
+the branching factor of each interval to $O(W)$ and allows us to defer 
 the generation of any neighbours that are not immediately promising.
 
 \section{Stuff that is not finished}
