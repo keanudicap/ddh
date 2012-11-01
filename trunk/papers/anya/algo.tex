@@ -6,13 +6,14 @@
 %by taking them together as an interval.
 
 \begin{defi}
+\label{defi::interval}
 A \emph{grid interval} $I$ is a closed set of contiguous pairwise
 visible points whose elements are either (i) a single corner 
 point or (ii) intermediate and discrete non-corner points 
-which are drawn from the set of edges found along a single row of 
-the grid. 
+which are drawn from the traversable points found along any 
+single row of the grid.
 \end{defi}
-We will project intervals from one row of the grid to another.
+During search we will project intervals from one row of the grid to another.
 In particular we will say that the successors of an interval $I$
 are just those intervals $I'$ which are immediately adjacent
 to $I$.
