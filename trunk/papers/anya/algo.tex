@@ -8,11 +8,48 @@
 \begin{defi}
 \label{defi::interval}
 A \emph{grid interval} $I$ is a closed set of contiguous pairwise
-visible points whose elements are either (i) a single corner 
-point or (ii) intermediate and discrete non-corner points 
-which are drawn from the traversable points found along any 
-single row of the grid.
+visible points whose elements are either:
+(i) a single discrete point which is the start location or the goal location;
+(ii) a single corner point;
+(iii) a set of traversable points drawn from the intermediate and discrete 
+non-corner points along any row of the grid.
 \end{defi}
+We will look for optimal any-angle paths in the search space formed by
+intervals appearing along the rows of the grid.
+\begin{defi}
+A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and $r$
+is a \emph{root} point chosen such that each $p \in I$  is visible from $r$. 
+The identity of the root node is either the start location or the most
+recent corner point on the path used to reach $I$.
+\end{defi}
+To evaluate a search node $n = (I, r$) we will use a single representative 
+point $p \in I$ which has a minimum $f$-value with respect to a target point
+$t$:
+\begin{equation}
+f(n) = \arg\min \lbrace f(p) = g(r) + d(r, p) + h(p, t) \rbrace 
+\end{equation}
+Although each interval can contain a large number of points it is easy
+to identify the one having a minimum $f$-value: 
+we simply project a straight line $r \rightarrow t$ from the root point $r$ to the 
+target $t$ and choose the point $p \in I$ which is intersected by the line.
+In the case that $r \rightarrow t$ does not intersect any point in $I$ we simply
+choose the endpoint of $I$ closest to $t$. 
+In the following we give a formal argument that this strategy always identifies
+$p \in I$ having a minimum $f$-value.
+
+\begin{lemm}
+A true statement will go here.
+\end{lemm}
+\begin{proof}
+A very clever and convincing proof will go here.
+\end{proof}
+%
+%Our search nodes will comprise of tuples of the form $(I, r)$ where
+%$I$ is an interval and $r$ is a \emph{root} point which can be
+%either the start location or the most recent corner point on the path used
+%to reach to $I$.
+%Given any such tuple we require that each $p \in I$ is visible from $r$.
+%\\
 During search we will project intervals from one row of the grid to another.
 In particular we will say that the successors of an interval $I$
 are just those intervals $I'$ which are immediately adjacent
@@ -24,9 +61,11 @@ of points $p \in I$ and $p' \in I'$ there exists a straight line
 path that does not pass through any interval 
 $J \not \in \lbrace I, I' \rbrace$
 \end{defi}
-Definition~\ref{defi::intadj} has two important properties: it bounds 
-the branching factor of each interval to $O(W)$ and allows us to defer 
-the generation of any neighbours that are not immediately promising.
+Definition~\ref{defi::intadj} bounds the branching factor of each 
+search node to $O(W)$ and unlike other exact algortihms (e.g. visibility graphs)
+allows us to defer the generation of any neighbours that are not 
+immediately promising.
+\\
 
 \section{Stuff that is not finished}
 
