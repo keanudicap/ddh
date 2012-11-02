@@ -7,21 +7,27 @@
 
 \begin{defi}
 \label{defi::interval}
-A \emph{grid interval} $I$ is a closed set of contiguous pairwise
-visible points whose elements are either:
-(i) a single discrete point which is the start location or the goal location;
-(ii) a single corner point;
-(iii) a set of traversable points drawn from the intermediate and discrete 
-non-corner points along any row of the grid.
+A \emph{grid interval} $I$ is a set of contiguous pairwise
+visible points found along any row of the grid. 
+Each interval can be described in terms of its endpoints $a$
+and $b$.
 \end{defi}
-We will look for optimal any-angle paths in the search space formed by
-intervals appearing along the rows of the grid.
+We will say that an interval $I = (a, b)$ is open (resp. $I = (a, b]$ is half-open) if both 
+of its endpoints (resp. $a$) is the start or target location or 
+a discrete corner point. 
+$I = [a, b]$ can also be closed in which case $a = b$ is
+a single discrete location: the start point, the target point
+or a discrete corner point. 
+We do not allow an open (resp. half-open) interval to contain a 
+sub-interval which is closed.
 \begin{defi}
 A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and $r$
 is a \emph{root} point chosen such that each $p \in I$  is visible from $r$. 
 The identity of the root node is either the start location or the most
 recent corner point on the path used to reach $I$.
 \end{defi}
+We will look for optimal any-angle paths in the search space formed by
+intervals appearing along the rows of the grid.
 To evaluate a search node $n = (I, r$) we will use a single representative 
 point $p \in I$ which has a minimum $f$-value with respect to a target point
 $t$:
