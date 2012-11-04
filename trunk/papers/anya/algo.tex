@@ -12,50 +12,28 @@ visible points found along any row of the grid.
 Each interval can be described in terms of its endpoints $a$
 and $b$.
 \end{defi}
-We will say that an interval $I = (a, b)$ is open (resp. $I = (a, b]$ is half-open) if both 
-of its endpoints (resp. $a$) is the start or target location or 
-a discrete corner point. 
-$I = [a, b]$ can also be closed in which case $a = b$ is
-a single discrete location: the start point, the target point
-or a discrete corner point. 
-We do not allow an open (resp. half-open) interval to contain a 
-sub-interval which is closed.
+Given a traversable point $p$, found along a particular row of 
+the grid, we construct an interval as follows:
+If $p$ is a discrete corner point or the start or target
+point, we construct a closed interval $I = [a, b]$ where
+$a = b = p$.
+Otherwise we project two horizontal lines away from $p$:
+$a \leftarrow p$ and $p \rightarrow b$. The corresponding
+interval $I = (a, b]$ is half-open 
+(resp. $I = (a, b)$ is open) if one of
+its endpoints $a$ (resp. $a$ and $b$) is the first of:
+(i) the start or target point or (ii) a discrete corner point;
+found along the straight line from $p$.
+Anya constructs intervals on-the-fly; this is in contrast
+to other similar algorithms (e.g. Continuous Dijkstra) that must
+preprocess the map before answering any queries. 
+\\
 \begin{defi}
 A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and $r$
 is a \emph{root} point chosen such that each $p \in I$  is visible from $r$. 
-The identity of the root node is either the start location or the most
+The identity of the root node is either the start point or the most
 recent corner point on the path used to reach $I$.
 \end{defi}
-We will look for optimal any-angle paths in the search space formed by
-intervals appearing along the rows of the grid.
-To evaluate a search node $n = (I, r$) we will use a single representative 
-point $p \in I$ which has a minimum $f$-value with respect to a target point
-$t$:
-\begin{equation}
-f(n) = \arg\min \lbrace f(p) = g(r) + d(r, p) + h(p, t) \rbrace 
-\end{equation}
-Although each interval can contain a large number of points it is easy
-to identify the one having a minimum $f$-value: 
-we simply project a straight line $r \rightarrow t$ from the root point $r$ to the 
-target $t$ and choose the point $p \in I$ which is intersected by the line.
-In the case that $r \rightarrow t$ does not intersect any point in $I$ we simply
-choose the endpoint of $I$ closest to $t$. 
-In the following we give a formal argument that this strategy always identifies
-$p \in I$ having a minimum $f$-value.
-
-\begin{lemm}
-A true statement will go here.
-\end{lemm}
-\begin{proof}
-A very clever and convincing proof will go here.
-\end{proof}
-%
-%Our search nodes will comprise of tuples of the form $(I, r)$ where
-%$I$ is an interval and $r$ is a \emph{root} point which can be
-%either the start location or the most recent corner point on the path used
-%to reach to $I$.
-%Given any such tuple we require that each $p \in I$ is visible from $r$.
-%\\
 During search we will project intervals from one row of the grid to another.
 In particular we will say that the successors of an interval $I$
 are just those intervals $I'$ which are immediately adjacent
@@ -67,13 +45,67 @@ of points $p \in I$ and $p' \in I'$ there exists a straight line
 path that does not pass through any interval 
 $J \not \in \lbrace I, I' \rbrace$
 \end{defi}
+We will look for optimal any-angle paths in the search space formed by
+intervals appearing along the rows of the grid.
+To evaluate a search node $n = (I, r$) we will select a point $p \in I$ 
+which has a minimum $f$-value with respect to a target point $t$.
+Although each interval can contain a large number of points it is easy
+to identify the one having a minimum $f$-value: 
+simply project a straight line $r \rightarrow t$ from the root point 
+$r$ to the target point $t$ and choose the point $p \in I$ which 
+lies at their intersection.
+If $r \rightarrow t$ does not intersect $I$ we simply choose the point
+$p$ as one of the two endpoints of $I$.
+
+\begin{lemm}
+For any tuple $(I, r)$ and target point $t$: 
+\textbf{if} the line $r \rightarrow t$ intersects $I$ at a point
+$p$ \textbf{then} $\forall p' \in I: f(p) \leq f(p')$;
+\textbf{else}
+%If $r \rightarrow t$ does not intersect $I$ then 
+$p$ is one of the two endpoints of $I$ and 
+$\forall p' \in I: f(p) \leq f(p')$.
+\end{lemm}
+\begin{proof}
+We will prove the lemma by construction. First, suppose
+$r \rightarrow t$ intersects $I$.
+In this case it is enough to observe that $f(p)$ is computed 
+by taking the length of the straight line $r \rightarrow t$.
+This value is a minimum bound on the cost of any path from $r$ 
+through $I$ and to $t$.
+%which means $f(p)$ is minimum.
+%there can be no alternative
+%$p' \in I$ s.t.  $f(p') \le f(p)$.
+Next, suppose $r \rightarrow t$ does not intersect $I$. 
+There are two possibile scenarios, depending on whether $t$
+belongs to a row of the grid which is above or below the row
+containing $I$.
+If $t$ belongs to a row above $I$ then $r \rightarrow t$
+crosses the row of $I$ either to the left of $I$, in which
+case $p = a$, or to the right of $I$, in which case $p = b$.
+In either case $f(p)$ is a minimum bound on the cost of any
+path from $r$ through $I$ and to $t$.
+Finally $\ldots$
+%target is above
+%the interval $I$ and $r \rightarrow t$ 
+%crosses the row containing $I$ at some point $p \not\in I$ or
+%the target is below the interval and $r \rightarrow t$ never
+%crosses the row containing $I$.
+\end{proof}
+%
+%Our search nodes will comprise of tuples of the form $(I, r)$ where
+%$I$ is an interval and $r$ is a \emph{root} point which can be
+%either the start location or the most recent corner point on the path used
+%to reach to $I$.
+%Given any such tuple we require that each $p \in I$ is visible from $r$.
+%\\
+
+\section{Stuff that is not finished}
 Definition~\ref{defi::intadj} bounds the branching factor of each 
 search node to $O(W)$ and unlike other exact algortihms (e.g. visibility graphs)
 allows us to defer the generation of any neighbours that are not 
 immediately promising.
 \\
-
-\section{Stuff that is not finished}
 
 Essentially, the reason why the existing algorithms are not optimal
 is that the search is based on the grid intersections.  
