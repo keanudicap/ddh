@@ -7,26 +7,26 @@
 
 \begin{defi}
 \label{defi::interval}
-A \emph{grid interval} $I$ is a set of contiguous pairwise
-visible points found along any row of the grid. 
-Each interval can be described in terms of its endpoints $a$
-and $b$.
+A \emph{grid interval} $I$ is a set of contiguous pairwise visible points found
+along any row of the grid.  Each interval can be described in terms of its
+endpoints $a$ and $b$.
 \end{defi}
-Given a traversable point $p$, found along a particular row of 
-the grid, we construct an interval as follows:
-If $p$ is a discrete corner point or the start or target
-point, we construct a closed interval $I = [a, b]$ where
-$a = b = p$.
-Otherwise we project two horizontal lines away from $p$:
-$a \leftarrow p$ and $p \rightarrow b$. The corresponding
-interval $I = (a, b]$ is half-open 
-(resp. $I = (a, b)$ is open) if one of
-its endpoints $a$ (resp. $a$ and $b$) is the first of:
-(i) the start or target point or (ii) a discrete corner point;
-found along the straight line from $p$.
-Anya constructs intervals on-the-fly; this is in contrast
-to other similar algorithms (e.g. Continuous Dijkstra) that must
-preprocess the map before answering any queries. 
+Given a traversable point $p$, found along any row the grid, it is easy
+to identify its corresponding interval.
+Simply project two horizontal lines away from $p$: $a \leftarrow p$ and 
+$p \rightarrow b$ and form a closed interval $I = [a, b]$.
+The points $a$ and $b$ are either the first
+discrete corner points along the respective horizontal line from $p$ or, 
+if the line intersects no corner points, the last discrete traversable point.
+The start point $s$ and target point $t$ necessitate special treatment:
+we will say that each one forms a closed single point interval $I = [a, b]$
+where $a = b = s$ (or $t$).
+\\
+A significant advantage of Anya is that we construct intervals on-the-fly.
+This allows us to start answering queries immediately and for any discrete
+start-target pair. Similar algorithms (e.g. Continuous Dijkstra) require
+a preprocessing step before any queries can be answered and then only
+from a single fixed start point. 
 \\
 \begin{defi}
 A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and $r$
@@ -45,6 +45,11 @@ of points $p \in I$ and $p' \in I'$ there exists a straight line
 path that does not pass through any interval 
 $J \not \in \lbrace I, I' \rbrace$
 \end{defi}
+To project an interval $\ldots$
+
+
+\section{Stuff that is not finished}
+
 We will look for optimal any-angle paths in the search space formed by
 intervals appearing along the rows of the grid.
 To evaluate a search node $n = (I, r$) we will select a point $p \in I$ 
@@ -100,7 +105,6 @@ Finally $\ldots$
 %Given any such tuple we require that each $p \in I$ is visible from $r$.
 %\\
 
-\section{Stuff that is not finished}
 Definition~\ref{defi::intadj} bounds the branching factor of each 
 search node to $O(W)$ and unlike other exact algortihms (e.g. visibility graphs)
 allows us to defer the generation of any neighbours that are not 
