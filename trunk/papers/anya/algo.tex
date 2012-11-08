@@ -9,21 +9,17 @@
 \label{defi::interval}
 A \emph{grid interval} $I$ is a set of contiguous pairwise visible points found
 along any row of the grid.  Each interval is defined in terms 
-of its endpoints $a$ and $b$, is closed at either one or both ends 
-and does not overlap with any other interval.
+of its endpoints $a$ and $b$. 
 With the possible exception of $a$ and $b$, each interval
 contains only intermediate and discrete non-corner points.
+When $a$ (resp. $b$) is a corner point, or a discrete point from the edge of the map, 
+$a$ (resp. $b$) is closed. Otherwise $a$ (resp. $b$) can be open or closed.
 \end{defi}
-Identifying intervals is simple: each row of the grid can be naturally divided into 
-maximally sized contiguous sets of traversable and non-traversable points. 
-Each set of traversable points can be described as a tentative interval
-which we may need to split, possibly several times, until the only corner 
-points are found at the endpoints $a$ or $b$. 
-Notice that when splitting a closed (resp. half-open) interval 
-$I = [a, b]$ (resp. $I = (a, b]$) at a corner point 
-$c \not \in \lbrace a, b \rbrace$ it is always possible to produce two half-open 
-intervals: $I_1 = [a, c)$ and $I_2 = [c, b]$ (resp $I_1 = (a, c]$ and
- $I_2 = (c, b]$).
+Identifying intervals is simple: any row of the grid can be naturally divided
+into maximally sized contiguous sets of traversable and non-traversable points.
+Each set of traversable points forms a tentative interval which we may need to
+split, possibly several times, until the only corner points are found at the
+endpoints $a$ or $b$.
 %We can identify maximal-size intervals along
 %Given a traversable point $p$, found along any row the grid, it is easy
 %to identify the maximal interval containing $p$.
@@ -87,7 +83,7 @@ $(I', r')$ with root $r' = b$.
 Notice that if $b$ is a non-corner endpoint of $I$ there 
 is also a set of traversable points that are not visible from $r$.
 In this case however the path from $r$ to each such point $p'$ is 
-not taut so we do not generate any interval.
+not taut so we do not generate any successor.
 
 %\begin{lemm}
 %For any search node $(I, r)$: each non-observable successor 
