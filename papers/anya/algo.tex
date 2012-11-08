@@ -65,7 +65,7 @@ interval $J \neq I'$.
 \end{defi}
 We begin with the closed set of traversable points that are 
 visible from $r$ through $I$ and divide this set into $1 \leq k$
-adjacent grid intervals.
+adjacent closed grid intervals.
 We will say that each such interval is \emph{observable} and 
 generate for each a corresponding successor node 
 $(I', r')$ with root $r' = r$.
@@ -73,13 +73,15 @@ $(I', r')$ with root $r' = r$.
 Not all successors are observable.
 For example, the taut path from $r$ can intersect 
 $I$ at an endpoint $b$ which is also a corner point.
-In this case we reach a set of traversable points that
-are visible from $p = b$ but not from $r$.
-From this set of points we build a single half-open 
-interval which is adjacent to the corner point $b$.
-We will say that this interval $I' = [b, c]$ is 
-\emph{non-observable} and generate a corresponding successor 
-$(I', r')$ with root $r' = b$.  
+In this case we reach a set of traversable points that 
+are either adjacent to $I$ or adjacent to one of the
+observable successors.
+Each such point is visible from $p = b$ but not 
+from $r$.  From this set of non-visible points we build a 
+single half-open interval $I' = [a', b')$ s.t. $I'$ is open at the 
+endpoint closest to $b$.
+We will say $I'$ is \emph{non-observable} and generate a 
+corresponding successor $(I', r')$ with root $r' = b$.  
 Notice that if $b$ is a non-corner endpoint of $I$ there 
 is also a set of traversable points that are not visible from $r$.
 In this case however the path from $r$ to each such point $p'$ is 
