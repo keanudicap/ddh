@@ -8,47 +8,110 @@
 \begin{defi}
 \label{defi::interval}
 A \emph{grid interval} $I$ is a set of contiguous pairwise visible points found
-along any row of the grid.  Each interval can be described in terms of its
-endpoints $a$ and $b$.
+along any row of the grid.  Each interval is defined in terms 
+of its endpoints $a$ and $b$, is closed at either one or both ends 
+and does not overlap with any other interval.
+With the possible exception of $a$ and $b$, each interval
+contains only intermediate and discrete non-corner points.
 \end{defi}
-Given a traversable point $p$, found along any row the grid, it is easy
-to identify its corresponding interval.
-Simply project two horizontal lines away from $p$: $a \leftarrow p$ and 
-$p \rightarrow b$ and form a closed interval $I = [a, b]$.
-The points $a$ and $b$ are either the first
-discrete corner points along the respective horizontal line from $p$ or, 
-if the line intersects no corner points, the last discrete traversable point.
-The start point $s$ and target point $t$ necessitate special treatment:
-we will say that each one forms a closed single point interval $I = [a, b]$
-where $a = b = s$ (or $t$).
+Identifying intervals is simple: each row of the grid can be naturally divided into 
+maximally sized contiguous sets of traversable and non-traversable points. 
+Each set of traversable points can be described as a tentative interval
+which we may need to split, possibly several times, until the only corner 
+points are found at the endpoints $a$ or $b$. 
+Notice that when splitting a closed (resp. half-open) interval 
+$I = [a, b]$ (resp. $I = (a, b]$) at a corner point 
+$c \not \in \lbrace a, b \rbrace$ it is always possible to produce two half-open 
+intervals: $I_1 = [a, c)$ and $I_2 = [c, b]$ (resp $I_1 = (a, c]$ and
+ $I_2 = (c, b]$).
+%We can identify maximal-size intervals along
+%Given a traversable point $p$, found along any row the grid, it is easy
+%to identify the maximal interval containing $p$.
+%Simply project two horizontal lines away from $p$: $a \leftarrow p$ and 
+%$p \rightarrow b$ and form a closed interval $I = [a, b]$.
+%The points $a$ and $b$ are either the first
+%discrete corner points along the respective horizontal line from $p$ or, 
+%if the line intersects no corner points, the last discrete traversable point.
+%The start point $s$ and target point $t$ necessitate special treatment:
+%we will say that each one forms a closed single point interval $I = [a, b]$
+%where $a = b = s$ (or $t$).
 \\
 A significant advantage of Anya is that we construct intervals on-the-fly.
 This allows us to start answering queries immediately and for any discrete
 start-target pair. Similar algorithms (e.g. Continuous Dijkstra) require
 a preprocessing step before any queries can be answered and then only
 from a single fixed start point. 
+\begin{defi}
+A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and 
+$r \not \in I$ is a \emph{root} point chosen such that each $p \in I$  
+is visible from $r$. 
+The identity of the root node is either the start point or the most recent
+turning point on a path to any $p \in I$.
+\end{defi}
+%During search we will use the root point of a node $n$ in order to
+%identify its successors. 
+%Each successor is constructed from 
+The successors of a search node $n = (I, r)$ are  constructed from the 
+set of traversable points found on the same row of the grid as $n$ and 
+the rows immediately adjacent. 
+We want to guarantee that successor nodes only contain points that
+can be reached from the root $r$ via a local path which is \emph{taut}.
+Taut simply means that if we ``pull'' on the endpoints of 
+the path we cannot make it any shorter.
+
+\begin{defi}
+$(I', r')$ is a \emph{successor} of
+$(I, r)$ if: \textbf{(i)} each $p' \in I'$ is reached
+by a taut path $\langle r, p,  p' \rangle$ that begins
+at $r$ and passes through some $p \in I$;
+\textbf{(ii)} the subpath $\langle p, p' \rangle$ does not intersect any 
+interval $J \neq I'$.
+\end{defi}
+We begin with the closed set of traversable points that are 
+visible from $r$ through $I$ and divide this set into $1 \leq k$
+adjacent grid intervals.
+We will say that each such interval is \emph{observable} and 
+generate for each a corresponding successor node 
+$(I', r')$ with root $r' = r$.
 \\
-\begin{defi}
-A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and $r$
-is a \emph{root} point chosen such that each $p \in I$  is visible from $r$. 
-The identity of the root node is either the start point or the most
-recent corner point on the path used to reach $I$.
-\end{defi}
-During search we will project intervals from one row of the grid to another.
-In particular we will say that the successors of an interval $I$
-are just those intervals $I'$ which are immediately adjacent
-to $I$.
-\begin{defi}
-\label{defi::intadj}
-A grid interval $I$ is \emph{adjacent} to $I'$ iff for every pair 
-of points $p \in I$ and $p' \in I'$ there exists a straight line
-path that does not pass through any interval 
-$J \not \in \lbrace I, I' \rbrace$
-\end{defi}
-To project an interval $\ldots$
+Not all successors are observable.
+For example, the taut path from $r$ can intersect 
+$I$ at an endpoint $b$ which is also a corner point.
+In this case we reach a set of traversable points that
+are visible from $p = b$ but not from $r$.
+From this set of points we build a single half-open 
+interval which is adjacent to the corner point $b$.
+We will say that this interval $I' = (b, c]$ is 
+\emph{non-observable} and generate a corresponding successor 
+$(I', r')$ with root $r' = b$.  
+Notice that if $b$ is a non-corner endpoint of $I$ there 
+is also a set of traversable points that are not visible from $r$.
+In this case however the path from $r$ to each such point $p'$ is 
+not taut so we do not generate any interval.
+
+%\begin{lemm}
+%For any search node $(I, r)$: each non-observable successor 
+%$(I'_1, r'_1)$ is adjacent to an observable node 
+%$(I'_2, r'_2)$ s.t. $I'_1 \cup I'_2$ or $I \cup I'_2$ is a 
+%contiguous closed interval.
+%\end{lemm}
+%\begin{proof}
+%There are two cases to consider; each depending on the identity
+%of the root node $r'_1$. If $r'_1 = b$ then $(I'_1, r')$ is
+%
+%\end{proof}
 
 
 \section{Stuff that is not finished}
+This further constraint allows us to bound the branching factor of each
+node to just those neighbours which are immediately adjacent to and on
+the same row as $n$ and visible neig
+as $n$ or located on an immediately adjacent 
+row next to $n$.
+
+is another significant advantage of Anya: unlike other similar
+algorithms that have a (e.g. Visibility Points) we avoid generating successors that 
+are not immediately promising
 
 We will look for optimal any-angle paths in the search space formed by
 intervals appearing along the rows of the grid.
