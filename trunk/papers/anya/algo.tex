@@ -7,19 +7,18 @@
 
 \begin{defi}
 \label{defi::interval}
-A \emph{grid interval} $I$ is a set of contiguous pairwise visible points found
-along any row of the grid.  Each interval is defined in terms 
+A \emph{grid interval} $I$ is a set of contiguous pairwise visible points 
+from any row of the grid.  Each interval is defined in terms 
 of its endpoints $a$ and $b$. 
 With the possible exception of $a$ and $b$, each interval
 contains only intermediate and discrete non-corner points.
-When $a$ (resp. $b$) is a corner point, or a discrete point from the edge of the map, 
-$a$ (resp. $b$) is closed. Otherwise $a$ (resp. $b$) can be open or closed.
+%When $a$ (resp. $b$) is a corner point, or a discrete point from the edge of the map, 
+%$a$ (resp. $b$) is closed. Otherwise $a$ (resp. $b$) can be open or closed.
 \end{defi}
 Identifying intervals is simple: any row of the grid can be naturally divided
-into maximally sized contiguous sets of traversable and non-traversable points.
-Each set of traversable points forms a tentative interval which we may need to
-split, possibly several times, until the only corner points are found at the
-endpoints $a$ or $b$.
+into maximally contiguous sets of traversable and non-traversable points.
+Each traversable set forms a tentative interval which we split, repeatedly,
+until the only corner points are found at $a$ or $b$.
 %We can identify maximal-size intervals along
 %Given a traversable point $p$, found along any row the grid, it is easy
 %to identify the maximal interval containing $p$.
@@ -38,32 +37,44 @@ start-target pair. Similar algorithms (e.g. Continuous Dijkstra) require
 a preprocessing step before any queries can be answered and then only
 from a single fixed start point. 
 \begin{defi}
+\label{defi:searchnode}
 A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and 
 $r \not \in I$ is a \emph{root} point chosen such that each $p \in I$  
 is visible from $r$. 
 The identity of the root node is either the start point or the most recent
 turning point on a path to any $p \in I$.
 \end{defi}
-%During search we will use the root point of a node $n$ in order to
-%identify its successors. 
-%Each successor is constructed from 
-The successors of a search node $n = (I, r)$ are  constructed from the 
-set of traversable points found on the same row of the grid as $n$ and 
-the rows immediately adjacent. 
-We want to guarantee that successor nodes only contain points that
-can be reached from the root $r$ via a local path which is \emph{taut}.
-Taut simply means that if we ``pull'' on the endpoints of 
-the path we cannot make it any shorter.
+Definition~\ref{defi:searchnode} requires one clarification: how 
+should we represent the start node? Simply: we set $I = [s]$ and 
+assume $r$ is located off the plane but is visible from $s$. 
+\\
+The successors of a each search node $n$ are identified by computing intervals
+over sets of traversable points from the same row of the grid as $n$ and from rows
+immediately adjacent. We want to guarantee that each point in such
+a set can be reached from $r$ via a local path which is \emph{taut}.
+Taut simply means that if we ``pull'' on the endpoints of the path we cannot
+make it any shorter.
+
+\begin{figure}[tb]
+  \begin{center}
+    \input{tikz/ex2}
+  \end{center}
+  \caption{$(I, r)$ has three successors: $(I'_1, r)$ which is observable
+and $(I'_2, r')$ and $(I'_3, r')$ which are not. Notice that intervals of traversable
+points exist left of $I$ but the local path from $r$ to each such point
+is not taut.}
+\label{fig::successors}
+\end{figure}
 
 \begin{defi}
 $(I', r')$ is a \emph{successor} of
-$(I, r)$ if: \textbf{(i)} each $p' \in I'$ is reached
+$(I, r)$ if each $p' \in I'$ is reached
 by a taut path $\langle r, p,  p' \rangle$ that begins
-at $r$ and passes through some $p \in I$;
-\textbf{(ii)} the subpath $\langle p, p' \rangle$ does not intersect any 
+at $r$ and passes through some $p \in I$.  Additionally, 
+the subpath $\langle p, p' \rangle$ must not intersect any 
 interval $J \neq I'$.
 \end{defi}
-We begin with the closed set of traversable points that are 
+We begin with the set of traversable points that are 
 visible from $r$ through $I$ and divide this set into $1 \leq k$
 adjacent closed grid intervals.
 We will say that each such interval is \emph{observable} and 
@@ -74,7 +85,7 @@ Not all successors are observable.
 For example, the taut path from $r$ can intersect 
 $I$ at an endpoint $b$ which is also a corner point.
 In this case we reach a set of traversable points that 
-are either adjacent to $I$ or adjacent to one of the
+are either adjacent to $I$ or adjacent to the set of 
 observable successors.
 Each such point is visible from $p = b$ but not 
 from $r$.  From this set of non-visible points we build a 
@@ -82,10 +93,13 @@ single half-open interval $I' = [a', b')$ s.t. $I'$ is open at the
 endpoint closest to $b$.
 We will say $I'$ is \emph{non-observable} and generate a 
 corresponding successor $(I', r')$ with root $r' = b$.  
-Notice that if $b$ is a non-corner endpoint of $I$ there 
-is also a set of traversable points that are not visible from $r$.
-In this case however the path from $r$ to each such point $p'$ is 
-not taut so we do not generate any successor.
+Figure~\ref{fig::successors} shows examples of both
+observable and non-observable successors.
+%
+%Notice that if $b$ is a non-corner endpoint of $I$ there 
+%can also exist a set of traversable points that are not visible from $r$.
+%In this case however the path from $r$ to each such point $p'$ is 
+%not taut so we do not generate any successor.
 
 %\begin{lemm}
 %For any search node $(I, r)$: each non-observable successor 
