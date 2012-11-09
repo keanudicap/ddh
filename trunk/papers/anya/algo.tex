@@ -100,33 +100,7 @@ observable and non-observable successors.
 %can also exist a set of traversable points that are not visible from $r$.
 %In this case however the path from $r$ to each such point $p'$ is 
 %not taut so we do not generate any successor.
-
-%\begin{lemm}
-%For any search node $(I, r)$: each non-observable successor 
-%$(I'_1, r'_1)$ is adjacent to an observable node 
-%$(I'_2, r'_2)$ s.t. $I'_1 \cup I'_2$ or $I \cup I'_2$ is a 
-%contiguous closed interval.
-%\end{lemm}
-%\begin{proof}
-%There are two cases to consider; each depending on the identity
-%of the root node $r'_1$. If $r'_1 = b$ then $(I'_1, r')$ is
-%
-%\end{proof}
-
-
-\section{Stuff that is not finished}
-This further constraint allows us to bound the branching factor of each
-node to just those neighbours which are immediately adjacent to and on
-the same row as $n$ and visible neig
-as $n$ or located on an immediately adjacent 
-row next to $n$.
-
-is another significant advantage of Anya: unlike other similar
-algorithms that have a (e.g. Visibility Points) we avoid generating successors that 
-are not immediately promising
-
-We will look for optimal any-angle paths in the search space formed by
-intervals appearing along the rows of the grid.
+\\
 To evaluate a search node $n = (I, r$) we will select a point $p \in I$ 
 which has a minimum $f$-value with respect to a target point $t$.
 Although each interval can contain a large number of points it is easy
@@ -172,6 +146,20 @@ Finally $\ldots$
 %the target is below the interval and $r \rightarrow t$ never
 %crosses the row containing $I$.
 \end{proof}
+
+\section{Stuff that is not finished}
+This further constraint allows us to bound the branching factor of each
+node to just those neighbours which are immediately adjacent to and on
+the same row as $n$ and visible neig
+as $n$ or located on an immediately adjacent 
+row next to $n$.
+
+is another significant advantage of Anya: unlike other similar
+algorithms that have a (e.g. Visibility Points) we avoid generating successors that 
+are not immediately promising
+
+We will look for optimal any-angle paths in the search space formed by
+intervals appearing along the rows of the grid.
 %
 %Our search nodes will comprise of tuples of the form $(I, r)$ where
 %$I$ is an interval and $r$ is a \emph{root} point which can be
