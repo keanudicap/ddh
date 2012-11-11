@@ -12,46 +12,31 @@ from any row of the grid.  Each interval is defined in terms
 of its endpoints $a$ and $b$. 
 With the possible exception of $a$ and $b$, each interval
 contains only intermediate and discrete non-corner points.
-%When $a$ (resp. $b$) is a corner point, or a discrete point from the edge of the map, 
-%$a$ (resp. $b$) is closed. Otherwise $a$ (resp. $b$) can be open or closed.
 \end{defi}
 Identifying intervals is simple: any row of the grid can be naturally divided
 into maximally contiguous sets of traversable and non-traversable points.
 Each traversable set forms a tentative interval which we split, repeatedly,
 until the only corner points are found at $a$ or $b$.
-%We can identify maximal-size intervals along
-%Given a traversable point $p$, found along any row the grid, it is easy
-%to identify the maximal interval containing $p$.
-%Simply project two horizontal lines away from $p$: $a \leftarrow p$ and 
-%$p \rightarrow b$ and form a closed interval $I = [a, b]$.
-%The points $a$ and $b$ are either the first
-%discrete corner points along the respective horizontal line from $p$ or, 
-%if the line intersects no corner points, the last discrete traversable point.
-%The start point $s$ and target point $t$ necessitate special treatment:
-%we will say that each one forms a closed single point interval $I = [a, b]$
-%where $a = b = s$ (or $t$).
 \\
 A significant advantage of Anya is that we construct intervals on-the-fly.
 This allows us to start answering queries immediately and for any discrete
 start-target pair. Similar algorithms (e.g. Continuous Dijkstra) require
 a preprocessing step before any queries can be answered and then only
 from a single fixed start point. 
+
 \begin{defi}
 \label{defi:searchnode}
-A \emph{search node} $n = (I, r)$ is a tuple where $I$ is an interval and 
-$r \not \in I$ is a \emph{root} point chosen such that each $p \in I$  
-is visible from $r$. 
-The identity of the root node is either the start point or the most recent
-turning point on a path to any $p \in I$.
+A \emph{search node} $(I, r)$ is a tuple where $I$ is an interval and 
+$r \not \in I$ is a \emph{root} point chosen s.t. each $p \in I$  
+is visible from $r$. The identity of $r$ is always the most
+recent turning point on a path from the start point $s$ to any $p \in I$.
+To represent the start node, set $I = [s]$ and assume $r$ is a point located 
+off the plane and visible only from $s$.
 \end{defi}
-Definition~\ref{defi:searchnode} requires one clarification: how 
-should we represent the start node? Simply: we set $I = [s]$ and 
-assume $r$ is located off the plane but is visible from $s$. 
-\\
-The successors of a each search node $n$ are identified by computing intervals
+The successors of a search node $n$ are identified by computing intervals
 over sets of traversable points from the same row of the grid as $n$ and from rows
 immediately adjacent. We want to guarantee that each point in such
-a set can be reached from $r$ via a local path which is \emph{taut}.
+a set can be reached from the root of $n$ via a local path which is \emph{taut}.
 Taut simply means that if we ``pull'' on the endpoints of the path we cannot
 make it any shorter.
 
@@ -169,6 +154,74 @@ meet at an angle of 90 degrees. We conclude the triangles are
 congruent and that 
 $\forall p \in I: p \rightarrow t \equiv p \rightarrow t'$.
 \end{proof}
+
+\section{Correctness and Optimality}
+We begin by connecting the notions of \emph{taut} and \emph{optimal}.
+\begin{lemm}
+\label{lemma::opt_is_taut}
+Every optimal path $\pi$ is also taut.
+\end{lemm}
+\begin{proof}
+By contradiction. If $\pi$ is not taut we can apply 
+Lemma~\ref{lemma::corner} to derive a path $\pi'$ which is 
+shorter. 
+%The existance of any such $\pi'$ contradicts the 
+%optimality of $\pi$.
+\end{proof}
+Lemma~\ref{lemma::opt_is_taut} tells us that optimality does not depend on 
+generating all successors during search. Only those successors
+reachable by a local path which is taut need to be considered.
+Anya generates exactly these successors.
+\begin{lemm}
+For any search node $(I, r)$ and any maximal interval $J$
+found on the same grid row as $I$ or one immediately adjacent:
+\textbf{if} $J$ contains a contiguous subset of traversable 
+points $p$ s.t. $\forall p \in I' \subseteq J$ there is a taut path from $r$
+\textbf{then} $(I', r')$ is a successor of $(I, r)$.
+\end{lemm}
+\begin{proof}
+%In the case of the start node, every visible point
+%and some others are generated.
+%There are no no non-taut successors.
+Sketch only. This needs fixing.
+By Definition 3 the only successors not
+generated are those reached by a non-taut path
+or by a taut path that passes through more than one
+interval.
+If we pass through more than one interval we either
+do so to reach a point which is not on the same row
+or an adjacent row as $I$ or we pass through an interval
+on the same row. If we pass through an interval on the same
+row we do not need to generate the successor; it will
+be reached by a taut path from one of our successors.
+\end{proof}
+Finally, we will show that if Anya returns a path the length
+of that path is optimal.
+%Finally, we will show that if Anya returns a path between any
+%start-target pair, that path is optimal.
+\begin{theorem}
+Anya is optimal.
+\end{theorem}
+\begin{proof}
+Sketch only. This needs fixing.
+By contradiction. Suppose we return a path where
+the goal has a non-optimal parent. 
+This means the non-optimal parent has a priority
+which is less than the priority of the optimal parent.
+Equivalently, we generate the interval containing the 
+optimal parent using a representative point which is
+worse than the non-optimal parent.
+By Lemma~\ref{lemma:fvalue} we always choose a representative
+point having minimum $f$-value.
+Since the optimal parent has $g(p) + h(p, t) \leq g(p') + h(p', t)$
+and the representative point has an $f$ leq than this.
+So we must have expanded the optimal parent first and generated
+the target with an $f$ value smaller than  the one through 
+the non-optimal parent.
+\end{proof}
+
+\section{Conclusion}
+Some concluding remarks will conclusively conclude this paper.
 
 \section{Stuff that is not finished}
 This further constraint allows us to bound the branching factor of each
