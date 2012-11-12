@@ -173,6 +173,7 @@ Lemma~\ref{lemma::opt_is_taut} tells us that,
 during optimal search, the only successors of a node which
 are interesting are those reachable by a local path that is taut.
 \begin{lemm}
+\label{lemma::taut_successors}
 For every search node $(I, r)$ and
 taut local path $\langle r, p, p' \rangle$ from $r$, through some 
 $p \in I$ and to a point $p'$: there exists
@@ -192,12 +193,16 @@ The only intervals for which we generate no successor nodes are those
 containing non-visible points $p'$ where the path from $r$ through 
 $I$ is not taut. Refer once more to Definition~\ref{defi::successors} and Figure~\ref{fig::successors}. 
 \end{proof}
-Finally, we will show that if Anya returns a path the length
-of that path is optimal.
-%Finally, we will show that if Anya returns a path between any
-%start-target pair, that path is optimal.
+From Lemma~\ref{lemma::taut_successors} we conclude that Anya is
+complete: for any given search node $(I, r)$ every point on a taut local path
+from $r$ through $I$ is reachable via some successor $(I', r')$. As we only have positive
+cost transitions, from a node to each successor, we can be certain that if a 
+path exists it will eventually be returned. We now show that any path 
+returned by Anya is also cost optimal.
 \begin{theorem}
-Anya is optimal.
+For any arbitrary pair of discrete points $s$ and $t$, which are connected,
+Anya always finds a path $\pi = \langle s, \ldots, t\rangle$ which is
+cost optimal.
 \end{theorem}
 \begin{proof}
 Sketch only. This needs fixing.
