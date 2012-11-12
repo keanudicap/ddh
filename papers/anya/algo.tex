@@ -52,6 +52,7 @@ not taut.}
 \end{figure}
 
 \begin{defi}
+\label{defi::successors}
 $(I', r')$ is a \emph{successor} of
 $(I, r)$ if each $p' \in I'$ is reached
 by a taut path $\langle r, p,  p' \rangle$ that begins
@@ -164,36 +165,32 @@ Every optimal path $\pi$ is also taut.
 \begin{proof}
 By contradiction. If $\pi$ is not taut we can apply 
 Lemma~\ref{lemma::corner} to derive a path $\pi'$ which is 
-shorter. 
+shorter than $\pi$. 
 %The existance of any such $\pi'$ contradicts the 
 %optimality of $\pi$.
 \end{proof}
-Lemma~\ref{lemma::opt_is_taut} tells us that optimality does not depend on 
-generating all successors during search. Only those successors
-reachable by a local path which is taut need to be considered.
-Anya generates exactly these successors.
+Lemma~\ref{lemma::opt_is_taut} tells us that,
+during optimal search, the only successors of a node which
+are interesting are those reachable by a local path that is taut.
 \begin{lemm}
-For any search node $(I, r)$ and any maximal interval $J$
-found on the same grid row as $I$ or one immediately adjacent:
-\textbf{if} $J$ contains a contiguous subset of traversable 
-points $p$ s.t. $\forall p \in I' \subseteq J$ there is a taut path from $r$
-\textbf{then} $(I', r')$ is a successor of $(I, r)$.
+For every search node $(I, r)$ and
+taut local path, from $r$, through some $p \in I$
+and to a point $p'$: there exists
+a successor $(I', r')$ s.t. $p' \in I'$.
 \end{lemm}
 \begin{proof}
-%In the case of the start node, every visible point
-%and some others are generated.
-%There are no no non-taut successors.
-Sketch only. This needs fixing.
-By Definition 3 the only successors not
-generated are those reached by a non-taut path
-or by a taut path that passes through more than one
-interval.
-If we pass through more than one interval we either
-do so to reach a point which is not on the same row
-or an adjacent row as $I$ or we pass through an interval
-on the same row. If we pass through an interval on the same
-row we do not need to generate the successor; it will
-be reached by a taut path from one of our successors.
+%% NB: The full proof needs to be an inductive argument
+%% for the visible and non-visible cases.
+%% Don't forget to point out that the start node has 0 observable successors.
+Sketch. There are two cases to consider depending on whether
+$p'$ is visible from $r$ or not.
+If $p'$ is visible then it belongs to one of the $0 \leq k$ observable 
+successors of $(I, r)$. 
+If $p'$ is not visible then $p'$ belongs to one of the non-observable
+successors of $(I, r)$. 
+The only intervals for which we generate no successor nodes are those
+containing non-visible points $p'$ where the path from $r$ through 
+$I$ is not taut. Refer once more to Definition~\ref{defi::successors} and Figure~\ref{fig::successors}. 
 \end{proof}
 Finally, we will show that if Anya returns a path the length
 of that path is optimal.
