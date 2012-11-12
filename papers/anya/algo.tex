@@ -174,38 +174,45 @@ during optimal search, the only successors of a node which
 are interesting are those reachable by a local path that is taut.
 \begin{lemm}
 \label{lemma::taut_successors}
-For every search node $(I, r)$ and
-taut local path $\langle r, p, p' \rangle$ from $r$, through some 
-$p \in I$ and to a point $p'$: there exists
-a successor $(I', r')$ s.t. $p' \in I'$.
+Every point $p'$ can be reached by a taut local
+path of the form $\langle r, p, p' \rangle$ where
+r is the root of a search node $(I, r)$ and $p \in I$.
+%For every point $p'$ there exists a taut local path from 
+%For every search node $(I, r)$ and
+%taut local path $\langle r, p, p' \rangle$ from $r$, through some 
+%$p \in I$ and to a point $p'$: there exists
+%a successor $(I', r')$ s.t. $p' \in I'$.
 \end{lemm}
 \begin{proof}
 %% NB: The full proof needs to be an inductive argument
 %% for the visible and non-visible cases.
+%% We have to show that every point can be reached by a taut local
+%% path and that the union of taut local paths is a complete cover.
 %% Don't forget to point out that the start node has 0 observable successors.
-Sketch. There are two cases to consider depending on whether
-$p'$ is visible from $r$ or not.
-If $p'$ is visible then it belongs to one of the $0 \leq k$ observable 
-successors of $(I, r)$. 
-If $p'$ is not visible then $p'$ belongs to one of the non-observable
-successors of $(I, r)$. 
-The only intervals for which we generate no successor nodes are those
-containing non-visible points $p'$ where the path from $r$ through 
-$I$ is not taut. Refer once more to Definition~\ref{defi::successors} and Figure~\ref{fig::successors}. 
+Sketch. There are two cases to consider depending on whether or not $p'$ is
+visible from $r$ through $I$.  If $p'$ is visible from $r$ through $I$ then it
+belongs to one of the observable successors of $(I, r)$. Otherwise $p'$ belongs
+to one of the non-observable successors of $(I, r)$.  The only points $p'$ not
+found in any successor interval are those where the local path from $r$ through 
+$I$ is not taut. Refer once more to Definition~\ref{defi::successors} and
+Figure~\ref{fig::successors}.
 \end{proof}
-From Lemma~\ref{lemma::taut_successors} we conclude that Anya is
-complete: for any given search node $(I, r)$ every point on a taut local path
-from $r$ through $I$ is reachable via some successor $(I', r')$. As we only have positive
-cost transitions, from a node to each successor, we can be certain that if a 
-path exists it will eventually be returned. We now show that any path 
-returned by Anya is also cost optimal.
+From Lemma~\ref{lemma::taut_successors} we conclude that Anya is complete: for
+any search node $(I, r)$ every point on a taut local path from $r$ through
+$I$ is reached through some successor $(I', r')$.  As we only have
+positive cost transitions, from a node to each successor, we can be certain that
+if a path exists it will eventually be returned. We now show that if Anya returns
+a path that path is cost optimal.
 \begin{theorem}
 For any arbitrary pair of discrete points $s$ and $t$, which are connected,
 Anya always finds a path $\pi = \langle s, \ldots, t\rangle$ which is
 cost optimal.
 \end{theorem}
 \begin{proof}
-Sketch only. This needs fixing.
+Sketch only. Suppose $\pi$ is not optimal. There must be another 
+path $\pi'$ which is shorter. Since $\pi'$ is shorter $\ldots$.
+\\
+Stuff below needs fixing. Doesn't make sense yet.
 By contradiction. Suppose we return a path where
 the goal has a non-optimal parent. 
 This means the non-optimal parent has a priority
