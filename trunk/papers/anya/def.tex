@@ -69,7 +69,7 @@ We will say $p_i \in \pi$ is a \emph{turning point} if the segments
 $(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
 \\
 \begin{lemm}
-\label{lemma::corner}
+\label{lemm::corner}
 %  Given two discrete points $p$ and $p'$, 
   Any turning point in the optimal any-angle path between points $p_1$ and 
 $p_k$ is also a corner point.
@@ -99,4 +99,7 @@ $p_k$ is also a corner point.
   where the point $p'_l$ is chosen as close as possible from the corner $c$.  
 }
 \end{proof}
+Lemma~\ref{lemm::corner} is interesting because it allows us to define 
+any-angle paths as a sequence of straight lines which intersect only at
+discrete corner points.
 % EOF

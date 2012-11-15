@@ -1,0 +1,238 @@
+\section{Stuff that is not finished}
+This further constraint allows us to bound the branching factor of each
+node to just those neighbours which are immediately adjacent to and on
+the same row as $n$ and visible neig
+as $n$ or located on an immediately adjacent 
+row next to $n$.
+
+is another significant advantage of Anya: unlike other similar
+algorithms that have a (e.g. Visibility Points) we avoid generating successors that 
+are not immediately promising
+
+We will look for optimal any-angle paths in the search space formed by
+intervals appearing along the rows of the grid.
+%
+%Our search nodes will comprise of tuples of the form $(I, r)$ where
+%$I$ is an interval and $r$ is a \emph{root} point which can be
+%either the start location or the most recent corner point on the path used
+%to reach to $I$.
+%Given any such tuple we require that each $p \in I$ is visible from $r$.
+%\\
+
+Definition~\ref{defi::intadj} bounds the branching factor of each 
+search node to $O(W)$ and unlike other exact algortihms (e.g. visibility graphs)
+allows us to defer the generation of any neighbours that are not 
+immediately promising.
+\\
+
+Essentially, the reason why the existing algorithms are not optimal
+is that the search is based on the grid intersections.  
+However, because the final any-angle path 
+may never cross these intersections, 
+the $A^*$ $f$ value associated with the intersections
+is not relevant.  
+In this article, we propose to run the search not on the grid 
+but instead on the edges of the graph.  
+
+bla bla
+
+From $n_1$, all the nodes that can be reached with a one step North 
+(and potentially any fraction of West/East steps) will be considered.  
+We call ``interval'' this set of nodes that are considered together.  
+
+How should we then compute the successors of an interval?  
+Look at Figure~\ref{fig::succ1} (left) 
+where a North step is taken from the interval $[(1,3)-(4,3)]$
+reached from node $(1,1)$.  
+The (single) successor of the interval 
+is simply computed by projecting the visibility cone 
+(represented with dashed lines)
+from $(1,1)$ to the next row.  
+This leads to the interval $[(1,4)-(5+\frac{1}{2},4)]$.  
+Obverse that, as a consequence, the parent of the interval 
+(here $(1,1)$) must be kept together with the interval.  
+
+\begin{figure}[ht]
+  \begin{minipage}{0.5\linewidth}
+  \begin{center}
+    \input{tikz/ex2}
+  \end{center}
+  \end{minipage}
+  \begin{minipage}{0.5\linewidth}
+  \begin{center}
+    \input{tikz/ex3}
+  \end{center}
+  \end{minipage}
+  \caption{Computing the successors of an interval}
+  \label{fig::succ1}
+\end{figure}
+
+There are more complicated situations, 
+as presented in Figure~\ref{fig::succ1} (right).  
+Here, we can see that an obstacle splits the interval 
+in two separate intervals.  
+We could define disjunct intervals, 
+but it seems more natural to consider them independently.  
+
+Furthermore, the path might turn at node $(3,3)$
+(e.g., to reach node $(3,4)$
+which is not directly accessible from $(1,1)$).  
+The corner $(3,3)$ is therefore a successor of node $(1,1)$ 
+and intervals should be built from this node.  
+
+%Let us present more precisely how the successors are splitted.  
+%From the interval $I = [(1,3)-(4,3)]$, 
+%we assume that an epsilon step 
+%(i.e., an infinitely small step North) is taken.  
+%This step reveals how the interval will be splitted.  
+%Therefore, we generate interval 
+%$[(1,3+\varepsilon)-(4+\frac{3}{2}\varepsilon,3+\varepsilon)]$; 
+%we then remove the parts that belong to the obstacle, 
+%which produces the two intervals 
+%$[(1,3+\varepsilon)-(2,3+\varepsilon)]$ 
+%$[(3,3+\varepsilon)-(4+\frac{3}{2}\varepsilon,3+\varepsilon)]$; 
+%finally, we split the part that is not visible from $(1,1)$, 
+%which leads to three intervals: 
+%$[(1,3+\varepsilon)-(2,3+\varepsilon)]$, 
+%$[(3,3+\varepsilon)-(3+\varepsilon,3+\varepsilon)]$, 
+%and
+%$](3+\varepsilon,3+\varepsilon)-
+%(4+\frac{3}{2}\varepsilon,3+\varepsilon)]$. 
+%If we project back on row 3, 
+%we obtain three intervals: 
+%$[(1,3)-(2,3)]$, 
+%$[(3,3)-(3,3)]$, 
+%and
+%$](3,3)-(4,3)]$. 
+%We say that these intervals are ``consistent''%
+%\footnote{We need a better word here.} 
+%with the obstacles.  
+%The first and last intervals can be delt with similarly 
+%to the example in Figure~\ref{fig::succ1} (left).  
+%The second interval, being a single point, 
+%requires to generate new intervals.  
+
+The remaining question is what $f$ value 
+should be associated with these intervals.  
+For $A^*$ to return the optimal solution, 
+we need $f$ to be an underestimate of the actual value 
+(except for the final node).  
+The interval has the following semantics: 
+the path that is currently being constructed 
+should start from $s$, cross the parent $P$, 
+then cross the interval, and finally reached the goal.  
+The shortest path that belongs to this set 
+has length $g^*(P) + min_{x \in I}(d(P,x) + h^*(x))$.  
+The value $g^*(P)$ should be known at this stage 
+(this is one advantage of $A^*$).  
+However, the minimum factor is unknown, 
+but it can be lower-bounded by $min_{x \in I}(d(P,x) + h(x))$.  
+This formula is actually pretty simple to solve, as we now demonstrate.  
+
+Let $z_1$ and $z_2$ be the two extreme points of the interval.  
+Draw a direct line between the goal and the parent $P$ of the interval, 
+as shown in Figure~\ref{fig::fvalue}.  
+If the line crosses the interval in \textit{\u z}, then the value is h(P).  If the line passes on the left, 
+then the value is $d(P,z_1)+h(z_1)$; 
+otherwise, it is $d(P,z_2)+h(z_2)$.  
+If the goal is between the parent and the interval, 
+as is the case with $g_4$, 
+then one needs to consider the mirrored version of $g_4$ 
+(here $g'_4$).  
+
+\begin{figure}[ht]
+  \begin{center}
+%    \includegraphics[scale=0.3]{images/fvalue}
+    \input{tikz/fvalue}
+  \end{center}
+  \caption{Computing the minimum distance 
+    to go from $p$ through the interval to the goal; 
+    if the goal is $g_1$, the direct distance between $p$ and $g_1$; 
+    if the goal is $g_2$ or $g_3$, 
+    the shortest distance is the distance represented by the dashed lines.}
+  \label{fig::fvalue}
+\end{figure}
+
+% EOF
+This section now presents our search algorithm, dubbed \anya, short for
+any-angle pathfinding.  \anya{} is a variant of A* that does not search on the
+space of intervals of the grid, but instead on the space of intervals and
+corners.
+
+\begin{algorithm}[ht!]
+  \input{algo/anya}
+  \caption{Procedure \anya, an any-angle pathfinding algorithm}
+  \label{algo::anya}
+\end{algorithm}
+
+The general layout of \anya{} is given in Algorithm~\ref{algo::anya}.  
+Like A*, \anya{} keeps a priority queue called $open$ 
+and based on the $f$ value.  
+The algorithm stops when the target is poped from the queue.  
+Now, whether the current node is a corner or an interval 
+is dealt with differently by \anya: 
+\begin{itemize}
+\item 
+  For a corner, the successors of the corner are computed 
+  (method successors\_of\_corner presented later) 
+  and are added to the priority queue --- 
+  the method add\_edge deals with computing the $f$ value 
+  (presented later), updating if necessary the parent of a node, 
+  and sorting the priority queue.  
+\item 
+  If the node is an interval, \anya{} moves it 
+  and computes the corners of the new interval 
+  (for this purpose, the target is seen as a corner).  
+  Then, the interval is split according to the corners, 
+  i.e., producing all the intervals between two consecutive corners.  
+  All these corners and intervals 
+  are potential successors of the current interval; 
+  however, we need to check that they are visible from parent $p$.  
+  To check whether an interval is visible, 
+  we check whether its middle point is.  
+\end{itemize}
+
+We illustrate the computation of the successors 
+of interval $i = \langle [1,2],3,p\langle$ 
+where $p = \langle1,1\rangle$ 
+(cf. Figure~\ref{fig::succ1}, right).  
+The move of $i$ produces 
+the interval $i' = \langle [1,2.5],4,p\rangle$.  
+The set of corners of $i'$ is $\{\langle 2,4\rangle\}$.  
+The split of $i'$ hence produces two intervals: 
+$is = \{
+\langle [1,2],4,p\rangle,  
+\langle [2,2.5],4,p\rangle
+\}$.  
+The single corner is visible from $p$.  
+The point $c' = \langle 1.5,4\rangle$ is also visible from $p$, 
+which means that the first interval is visible from $p$.  
+On the other hand, the point $\langle 2.25,4\rangle$ 
+is not visible from $p$, 
+which means that the second interval is not visible from $p$.  
+The successors of $i$ are therefore $c'$ 
+and $\langle [1,2],4,p\rangle$.  
+
+\paragraph*{}
+
+A corner $\langle x,y\rangle$ has potentially four successors.  
+The first two obvious successors 
+are the intervals at rows $y-1$ and $y+1$.  
+However, the optimal path may follow a horizontal section, 
+and the corner could have a successor on the left or on the right.  
+
+\begin{algorithm}
+  \input{algo/successorsofcorner}
+  \caption{Computing the successors of a corner.}
+  \label{algo::successorsofacorner}
+\end{algorithm}
+
+
+
+\begin{figure}[tb]
+  \begin{center}
+\begin{tikzpicture}
+\creategrid{6}{6}
+\end{tikzpicture}
+  \end{center}
+\end{figure}
