@@ -174,7 +174,7 @@ during optimal search, the only successors of a node which
 are interesting are those reachable by a local path that is taut.
 \begin{lemm}
 \label{lemma::taut_successors}
-Every point $p'$ can be reached by a taut local
+Every point $p'$ in an interval $I$ is reached by a taut local
 path of the form $\langle r, p, p' \rangle$ where
 r is the root of a search node $(I, r)$ and $p \in I$.
 %For every point $p'$ there exists a taut local path from 
@@ -209,24 +209,97 @@ Anya always finds a path $\pi = \langle s, \ldots, t\rangle$ which is
 cost optimal.
 \end{theorem}
 \begin{proof}
-Sketch only. Suppose $\pi$ is not optimal. There must be another 
-path $\pi'$ which is shorter. Since $\pi'$ is shorter $\ldots$.
-\\
-Stuff below needs fixing. Doesn't make sense yet.
-By contradiction. Suppose we return a path where
-the goal has a non-optimal parent. 
-This means the non-optimal parent has a priority
-which is less than the priority of the optimal parent.
-Equivalently, we generate the interval containing the 
-optimal parent using a representative point which is
-worse than the non-optimal parent.
-By Lemma~\ref{lemma:fvalue} we always choose a representative
-point having minimum $f$-value.
-Since the optimal parent has $g(p) + h(p, t) \leq g(p') + h(p', t)$
-and the representative point has an $f$ leq than this.
-So we must have expanded the optimal parent first and generated
-the target with an $f$ value smaller than  the one through 
-the non-optimal parent.
+For any search node $(I, r)$ we must show: (i) the cost of the any-angle path 
+from the start point to each root point is optimal; (ii) the $f$-value
+of the representative point from each interval is minimum; (iii)
+$f$-values along any given path are monotonically increasing.
+%Optimality requires that $f$-costs are monotonically increasing along any 
+%given path. Thus for any search node $m = (I_m, r_m)$ whose representative
+%point is $p_m \in I_m$ and any arbitrary 
+%successor $(I_n, r_n)$ whose representative point is $p_n \in I_n$ we 
+%will need to show that $f(p_m) \leq f(p_n)$.
+%
+%where $p_m$ and $p_n$ are the representative points 
+%The $f$-value of each node is computed using Equation~\ref{eq::fvalue}
+%and requires selecting from each interval a single representative point 
+%$p_m \in I_m$ and $p_n \in I_n$. To satisfy the monotone condition we
+%need to show that $f(p_m) \leq f(p_n)$.
+%
+%If $n$ is an observable successor then $p_n$ is visible from $r_m$
+%and both $p_m$ and $p_n$ appear on the straight line $r_m \rightarrow t$.
+%The length of this line is a least lower bound on the cost of the optimal 
+%path and using Equation~\ref{eq::fvalue} we have $f(p_m) = f(p_n)$.
+%
+%
+%where $f(m) = f(p_m)$ and $p_m \in I_m$ is a representative point 
+%chosen from amongst all points in the interval $I_m$.
+%We require that for each successor $(I_n, r_n)$ the representative point 
+%$p_n \in I_n$ has an associated $f$-value s.t: $f(p_m) \leq f(p_m)$.
+%Each representative point is selected according to Lemma~\ref{lemma:fvalue}:
+%
+%If $p_n$ is visible from $r_m$ then $p_n$ 
+%
+%
+%
+%
+%From all points in the interval $I_m$ we choose a representative
+%$p_m$  
+% 
+%From the set f
+%and any arbitrary successor $(I_n, r_n)$.
+%Since $r_m \not \in I_m$ and $I_m \cap I_n = \emptyset$ it follows 
+%that the cost
+%
+%To see this consider any taut local path: 
+%$\langle r_m, p_m \in I_m, p_n \in I_n\rangle$. the cost of the path
+%from one node to the next is greater than zero since (i)
+%$r_m \not \in I_m$ and $I_m \cap I_n = \emptyset$.
+%
+%we do not allow negative cost transitions and (ii) $r_m \not \in I_m$ 
+%By Definition~\ref{defi::searchnode} $r_m \not \in I_m$;
+%When expanding a search node $(I_m, r_m)$ we require that every path
+%to each successor $(I_n, r_n)$ begin at $r_m$ and pass through some 
+%$p_m \in I_m$ before k
+%through some $p_m \in I_m$ 
+%
+%Optimality requires that, during search, costs are monotonically increasing
+%along any given path 
+%We begin by showing $f$-values computed by Anya are monotonically increasing.
+%This property is necessary to prove optimal
+%Monotonicity is a necessary property of 
+%When expanding a node $n = (I_n, r_n)$ Anya considers at the same time
+%all local paths from $r_n$ to each $p_n \in I_n$. 
+%From Lemma~\ref{lemm::taut_successors} every such path is taut.
+%By 
+%
+%all points $p_n \in I_n$. 
+%At each expansion we have found an optimal path to the root $r_m$.
+%
+%Each time Anya expands a node $n = (I_n, r_n)$ it has found an optimal
+%path from the source to the root point $r_n$. 
+%
+%bla blah
+%Conclude Anya is consistent.
+%	
+%
+%The local path $\langle r_m, p_m\rangle 
+%a set of points Each search node represents a set of points 9
+%
+%
+%Sketch only. Suppose $\pi$ is not optimal. There must be another 
+%path $\pi'$ which is shorter. Since $\pi'$ is shorter $\ldots$.
+%\\
+%Each time Anya expands a node $m = (I_m, r_m)$ it generates $k$ successors
+%each of which can be observable or non-observable.
+%From each successor $n = (I_n, r_n)$ a representative point $p_n$ is chosen s.t 
+%there is a taut local path $\langle r_m, p_m, p_n\rangle$
+%where $p_m \in I_m$ and $p_n \in I_n$.
+%Since we do not have any negative or zero-cost transitions we have
+%$\ldots$. Thus the $f$-value
+%of each successor $m$ is monotonically increasing wrt the $f$-value of 
+%its parent $n$. 
+%From Lemma~\ref{lemm::fvalue} we also have that $forall p'' \in I'$ 
+%$f(p') \leq f(p'')$.
 \end{proof}
 
 \section{Conclusion}
