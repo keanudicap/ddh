@@ -45,10 +45,8 @@ make it any shorter.
   \begin{center}
     \input{tikz/ex2}
   \end{center}
-  \caption{$(I, r)$ has three successors: $(I'_1, r)$ which is observable
-and $(I'_2, r')$ and $(I'_3, r')$ which are not. Notice that intervals of traversable
-points exist left of $I$ but the local path through $I$ to each such point is
-not taut.}
+%  \caption{$(I, r)$ has three successors: $(I'_1, r)$ which is observable and $(I'_2, r')$ and $(I'_3, r')$ which are not. Notice that intervals of traversable points exist left of $I$ but the local path through $I$ to each such point is not taut.}
+  \caption{$(I, r)$ has four successors: $(I'_1, r)$ and $(I'_2,r)$ which are observable and $(I'_3, r')$ and $(I'_4, r')$ which are not. Notice that intervals of traversable points exist left of $I$ but the local path through $I$ to each such point is not taut.}
 \label{fig::successors}
 \end{figure}
 
@@ -57,7 +55,8 @@ not taut.}
 $(I', r')$ is a \emph{successor} of
 $(I, r)$ if each $p' \in I'$ is reached
 by a taut path $\langle r, p,  p' \rangle$ that begins
-at $r$ and passes through some $p \in I$.  Additionally, 
+at $r$ and passes through some $p \in I$, 
+and $r'$ is the last common point of these paths.  Additionally, 
 the subpath $\langle p, p' \rangle$ must not intersect any 
 interval $J \neq I'$.
 \end{defi}
@@ -101,7 +100,8 @@ and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of
 reaching $t$ from $p$.
 \\
 Although each interval can contain a large number of points it is easy to
-identify the one with minimum $f$-value: simply project a straight line $r
+identify the one with minimum $f$-value: 
+simply project a straight line $r
 \rightarrow t$ from the root point $r$ to the target point $t$ and choose the
 point $p \in I$ which lies at their intersection.  If $r \rightarrow t$ does not
 intersect $I$, choose $p$ as one of the two endpoints of $I$.
@@ -110,8 +110,8 @@ intersect $I$, choose $p$ as one of the two endpoints of $I$.
   \begin{center}
     \input{tikz/fvalue}
   \end{center}
-  \caption{An illustration of Lemma~\ref{lemm::minf}. The point $g_1$ corresponds 
-to Case (i); $g_2$ and $g_3$ correspond to Case (ii); $g_4$ and $g'_4$ correspond
+  \caption{An illustration of Lemma~\ref{lemm::minf}. The point $t_1$ corresponds 
+to Case (i); $t_2$ and $t_3$ correspond to Case (ii); $t_4$ and $t'_4$ correspond
 to Case (iii);}
 \label{fig::minf}
 \end{figure}
