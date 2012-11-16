@@ -1,2 +1,13 @@
 \section{Conclusion}
-Some concluding remarks will conclusively conclude this paper.
+We study any-angle pathfinding: a problem commonly found in the areas of
+robotics and computer games. It involves finding a shortest path between two
+points in a grid but asks that the path is not artificially constrained to the
+points of the grid.  We give a new algorithm for this problem: Anya.  Our
+approach works by representing sets of points from the grid as intervals and
+considers all points from an interval together at the same time. From each
+interval we select a representative point which has a minimum $f$-value. We show
+that this approach is both complete and optimal. Moreover, it requires no
+preprocessing and relies on no special data structures during search.  Any-angle
+pathfinding has received signficiant attention from the AI and Game Development
+communities but until now it has been an open question whether any optimal
+online algorithm exists. Anya answers this question in the affirmative.
