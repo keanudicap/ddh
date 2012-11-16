@@ -86,7 +86,7 @@ observable and non-observable successors.
 %can also exist a set of traversable points that are not visible from $r$.
 %In this case however the path from $r$ to each such point $p'$ is 
 %not taut so we do not generate any successor.
-\\
+
 To evaluate a search node $n = (I, r$) we will select a point $p \in I$ 
 which has a minimum $f$-value with respect to a target point $t$.
 We compute: 
@@ -96,69 +96,110 @@ f(p) = g(r) + d(r, p) + h(p, t)
 \end{equation}
 where $g(r)$ is the length of the optimal path from the start point to 
 the root, $d(r, p)$ is the straight line distance from $r$ to $p$
-and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of
-reaching $t$ from $p$.
-\\
+and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of reaching $t$ from $p$; here, we choose $h(p,t) = d(p,t)$.
+
 Although each interval can contain a large number of points it is easy to
-identify the one with minimum $f$-value: 
-simply project a straight line $r
-\rightarrow t$ from the root point $r$ to the target point $t$ and choose the
-point $p \in I$ which lies at their intersection.  If $r \rightarrow t$ does not
-intersect $I$, choose $p$ as one of the two endpoints of $I$.
+identify the one with minimum $f$-value, 
+thanks to the following two lemmas.  
+
+\begin{lemm}\label{lemm::choosingp}
+  Let $t$ and $r$ be two points 
+  and let $I$ be an interval 
+  such that the row of $I$ is between the rows of $t$ and $r$.  
+  Then the point $p$ of $I$ 
+  that minimizes the $f$ value 
+  is the closest point of $I$ to the intersection of $(t,r)$ 
+  with the row of $I$.  
+\end{lemm}
+
+\begin{proof}
+  If $(t,r)$ intersects $I$ in $p_\mathrm{i}$, 
+  then the minimum value of $d(r,p) + h(p,t)$ 
+  is $d(r,t)$ which is obtained 
+  by choosing $p = p_{\mathrm{i}}$ (by the triangle inequality).  
+  Otherwise choose $p$ as the end point of $I$ 
+  on the side where $(r,t)$ intersects the row of $I$.  
+\end{proof}
+
+If the precondition of Lemma~\ref{lemm::choosingp} is not satisfied, 
+it is possible to replace $t$ by its mirrored version $t'$ through $I$ 
+as their distance $d(p,t)$ is the same 
+while $t'$ does satisfy the precondition.  
+
+\begin{lemm}
+\label{lemm::mirror}
+  The mirrored point $t'$ of target $t$ 
+  through interval $I$ is such that   
+  $d(p,t) = d(p,t')$ for all $p \in I$.  
+\end{lemm}
+
+Lemma~\ref{lemm::mirror} is a trivial geometrical result.  
+Both lemmas are illustrated on Figure~\ref{fig::minf}.  
+
+%simply project a straight line $r
+%\rightarrow t$ from the root point $r$ to the target point $t$ and choose the
+%point $p \in I$ which lies at their intersection.  If $r \rightarrow t$ does not
+%intersect $I$, choose $p$ as one of the two endpoints of $I$.
 
 \begin{figure}[tb]
   \begin{center}
     \input{tikz/fvalue}
   \end{center}
-  \caption{An illustration of Lemma~\ref{lemm::minf}. The point $t_1$ corresponds 
-to Case (i); $t_2$ and $t_3$ correspond to Case (ii); $t_4$ and $t'_4$ correspond
-to Case (iii);}
+  \caption{An illustration of Lemmas~\ref{lemm::choosingp}~and~\ref{lemm::mirror}.  The points $t_1$ and $t'_4$ correspond to the case 
+where the line intersects the interval; 
+$t_2$ and $t_3$ where it does not; 
+$t_4$ where the mirrored target $t'_4$ must be used.
+%The point $t_1$ corresponds 
+%to Case (i); $t_2$ and $t_3$ correspond to Case (ii); $t_4$ and $t'_4$ correspond
+%to Case (iii);
+}
 \label{fig::minf}
 \end{figure}
 
-\begin{lemm}
-\label{lemm::minf}
-For any tuple $(I, r)$ and target point $t$: 
-\textbf{if} the line $r \rightarrow t$ intersects $I$ at a point
-$p$ \textbf{then} $\forall p' \in I: f(p) \leq f(p')$;
-\textbf{else}
-%If $r \rightarrow t$ does not intersect $I$ then 
-$p$ is one of the two endpoints of $I$ and 
-$\forall p' \in I: f(p) \leq f(p')$.
-\end{lemm}
-\begin{proof}
-%By construction. 
-There are three cases to consider:
-(i) $r \rightarrow t$ intersects $I$; (ii) $r \rightarrow t$ intersects
-the grid row containing $I$ but not $I$; (iii) $r \rightarrow t$ does 
-not intersect the grid row containing $I$. Each
-case is illustrated in Figure~\ref{fig::minf}.
-\\
-\textbf{Case (i):} $r \rightarrow t$ is a minimum bound on the cost of any
-path from $r$ through $p \in I$ to $t$. Thus $f(p)$ is minimum.
-\\
-\textbf{Case (ii):} $r \rightarrow t$ crosses the row of $I$ 
-either to the left of $I$, in which
-case $p = a$, or to the right of $I$, in which case $p = b$.
-In either case $f(p)$ is again a minimum bound on the cost of any
-path from $r$ to $t$ through $I$.
-\\
-\textbf{Case (iii):} $r \rightarrow t$ does not intersect $I$ 
-or even the grid row $R$ containing $I$. In this case we mirror
-$t$ through $R$ and derive a point $t'$ which we use in
-conjunction with Case (i) or Case (ii) instead of $t$.
-To see that $t$ and $t'$ are equivalent we identify 
-a point $x$ at the intersection of $t \rightarrow t'$ with $R$. 
-For any $p \in I$ we can now form two adjacent right-angle
-triangles: $p, x, t$ and $p, x, t'$. The opposide and adjacent 
-sides of both triangles have the same length and in both cases 
-meet at an angle of 90 degrees. We conclude the triangles are
-congruent and that 
-$\forall p \in I: p \rightarrow t \equiv p \rightarrow t'$.
-\end{proof}
+%\begin{lemm}
+%\label{lemm::minf}
+%For any tuple $(I, r)$ and target point $t$: 
+%\textbf{if} the line $r \rightarrow t$ intersects $I$ at a point
+%$p$ \textbf{then} $\forall p' \in I: f(p) \leq f(p')$;
+%\textbf{else}
+%%If $r \rightarrow t$ does not intersect $I$ then 
+%$p$ is one of the two endpoints of $I$ and 
+%$\forall p' \in I: f(p) \leq f(p')$.
+%\end{lemm}
+%\begin{proof}
+%%By construction. 
+%There are three cases to consider:
+%%(i) $r \rightarrow t$ intersects $I$; (ii) $r \rightarrow t$ intersects
+% the grid row containing $I$ but not $I$; (iii) $r \rightarrow t$ does 
+% not intersect the grid row containing $I$. Each
+% case is illustrated in Figure~\ref{fig::minf}.
+% \\
+% \textbf{Case (i):} $r \rightarrow t$ is a minimum bound on the cost of any
+% path from $r$ through $p \in I$ to $t$. Thus $f(p)$ is minimum.
+% \\
+% \textbf{Case (ii):} $r \rightarrow t$ crosses the row of $I$ 
+% either to the left of $I$, in which
+% case $p = a$, or to the right of $I$, in which case $p = b$.
+% In either case $f(p)$ is again a minimum bound on the cost of any
+% path from $r$ to $t$ through $I$.
+% \\
+% \textbf{Case (iii):} $r \rightarrow t$ does not intersect $I$ 
+% or even the grid row $R$ containing $I$. In this case we mirror
+% $t$ through $R$ and derive a point $t'$ which we use in
+% conjunction with Case (i) or Case (ii) instead of $t$.
+% To see that $t$ and $t'$ are equivalent we identify 
+% a point $x$ at the intersection of $t \rightarrow t'$ with $R$. 
+% For any $p \in I$ we can now form two adjacent right-angle
+% triangles: $p, x, t$ and $p, x, t'$. The opposide and adjacent 
+% sides of both triangles have the same length and in both cases 
+% meet at an angle of 90 degrees. We conclude the triangles are
+% congruent and that 
+% $\forall p \in I: p \rightarrow t \equiv p \rightarrow t'$.
+% \end{proof}
 
 The algorithm terminates when we expand a node $(I, r)$ s.t.
-$t \in I$. By Lemma~\ref{lemm::minf} the $f$-value of this
+$t \in I$. By Lemma~\ref{lemm::choosingp} and \ref{lemm::mirror} 
+the $f$-value of this
 interval is guaranteed to be minimum with respect to $t$.
 To extract a path we simply follow parent pointers until we
 reach the node containing the start point.
