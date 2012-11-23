@@ -1,0 +1,38 @@
+\section{Symmetry Breaking In 4-Connected Grid Maps}
+\label{sec::rsr::symm4c}
+
+Trivial rooms which contain no interior nodes (for example rooms with a width $w$ or height $h$ 
+$\leq 2$) are left unmodified by steps 2 and 3.
+Figure \ref{fig-overview} shows an example of this process.
+For each non-trivial room we prune $(w-2)\times(h-2)$ interior
+nodes and, in the process, eliminate a large number of symmetric paths between 
+nodes on the perimeter.
+We claim that this approach preserves optimality when traversing across any arbitrary room.
+
+\begin{lemma}
+\label{thm-roomtraversal}
+Let $R$ be an arbitrary rectangular room that is free of obstacles
+and $m, n$ be two locations on its perimeter.
+Then $m$ and $n$ can be connected optimally through a path that
+mentions only nodes on the perimeter of $R$ and possibly involves
+a macro edge.
+\end{lemma}
+\begin{proof}
+\par
+There are two distinct cases to consider.
+Case 1 is when $m$ and $n$ are placed on the same side of the perimeter, or
+on two orthogonal sides. 
+To obtain an optimal path we can simply travel along the perimeter from $m$ to $n$.
+Case 2 is when $m$ and $n$ are placed on opposite sides of the perimeter.
+To obtain an optimal path we can simply follow the macro edge at $m$ 
+and navigate directly to a node $m'$ located on
+the same side of the perimeter as $n$. Then, go from $m'$ to $n$ along the perimeter.
+The resultant path is optimal as its length is equal to the Manhattan distance between $m$ and $n$.
+\end{proof}
+
+A direct corollary to Lemma \ref{thm-roomtraversal} is that we can prune from consideration
+all nodes from the interior of $R$ and limit ourselves to only searching nodes appearing along its perimeter. 
+The only remaining consideration is how to deal with interior nodes that happen
+to be the start or goal location for the search at hand.
+We address this case in the following section.
+
