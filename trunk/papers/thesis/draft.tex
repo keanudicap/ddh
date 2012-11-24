@@ -2,6 +2,7 @@
 \documentclass[11pt, a4paper]{book}
 \usepackage{svn-multi}
 \svnid{$Id$}
+\usepackage{latexsym}
 \usepackage{prelim2e}
 \renewcommand{\PrelimWords}{Draft Copy \svnkw{Id}}
 %%\newcommand*{\mysvnrev}{\svnrev}
@@ -58,6 +59,12 @@
 \date{\today}
 
 \renewcommand{\thepage}{\roman{page}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newenvironment{proof}{\noindent{\bf Proof:}}{\hspace{\stretch{1}}$\Box$\vspace{0.5em}\newline}
 
 \makeindex
 \begin{document}
@@ -108,7 +115,7 @@
 
 %% Chapters
 \input{relatedwork}
-\input{chapter_rsr/abstract}
+\input{rsr}
 \input{jps}
 \input{anya}
 \input{conclusion}
