@@ -3,6 +3,7 @@
 \usepackage{svn-multi}
 \svnid{$Id$}
 \usepackage{prelim2e}
+\usepackage{latexsym}
 \renewcommand{\PrelimWords}{Draft Copy \svnkw{Id}}
 %%\newcommand*{\mysvnrev}{\svnrev}
 \usepackage[hyperindex=true,
@@ -58,6 +59,13 @@
 \date{\today}
 
 \renewcommand{\thepage}{\roman{page}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newenvironment{proof}{\noindent{\bf Proof:}}{\hspace{\stretch{1}}$\Box$\vspace{0.5em}\newline}
 
 \makeindex
 \begin{document}
