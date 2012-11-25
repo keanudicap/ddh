@@ -1,37 +1,39 @@
 \chapter{Rectangular Symmetry Reduction}
-\label{cha:rsr}
-In this chapter we present Rectangular Symmetry Reduction (RSR): a graph pruning
+\label{cha:rsr} In this chapter we present Rectangular Symmetry Reduction (RSR): a graph pruning
 algorithm for undirected uniform-cost grid maps which is fast, memory efficient,
 optimality preserving and which can, in some cases, eliminate entirely the need
 to search.  The central idea that we will explore involves the identification
 and elimination of \emph{path symmetries} from the search space. 
-Symmetry appears in many domains; for example in planning~\cite{fox99}, constraint 
-programming \cite{walsh07} and combinatorial optimisation~\cite{fukunaga08}. 
+Symmetry appears in many domains; for example in planning~\citep{fox99}, constraint 
+programming \citep{walsh07} and combinatorial optimisation~\citep{fukunaga08}. 
 Unless it is handled properly, symmetry almost always 
 increases the size of the search space and forces search algorithms to waste time
-considering variations of already known partial solutions.
+considering variations of already known solutions.
 \par
 To deal with path symmetries RSR decomposes an arbitrary uniform-cost grid map
 into a set of empty rectangles and removes from each such
-rectangle all interior nodes and possibly some from along the perimeter.  A
-series of macro edges are then added between selected pairs of remaining nodes
-in order to facilitate provably optimal traversal through each rectangle.  
-RSR can speed up A* search by up to 38 times on a range of uniform cost maps taken 
-from the literature.  When compared to the state of the art, RSR shows signficant 
-improvement; often dominating convincingly across a range of benchmarks.
-\par
+rectangle all interior nodes.  A
+series of macro edges are then added between selected pairs of perimeter nodes
+to facilitate provably optimal traversal through each rectangle.  
 We first develop RSR in the context of 4-connected grid maps; a common
 setting in video games and one which appears often in the AI literature.
-We then turn our attention to 8-connected grid maps where the increase in
+We then generalise RSR to 8-connected grid maps where the increase in
 branching factor makes effective symmetry elimination more challenging. 
-For this setting we develop a stronger symmetry breaking technique which can significantly
-reduce the number of nodes that need to be explored during search. We also study a novel 
-online pruning strategy which speeds up node expansion by selectively evaluating either 
-all neighbours associated with a particular node or only a small subset.  
-We prove that in each case both optimality and completeness are preserved. We also
-show that RSR has only linear space requirements and find that it is orthogonal
-to existing techniques for speeding up pathfinding search.
+We also develop two new pruning strategies which can signficantly
+reduce the number of nodes that need to be explored during search. 
+The first enhancement is applied offline and allows us to discard in many cases 
+nodes from the perimeter of an empty rectangle. The second enhancement is
+applied online and allows us to speed up node expansion by selectively
+evaluating either all neighbours associated with a node or only a small subset.
+
+We evaluate RSR on a range of uniform-cost grid maps from the academic literature and find
+that in many cases it can improve the running time of A* search by over one order of 
+magnitude. We then compare RSR to Swamps~\citep{pochter10}, a recent state-of-the-art
+pruning technique. We find that the two algorithms have complementary strenghts and that they
+could be easily combined. We also identify a range of benchmark problems on which RSR 
+dominates convincingly.  
+\par
 
 The contributions described in this chapter have been presented previously in
-~\cite{harabor10,harabor11a,harabor11c}.
+~\citep{harabor10,harabor11a,harabor11c}.
 
