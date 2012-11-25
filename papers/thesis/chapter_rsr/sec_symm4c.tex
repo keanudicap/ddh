@@ -1,20 +1,14 @@
 \section{Symmetry Breaking In 4-Connected Grid Maps}
 \label{sec::rsr::symm4c}
-Despite a wealth of research into symmetry breaking techniques in different
-areas of the academic literature (e.g. planning~\cite{fox99}, constraint programming~\cite{walsh07}
-and combinatorial optimisation~\cite{fukunaga08}) there is very little research on the topic 
-in the context of pathfinding search.
-As a first step, I will describe a simple technique for breaking symmetries in the context 
-of 4-connected grid maps.
+As a first step, I will describe a simple technique for breaking path symmetries 
+in the context of 4-connected grid maps.
 This is a domain which appears regularly in the academic literature
-\cite{yap02,wang08,pochter09} and is often found in the pathfinding systems of
+\cite{yap02,wang08,pochter10} and is often found in the pathfinding systems of
 modern video games.  Some recent examples include Square Enix's \emph{Heroes of
 Mana} (released in 2007 for the Nintendo DS), Astraware's \emph{My Little Tank}
 (2008, iPhone) and Atari's \emph{Dragon Ball Z: Legacy of Goku} (2002, Gameboy
 Advance).
-\\
-We propose the following offline strategy for identifying and eliminating symmetric paths in 
-4-connected grid maps:
+I propose the following offline strategy:
 
 \begin{enumerate}
 \item{Decompose the grid map into a set of empty rooms, where each empty room is
