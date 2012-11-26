@@ -1,0 +1,29 @@
+\section{Experimental Setup}
+\label{cha::rsr::setup}
+We evaluate the performance of RSR on three benchmarks taken from the freely
+available pathfinding library Hierarchical Open Graph
+(HOG)\footnote{\url{http://www.googlecode.com/p/hog2}}: {\textbf{Adaptive Depth}
+is a set of 12 maps of size 100$\times$100 in which approximately $\frac{1}{3}$
+of each map is divided into rectangular rooms of varying size and a large
+open area interspersed with large randomly placed obstacles.} {\textbf{Baldur's
+Gate} is a set of 120 maps taken from BioWare's popular roleplaying game
+\emph{Baldur's Gate II: Shadows of Amn}.  Often appearing as a standard
+benchmark in the literature \cite{bjornsson06,harabor10,pochter10} these maps
+range in size from 50$\times$50 to 320$\times$320 and have a distinctive
+45-degree orientation.} {\textbf{Rooms} is a set of 300 maps of size
+256$\times$256 which are divided into symmetric rows of small rectangular areas
+($7\times7$), connected by randomly placed entrances. This benchmark has
+previously appeared in \cite{sturtevant09,pochter10,goldenberg10}.}
+As discussed later, we also use a variant of each benchmark where every map is
+scaled up by a factor of 3. In effect, our input data contains 864 maps in
+total, with sizes up to $960\times960$.  
+\par
+Since our work is applicable to both 4
+and 8 connected grid maps we used two copies each map: one in which diagonal
+transitions are allowed and another in which they are not.  
+For each map we generated 100 valid problem instances, checking that every
+instance could be solved both with and without the use of diagonal transitions.
+Our test machine had a 2.93GHz Intel Core 2 Duo processor, 4GB RAM and ran OSX
+10.6.2.  Our implementation of A* is based on one provided in HOG, which we
+adapted to facilitate our online node pruning enhancement.
+
