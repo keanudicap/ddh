@@ -1,3 +1,8 @@
+%% TODO:
+%% would it be better to just talk about permutations here? and observe that
+%% paths through the interior are equivalent to paths on the perimeter?
+%% then put this section in the JPS chapter?
+
 \section{Path Symmetries}
 Pathfinding in modern video games often involves exploring 
 environments such as cities, sewers or dungeons. Often represented using a
@@ -9,11 +14,11 @@ alternative ways of reaching one location from the other. More often they
 are symmetric in the sense that the only difference between them is the order
 in which individual moves appear. 
 As an illustrative example consider Figure~\ref{fig::rsr::symmetry}. 
-Suppose we run an optimal algorithm such as A* to solve this problem. Each time 
-we expand a node $n$ we need to expand all nodes on the shortest path to $n$. 
-However, we may also need to expand every node on a symmetric shortest path to $n$.
-In a worst-case we may expand a majority of nodes from the map before reaching
-the goal.
+Suppose we run an optimal algorithm such as A* to solve this problem. 
+Each time we expand a node $n$ we need to expand all nodes on the shortest path to $n$.
+However, we must also consider all permutations of the shortest path to $n$.
+Depending on how we break ties, we might expand a majority of all nodes before 
+reaching the goal.
 
 \begin{figure}[tb]
 \begin{center}
@@ -21,33 +26,36 @@ the goal.
 \end{center}
 \vspace{-3pt}
 \caption{A pathfinding instance on a 4-connected grid map. There is only 
-one unique solution but many symmetric variations. We highlight three.}
+one unique solution but it has many permutations. We highlight three.}
 \label{fig::rsr::symmetry}
 \end{figure}
 
-Despite a wealth of research on the topic of symmetry breaking there are very 
-few works that deal with the problem in the context of pathfinding search. 
+Despite a wealth of research on the topic of symmetry breaking very 
+few works deal with the problem in the context of pathfinding search. 
 This lack of attention may stem from definitional issues. For example, researchers commonly
 define a path as a sequence of connected edges which together represent a walk in 
 a search graph.
 The problem is that edges are strictly ordered whereas the actions they
-represent could be commutative~\citep{haslum00}. To help identify such commutative actions
-we introduce a slightly different notion of a path:
+represent could be pairwise commutative~\citep{haslum00}; i.e. we could
+apply the actions in any order and still reach the same state.
+To help identify such situations we introduce a slightly different notion of a
+path:
 
 \begin{definition}
+\label{def::rsr::gridpath}
 A \emph{grid path} $\pi = \langle \vec{v_1}, \ldots, \vec{v_k} \rangle$ is an ordered sequence 
 of vectors, where each vector $\vec{v_i}$ represents a single step from one node of 
 the grid to an adjacent neighbouring node. 
 %Straight steps have a cost of 1. Diagonal steps have a cost of $\sqrt{2}$.
 \end{definition}
 
-The distinction between edges and vectors is an important one as it allows us to
-distinguish between paths that are merely equivalent (i.e. of the same length)
-and those which are symmetric. 
+Using Definition~\ref{def::rsr::gridpath} we can now distinguish between paths that are 
+merely equivalent (i.e. of the same length) and those that are symmetric:
 
 \begin{definition}
 Two grid paths $\pi$ and $\pi'$ are symmetric iff: (i) they share the same 
 start and end node (ii) they have the same cost and (iii) one can be derived from 
 the other by swapping the order of the constituent vectors.
 \end{definition}
+
 
