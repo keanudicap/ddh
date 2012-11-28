@@ -1,0 +1,44 @@
+\begin{algorithm}[b]
+\caption{Identify Successors}
+\label{alg::jps::successors}
+\begin{algorithmic}[1]
+\REQUIRE $x$: current node, $s$: start, $g$: goal 
+
+\STATE $successors(x) \leftarrow \emptyset$
+\STATE $neighbours(x) \leftarrow prune(x, neighbours(x))$ 
+
+\FORALL{$n \in neighbours(x)$}
+\STATE $n \leftarrow jump(x, direction(x, n), s, g)$
+\STATE add $n$ to $successors(x)$
+\ENDFOR
+\RETURN $successors(x)$
+
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[b]
+\caption{Function $jump$}
+\label{alg::jps::jump}
+\begin{algorithmic}[1]
+\REQUIRE $x$: initial node, $\vec{d}$: direction, $s$: start, $g$: goal
+
+\STATE $n \leftarrow step(x, \vec{d})$
+\IF{$n$ is an obstacle or is outside the grid}
+	\RETURN \textit{null}
+\ENDIF
+\IF{$n = g$}
+	\RETURN $n$
+\ENDIF
+\IF{$\exists~n' \in neighbours(n)$ s.t. $n'$ is forced}
+	\RETURN $n$
+\ENDIF
+\IF{$\vec{d}$ is diagonal}
+	\FORALL{$i \in \{1,2\}$}
+		\IF{ $jump(n, \vec{d_i}, s, g)$ is not \textit{null} }
+			\RETURN $n$
+		\ENDIF
+	\ENDFOR
+\ENDIF
+\RETURN $jump(n, \vec{d}, s, g)$
+\end{algorithmic}
+\end{algorithm}
