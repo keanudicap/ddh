@@ -1,0 +1,17 @@
+\section{Abstraction Techniques}
+\label{cha::lit::abstraction}
+In cases where optimality is not required, hierarchical pathfinding methods
+are pervasive.  They improve performance by decomposing the
+search space, usually offline, into a much smaller approximation.  Algorithms
+of this type, such as HPA*~\cite{botea04}, are  fast and
+memory-efficient but also suboptimal.
+
+Algorithms of this type are fast and use little memory but compute paths which are usually not
+optimal and must be refined via further search. Typical examples: HPA*~\cite{botea04} and
+MM-Abstraction~\cite{sturtevant07}.
+
+Other Abstractions:
+\begin{enumerate}
+\item{Exact: Transit, Highway Hierarchies, Contraction Hierarchies}
+\end{enumerate}
+

@@ -1,0 +1,45 @@
+\chapter{Jump Point Search}
+\label{cha:jps}
+In Chapter~\ref{cha:rsr} we showed that in regular domains such as grid maps
+symmetry can signficiantly impact the performance of pathfinding search.
+ To address the problem we developed Rectangular Symmetry Reduction:
+ an offline preprocessing strategy which decomposes the map in order to 
+identify and break symmetries. 
+
+In this chapter we develop Jump Point Search (JPS): an online pruning strategy that
+deals with symmetry by selectively expanding only certain nodes on a grid map
+which we call \emph{jump points}.  Moving from one jump point to the next
+involves travelling in a fixed direction while repeatedly applying a set of
+simple neighbour pruning rules until either an obstacle or a jump point is
+reached.  Because we do not expand any intermediate nodes between jump points
+our strategy can have a dramatic positive effect on search performance.
+Furthermore, computed solutions are guaranteed to be optimal.  
+JPS is unique in the pathfinding literature in that it has very few
+disadvantages: it is simple, yet highly effective; it preserves optimality, yet
+requires no extra memory;  it is extremely fast, yet requires no preprocessing.
+Further, our method is completely orthogonal to and easily combined with 
+competing speedup techniques from the literature.
+We are unaware of any other algorithm which has all these features.
+\\ \newline 
+The contributions in this chapter have appeared previously in~\cite{harabor11b,harabor12}.
+%As an additional contribution we also study JPS+: an enhancement of the basic 
+%algorithm which identifies jump points offline and improves the efficiency of pathfinding
+%search by several factors compared to the purely online variant.
+%\begin{abstract}
+%Pathfinding in uniform-cost grid environments is a problem commonly found in
+%application areas such as robotics and video games.  The
+%state-of-the-art is dominated by hierarchical pathfinding
+%algorithms which are fast and have small memory overheads but usually return
+%suboptimal paths.  
+%In this paper we present a novel search strategy, specific to grids, which is
+%fast, optimal and requires no memory overhead. Our algorithm can be described as
+%a macro operator which identifies and selectively expands only certain
+%nodes in a grid map which we call \emph{jump points}.  Intermediate nodes on a
+%path connecting two jump points are never expanded.  We prove  
+%that this approach always computes optimal solutions and then undertake
+%a thorough empirical analysis, comparing our method with related works 
+%from the literature. 
+%We find that searching with jump points can speed
+%up A* by an order of magnitude and more and report significant improvement over
+%the current state of the art.  
+%\end{abstract}

@@ -69,6 +69,9 @@
 \newtheorem{definition}{Definition}
 \newenvironment{proof}{\noindent{\bf Proof:}}{\hspace{\stretch{1}}$\Box$\vspace{0.5em}\newline}
 
+\newcommand{\figref}[1]{\figurename~\ref{#1}}
+\newenvironment{pth}{\langle}{\rangle}
+
 \makeindex
 \begin{document}
 %\doparttoc
@@ -114,10 +117,10 @@
 \mainmatter
 
 %% Introduction
-\input{chapter_intro/abstract}
+\input{intro}
 
 %% Chapters
-\input{relatedwork}
+\input{lit}
 \input{rsr}
 \input{jps}
 \input{anya}
