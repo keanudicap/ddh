@@ -4,16 +4,18 @@ In Chapter~\ref{cha:rsr} we showed that in regular domains such as grid maps
 symmetry can signficiantly impact the performance of pathfinding search.
  To address the problem we developed Rectangular Symmetry Reduction:
  an offline preprocessing strategy which decomposes the map in order to 
-identify and break symmetries. 
-
-In this chapter we develop Jump Point Search (JPS): an online pruning strategy that
+identify and break symmetries.  In this chapter we develop Jump Point Search 
+(JPS): an online pruning strategy that
 deals with symmetry by selectively expanding only certain nodes on a grid map
-which we call \emph{jump points}.  Moving from one jump point to the next
+which we call \emph{jump points}.  
+\par
+Moving from one jump point to the next
 involves travelling in a fixed direction while repeatedly applying a set of
 simple neighbour pruning rules until either an obstacle or a jump point is
 reached.  Because we do not expand any intermediate nodes between jump points
 our strategy can have a dramatic positive effect on search performance.
 Furthermore, computed solutions are guaranteed to be optimal.  
+\par
 JPS is unique in the pathfinding literature in that it has very few
 disadvantages: it is simple, yet highly effective; it preserves optimality, yet
 requires no extra memory;  it is extremely fast, yet requires no preprocessing.
