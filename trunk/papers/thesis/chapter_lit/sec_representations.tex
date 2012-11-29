@@ -1,0 +1,26 @@
+\section{Search Space Representations}
+The process of navigating from one location to another involves searching a
+\emph{state space}.  Typically the search space is represented as a graph $G =
+(V, E)$ where $V$ is a set of locations known as \emph{nodes} or \emph{vertices}
+and $E$ is a set of \emph{edges} that represent transitions from one node or
+vertex to another.  Each edge in the graph has a \emph{weight} which represents
+the cost of moving from one node in the graph to an adjacent neighbouring node.
+We will assume that weights represent distance but they could stand for other
+types of metrics; for example travel time or fuel consumption.
+Search graphs can be given explicitly, in which case all vertices and edges
+are enumerated apriori, or implicitl, in which case the graph is constructed
+during search by applying a set of available actions.
+Implicit graphs are common in multi-dimensional pathfinding problems and in
+areas such as AI Planning. In two and three dimensional pathfinding, the 
+search graph is given explicitly.
+Many approaches exist for constructing a search graph from an input map.
+
+\begin{enumerate}
+\item{Grid Maps}
+\item{Road Maps}
+\item{Visibility Graphs}
+\item{Voronoi Diagrams}
+\item{Navigation Meshes}
+\item{Shortest Path Maps}
+\end{enumerate}
+
