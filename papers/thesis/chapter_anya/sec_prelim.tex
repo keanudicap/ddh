@@ -1,0 +1,105 @@
+
+\begin{figure*}[tb]
+ \begin{minipage}[t]{.47\linewidth}
+  \begin{center}
+    \input{chapter_anya/tikz/corner}
+  \end{center}
+  \caption{Illustration of Lemma~\ref{lemma::anya::corner}.
+  A similar observation has been previously made for geodesic paths \citep{mitchell87}.  }
+  \label{fig::anya::corner}
+\end{minipage} 
+\hfill 
+ \begin{minipage}[t]{0.47\linewidth}
+  \begin{center}
+    \input{chapter_anya/tikz/ex1}
+  \end{center}
+  \caption{When pathfinding from $n_1$ to $n_2$ online algorithms such as Theta* only consider the discrete points of 
+the grid and never any points $y_i$. 
+%This strategy is not monotonic and does not guarantee optimality.
+}
+  \label{fig::anya::ex1}
+  \end{minipage}
+\end{figure*}
+
+\section{Preliminaries}
+A \emph{grid} is a planar subdivision consisting of $W \times H$ square cells.
+%It is common in such settings to simply mark each cell as traversable or
+%non-traversable and treat each one as a unique location during pathfinding search.
+%This simple model has an unfortunate sideeffect: any computed path is forced
+%to pass through the centre point of any cell it intersects.
+%However we would like to compute optimal paths that can intersect traversable cells 
+%at any point and which may not pass through the centre of any cell.
+Each cell is an open set of \emph{interior} points which are 
+all \emph{traversable} or all \emph{non-traversable}.
+%\footnote{Such cells are sometimes called obstacles.}.
+The vertices associated with each cell are called the
+\emph{discrete} points of the grid. Each such point $p$ has a unique coordinate $(x, y)$
+where $x \in \{0,\dots,W\}$ and $y \in \{0,\dots,H\}$.
+% refers to an explicit vertex 
+Edges in the grid can be interpreted as open intervals of \emph{intermediate}
+two points; each one representing a transition between two discrete points. 
+\par
+A discrete or intermediate point is traversable if it is adjacent to 
+at least one traversable cell. Otherwise it is non-traversable.
+%We now define some terminology for discussing discrete points:
+A discrete point which is common to exactly four adjacent cells is called an \emph{intersection}.
+Any intersection where three of the adjacent cells are traversable and one is not
+is called a \emph{corner}.
+We will say that two points are \emph{visible} from one another if there exists a 
+straight-line path connecting them which does not pass through any non-traversable point.
+%A \emph{corner} is an intersection 
+%such that only one of its four squares is non-traversable.  
+%Intersection $i'$ is \emph{visible} from intersection $i$ 
+%iff the segment $(i,i')$ crosses only traversable tiles 
+%or borders non-traversable tiles and traversable tiles.  
+%Without loss of generality, 
+%we assume that if the segment $(i,i')$ crosses a corner 
+%(besides $i$ and $i'$), 
+%then intersection $i'$ is not visible from intersection $i$.  
+
+An \emph{any-angle path} $\pi$ is a sequence of points 
+$\langle p_1,\dots,p_k \rangle$ where each $p_{i}$ is visible from $p_{i-1}$
+and $p_{i+1}$.
+The \emph{length} of $\pi$ 
+is the cumulative distance between every successive
+pair of points $d(p_1,p_2) + \dots + d(p_{k-1},p_k)$, 
+where $d((x,y), (x',y'))= \sqrt{(x-x')^2 + (y-y')^2}$ 
+is a uniform Euclidean distance metric.
+We will say $p_i \in \pi$ is a \emph{turning point} if the segments
+$(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
+\\
+\begin{lemma}
+\label{lemma::anya::corner}
+%  Given two discrete points $p$ and $p'$, 
+  Any turning point in the optimal any-angle path between points $p_1$ and 
+$p_k$ is also a corner point.
+\end{lemma}
+
+\begin{proof}
+{
+  Assume an optimal any-angle path $\pi = \langle p_1,\dots,p_k \rangle$ 
+  that includes a turning point $p_l$ ($l \not\in \{1,k\}$) 
+  which is not a corner.  
+  We will prove that $\pi$ is suboptimal 
+  which, by contradiction, will prove the lemma.  
+  If $p_{l+1}$ is visible from $p_{l-1}$, 
+  then  $\pi \setminus p_l$ is a path 
+  which is strictly shorter than $\pi$.  
+  Hence $\pi$ is suboptimal.  
+  If $p_{l+1}$ is not visible from $p_{l-1}$, 
+  then let $p'_{l}$ be a point from the segment $\langle p_l,p_{l+1} \rangle$ 
+  that (i) is visible from $p_{l-1}$ 
+  and (ii) is different from $p_l$; 
+  because $p_l$ is not a corner, 
+  such a $p'_l$ exists.  
+  Moreover, the subpath $\langle p_{l-1}, p'_{l}, p_{l+1} \rangle$ is 
+  strictly shorter than $\langle p_{l-1}, p_{l}, p_{l+1}\rangle$. 
+  Hence $\pi$ is suboptimal.
+  This case is illustrated in Figure~\ref{fig::anya::corner}  
+  where the point $p'_l$ is chosen as close as possible from the corner $c$.  
+}
+\end{proof}
+Lemma~\ref{lemma::anya::corner} is interesting because it allows us to define 
+any-angle paths as a sequence of straight lines which intersect only at
+discrete corner points.
+% EOF

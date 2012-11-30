@@ -1,0 +1,42 @@
+\chapter{Any-angle Pathfinding}
+\label{cha:anya}
+In Chapters~\ref{cha:rsr} and \ref{cha:jps} we examined approaches for
+improving the efficiency of pathfinding search on grid maps -- a common
+setting for computer games and a domain which commonly appears in the AI
+literature. 
+In addition to minimising search time, a related problem in such settings
+is minimising travel distance. For example: characters in a computer game 
+must appear intelligent when navigating and should therefore prefer short
+realistic-looking paths. However, paths which are computed on a grid map, 
+even optimal paths, necessarily restrict movement to the fixed set of 
+locations defined by the grid. 
+\par
+In this chapter we describe Anya: a new algorithm which addresses this
+problem by computing \emph{any-angle} paths that do not have such constraints.
+Anya operates on an input grid map but searches using intervals rather than 
+the fixed points of the grid. 
+From each such interval we select a representative point for which an
+$f$-cost is computed. 
+We prove that our approach maintains $A*$ expansion order and, unlike other
+similar approaches, always returns the shortest possible path.
+In the process we resolve an open question in the pathfinding community which
+has been standing since at least 2007 and which has been the subject of
+studies in the game development community for much longer.
+
+%\begin{abstract}
+%Any-angle pathfinding is a common problem from robotics and computer games: it
+%requires finding a Euclidean shortest path between a pair of points in a grid 
+%map.  Prior research has focused on approximate online solutions.  A number of
+%exact methods exist but they all require supra-linear space and preprocessing
+%time.
+%In this paper we describe Anya: a new optimal any-angle pathfinding algorithm 
+%which searches over sets of states represented as intervals. Each interval is
+%identified online. From each we select a representative point to derive a 
+%corresponding $f$-value for the set.
+%Anya always returns an optimal path. Moreover it does so entirely 
+%online, without any preprocessing or memory overheads. This result answers
+%an open question from the areas of Artificial Intelligence and Game Development: 
+%is there an any-angle pathfinding algorithm which is online and optimal?
+%%and requires only linear space?
+%The answer is yes.
+%\end{abstract}

@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+
+\creategrid{6}{4}
+%\drawobstacle{2}{3}
+
+\coordinate (root) at (2,0);
+\coordinate (g1)   at (3,4);
+\coordinate (g2)   at (1,3);
+\coordinate (g3)   at (5,2);
+
+%\foreach \g in {g1, g2, g3}
+%  \draw (root) -- (\g);
+
+\path[name path=direct] (root) -- (g1);
+\path[name path=interval] (2,2) -- (4,2);
+\draw[orange,line width=6,name path=interval] (2,2) -- (4,2);
+\draw[name intersections={of=direct and interval,by=zsmile}];
+%\draw (zsmile) -- ++ (-0.2,0.2) + (-0.1,0.1) node {\textit{p}};
+
+\draw[dashed,line width=2pt] (root) -- (g1);
+\draw[dashed,line width=2pt] (root) -- (2,2) -- (g2);
+\draw[dashed,line width=2pt] (root) -- (4,2) -- (g3);
+
+\draw (g1)   + ( 0.2,-0.2) node {$t_1$};
+\draw (g2)   + (-0.2, 0.2) node {$t_2$};
+\draw (g3)   + ( 0.2, 0.2) node {$t_3$};
+\draw (root) + (-0.2,-0.2) node {$r$};
+
+\coordinate (g4)   at (4,1);
+\draw (g4)   + (0.2,-0.2) node {$t_4$};
+\coordinate (g4mirror) at (4,3);
+\draw (g4mirror) + (+0.2,0.2) node {$t'_4$};
+\path[name path=directtwo] (root) -- (g4mirror);
+\draw[name intersections={of=directtwo and interval,by=zsmiletwo}];
+\draw[dashed,line width=2pt] (root) -- (zsmiletwo) -- (g4);
+\draw[dashed,line width=2pt] (root) -- (g4mirror);
+
+\fill[orange] (2, 0) circle(4pt);
+
+\end{tikzpicture}

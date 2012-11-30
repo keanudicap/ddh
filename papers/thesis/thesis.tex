@@ -35,6 +35,9 @@
 \usepackage[scaled]{beramono}
 
 \usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tikz}
 
 
 
@@ -70,6 +73,11 @@
 
 \newcommand{\figref}[1]{\figurename~\ref{#1}}
 \newenvironment{pth}{\langle}{\rangle}
+
+\usetikzlibrary{intersections}
+\newcommand{\intersection}[2]{\langle #1, #2\rangle}
+\newcommand{\anya}[0]{{\bf anya}}
+\input{chapter_anya/gridtikz}
 
 \makeindex
 \begin{document}
