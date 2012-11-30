@@ -1,0 +1,58 @@
+\section{Introduction}
+Any-angle pathfinding is a navigation problem which appears in robotics
+and computer video games. It involves finding a shortest path between an 
+arbitrary pair of points on a two-dimensional grid map but asks that 
+movement along the path is not artifically constrained to the points of 
+the grid.  Within the game development community a simple and popular 
+solution exists known as \emph{string pulling}~\citep{pinter01,botea04}.
+The idea is to compute a grid-optimal path in the first
+instance and smooth the result as part of a post-processing step that improves
+both its length and aesthetic appeal. String pulling has two disadvantages: 
+(i) it requires an additional computation beyond just finding a path (ii)
+it can only yield approximately shortest paths.
+\\
+Theta*~\citep{nash07} and its variant~\citep{%nash09,
+nash10} improve things 
+by integrating post-processing into node expansion during search. Their 
+idea involves updating a node's parent label following a successful line-of-sight
+check to a previously expanded ancestor node.
+Another approach, Block A*~\citep{yap11}, avoids line-of-sight checks entirely 
+by precomputing a database of exact costs between pairs of points in a localised area.
+Both Theta* and Block A* improve on the running time and 
+solution quality of string pulling but neither guarantees optimality.
+Despite this, a number of exact solutions for the problem do exist.
+%\\
+%In computational geometry a problem similar to any-angle pathfinding exists 
+%which has been very well studied: finding Euclidean shortest paths among 
+%polygonal obstacles in the plane.
+%\\
+\\
+Visibility Graphs~\citep{lozanoperez79} solve a generalised form of 
+any-angle pathfinding in time $O(n^2\log_{2}n)$. Their primary disadvantage
+is that storing such a graph requires $O(n^2)$ space as each of the $n$ 
+vertices can be adjacent to every other vertex.  
+Tangent Graphs~\citep{liu92} are a particularly efficient 
+variant of this idea but space requirements remain worst-case quadratic. 
+Other exact approaches are based on the 
+Continuous Dijkstra~\citep{mitchell87} paradigm.
+The most efficient of these algorithms~\citep{hershberger99} involves a
+precomputation requiring $O(n \log_{2}{n})$ space and $O(n\log_{2}n)$ time.  The result 
+is a planar subdivision of the map that can be used to find a shortest path in 
+just $O(\log_{2}n)$ time but only for queries originating at a fixed source.
+\\
+In this work we discuss a new approach to any-angle pathfinding which
+addresses many of the shortcomings associated with existing research.
+Our algorithm, Anya, bears some similarity with Continuous Dijkstra: 
+instead of searching over individual states from the grid we consider
+contiguous sets of states together as an interval. From each interval we select a 
+representative point that is used to derive an $f$-value for the set.
+Intervals are associated with corner points and projected from one 
+row of the grid onto another until the goal is reached.
+Anya compares favourably with existing research: (i)
+it always finds a Euclidean shortest path between any two vertices on
+a grid map (ii) it does not rely on any precomputation (iii) 
+it does not introduce any memory overheads beyond those required by a 
+pathfinding algorithm such as A*.
+
+%http://www.valvesoftware.com/publications/2009/ai_systems_of_l4d_mike_booth.pdf
+%http://digestingduck.blogspot.com.au/2010/03/simple-stupid-funnel-algorithm.html
