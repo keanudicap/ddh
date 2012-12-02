@@ -64,6 +64,8 @@ class scenario_manager
 		void clear() { experiments_.clear(); }
 		void sort(); // organise by increasing solution length
 
+		std::string last_file_loaded() { return sfile_; }
+
 	private:
 		experiment* generate_single_experiment(warthog::gridmap*);
 		void load_v1_scenario(std::ifstream& infile);
@@ -71,6 +73,7 @@ class scenario_manager
 
 		std::vector<warthog::experiment*> experiments_;		
 		int version_;
+		std::string sfile_;
 };
 
 }
