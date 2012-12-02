@@ -128,6 +128,8 @@ warthog::scenario_manager::load_scenario(const char* filelocation)
 		exit(1);
 	}
 
+	sfile_ = filelocation;
+
 
 	// Check if a version number is given
 	float version=0;
