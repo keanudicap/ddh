@@ -20,6 +20,7 @@
 #include "pqueue.h"
 #include "problem_instance.h"
 #include "search_node.h"
+#include "timer.h"
 
 #include <iostream>
 #include <memory>
@@ -136,6 +137,9 @@ class flexible_astar
 		{
 			nodes_expanded_ = nodes_generated_ = nodes_touched_ = 0;
 			search_time_ = 0;
+
+			warthog::timer mytimer;
+			mytimer.start();
 
 			#ifndef NDEBUG
 			if(verbose_)
@@ -263,6 +267,9 @@ class flexible_astar
 			}
 			#endif
 			}
+
+			mytimer.stop();
+			search_time_ = mytimer.elapsed_time_micro();
 			return goal;
 		}
 

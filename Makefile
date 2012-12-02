@@ -11,19 +11,28 @@ FAST_CFLAGS = -O3 -DNDEBUG
 DEV_CFLAGS = -g -ggdb -O0
 PROFILE_CFLAGS = -g -ggdb -O0 -DNDEBUG
 
+ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
+  CFLAGS += -DOS_MAC
+  D_LIBS += -framework CoreServices
+else
+  ifeq ("$(findstring Linux, "$(shell uname -s)")", "Linux")
+    D_LIBS += -lrt
+  endif
+endif
+
 .PHONY: all
 all: dev
 
 .PHONY: fast
-fast: CFLAGS += $(FAST_CFLAGS) $(D_INCLUDES) $(D_LIBS)
+fast: CFLAGS += $(FAST_CFLAGS) $(D_INCLUDES) 
 fast: main
 
 .PHONY: dev
-dev: CFLAGS += $(DEV_CFLAGS) $(D_INCLUDES) $(D_LIBS)
+dev: CFLAGS += $(DEV_CFLAGS) $(D_INCLUDES) 
 dev: main
 
 .PHONY: profile
-profile: CFLAGS += $(PROFILE_CFLAGS) $(D_INCLUDES) $(D_LIBS)
+profile: CFLAGS += $(PROFILE_CFLAGS) $(D_INCLUDES) 
 profile: main
 
 .PHONY: tags
