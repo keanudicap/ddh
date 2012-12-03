@@ -47,6 +47,20 @@ class gridmap
 		gridmap(const char* filename, bool uniform);
 		~gridmap();
 
+		// here we convert from the coordinate space of 
+		// the grid to the coordinate space of db_. 
+		inline uint32_t
+		to_padded_id(uint32_t node_id)
+		{
+			return node_id + 
+				// add one full padded row
+				padded_width_ +
+			   	// padding from each row of data before this one
+				(node_id / header_.width_) * padding_ + 
+				// padding at the front of the current row
+				1;
+		}
+
 		// get all the tiles adjacent to nodeid. this function begins at 
 		// node (x-1, y-1) (relative to node_id) and steps through the
 		// list of adjacent tiles in left-to-right, top-to-bottom order
@@ -54,10 +68,12 @@ class gridmap
 		// @return true if the function is given a valid node_id 
 		// and finishes successfully tiles is populated with the terrain
 		// types of the 3x3 square centred at node_id. If node_id is invalid
-		// the tiles array marked entirely invalid.
+		// @param array is marked entirely invalid.
 		inline void
 		get_neighbours(uint32_t node_id, char tiles[9])
 		{
+			// TODO: can we eliminate this check with an extra bit of padding
+			// around the edges of the map? (i.e. map size = (w+2)*(h+2))
 			if(node_id >= max_id_) 
 			{
 				tiles[0] = tiles[1] = tiles[2] = tiles[3] = tiles[4] = 
@@ -65,28 +81,29 @@ class gridmap
 				return;
 			}
 
-			// here we convert from the coordinate space of 
-			// the grid to the coordinate space of db_. 
-			uint32_t padded_id = node_id + 
-				// add one full padded row
-				padded_width_ +
-			   	// padding from each row of data before this one
-				(node_id / header_.width_) * padding_ + 
-				// padding at the front of the current row
-				1;
-
+			uint32_t padded_id = to_padded_id(node_id);
 			if(uniform_)
 			{
+				// 1. calculate the dbword offset for the node at index padded_id
+				// 2. convert padded_id into a dbword index.
 				uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
 				padded_id >>= warthog::LOG2_DBWORD_BITS;
 
-				// compute the indexes of the words containing adjacent tiles
+				// compute dbword indexes for tiles immediately above 
+				// and immediately below node_id
 				uint32_t pos = padded_id - dbwidth_;
 				uint32_t pos2 = padded_id;
 				uint32_t pos3 = padded_id + dbwidth_;
 
+				// copy each neighbour into @param tiles
+				// there are a few special cases to consider, depending
+				// on whether node_id corresponds to a bit at the beginning, 
+				// at the end, or in the middle of its corresponding dbword.
 				switch(bit_offset)
 				{
+					// node_id is at the beginning of its dbword
+					// some neighbours are in pos, pos2 and pos3
+					// while others are in pos-1, pos2-1 and pos3-1
 					case 0:
 					{
 						// NB: implicit bitmask: 1 << bit_offset
@@ -101,6 +118,9 @@ class gridmap
 						tiles[8] = (db_[pos3] & 2) ? 1:0;
 						break;
 					}
+					// node_id is at the end of its dbword
+					// some neighbours are in pos, pos2 and pos3
+					// while others are in pos+1, pos2+1 and pos3+1
 					case 7:
 					{
 						// NB: implicit bitmask: 1 << bit_offset
@@ -115,6 +135,8 @@ class gridmap
 						tiles[8] = (db_[pos3+1] & 1) ? 1:0;
 						break;
 					}	
+					// node_id is in the middle of its dbword
+					// all neighbours are in pos, pos2 and pos3
 					default:
 					{
 						uint32_t bitmask1 = (1 << (bit_offset-1));

@@ -33,6 +33,35 @@ help()
 }
 
 void
+check_optimality(double len, warthog::experiment* exp)
+{
+	if(!check_opt)
+	{
+		return;
+	}
+
+	std::stringstream strpathlen;
+	strpathlen << std::fixed << std::setprecision(exp->precision());
+	strpathlen << len;
+
+	std::stringstream stroptlen;
+	stroptlen << std::fixed << std::setprecision(exp->precision());
+	stroptlen << exp->distance();
+
+	if(stroptlen.str().compare(strpathlen.str()))
+	{
+		std::cerr << std::setprecision(6);
+		std::cerr << "optimality check failed!" << std::endl;
+		std::cerr << std::endl;
+		std::cerr << "optimal path length: "<<stroptlen.str()
+			<<" computed length: ";
+		std::cerr << strpathlen.str()<<std::endl;
+		std::cerr << "precision: " << exp->precision()<<std::endl;
+		exit(1);
+	}
+}
+
+void
 run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 {
 	warthog::jps_expansion_policy expander(&map);
@@ -63,27 +92,7 @@ run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 		<< len << "\t" 
 		<< scenmgr.last_file_loaded() << std::endl;
 
-		if(!check_opt)
-			continue;
-		std::stringstream stroptlen;
-		stroptlen << std::fixed << std::setprecision(exp->precision());
-		stroptlen << exp->distance();
-
-		std::stringstream strpathlen;
-		strpathlen << std::fixed << std::setprecision(exp->precision());
-		strpathlen << len;
-
-		if(stroptlen.str().compare(strpathlen.str()))
-		{
-			std::cerr << std::setprecision(6);
-			std::cerr << "optimality check failed!" << std::endl;
-			std::cerr << std::endl;
-			std::cerr << "optimal path length: "<<stroptlen.str()
-				<<" computed length: ";
-			std::cerr << strpathlen.str()<<std::endl;
-			std::cerr << "precision: " << exp->precision()<<std::endl;
-			exit(1);
-		}
+		check_optimality(len, exp);
 	}
 	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
 }
@@ -119,27 +128,7 @@ run_astar(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 		<< len << "\t" 
 		<< scenmgr.last_file_loaded() << std::endl;
 
-		if(!check_opt)
-			continue;
-		std::stringstream stroptlen;
-		stroptlen << std::fixed << std::setprecision(exp->precision());
-		stroptlen << exp->distance();
-
-		std::stringstream strpathlen;
-		strpathlen << std::fixed << std::setprecision(exp->precision());
-		strpathlen << len;
-
-		if(stroptlen.str().compare(strpathlen.str()))
-		{
-			std::cerr << std::setprecision(6);
-			std::cerr << "optimality check failed!" << std::endl;
-			std::cerr << std::endl;
-			std::cerr << "optimal path length: "<<stroptlen.str()
-				<<" computed length: ";
-			std::cerr << strpathlen.str()<<std::endl;
-			std::cerr << "precision: " << exp->precision()<<std::endl;
-			exit(1);
-		}
+		check_optimality(len, exp);
 	}
 	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
 }
