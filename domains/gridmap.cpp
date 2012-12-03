@@ -49,14 +49,15 @@ warthog::gridmap::gridmap(const char* filename, bool uniform)
 void
 warthog::gridmap::init_db()
 {
-	// notice that db_ is larger than w*h; by padding the edges of the
-	// map with zeroes we can quickly compute the neighbours of any
-	// grid location without converting an id to (x, y) values; we also
-	// correctly return 0 for all neighbours which are at invalid
-	// locations (e.g the node left of (0, 0))
-	
+	// when storing the grid we pad the edges of the map with
+	// zeroes. this eliminates the need for bounds checking when
+	// fetching the neighbours of a node. 
 	dbheight_ = header_.height_ + 2;
 	dbwidth_ = header_.width_ + 2;
+
+	// calc how many dbwords are needed for a single grid row.
+	// in the weighted-cost case, each node requires one dbword;
+	// in the uniform-cost case, each node requires one bit.
 	if(uniform_)
 	{
 		dbwidth_ >>= warthog::LOG2_DBWORD_BITS;
@@ -64,11 +65,13 @@ warthog::gridmap::init_db()
 	}
 	db_size_ = dbwidth_*dbheight_;
 
-	// some padding constants
+	// uniform-cost grid dimensions are often not dbword aligned.
+	// calculate # of extra/redundant padding bits stored per row.
 	padded_width_ = (uniform_ ? 
 			(dbwidth_ * warthog::DBWORD_BITS) : dbwidth_);
 	padding_ = padded_width_ - header_.width_;
 
+	// create a one dimensional dbword array to store the grid
 	this->db_ = new warthog::dbword[db_size_];
 	for(unsigned int i=0; i < db_size_; i++)
 	{
