@@ -61,6 +61,76 @@ class gridmap
 				1;
 		}
 
+		inline void
+		get_horizontal_neis_from_padded_id(uint32_t padded_id, char tiles[3])
+		{
+			// 1. calculate the dbword offset for the node at index padded_id
+			// 2. convert padded_id into a dbword index.
+			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
+			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+
+			// copy each neighbour into @param tiles
+			// there are a few special cases to consider, depending
+			// on whether node_id corresponds to a bit at the beginning, 
+			// at the end, or in the middle of its corresponding dbword.
+			switch(bit_offset)
+			{
+				// node_id is at the beginning of its dbword
+				// some neighbours are in pos, pos2 and pos3
+				// while others are in pos-1, pos2-1 and pos3-1
+				case 0:
+				{
+					// NB: implicit bitmask: 1 << bit_offset
+					tiles[0] = (db_[dbindex-1] & 128) ? 1:0;
+					tiles[1] = (db_[dbindex] & 1) ? 1:0;
+					tiles[2] = (db_[dbindex] & 2) ? 1:0;
+					break;
+				}
+				// node_id is at the end of its dbword
+				// some neighbours are in pos, pos2 and pos3
+				// while others are in pos+1, pos2+1 and pos3+1
+				case 7:
+				{
+					// NB: implicit bitmask: 1 << bit_offset
+					tiles[0] = (db_[dbindex] & 64) ? 1:0;
+					tiles[1] = (db_[dbindex] & 128) ? 1:0;
+					tiles[2] = (db_[dbindex+1] & 1) ? 1:0;
+					break;
+				}	
+				// node_id is in the middle of its dbword
+				// all neighbours are in pos, pos2 and pos3
+				default:
+				{
+					tiles[0] = (db_[dbindex] & (bit_offset-1)) ? 1:0;
+					tiles[1] = (db_[dbindex] & bit_offset) ? 1:0;
+					tiles[2] = (db_[dbindex] & (bit_offset+1)) ? 1:0;
+					break;
+				}
+			}
+		}
+
+		inline void
+		get_vertical_neis_from_padded_id(uint32_t padded_id, char tiles[3])
+		{
+			// 1. calculate the dbword offset for the node at index padded_id
+			// 2. convert padded_id into a dbword index.
+			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
+			uint32_t dbindex1 = padded_id >> warthog::LOG2_DBWORD_BITS;
+
+			// compute dbword indexes for tiles immediately above 
+			// and immediately below node_id
+			uint32_t dbindex0 = padded_id - dbwidth_;
+			uint32_t dbindex2 = padded_id + dbwidth_;
+
+			// copy each neighbour into @param tiles
+			// there are a few special cases to consider, depending
+			// on whether node_id corresponds to a bit at the beginning, 
+			// at the end, or in the middle of its corresponding dbword.
+			tiles[0] = (db_[dbindex0] & bit_offset) ? 1:0;
+			tiles[1] = (db_[dbindex1] & bit_offset) ? 1:0;
+			tiles[2] = (db_[dbindex2] & bit_offset) ? 1:0;
+		}
+
 		// get all the tiles adjacent to nodeid. this function begins at 
 		// node (x-1, y-1) (relative to node_id) and steps through the
 		// list of adjacent tiles in left-to-right, top-to-bottom order
