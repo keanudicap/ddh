@@ -26,78 +26,70 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 		double& jumpcost)
 {
 	jumpcost = 0;
+	double cost_per_step = 1;
+	if(d > 8) { cost_per_step = warthog::ROOT_TWO; }
+
 	char tiles[9];
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	for(uint32_t steps=1; steps <= jumplimit_; steps++)
 	{
 		// TODO: get triples instead of neighbours
-		// TODO: optimised function for uniform cost maps
+		bool jump_ok = false;
 		switch(d)
 		{
 			case warthog::jps::NORTH:
 				next_id -= mapw;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = tiles[7] ? (jumpcost + (tiles[4] + tiles[7]) *
-						 warthog::ONE_OVER_TWO) : warthog::INF;
+				jump_ok = tiles[7] && tiles[4];
 				break;
 			case warthog::jps::SOUTH:
 				next_id += mapw;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = tiles[1] ? (jumpcost + (tiles[4] + tiles[1]) *
-					   	warthog::ONE_OVER_TWO) : warthog::INF;
+				jump_ok = tiles[1] && tiles[4];
 				break;
 			case warthog::jps::EAST:
 				next_id++;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = tiles[3] ? (jumpcost + (tiles[4] + tiles[3]) *
-					   	warthog::ONE_OVER_TWO) : warthog::INF;
+				jump_ok = tiles[3] && tiles[4];
 				break;
 			case warthog::jps::WEST:
 				next_id--;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = tiles[5] ? (jumpcost + (tiles[4] + tiles[5]) *
-					   	warthog::ONE_OVER_TWO) : warthog::INF;
+				jump_ok = tiles[5] && tiles[4];
 				break;
 			case warthog::jps::NORTHEAST:
 				next_id = next_id - mapw + 1;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = (tiles[3] && tiles[6] && tiles[7]) ? 
-					(jumpcost + (tiles[3] + tiles[6] + tiles[7] + tiles[4]) *
-					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF; 
+				jump_ok = (tiles[3] && tiles[6] && tiles[7] && tiles[4]);
 				break;
 			case warthog::jps::SOUTHEAST:
 				next_id = next_id + mapw + 1;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = (tiles[3] && tiles[0] && tiles[1]) ? 
-					(jumpcost + (tiles[3] + tiles[0] + tiles[1] + tiles[4]) *
-					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF; 
+				jump_ok = (tiles[3] && tiles[0] && tiles[1] && tiles[4]);
 				break;
 			case warthog::jps::NORTHWEST:
 				next_id = next_id - mapw - 1;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = (tiles[5] && tiles[8] && tiles[7]) ? 
-					(jumpcost + (tiles[5] + tiles[8] + tiles[7] + tiles[4]) *
-					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF; 
+				jump_ok = (tiles[5] && tiles[8] && tiles[7] && tiles[4]);
 				break;
 			case warthog::jps::SOUTHWEST:
 				next_id = next_id + mapw - 1;
 				map_->get_neighbours(next_id, tiles);
-				jumpcost = (tiles[5] && tiles[2] && tiles[1]) ? 
-					(jumpcost + (tiles[5] + tiles[2] + tiles[1] + tiles[4]) *
-					warthog::ROOT_TWO_OVER_FOUR) : warthog::INF; 
+				jump_ok = (tiles[5] && tiles[2] && tiles[1] && tiles[4]);
 				break;
 			default:
 				break;
 		}
 
 		// stop jumping if we hit an obstacle or take an invalid step
-		if(jumpcost == warthog::INF || tiles[4] == 0)
+		if(!jump_ok)
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+		jumpcost += cost_per_step;
 
 		// the goal is always a jump point
 		if(next_id == goal_id) { break; }
