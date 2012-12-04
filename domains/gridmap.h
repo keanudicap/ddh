@@ -131,14 +131,50 @@ class gridmap
 			tiles[2] = (db_[dbindex2] & bit_offset) ? 1:0;
 		}
 
+		// get the immediately adjacent neighbours of @param node_id
+		// neighbours from the row above node_id are stored in 
+		// @param tiles[0], neighbours from the same row in tiles[1]
+		// and neighbours from the row below in tiles[2].
+		// In each case the bits for each neighbour are in the three 
+		// lowest positions of the byte.
+		// position :0 is the nei in direction NW, :1 is N and :2 is NE 
+		inline void
+		get_neighbours2(uint32_t node_id, char tiles[3])
+		{
+			// TODO: can we eliminate this check with an extra bit of padding
+			// around the edges of the map? (i.e. map size = (w+2)*(h+2))
+			if(node_id >= max_id_) 
+			{
+				tiles[0] = tiles[1] = tiles[2] = 0;
+				return;
+			}
+			uint32_t padded_id = to_padded_id(node_id);
+
+			// 1. calculate the dbword offset for the node at index padded_id
+			// 2. convert padded_id into a dbword index.
+			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
+			padded_id >>= warthog::LOG2_DBWORD_BITS;
+
+			// compute dbword indexes for tiles immediately above 
+			// and immediately below node_id
+			uint32_t pos1 = padded_id - dbwidth_;
+			uint32_t pos2 = padded_id;
+			uint32_t pos3 = padded_id + dbwidth_;
+
+			// read from the byte just before node_id and shift down until the
+			// nei adjacent to node_id is in the lowest position
+			tiles[0] = (char)(*((int*)(db_+(pos1-1))) >> (bit_offset+7));
+			tiles[1] = (char)(*((int*)(db_+(pos2-1))) >> (bit_offset+7));
+			tiles[2] = (char)(*((int*)(db_+(pos3-1))) >> (bit_offset+7));
+		}
+
 		// get all the tiles adjacent to nodeid. this function begins at 
 		// node (x-1, y-1) (relative to node_id) and steps through the
 		// list of adjacent tiles in left-to-right, top-to-bottom order
 		//
 		// @return true if the function is given a valid node_id 
 		// and finishes successfully tiles is populated with the terrain
-		// types of the 3x3 square centred at node_id. If node_id is invalid
-		// @param array is marked entirely invalid.
+		// types of the 3x3 square centred at node_id. 
 		inline void
 		get_neighbours(uint32_t node_id, char tiles[9])
 		{
