@@ -21,6 +21,8 @@
 
 // check computed solutions are optimal
 bool check_opt = false;
+// print debugging info during search
+bool verbose = false;
 
 void
 help()
@@ -29,7 +31,8 @@ help()
 	<< "--alg [jps | astar]\n"
 	<< "--scen [filename]\n"
 	<< "--map [filename] (optional)\n"
-	<< "--checkopt (optional)\n";
+	<< "--checkopt (optional)\n"
+	<< "--verbose (optional)\n";
 }
 
 void
@@ -70,6 +73,7 @@ run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
 	   	warthog::jps_expansion_policy> astar(&heuristic, &expander);
+	astar.set_verbose(verbose);
 
 	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
@@ -106,6 +110,8 @@ run_astar(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
 	   	warthog::gridmap_expansion_policy> astar(&heuristic, &expander);
+	astar.set_verbose(verbose);
+
 
 	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
@@ -143,6 +149,7 @@ main(int argc, char** argv)
 		{"alg",  required_argument, 0, 1},
 		{"map",  optional_argument, 0, 2},
 		{"checkopt",  no_argument, 0, 3},
+		{"verbose",  no_argument, 0, 4},
 	};
 
 	warthog::util::cfg cfg;
@@ -152,6 +159,11 @@ main(int argc, char** argv)
 	if(cfg.get_param_value("checkopt") != "")
 	{
 		check_opt = true;
+	}
+
+	if(cfg.get_param_value("verbose") != "")
+	{
+		verbose = true;
 	}
 
 	std::string sfile = cfg.get_param_value("scen");
