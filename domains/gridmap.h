@@ -69,35 +69,32 @@ class gridmap
 		// lowest positions of the byte.
 		// position :0 is the nei in direction NW, :1 is N and :2 is NE 
 		inline void
-		get_neighbours2(uint32_t node_id, char tiles[3])
+		get_neighbours2(uint32_t padded_id, uint8_t tiles[3])
 		{
-			// TODO: can we eliminate this check with an extra bit of padding
-			// around the edges of the map? (i.e. map size = (w+2)*(h+2))
-			if(node_id >= max_id_) 
+			// 1. calculate the dbword offset for the node at index padded_id
+			// 2. convert padded_id into a dbword index.
+			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
+			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+			if(dbindex >= max_id_) 
 			{
 				tiles[0] = tiles[1] = tiles[2] = 0;
 				return;
 			}
-			uint32_t padded_id = to_padded_id(node_id);
-
-			// 1. calculate the dbword offset for the node at index padded_id
-			// 2. convert padded_id into a dbword index.
-			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
-			padded_id >>= warthog::LOG2_DBWORD_BITS;
 
 			// compute dbword indexes for tiles immediately above 
 			// and immediately below node_id
-			uint32_t pos1 = padded_id - dbwidth_;
-			uint32_t pos2 = padded_id;
-			uint32_t pos3 = padded_id + dbwidth_;
+			uint32_t pos1 = dbindex - dbwidth_;
+			uint32_t pos2 = dbindex;
+			uint32_t pos3 = dbindex + dbwidth_;
 
 			// read from the byte just before node_id and shift down until the
 			// nei adjacent to node_id is in the lowest position
-			tiles[0] = (char)(*((int*)(db_+(pos1-1))) >> (bit_offset+7));
-			tiles[1] = (char)(*((int*)(db_+(pos2-1))) >> (bit_offset+7));
-			tiles[2] = (char)(*((int*)(db_+(pos3-1))) >> (bit_offset+7));
+			tiles[0] = (uint8_t)(*((uint32_t*)(db_+(pos1-1))) >> (bit_offset+7));
+			tiles[1] = (uint8_t)(*((uint32_t*)(db_+(pos2-1))) >> (bit_offset+7));
+			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
+		
 		// get all the tiles adjacent to nodeid. this function begins at 
 		// node (x-1, y-1) (relative to node_id) and steps through the
 		// list of adjacent tiles in left-to-right, top-to-bottom order
@@ -269,7 +266,6 @@ class gridmap
 		inline uint32_t 
 		height() const
 		{ 
-			//return this->header_.height_; 
 			return this->padded_height_;
 		} 
 
@@ -277,20 +273,7 @@ class gridmap
 		width() const 
 		{ 
 			return this->padded_width_;
-			//return this->header_.width_;
 		}
-
-//		inline uint32_t
-//		db_width()
-//		{
-//			return dbwidth_;
-//		}
-//
-//		inline uint32_t
-//		db_height()
-//		{
-//			return dbheight_;
-//		}
 
 		void 
 		print(std::ostream&);

@@ -24,11 +24,13 @@ warthog::jps_expansion_policy::expand(
 	warthog::jps::direction dir_c =
 	   	this->compute_direction(current->get_parent(), current);
 
+	// get the tiles around the current node c
+	uint32_t c_tiles;
+	uint32_t current_id = current->get_id();
+	map_->get_neighbours2(current_id, (uint8_t*)&c_tiles);
+
 	// look for jump points in the direction of each natural 
 	// and forced neighbour
-	char c_tiles[9];
-	uint32_t current_id = current->get_id();
-	map_->get_neighbours(current_id, c_tiles);
 	uint32_t succ_dirs = warthog::jps::compute_successors(dir_c, c_tiles);
 	uint32_t goal_id = problem->get_goal();
 	for(uint32_t i = 0; i < 8; i++)
