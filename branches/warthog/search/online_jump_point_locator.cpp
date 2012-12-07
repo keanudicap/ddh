@@ -29,54 +29,57 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 	double cost_per_step = 1;
 	if(d > 8) { cost_per_step = warthog::ROOT_TWO; }
 
-	char tiles[9];
+	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
+	// from the grid. Assume little endian format.
+	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	for(uint32_t steps=1; steps <= jumplimit_; steps++)
 	{
-		// TODO: get triples instead of neighbours
+		// jump a single step in direction @param d. we check that
+		// the step is to a non-obstacle node and that no corners are cut.
 		bool jump_ok = false;
 		switch(d)
 		{
 			case warthog::jps::NORTH:
 				next_id -= mapw;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = tiles[7] && tiles[4];
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 131584) == 131584; // bits 9 and 17
 				break;
 			case warthog::jps::SOUTH:
 				next_id += mapw;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = tiles[1] && tiles[4];
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 514) == 514; // bits 9 and 4
 				break;
 			case warthog::jps::EAST:
 				next_id++;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = tiles[3] && tiles[4];
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 768) == 768; // bits 9 and 8
 				break;
 			case warthog::jps::WEST:
 				next_id--;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = tiles[5] && tiles[4];
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 1536) == 1536; // bits 9 and 10
 				break;
 			case warthog::jps::NORTHEAST:
 				next_id = next_id - mapw + 1;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = (tiles[3] && tiles[6] && tiles[7] && tiles[4]);
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 197376) == 197376; // bits 9, 8, 16, 17
 				break;
 			case warthog::jps::SOUTHEAST:
 				next_id = next_id + mapw + 1;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = (tiles[3] && tiles[0] && tiles[1] && tiles[4]);
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 771) == 771; // bits 9, 8, 0, 1
 				break;
 			case warthog::jps::NORTHWEST:
 				next_id = next_id - mapw - 1;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = (tiles[5] && tiles[8] && tiles[7] && tiles[4]);
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 394752) == 394752; // bits 9, 10, 17, 18
 				break;
 			case warthog::jps::SOUTHWEST:
 				next_id = next_id + mapw - 1;
-				map_->get_neighbours(next_id, tiles);
-				jump_ok = (tiles[5] && tiles[2] && tiles[1] && tiles[4]);
+				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				jump_ok = (neis & 1542) == 1542; // bits 9, 1, 2, 10
 				break;
 			default:
 				break;
@@ -95,8 +98,8 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 		if(next_id == goal_id) { break; }
 
 
-		// next_id is a jump node if it has >=1 forced neighbours.
-		if(warthog::jps::compute_forced(d, tiles)) { break; }
+		// next_id is a jump node if it has >=1 forced neighbours2.
+		if(warthog::jps::compute_forced(d, neis)) { break; }
 
 		// recurse straight before stepping diagonally;
 		// next_id is a jump point if the recursion finds a node
@@ -135,5 +138,4 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 	}
 	jumpnode_id = next_id;
 }
-
 
