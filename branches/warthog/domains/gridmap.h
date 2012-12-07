@@ -61,76 +61,6 @@ class gridmap
 				1;
 		}
 
-		inline void
-		get_horizontal_neis_from_padded_id(uint32_t padded_id, char tiles[3])
-		{
-			// 1. calculate the dbword offset for the node at index padded_id
-			// 2. convert padded_id into a dbword index.
-			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
-			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
-
-			// copy each neighbour into @param tiles
-			// there are a few special cases to consider, depending
-			// on whether node_id corresponds to a bit at the beginning, 
-			// at the end, or in the middle of its corresponding dbword.
-			switch(bit_offset)
-			{
-				// node_id is at the beginning of its dbword
-				// some neighbours are in pos, pos2 and pos3
-				// while others are in pos-1, pos2-1 and pos3-1
-				case 0:
-				{
-					// NB: implicit bitmask: 1 << bit_offset
-					tiles[0] = (db_[dbindex-1] & 128) ? 1:0;
-					tiles[1] = (db_[dbindex] & 1) ? 1:0;
-					tiles[2] = (db_[dbindex] & 2) ? 1:0;
-					break;
-				}
-				// node_id is at the end of its dbword
-				// some neighbours are in pos, pos2 and pos3
-				// while others are in pos+1, pos2+1 and pos3+1
-				case 7:
-				{
-					// NB: implicit bitmask: 1 << bit_offset
-					tiles[0] = (db_[dbindex] & 64) ? 1:0;
-					tiles[1] = (db_[dbindex] & 128) ? 1:0;
-					tiles[2] = (db_[dbindex+1] & 1) ? 1:0;
-					break;
-				}	
-				// node_id is in the middle of its dbword
-				// all neighbours are in pos, pos2 and pos3
-				default:
-				{
-					tiles[0] = (db_[dbindex] & (bit_offset-1)) ? 1:0;
-					tiles[1] = (db_[dbindex] & bit_offset) ? 1:0;
-					tiles[2] = (db_[dbindex] & (bit_offset+1)) ? 1:0;
-					break;
-				}
-			}
-		}
-
-		inline void
-		get_vertical_neis_from_padded_id(uint32_t padded_id, char tiles[3])
-		{
-			// 1. calculate the dbword offset for the node at index padded_id
-			// 2. convert padded_id into a dbword index.
-			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
-			uint32_t dbindex1 = padded_id >> warthog::LOG2_DBWORD_BITS;
-
-			// compute dbword indexes for tiles immediately above 
-			// and immediately below node_id
-			uint32_t dbindex0 = padded_id - dbwidth_;
-			uint32_t dbindex2 = padded_id + dbwidth_;
-
-			// copy each neighbour into @param tiles
-			// there are a few special cases to consider, depending
-			// on whether node_id corresponds to a bit at the beginning, 
-			// at the end, or in the middle of its corresponding dbword.
-			tiles[0] = (db_[dbindex0] & bit_offset) ? 1:0;
-			tiles[1] = (db_[dbindex1] & bit_offset) ? 1:0;
-			tiles[2] = (db_[dbindex2] & bit_offset) ? 1:0;
-		}
-
 		// get the immediately adjacent neighbours of @param node_id
 		// neighbours from the row above node_id are stored in 
 		// @param tiles[0], neighbours from the same row in tiles[1]
@@ -176,30 +106,27 @@ class gridmap
 		// and finishes successfully tiles is populated with the terrain
 		// types of the 3x3 square centred at node_id. 
 		inline void
-		get_neighbours(uint32_t node_id, char tiles[9])
+		get_neighbours(uint32_t padded_id, char tiles[9])
 		{
-			// TODO: can we eliminate this check with an extra bit of padding
-			// around the edges of the map? (i.e. map size = (w+2)*(h+2))
-			if(node_id >= max_id_) 
-			{
-				tiles[0] = tiles[1] = tiles[2] = tiles[3] = tiles[4] = 
-				tiles[5] = tiles[6] = tiles[7] = tiles[8] = 0;
-				return;
-			}
-
-			uint32_t padded_id = to_padded_id(node_id);
 			if(uniform_)
 			{
 				// 1. calculate the dbword offset for the node at index padded_id
 				// 2. convert padded_id into a dbword index.
 				uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
-				padded_id >>= warthog::LOG2_DBWORD_BITS;
+				uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+				if(dbindex > max_id_)
+				{
+					tiles[0] = tiles[1] = tiles[2] = tiles[3] = tiles[4] = 
+					tiles[5] = tiles[6] = tiles[7] = tiles[8] = 0;
+					return;
+				}
 
 				// compute dbword indexes for tiles immediately above 
 				// and immediately below node_id
-				uint32_t pos = padded_id - dbwidth_;
-				uint32_t pos2 = padded_id;
-				uint32_t pos3 = padded_id + dbwidth_;
+				uint32_t pos = dbindex - dbwidth_;
+				uint32_t pos2 = dbindex;
+				uint32_t pos3 = dbindex + dbwidth_;
+
 
 				// copy each neighbour into @param tiles
 				// there are a few special cases to consider, depending
@@ -263,6 +190,13 @@ class gridmap
 			}
 			else
 			{
+				if(padded_id > max_id_)
+				{
+					tiles[0] = tiles[1] = tiles[2] = tiles[3] = tiles[4] = 
+					tiles[5] = tiles[6] = tiles[7] = tiles[8] = 0;
+					return;
+				}
+
 				uint32_t pos = padded_id - dbwidth_;
 				uint32_t pos2 = padded_id;
 				uint32_t pos3 = padded_id + dbwidth_;
@@ -281,82 +215,53 @@ class gridmap
 		inline warthog::dbword
 		get_label(uint32_t x, unsigned int y)
 		{
-			if(x >= header_.width_ || y >= header_.height_)
-			{
-				return 0;
-			}
-			return this->get_label(y*header_.width_+x);
+			return this->get_label(y*padded_width_+x);
 		}
 
 		inline warthog::dbword 
-		get_label(uint32_t node_id)
+		get_label(uint32_t padded_id)
 		{
-			if(node_id >= max_id_)
-			{
-				return 0;
-			}
-
-			// here we convert from the coordinate space of 
-			// the grid to the coordinate space of db_. 
-			uint32_t padded_id = node_id + 
-				// add one full padded row
-				padded_width_ +
-			   	// padding from each row of data before this one
-				(node_id / header_.width_) * padding_ + 
-				// padding at the front of the current row
-				1;
-
 			// now we can fetch the label
 			if(uniform_)
 			{
 				warthog::dbword bitmask = 1;
 				bitmask <<= (padded_id & warthog::DBWORD_BITS_MASK);
-				padded_id >>= warthog::LOG2_DBWORD_BITS;
-				return (db_[padded_id] & bitmask) != 0;
+				uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+				if(dbindex > max_id_) { return 0; }
+				return (db_[dbindex] & bitmask) != 0;
 			}
+			if(padded_id > max_id_) { return 0; }
 			return db_[padded_id];
 		}
 
 		inline void
 		set_label(uint32_t x, unsigned int y, warthog::dbword label)
 		{
-			this->set_label(y*header_.width_+x, label);
+			this->set_label(y*padded_width_+x, label);
 		}
 
 		inline void 
-		set_label(uint32_t node_id, warthog::dbword label)
+		set_label(uint32_t padded_id, warthog::dbword label)
 		{
-			if(node_id >= max_id_)
-			{
-				return;
-			}
-
-			// here we convert from the coordinate space of 
-			// the grid to the coordinate space of db_. 
-			uint32_t padded_id = node_id + 
-				// add one full padded row
-				padded_width_ +
-			   	// padding from each row of data before this one
-				(node_id / header_.width_) * padding_ + 
-				// padding at the front of the current row
-				1;
-
 			if(uniform_)
 			{
 				warthog::dbword bitmask =
 				   	(1 << (padded_id & warthog::DBWORD_BITS_MASK));
-				padded_id >>= warthog::LOG2_DBWORD_BITS;
+				uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+				if(dbindex > max_id_) { return; }
+
 				if(label)
 				{
-					db_[padded_id] |= bitmask;
+					db_[dbindex] |= bitmask;
 				}
 				else
 				{
-					db_[padded_id] &= ~bitmask;
+					db_[dbindex] &= ~bitmask;
 				}
 			}
 			else
 			{
+				if(padded_id > max_id_) { return; }
 				db_[padded_id] = label;
 			}
 		}
@@ -364,13 +269,15 @@ class gridmap
 		inline uint32_t 
 		height() const
 		{ 
-			return this->header_.height_; 
+			//return this->header_.height_; 
+			return this->padded_height_;
 		} 
 
 		inline uint32_t 
 		width() const 
 		{ 
-			return this->header_.width_;
+			return this->padded_width_;
+			//return this->header_.width_;
 		}
 
 //		inline uint32_t
@@ -407,6 +314,7 @@ class gridmap
 		uint32_t dbheight_;
 		uint32_t db_size_;
 		uint32_t padded_width_;
+		uint32_t padded_height_;
 		uint32_t padding_;
 		uint32_t max_id_;
 
