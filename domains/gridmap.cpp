@@ -27,19 +27,19 @@ warthog::gridmap::gridmap(const char* filename, bool uniform)
 			case 'T':
 			case '@':
 			case 'O': // these terrain types are obstacles
-				this->set_label(i, 0); 
-				assert(this->get_label(i) == 0);
+				this->set_label(to_padded_id(i), 0); 
+				assert(this->get_label(to_padded_id(i)) == 0);
 				break;
 			default: // everything else is traversable
 				if(uniform_)
 				{
-					this->set_label(i, 1); 
-					assert(this->get_label(i) == 1);
+					this->set_label(to_padded_id(i), 1); 
+					assert(this->get_label(to_padded_id(i)) == 1);
 				}
 				else
 				{
-					this->set_label(i, c);
-					assert(this->get_label(i) == c);
+					this->set_label(to_padded_id(i), c);
+					assert(this->get_label(to_padded_id(i)) == c);
 				}
 				break;
 		}
@@ -52,24 +52,29 @@ warthog::gridmap::init_db()
 	// when storing the grid we pad the edges of the map with
 	// zeroes. this eliminates the need for bounds checking when
 	// fetching the neighbours of a node. 
-	dbheight_ = header_.height_ + 2;
-	dbwidth_ = header_.width_ + 2;
+	this->padded_height_ = this->header_.height_ + 2;
+	this->padded_width_ = this->header_.width_ + 2;
 
 	// calc how many dbwords are needed for a single grid row.
 	// in the weighted-cost case, each node requires one dbword;
 	// in the uniform-cost case, each node requires one bit.
 	if(uniform_)
 	{
-		dbwidth_ >>= warthog::LOG2_DBWORD_BITS;
-		dbwidth_++; // round up
-	}
-	db_size_ = dbwidth_*dbheight_;
+		this->dbheight_ = this->padded_height_;
+		this->dbwidth_  = this->padded_width_ >> warthog::LOG2_DBWORD_BITS;
+		this->dbwidth_++; // round up
 
-	// uniform-cost grid dimensions are often not dbword aligned.
-	// calculate # of extra/redundant padding bits stored per row.
-	padded_width_ = (uniform_ ? 
-			(dbwidth_ * warthog::DBWORD_BITS) : dbwidth_);
-	padding_ = padded_width_ - header_.width_;
+		// calculate # of extra/redundant padding bits required,
+		// per row, to align map width with dbword size
+		this->padded_width_ = (this->dbwidth_ * warthog::DBWORD_BITS);
+	}
+	else
+	{
+		dbwidth_ = this->padded_width_;
+		dbheight_ = this->padded_height_;
+	}
+	this->padding_ = this->padded_width_ - this->header_.width_;
+	this->db_size_ = this->dbwidth_ * this->dbheight_;
 
 	// create a one dimensional dbword array to store the grid
 	this->db_ = new warthog::dbword[db_size_];
@@ -78,7 +83,7 @@ warthog::gridmap::init_db()
 		db_[i] = 0;
 	}
 
-	max_id_ = header_.height_ * header_.width_;
+	max_id_ = db_size_-1;
 }
 
 warthog::gridmap::~gridmap()

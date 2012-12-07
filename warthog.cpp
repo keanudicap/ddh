@@ -82,7 +82,9 @@ run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 
 		int startid = exp->starty() * exp->mapwidth() + exp->startx();
 		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
-		double len = astar.get_length(startid, goalid);
+		double len = astar.get_length(
+				map.to_padded_id(startid),
+			   	map.to_padded_id(goalid));
 		if(len == warthog::INF)
 		{
 			len = 0;
@@ -120,7 +122,9 @@ run_astar(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 
 		int startid = exp->starty() * exp->mapwidth() + exp->startx();
 		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
-		double len = astar.get_length(startid, goalid);
+		double len = astar.get_length(
+				map.to_padded_id(startid), 
+				map.to_padded_id(goalid));
 		if(len == warthog::INF)
 		{
 			len = 0;
