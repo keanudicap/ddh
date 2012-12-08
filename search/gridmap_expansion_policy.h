@@ -3,7 +3,7 @@
 
 // gridmap_expansion_policy.h
 //
-// An ExpansionPolicy for square grids (weighted or uniform-cost).
+// An ExpansionPolicy for square uniform-cost grids 
 //
 // @author: dharabor
 // @created: 28/10/2010

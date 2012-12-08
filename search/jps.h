@@ -49,7 +49,7 @@ typedef enum
 // as defined in warthog::jps::direction
 //
 uint32_t
-compute_forced(warthog::jps::direction d, char tiles[9]);
+compute_forced(warthog::jps::direction d, uint32_t tiles);
 
 // Computes the set of "natural" neighbours for a given location
 // (x, y).
@@ -57,14 +57,14 @@ compute_forced(warthog::jps::direction d, char tiles[9]);
 // @param d: the direction of travel used to reach (x, y)
 // @param tiles: the square of cells having (x, y) at its centre.
 uint32_t 
-compute_natural(warthog::jps::direction d, char tiles[9]);
+compute_natural(warthog::jps::direction d, uint32_t tiles);
 
 // Computes all successors (forced \union natural) of a node (x, y)
 //
 // @param d: the direction of travel used to reach (x, y)
 // @param tiles: the square of cells having (x, y) at its centre.
 inline uint32_t
-compute_successors(warthog::jps::direction d, char tiles[9])
+compute_successors(warthog::jps::direction d, uint32_t tiles)
 {
 	return warthog::jps::compute_forced(d, tiles) |
 	   	warthog::jps::compute_natural(d, tiles);

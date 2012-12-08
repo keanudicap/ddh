@@ -43,42 +43,42 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 		{
 			case warthog::jps::NORTH:
 				next_id -= mapw;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 131584) == 131584; // bits 9 and 17
 				break;
 			case warthog::jps::SOUTH:
 				next_id += mapw;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 514) == 514; // bits 9 and 4
 				break;
 			case warthog::jps::EAST:
 				next_id++;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 768) == 768; // bits 9 and 8
 				break;
 			case warthog::jps::WEST:
 				next_id--;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 1536) == 1536; // bits 9 and 10
 				break;
 			case warthog::jps::NORTHEAST:
 				next_id = next_id - mapw + 1;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 197376) == 197376; // bits 9, 8, 16, 17
 				break;
 			case warthog::jps::SOUTHEAST:
 				next_id = next_id + mapw + 1;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 771) == 771; // bits 9, 8, 0, 1
 				break;
 			case warthog::jps::NORTHWEST:
 				next_id = next_id - mapw - 1;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 394752) == 394752; // bits 9, 10, 17, 18
 				break;
 			case warthog::jps::SOUTHWEST:
 				next_id = next_id + mapw - 1;
-				map_->get_neighbours2(next_id, (uint8_t*)&neis);
+				map_->get_neighbours(next_id, (uint8_t*)&neis);
 				jump_ok = (neis & 1542) == 1542; // bits 9, 1, 2, 10
 				break;
 			default:
@@ -98,7 +98,7 @@ warthog::online_jump_point_locator::jump(warthog::jps::direction d,
 		if(next_id == goal_id) { break; }
 
 
-		// next_id is a jump node if it has >=1 forced neighbours2.
+		// next_id is a jump node if it has >=1 forced neighbours.
 		if(warthog::jps::compute_forced(d, neis)) { break; }
 
 		// recurse straight before stepping diagonally;

@@ -28,12 +28,12 @@ class gridmap;
 class blockmap
 {
 	public:
-		blockmap(const char* filename, bool uniform);
+		blockmap(const char* filename);
 		virtual ~blockmap();
 
 		void print(std::ostream& out);
 
-		inline warthog::dbword 
+		inline bool
 		get_label(unsigned int x, unsigned int y)
 		{
 			unsigned int block_x = x >> warthog::LOG_BLOCKSIZE;
@@ -41,18 +41,18 @@ class blockmap
 			x = x & (warthog::BLOCKSIZE-1);
 			y = y & (warthog::BLOCKSIZE-1);
 			gridmap* block = blocks_[block_x][block_y];
-			return block->get_label(x, y);
+			return block->get_label(block->to_padded_id(x, y));
 		}
 
 		inline void 
-		set_label(unsigned int x, unsigned int y, warthog::dbword label)
+		set_label(unsigned int x, unsigned int y, bool label)
 		{
 			unsigned int block_x = x >> warthog::LOG_BLOCKSIZE;
 			unsigned int block_y = y >> warthog::LOG_BLOCKSIZE;
 			x = x & (warthog::BLOCKSIZE-1);
 			y = y & (warthog::BLOCKSIZE-1);
 			gridmap* block = blocks_[block_x][block_y];
-			return block->set_label(x, y, label);
+			return block->set_label(block->to_padded_id(x, y), label);
 		}
 
 		inline unsigned int height() { return header_->height_; }

@@ -188,7 +188,7 @@ main(int argc, char** argv)
 	{
 		mfile  = scenmgr.get_experiment(0)->map();
 	}
-	warthog::gridmap map(mfile.c_str(), true);
+	warthog::gridmap map(mfile.c_str());
 
 	// run the target algorithm
 	if(alg == "")

@@ -27,7 +27,7 @@ warthog::jps_expansion_policy::expand(
 	// get the tiles around the current node c
 	uint32_t c_tiles;
 	uint32_t current_id = current->get_id();
-	map_->get_neighbours2(current_id, (uint8_t*)&c_tiles);
+	map_->get_neighbours(current_id, (uint8_t*)&c_tiles);
 
 	// look for jump points in the direction of each natural 
 	// and forced neighbour

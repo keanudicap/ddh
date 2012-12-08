@@ -2,7 +2,7 @@
 #include "gm_parser.h"
 #include "gridmap.h"
 
-warthog::blockmap::blockmap(const char* filename, bool uniform)
+warthog::blockmap::blockmap(const char* filename)
 {
 	warthog::gm_parser parser(filename);
 	this->header_ = new gm_header(parser.get_header());
@@ -25,7 +25,7 @@ warthog::blockmap::blockmap(const char* filename, bool uniform)
 				blockheight = header_->height_ % BLOCKSIZE;
 			}
 
-			blocks_[i][j] = new gridmap(blockheight, blockwidth, uniform);
+			blocks_[i][j] = new gridmap(blockheight, blockwidth);
 		}
 	}
 
@@ -36,25 +36,18 @@ warthog::blockmap::blockmap(const char* filename, bool uniform)
 		unsigned int x = i % this->width();
 		unsigned int y = i / this->width();
 
-		if(uniform)
+		switch(c)
 		{
-			switch(c)
-			{
-				case 'S':
-				case 'W': 
-				case 'T':
-				case '@':
-				case 'O':
-					this->set_label(x, y, false); // obstacle
-					break;
-				default:
-					this->set_label(x, y, true); // traversable
-					break;
-			}
-		}
-		else
-		{
-			this->set_label(x, y, c);
+			case 'S':
+			case 'W': 
+			case 'T':
+			case '@':
+			case 'O':
+				this->set_label(x, y, false); // obstacle
+				break;
+			default:
+				this->set_label(x, y, true); // traversable
+				break;
 		}
 	}
 }
