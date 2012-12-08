@@ -90,6 +90,21 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
+		// get the labels for node y and its two horizontally adjacent 
+		// neighbours x and z; i.e. get the triple xyz
+		inline void
+		get_tripleh(uint32_t padded_id, uint8_t& tiles)
+		{
+			// 1. calculate the dbword offset for the node at index padded_id
+			// 2. convert padded_id into a dbword index.
+			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
+			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+
+			// read from the byte just before node_id and shift down until the
+			// nei adjacent to node_id is in the lowest position
+			tiles = (uint8_t)(*((uint32_t*)(db_+(dbindex-1))) >> (bit_offset+7));
+		}
+
 		
 		inline bool
 		get_label(uint32_t x, unsigned int y)
