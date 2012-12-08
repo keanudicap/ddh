@@ -68,7 +68,7 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step 
 		next_id -= mapw;
@@ -107,7 +107,7 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step 
 		next_id += mapw;
@@ -145,7 +145,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	// from the grid. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step 
 		next_id++;
@@ -180,7 +180,7 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	// from the grid. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step 
 		next_id--;
@@ -215,7 +215,7 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step (no corner cutting)
 		next_id = next_id - mapw + 1;
@@ -256,7 +256,7 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step (no corner cutting)
 		next_id = next_id - mapw - 1;
@@ -297,7 +297,7 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step (no corner cutting)
 		next_id = next_id + mapw + 1;
@@ -338,7 +338,7 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
-	for(uint32_t steps=1; steps <= jumplimit_; steps++)
+	while(true)
 	{
 		// jump a single step (no corner cutting)
 		next_id = next_id + mapw - 1;
