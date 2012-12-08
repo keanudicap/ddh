@@ -3,14 +3,13 @@
 
 #include <cassert>
 
-warthog::gridmap::gridmap(unsigned int h, unsigned int w, bool uniform)
-	: uniform_(uniform), header_(h, w, "octile")
+warthog::gridmap::gridmap(unsigned int h, unsigned int w)
+	: header_(h, w, "octile")
 {	
 	this->init_db();
 }
 
-warthog::gridmap::gridmap(const char* filename, bool uniform)
-	: uniform_(uniform)
+warthog::gridmap::gridmap(const char* filename)
 {
 	warthog::gm_parser parser(filename);
 	this->header_ = parser.get_header();
@@ -31,16 +30,8 @@ warthog::gridmap::gridmap(const char* filename, bool uniform)
 				assert(this->get_label(to_padded_id(i)) == 0);
 				break;
 			default: // everything else is traversable
-				if(uniform_)
-				{
-					this->set_label(to_padded_id(i), 1); 
-					assert(this->get_label(to_padded_id(i)) == 1);
-				}
-				else
-				{
-					this->set_label(to_padded_id(i), c);
-					assert(this->get_label(to_padded_id(i)) == c);
-				}
+				this->set_label(to_padded_id(i), 1); 
+				assert(this->get_label(to_padded_id(i)) == 1);
 				break;
 		}
 	}
@@ -56,23 +47,13 @@ warthog::gridmap::init_db()
 	this->padded_width_ = this->header_.width_ + 2;
 
 	// calc how many dbwords are needed for a single grid row.
-	// in the weighted-cost case, each node requires one dbword;
-	// in the uniform-cost case, each node requires one bit.
-	if(uniform_)
-	{
-		this->dbheight_ = this->padded_height_;
-		this->dbwidth_  = this->padded_width_ >> warthog::LOG2_DBWORD_BITS;
-		this->dbwidth_++; // round up
+	this->dbheight_ = this->padded_height_;
+	this->dbwidth_  = this->padded_width_ >> warthog::LOG2_DBWORD_BITS;
+	this->dbwidth_++; // round up
 
-		// calculate # of extra/redundant padding bits required,
-		// per row, to align map width with dbword size
-		this->padded_width_ = (this->dbwidth_ * warthog::DBWORD_BITS);
-	}
-	else
-	{
-		dbwidth_ = this->padded_width_;
-		dbheight_ = this->padded_height_;
-	}
+	// calculate # of extra/redundant padding bits required,
+	// per row, to align map width with dbword size
+	this->padded_width_ = (this->dbwidth_ * warthog::DBWORD_BITS);
 	this->padding_ = this->padded_width_ - this->header_.width_;
 	this->db_size_ = this->dbwidth_ * this->dbheight_;
 
@@ -103,15 +84,8 @@ warthog::gridmap::print(std::ostream& out)
 		for(unsigned int x=0; x < this->width(); x++)
 		{
 			char c = this->get_label(y*header_.width_+x);
-			out << (c ? (uniform_ ? '.' : c) : '@');
+			out << (c ? '.' : '@');
 		}
 		out << std::endl;
 	}	
-}
-
-void 
-warthog::gridmap::printdb(std::ostream& out)
-{
-	char tiles[9] = {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'};
-	tiles[0] = tiles[0];
 }

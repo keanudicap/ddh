@@ -92,7 +92,7 @@ void online_jps_test()
 	//bool check_opt = true;
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario("orz700d.map.scen");
-	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str(), true);
+	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str());
 
 //	warthog::gridmap map("CSC2F.map", true);
 //	map.printdb(std::cerr);
@@ -162,7 +162,7 @@ void flexible_astar_test()
 	//scenmgr.load_scenario("CSC2F.map.scen");
 	scenmgr.load_scenario("orz700d.map.scen");
 
-	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str(), true);
+	warthog::gridmap map(scenmgr.get_experiment(0)->map().c_str());
 	//map.print(std::cerr << "\n");
 	warthog::gridmap_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
@@ -221,7 +221,7 @@ void flexible_astar_test()
 
 void gridmap_expansion_policy_test()
 {
-	warthog::gridmap map("CSC2F.map", true);
+	warthog::gridmap map("CSC2F.map");
 	warthog::gridmap_expansion_policy policy(&map);
 	unsigned int nodeid[2] = {89, 0};
 
@@ -304,7 +304,7 @@ void blockmap_access_test()
 	std::cout << "blockmap_access_test..."<<std::endl;
 	const char* file = "orz700d.map";
 	std::cout << "loading "<<file<<std::endl;
-	warthog::blockmap mymap(file, false);
+	warthog::blockmap mymap(file);
 
 	for(int i=0; i < 1<<28; i++)
 	{
@@ -357,7 +357,7 @@ void gridmap_access_test()
 	//const char* file = "orz700d.map";
 	const char* file = "CSC2F.map";
 	std::cout << "loading map..."<<file<<std::endl;
-	warthog::gridmap mymap(file, true);
+	warthog::gridmap mymap(file);
 	std::cout << "map\n";
 	mymap.print(std::cout);
 	std::cout << "done."<<std::endl;
