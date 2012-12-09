@@ -149,26 +149,95 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	// from the grid. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 	// jump a single step 
 	while(true)
 	{
-		// stop jumping if we hit an obstacle
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+		// check if we can step east
 		if((neis & 1536) != 1536) // bits 9 and 10
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+
+		// step east
 		jumpcost += 1;
 		next_id++;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
+		neis >>= 1; 
 
-		// stop jumping if we hit the goal
+		// check if we hit the goal or if we have any forced neis
 		if(next_id == goal_id) { break; }
+		if((neis & 3) == 2 || (neis & 196608) == 131072) { break; }
 
-		// stop if we have any forced neighbours
+		// check if we can step east again
+		if((neis & 1536) != 1536) // bits 9 and 10
+		{
+			jumpcost = warthog::INF;
+			next_id = warthog::INF;
+			break;
+		}
+
+		// step east #2
+		jumpcost += 1;
+		next_id++;
+		neis >>= 1;
+
+		// check if we hit the goal or if we have any forced neis
+		if(next_id == goal_id) { break; }
+		if((neis & 3) == 2 || (neis & 196608) == 131072) { break; }
+
+		// check if we can step east again
+		if((neis & 1536) != 1536) // bits 9 and 10
+		{
+			jumpcost = warthog::INF;
+			next_id = warthog::INF;
+			break;
+		}
+
+		// step east #3
+		jumpcost += 1;
+		next_id++;
+		neis >>= 1;
+
+		// check if we hit the goal or if we have any forced neis
+		if(next_id == goal_id) { break; }
+		if((neis & 3) == 2 || (neis & 196608) == 131072) { break; }
+
+		// check if we can step east again
+		if((neis & 1536) != 1536) // bits 9 and 10
+		{
+			jumpcost = warthog::INF;
+			next_id = warthog::INF;
+			break;
+		}
+
+		// step east #4
+		jumpcost += 1;
+		next_id++;
+		neis >>= 1;
+
+		// check if we hit the goal or if we have any forced neis
+		if(next_id == goal_id) { break; }
+		if((neis & 3) == 2 || (neis & 196608) == 131072) { break; }
+
+		// check if we can step east again
+		if((neis & 1536) != 1536) // bits 9 and 10
+		{
+			jumpcost = warthog::INF;
+			next_id = warthog::INF;
+			break;
+		}
+
+		// step east #5
+		jumpcost += 1;
+		next_id++;
+		neis >>= 1;
+
+		// stop jumping if we hit the goal or if we have any forced neis
+		if(next_id == goal_id) { break; }
 		if((neis & 3) == 2 || (neis & 196608) == 131072) { break; }
 	}
 	jumpnode_id = next_id;
