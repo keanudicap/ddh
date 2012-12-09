@@ -71,11 +71,6 @@ class gridmap
 			// 2. convert padded_id into a dbword index.
 			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
 			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
-			if(dbindex >= max_id_) 
-			{
-				tiles[0] = tiles[1] = tiles[2] = 0;
-				return;
-			}
 
 			// compute dbword indexes for tiles immediately above 
 			// and immediately below node_id
