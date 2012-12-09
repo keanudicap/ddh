@@ -85,6 +85,30 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
+		// same as ::get_neighbours but the adjacent neis of @param padded_id
+		// are stored in the upper positions of each byte that comprises
+		// @param tiles.
+		inline void
+		get_neighbours_upper(uint32_t padded_id, uint8_t tiles[3])
+		{
+			// 1. calculate the dbword offset for the node at index padded_id
+			// 2. convert padded_id into a dbword index.
+			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
+			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+
+			// compute dbword indexes for tiles immediately above 
+			// and immediately below node_id
+			uint32_t pos1 = dbindex - dbwidth_;
+			uint32_t pos2 = dbindex;
+			uint32_t pos3 = dbindex + dbwidth_;
+
+			// read from the byte just before node_id and shift down until the
+			// nei adjacent to node_id is in the lowest position
+			tiles[0] = (uint8_t)(*((uint32_t*)(db_+(pos1-1))) >> (bit_offset+2));
+			tiles[1] = (uint8_t)(*((uint32_t*)(db_+(pos2-1))) >> (bit_offset+2));
+			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+2));
+		}
+
 		// get the labels for node y and its two horizontally adjacent 
 		// neighbours x and z; i.e. get the triple xyz
 		inline void
