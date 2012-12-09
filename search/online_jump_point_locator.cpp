@@ -68,23 +68,26 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump one step at a time
 	while(true)
 	{
-		// jump a single step 
-		next_id -= mapw;
-		neis <<= 8;
-		// experimental neighbour extraction; reduces the number of 
-		// gridmap lookups per step from 3 to 1
-		map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis)[0]);
-		jumpcost += 1;
-
 		// stop jumping if we hit an obstacle
-		if((neis & 131584) != 131584) // bits 9 and 17
+		if((neis & 514) != 514) // bits 9 and 1
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+		jumpcost += 1;
+
+		// get tiles from the next row and update neis array.
+		// nb: experimental! reduces the number of 
+		// gridmap lookups per step from 3 (::get_neighbours) to 
+		// 1 (::get_tripleh)
+		next_id -= mapw;
+		neis <<= 8;
+		map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis)[0]);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
@@ -107,24 +110,25 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
+	// jump a single step 
 	while(true)
 	{
-		// jump a single step 
-		next_id += mapw;
-		neis >>= 8;
-
-		// experimental neighbour extraction; reduces the number of 
-		// gridmap lookups per step from 3 to 1
-		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]); 
-
 		// stop jumping if we hit an obstacle
-		if((neis & 514) != 514) // bits 9 and 4
+		if((neis & 131584) != 131584) // bits 9 and 17
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
 		jumpcost += 1;
+
+		// get tiles from the next row and update neis array.
+		// nb: experimental! reduces the number of 
+		// gridmap lookups per step from 3 (::get_neighbours) to 
+		// 1 (::get_tripleh)
+		next_id += mapw;
+		neis >>= 8;
+		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]); 
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
@@ -145,24 +149,24 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	// from the grid. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump a single step 
 	while(true)
 	{
-		// jump a single step 
-		next_id++;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
-
 		// stop jumping if we hit an obstacle
-		if((neis & 768) != 768) // bits 9 and 8
+		if((neis & 1536) != 1536) // bits 9 and 10
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
 		jumpcost += 1;
+		next_id++;
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
-
 
 		// stop if we have any forced neighbours
 		if((neis & 3) == 2 || (neis & 196608) == 131072) { break; }
@@ -180,20 +184,22 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	// from the grid. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump a single step at a time
 	while(true)
 	{
-		// jump a single step 
-		next_id--;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit an obstacle
-		if((neis & 1536) != 1536) // bits 9 and 10
+		if((neis & 768) != 768) // bits 9 and 8
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
 		jumpcost += 1;
+		next_id--;
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
@@ -215,20 +221,21 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump a single step at a time (no corner cutting)
 	while(true)
 	{
-		// jump a single step (no corner cutting)
-		next_id = next_id - mapw + 1;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
-		jumpcost += warthog::ROOT_TWO;
-
 		// stop jumping if we hit an obstacle or take an invalid step
-		if((neis & 197376) != 197376) // bits 9, 8, 16, 17
+		if((neis & 1542) != 1542) // bits 9, 10, 1 and 2
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+		jumpcost += warthog::ROOT_TWO;
+		next_id = next_id - mapw + 1;
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
@@ -256,20 +263,21 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump a single step at a time (no corner cutting)
 	while(true)
 	{
-		// jump a single step (no corner cutting)
-		next_id = next_id - mapw - 1;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
-		jumpcost += warthog::ROOT_TWO;
-
 		// stop jumping if we hit an obstacle or take an invalid step
-		if((neis & 394752) != 394752) // bits 9, 10, 17, 18
+		if((neis & 771) != 771) // bits 9, 8, 0 and 1
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+		jumpcost += warthog::ROOT_TWO;
+		next_id = next_id - mapw - 1;
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
@@ -297,20 +305,21 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump a single step at a time (no corner cutting)
 	while(true)
 	{
-		// jump a single step (no corner cutting)
-		next_id = next_id + mapw + 1;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
-		jumpcost += warthog::ROOT_TWO;
-
 		// stop jumping if we hit an obstacle or take an invalid step
-		if((neis & 771) != 771) // bits 9, 8, 0, 1
+		if((neis & 394752) != 394752) // bits 9, 10, 17 and 18
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+		jumpcost += warthog::ROOT_TWO;
+		next_id = next_id + mapw + 1;
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
@@ -338,20 +347,21 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
+
+	// jump a single step (no corner cutting)
 	while(true)
 	{
-		// jump a single step (no corner cutting)
-		next_id = next_id + mapw - 1;
-		map_->get_neighbours(next_id, (uint8_t*)&neis);
-		jumpcost += warthog::ROOT_TWO;
-
 		// stop jumping if we hit an obstacle or take an invalid step
-		if((neis & 1542) != 1542) // bits 9, 1, 2, 10
+		if((neis & 197376) != 197376) // bits 9, 8, 16 and 17
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
+		jumpcost += warthog::ROOT_TWO;
+		next_id = next_id + mapw - 1;
+		map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 		// stop jumping if we hit the goal
 		if(next_id == goal_id) { break; }
