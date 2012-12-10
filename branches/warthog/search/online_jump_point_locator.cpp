@@ -72,27 +72,22 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 	// jump one step at a time
 	while(true)
 	{
-		// stop jumping if we hit an obstacle
+		// check if we can step north
 		if((neis & 514) != 514) // bits 9 and 1
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
-		jumpcost += 1;
 
-		// get tiles from the next row and update neis array.
-		// nb: experimental! reduces the number of 
-		// gridmap lookups per step from 3 (::get_neighbours) to 
-		// 1 (::get_tripleh)
+		// step north
+		jumpcost += 1;
 		next_id -= mapw;
 		neis <<= 8;
 		map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis)[0]);
 
-		// stop jumping if we hit the goal
+		// stop if we hit the goal or find any forced neighbours
 		if(next_id == goal_id) { break; }
-
-		// stop if we have any forced neighbours
 		if((neis & 65792) == 256 || (neis & 263168) == 1024) { break; }
 	}
 	jumpnode_id = next_id;
@@ -110,30 +105,26 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	// jump a single step 
+
+	// jump one step at a time
 	while(true)
 	{
-		// stop jumping if we hit an obstacle
+		// check if we can step south
 		if((neis & 131584) != 131584) // bits 9 and 17
 		{
 			jumpcost = warthog::INF;
 			next_id = warthog::INF;
 			break;
 		}
-		jumpcost += 1;
 
-		// get tiles from the next row and update neis array.
-		// nb: experimental! reduces the number of 
-		// gridmap lookups per step from 3 (::get_neighbours) to 
-		// 1 (::get_tripleh)
+		// step south
+		jumpcost += 1;
 		next_id += mapw;
 		neis >>= 8;
 		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]); 
 
-		// stop jumping if we hit the goal
+		// stop if we hit the goal or find any forced neighbours
 		if(next_id == goal_id) { break; }
-
-		// stop if we have any forced neighbours
 		if((neis & 257) == 256 || (neis & 1028) == 1024) { break; }
 	}
 	jumpnode_id = next_id;
