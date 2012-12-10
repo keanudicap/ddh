@@ -43,18 +43,14 @@ warthog::gridmap::init_db()
 	// when storing the grid we pad the edges of the map with
 	// zeroes. this eliminates the need for bounds checking when
 	// fetching the neighbours of a node. 
-	this->padded_height_ = this->header_.height_ + 2;
-	this->padded_width_ = this->header_.width_ + 2;
-
-	// calc how many dbwords are needed for a single grid row.
-	this->dbheight_ = this->padded_height_;
-	this->dbwidth_  = this->padded_width_ >> warthog::LOG2_DBWORD_BITS;
-	this->dbwidth_++; // round up
+	this->dbheight_ = this->header_.height_ + 2;
+	this->dbwidth_  = (this->header_.width_ >> warthog::LOG2_DBWORD_BITS)+2;
 
 	// calculate # of extra/redundant padding bits required,
 	// per row, to align map width with dbword size
+	this->padded_height_ = this->dbheight_;
 	this->padded_width_ = (this->dbwidth_ * warthog::DBWORD_BITS);
-	this->padding_ = this->padded_width_ - this->header_.width_;
+	this->padding_per_row_ = this->padded_width_ - this->header_.width_;
 	this->db_size_ = this->dbwidth_ * this->dbheight_;
 
 	// create a one dimensional dbword array to store the grid
