@@ -44,9 +44,9 @@ class gridmap
 				// add one full padded row
 				padded_width_ +
 			   	// padding from each row of data before this one
-				(node_id / header_.width_) * padding_ + 
+				(node_id / header_.width_) * padding_per_row_ + 
 				// padding at the front of the current row
-				1;
+				sizeof(warthog::dbword)*8;
 		}
 
 		// here we convert from the coordinate space of 
@@ -54,7 +54,7 @@ class gridmap
 		inline uint32_t
 		to_padded_id(uint32_t x, uint32_t y)
 		{
-			return (y+1)*padded_width_ + (x+1);
+			return (y+1)*padded_width_ + (x+sizeof(warthog::dbword)*8);
 		}
 
 		// get the immediately adjacent neighbours of @param node_id
@@ -200,7 +200,7 @@ class gridmap
 		uint32_t db_size_;
 		uint32_t padded_width_;
 		uint32_t padded_height_;
-		uint32_t padding_;
+		uint32_t padding_per_row_;
 		uint32_t max_id_;
 
 		gridmap(const warthog::gridmap& other) {}
