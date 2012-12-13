@@ -158,23 +158,24 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 			neis >>= 6;
 		}
 
-		// jump step by step
-		if((neis & 393216) != 393216) // bits 17 and 18
+		// jump step by step (NB: neis not shifted; bitmasks change instead)
+		if((neis & 0x60000) != 0x60000)
 		{
-			deadend = true; break;
+			deadend = true;
+			break;
 		}
-		jumpcost++;
-		neis >>= 1; 
-		if((neis & 3) == 2 || (((uint16_t*)&neis)[2] & 3) == 2) { break; }
+		uint64_t forced = (~neis << 1) & neis;
+		if(forced & 0x400000004) { jumpcost++; break; }
 
-		// jump step by step
-		if((neis & 393216) != 393216) // bits 17 and 18
+		if((neis & 0xC0000) != 0xC0000) 
 		{
-			deadend = true; break;
+			deadend = true;
+			jumpcost++;
+			break;
 		}
-		jumpcost++;
-		neis >>= 1; 
-		if((neis & 3) == 2 || (((uint16_t*)&neis)[2] & 3) == 2) { break; }
+		if(forced & 0x800000008) { jumpcost+=2; break; }
+
+		jumpcost += 2;
 	}
 
 	jumpnode_id = node_id + jumpcost;
@@ -203,9 +204,9 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 
 	// last 3 bits of these integers hold node_id and
 	// its immediate neighbours (assumes little endian format)
-	uint16_t& row0 = ((uint16_t*)&neis)[0];
-	uint16_t& row1 = ((uint16_t*)&neis)[1];
-	uint16_t& row2 = ((uint16_t*)&neis)[2];
+	//uint16_t& row0 = ((uint16_t*)&neis)[0];
+	//uint16_t& row1 = ((uint16_t*)&neis)[1];
+	//uint16_t& row2 = ((uint16_t*)&neis)[2];
 
 	while(true)
 	{
@@ -226,26 +227,24 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 			neis <<= 6;
 		}
 
-		// jump step by step 
-		if((row1 & 24576) != 24576) // bits 14 and 13
+		// jump step by step (NB: neis not shifted; bitmasks change instead)
+		if((neis & 0x60000000) != 0x60000000) 
 		{
 			deadend = true;
 			break;
 		}
-		jumpcost += 1;
-		neis <<= 1;
-		if(((row0 & 49152) == 16384) || (row2 & 49152) == 16384) { break; }
+		uint64_t forced = (~neis >> 1) & neis;
+		if(forced & 0x200000002000) { jumpcost++; break; }
 
-		// jump step by step 
-		if((row1 & 24576) != 24576) // bits 14 and 13
+		if((neis & 0x30000000) != 0x30000000) 
 		{
 			deadend = true;
+			jumpcost++;
 			break;
 		}
-		jumpcost += 1;
-		neis <<= 1;
-		if(((row0 & 49152) == 16384) || (row2 & 49152) == 16384) { break; }
+		if(forced & 0x100000001000) { jumpcost+=2; break; }
 
+		jumpcost += 2;
 	}
 	jumpnode_id = node_id - jumpcost;
 	if(node_id > goal_id && jumpnode_id <= goal_id)
