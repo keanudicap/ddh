@@ -41,12 +41,10 @@ class gridmap
 		to_padded_id(uint32_t node_id)
 		{
 			return node_id + 
-				// add one full padded row
-				padded_width_ +
+				// add two full padded rows
+				2*padded_width_ +
 			   	// padding from each row of data before this one
-				(node_id / header_.width_) * padding_per_row_ + 
-				// padding at the front of the current row
-				sizeof(warthog::dbword)*8;
+				(node_id / header_.width_) * padding_per_row_;
 		}
 
 		// here we convert from the coordinate space of 
@@ -54,7 +52,7 @@ class gridmap
 		inline uint32_t
 		to_padded_id(uint32_t x, uint32_t y)
 		{
-			return (y+1)*padded_width_ + (x+sizeof(warthog::dbword)*8);
+			return (y+2)*padded_width_ + x;
 		}
 
 		// get the immediately adjacent neighbours of @param node_id
@@ -85,6 +83,7 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
+		// same as ::get_neighbours but using a 16bit quantities
 		void
 		get_neighbours_16bit(uint32_t padded_id, uint16_t tiles[3])
 		{
@@ -106,9 +105,8 @@ class gridmap
 			tiles[2] = (uint16_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
-		// same as ::get_neighbours but the adjacent neis of @param padded_id
-		// are stored in the upper positions of each byte that comprises
-		// @param tiles.
+		// same as ::get_neighbours but each nei is stored in the upper
+		// positions of the tiles array
 		inline void
 		get_neighbours_upper(uint32_t padded_id, uint8_t tiles[3])
 		{
@@ -130,6 +128,7 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+2));
 		}
 
+		// same as ::get_neighbours_upper but using 16bit quantities
 		inline void
 		get_neighbours_upper_16bit(uint32_t padded_id, uint16_t tiles[3])
 		{
@@ -145,10 +144,10 @@ class gridmap
 			uint32_t pos3 = dbindex + dbwidth_;
 
 			// read from the byte just before node_id and shift down until the
-			// nei adjacent to node_id is in the lowest position
-			tiles[0] = (uint16_t)(*((uint32_t*)(db_+(pos1-1))) >> (bit_offset+2));
-			tiles[1] = (uint16_t)(*((uint32_t*)(db_+(pos2-1))) >> (bit_offset+2));
-			tiles[2] = (uint16_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+2));
+			// nei right of node_id is in the highest position
+			tiles[0] = (uint16_t)(*((uint32_t*)(db_+(pos1-2))) >> (bit_offset+2));
+			tiles[1] = (uint16_t)(*((uint32_t*)(db_+(pos2-2))) >> (bit_offset+2));
+			tiles[2] = (uint16_t)(*((uint32_t*)(db_+(pos3-2))) >> (bit_offset+2));
 		}
 
 		// get the labels for node y and its two horizontally adjacent 
