@@ -142,9 +142,9 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	uint64_t neis;
 	bool deadend = false;
 
-	// jump a single step 
 	while(true)
 	{
+		// read in 16 tiles from 3 adjacent rows
 		map_->get_neighbours_16bit(node_id + jumpcost, (uint16_t*)&neis);
 		if((neis & 0xfffefffefffe) == 0xfffefffefffe)
 		{
@@ -154,66 +154,26 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 
 		if((neis & 0x00fe00fe00fe) == 0x00fe00fe00fe)
 		{
-			if((neis & 0x0f000f000f00) == 0x0f000f000f00)
-			{
-				jumpcost += 4;
-				neis >>= 4;
-				
-			}
 			jumpcost += 6;
 			neis >>= 6;
 		}
 
-		// check if we can step east
+		// jump step by step
 		if((neis & 393216) != 393216) // bits 17 and 18
 		{
 			deadend = true; break;
 		}
-
-		// step east
 		jumpcost++;
 		neis >>= 1; 
-
-		// check if we have any forced neis
 		if((neis & 3) == 2 || (((uint16_t*)&neis)[2] & 3) == 2) { break; }
 
-		// check if we can step east
+		// jump step by step
 		if((neis & 393216) != 393216) // bits 17 and 18
 		{
 			deadend = true; break;
 		}
-
-		// step east #2
 		jumpcost++;
 		neis >>= 1; 
-
-		// check if we have any forced neis
-		if((neis & 3) == 2 || (((uint16_t*)&neis)[2] & 3) == 2) { break; }
-
-		// check if we can step east
-		if((neis & 393216) != 393216) // bits 17 and 18
-		{
-			deadend = true; break;
-		}
-
-		// step east #3
-		jumpcost++;
-		neis >>= 1; 
-
-		// check if we have any forced neis
-		if((neis & 3) == 2 || (((uint16_t*)&neis)[2] & 3) == 2) { break; }
-
-		// check if we can step east
-		if((neis & 393216) != 393216) // bits 17 and 18
-		{
-			deadend = true; break;
-		}
-
-		// step east #4
-		jumpcost++;
-		neis >>= 1; 
-
-		// check if we have any forced neis
 		if((neis & 3) == 2 || (((uint16_t*)&neis)[2] & 3) == 2) { break; }
 	}
 
@@ -238,104 +198,54 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	jumpcost = 0;
 	bool deadend = false;
 
-	// **LAST** 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
-	uint32_t neis;
+	uint64_t neis;
 	jumpcost = 0; // begin from the node we want to step to
 
-	// jump a single step at a time
+	// last 3 bits of these integers hold node_id and
+	// its immediate neighbours (assumes little endian format)
+	uint16_t& row0 = ((uint16_t*)&neis)[0];
+	uint16_t& row1 = ((uint16_t*)&neis)[1];
+	uint16_t& row2 = ((uint16_t*)&neis)[2];
+
 	while(true)
 	{
-		map_->get_neighbours_upper(node_id - jumpcost, (uint8_t*)&neis);
+		// read in 2 bytes from each of 3 adjacent rows
+		map_->get_neighbours_upper_16bit(node_id - jumpcost, (uint16_t*)&neis);
 
-		if((neis & 0xffffff) == 0xffffff)
+		// jump ahead if all tiles are traversable
+		if((neis & 0x7fff7fff7fff) == 0x7fff7fff7fff)
 		{
-			jumpcost += 6;
+			jumpcost += 14;
 			continue;
 		}
 
-		// check if we can step west
-		if((neis & 24576) != 24576) // bits 14 and 15
+		// jump ahead if all tiles in first byte are traversable
+		if((neis & 0x7f007f007f00) == 0x7f007f007f00)
+		{
+			jumpcost += 6;
+			neis <<= 6;
+		}
+
+		// jump step by step 
+		if((row1 & 24576) != 24576) // bits 14 and 13
 		{
 			deadend = true;
 			break;
 		}
-		// step west (we got neis of node_id-1; no need to increment)
 		jumpcost += 1;
 		neis <<= 1;
+		if(((row0 & 49152) == 16384) || (row2 & 49152) == 16384) { break; }
 
-		// check if we have any forced neis
-		if((neis & 192) == 64 || (neis & 12582912) == 4194304) { break; }
-
-		// check if we can step west again
-		if((neis & 24576) != 24576) // bits 14 and 15
+		// jump step by step 
+		if((row1 & 24576) != 24576) // bits 14 and 13
 		{
 			deadend = true;
 			break;
 		}
-		 
-		// step west #2
 		jumpcost += 1;
 		neis <<= 1;
+		if(((row0 & 49152) == 16384) || (row2 & 49152) == 16384) { break; }
 
-		// check if we hit the goal or if we have any forced neis
-		if((neis & 192) == 64 || (neis & 12582912) == 4194304) { break; }
-
-		// check if we can step west again
-		if((neis & 24576) != 24576) // bits 14 and 15
-		{
-			deadend = true;
-			break;
-		}
-		 
-		// step west #3
-		jumpcost += 1;
-		neis <<= 1;
-
-		// check if we hit the goal or if we have any forced neis
-		if((neis & 192) == 64 || (neis & 12582912) == 4194304) { break; }
-
-		// check if we can step west again
-		if((neis & 24576) != 24576) // bits 14 and 15
-		{
-			deadend = true;
-			break;
-		}
-		 
-		// step west #4
-		jumpcost += 1;
-		neis <<= 1;
-
-		// check if we hit the goal or if we have any forced neis
-		if((neis & 192) == 64 || (neis & 12582912) == 4194304) { break; }
-
-		// check if we can step west again
-		if((neis & 24576) != 24576) // bits 14 and 15
-		{
-			deadend = true;
-			break;
-		}
-		 
-		// step west #5
-		jumpcost += 1;
-		neis <<= 1;
-
-		// check if we hit the goal or if we have any forced neis
-		if((neis & 192) == 64 || (neis & 12582912) == 4194304) { break; }
-
-		// check if we can step west again
-		if((neis & 24576) != 24576) // bits 14 and 15
-		{
-			deadend = true;
-			break;
-		}
-		 
-		// step west #5
-		jumpcost += 1;
-		neis <<= 1;
-
-		// check if we hit the goal or if we have any forced neis
-		if((neis & 192) == 64 || (neis & 12582912) == 4194304) { break; }
 	}
 	jumpnode_id = node_id - jumpcost;
 	if(node_id > goal_id && jumpnode_id <= goal_id)
