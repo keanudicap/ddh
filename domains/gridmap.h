@@ -145,9 +145,9 @@ class gridmap
 
 			// read from the byte just before node_id and shift down until the
 			// nei right of node_id is in the highest position
-			tiles[0] = (uint16_t)(*((uint32_t*)(db_+(pos1-2))) >> (bit_offset+2));
-			tiles[1] = (uint16_t)(*((uint32_t*)(db_+(pos2-2))) >> (bit_offset+2));
-			tiles[2] = (uint16_t)(*((uint32_t*)(db_+(pos3-2))) >> (bit_offset+2));
+			tiles[0] = (uint16_t)((*((uint32_t*)&db_[pos1-2])) >> (bit_offset+2));
+			tiles[1] = (uint16_t)((*((uint32_t*)&db_[pos2-2])) >> (bit_offset+2));
+			tiles[2] = (uint16_t)((*((uint32_t*)&db_[pos3-2])) >> (bit_offset+2));
 		}
 
 		// get the labels for node y and its two horizontally adjacent 
