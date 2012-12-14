@@ -1,0 +1,45 @@
+AUTHOR: Alban Grastien (alban.grastien@rsise.anu.edu.au)
+@version 09/08/2010: Should now work with no citation.  
+
+This readme file explains how the Makefile works.
+
+First, the 'FICHIER' parameter should be changed to the name of the 
+master tex file.  So, for instance, if the master tex file is 
+"zongo.tex", you should change the FICHIER parameter as follows:
+FICHIER = zongo
+
+You are supposed to have a unique bib file in the root directory, 
+and as many tex files as you want in the root directory.  If you want 
+to create sub directories, the TEXFILES parameter should be modified 
+as follows:
+TEXFILES = $(wildcard *.tex) $(wildcard firstsubdir/*.tex) \
+           $(wildcard secondsubdir/*.tex) ...
+
+The images should be put in the 'images' directory.  If your original 
+files is a .fig, then the makefile will update the .eps file when 
+needed (and will remove the .eps file when cleaning).  Do not put any 
+.pdf files in the root directory, they will be removed by the clean 
+command.  If you want to create a new sub directory to 'images', then 
+change the FIGFILES as shown previously for TEXFILES.   Let us remark 
+that the latex file will be rebuilt if a fig file is modified, but 
+not if another image is.
+
+The 'clean' command removes temporary files and pdf files in the root 
+directory.  Let us remark that if a new sub-dir is create, then the 
+'BACKFILES' parameter should be updated as shown previously for 
+TEXFILES.
+
+The 'tar' and 'tardir' commands create a .tar file of the directory 
+including the current date.  Both commands first cleans the 
+directory.  The difference between these two commands is that when 
+extracting the 'tardir' file, then a directory is created containing 
+all the files, while the extraction of the 'tar' file copy the files 
+in the current dir.
+
+The main file $(FICHIER).pdf is copied in final.pdf.  The 
+goal is to enable you to use final.pdf (the old version) while the 
+new version is being computed.
+
+'make view' is a short cut that calls xpdf after compiling the main 
+file (if necessary), 'make open' opens the editing soft, 'make touch' 
+performs a 'touch' on the main file, which then allows to recompile.  
