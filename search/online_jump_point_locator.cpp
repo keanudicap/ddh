@@ -69,28 +69,32 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
 
-	// jump one step at a time
 	while(true)
 	{
-		// check if we can step north
-		if((neis & 514) != 514) // bits 9 and 1
+		// jump step by step 
+		if((neis & 0x202) != 0x202)
 		{
+			jumpnode_id = warthog::INF;
 			jumpcost = warthog::INF;
-			next_id = warthog::INF;
+			break;
+		}
+		jumpcost++;
+		next_id -= mapw;
+
+		if(next_id == goal_id)
+		{
+			jumpnode_id = next_id;
 			break;
 		}
 
-		// step north
-		jumpcost += 1;
-		next_id -= mapw;
+		// compute forced
+		uint8_t row0 = ((uint8_t*)&neis)[0];
+		uint8_t row1 = ((uint8_t*)&neis)[1];
+		if((~row1 & row0) & 0x5) { jumpnode_id = next_id; break; }
+
 		neis <<= 8;
 		map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis)[0]);
-
-		// stop if we hit the goal or find any forced neighbours
-		if(next_id == goal_id) { break; }
-		if((neis & 65792) == 256 || (neis & 263168) == 1024) { break; }
 	}
-	jumpnode_id = next_id;
 }
 
 void
@@ -106,28 +110,32 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 	uint32_t mapw = map_->width();
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
 
-	// jump one step at a time
 	while(true)
 	{
-		// check if we can step south
-		if((neis & 131584) != 131584) // bits 9 and 17
+		// jump step by step 
+		if((neis & 0x20200) != 0x20200)
 		{
+			jumpnode_id = warthog::INF;
 			jumpcost = warthog::INF;
-			next_id = warthog::INF;
+			break;
+		}
+		jumpcost++;
+		next_id += mapw;
+
+		if(next_id == goal_id)
+		{
+			jumpnode_id = next_id;
 			break;
 		}
 
-		// step south
-		jumpcost += 1;
-		next_id += mapw;
-		neis >>= 8;
-		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]); 
+		// compute forced
+		uint8_t row1 = ((uint8_t*)&neis)[1];
+		uint8_t row2 = ((uint8_t*)&neis)[2];
+		if((~row1 & row2) & 0x5) { jumpnode_id = next_id; break; }
 
-		// stop if we hit the goal or find any forced neighbours
-		if(next_id == goal_id) { break; }
-		if((neis & 257) == 256 || (neis & 1028) == 1024) { break; }
+		neis >>= 8;
+		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]);
 	}
-	jumpnode_id = next_id;
 }
 
 void
