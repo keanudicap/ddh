@@ -71,27 +71,37 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 
 	while(true)
 	{
-		// jump step by step 
-		if((neis & 0x202) != 0x202)
-		{
-			jumpnode_id = warthog::INF;
-			jumpcost = warthog::INF;
-			break;
-		}
-		jumpcost++;
-		next_id -= mapw;
-
-		if(next_id == goal_id)
-		{
-			jumpnode_id = next_id;
-			break;
-		}
-
-		// compute forced
+		// stop in case of forced neis or dead-ends
 		uint8_t row0 = ((uint8_t*)&neis)[0];
 		uint8_t row1 = ((uint8_t*)&neis)[1];
-		if((~row1 & row0) & 0x5) { jumpnode_id = next_id; break; }
+		bool stop = 
+			((~row1 & row0) & 0x5) || ((neis & 0x202) != 0x202) || (next_id == goal_id);
 
+		if(stop)
+		{ 
+			// we hit the goal
+			if(next_id == goal_id)
+			{
+				jumpnode_id = next_id;
+				break;
+			}
+
+			// deadend
+			if((neis & 0x202) != 0x202)
+			{
+				jumpnode_id = warthog::INF;
+				jumpcost = warthog::INF;
+				break;
+			}
+
+			// forced nei
+			jumpcost++;
+			jumpnode_id = next_id - mapw;
+			break; 
+		}
+
+		jumpcost++;
+		next_id -= mapw;
 		neis <<= 8;
 		map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis)[0]);
 	}
@@ -112,27 +122,34 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 
 	while(true)
 	{
-		// jump step by step 
-		if((neis & 0x20200) != 0x20200)
-		{
-			jumpnode_id = warthog::INF;
-			jumpcost = warthog::INF;
-			break;
+		uint8_t row1 = ((uint8_t*)&neis)[1];
+		uint8_t row2 = ((uint8_t*)&neis)[2];
+		bool stop = 
+			((~row1 & row2) & 0x5) || ((neis & 0x20200) != 0x20200) || (next_id == goal_id);
+		if(stop)
+		{ 
+			// we hit the goal
+			if(next_id == goal_id)
+			{
+				jumpnode_id = next_id;
+				break;
+			}
+
+			// deadend
+			if((neis & 0x20200) != 0x20200)
+			{
+				jumpnode_id = warthog::INF;
+				jumpcost = warthog::INF;
+				break;
+			}
+
+			// forced nei
+			jumpcost++;
+			jumpnode_id = next_id + mapw;
+			break; 
 		}
 		jumpcost++;
 		next_id += mapw;
-
-		if(next_id == goal_id)
-		{
-			jumpnode_id = next_id;
-			break;
-		}
-
-		// compute forced
-		uint8_t row1 = ((uint8_t*)&neis)[1];
-		uint8_t row2 = ((uint8_t*)&neis)[2];
-		if((~row1 & row2) & 0x5) { jumpnode_id = next_id; break; }
-
 		neis >>= 8;
 		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]);
 	}
