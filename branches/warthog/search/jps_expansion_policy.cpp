@@ -45,7 +45,8 @@ warthog::jps_expansion_policy::expand(
 			{
 				neighbours_[num_neighbours_] = nodepool_->generate(succ_id);
 				costs_[num_neighbours_] = jumpcost;
-				num_neighbours_++;
+				// move terminator character as we go
+				neighbours_[++num_neighbours_] = 0;
 			}
 		}
 	}
