@@ -67,8 +67,11 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
+	uint32_t bit_offset = (node_id & warthog::DBWORD_BITS_MASK);
+	uint32_t dbindex = node_id >> warthog::LOG2_DBWORD_BITS;
+	uint32_t dbw = map_->width() >> warthog::LOG2_DBWORD_BITS;
 
+	map_->get_neighbours(next_id, (uint8_t*)&neis);
 	while(true)
 	{
 		// stop in case of forced neis or dead-ends
@@ -101,9 +104,19 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 		}
 
 		jumpcost++;
+		dbindex -= dbw;
 		next_id -= mapw;
 		neis <<= 8;
-		map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis)[0]);
+		//uint32_t neis2 = neis;
+
+		//map_->get_tripleh(next_id-mapw, ((uint8_t*)&neis2)[0]);
+		map_->get_tripleh(dbindex-dbw, bit_offset, ((uint8_t*)&neis)[0]);
+
+		//if(neis2 != neis)
+		//{
+		//	std::cout << "neis: "<<std::hex<<neis<<" neis2: "<<neis2<<std::endl;
+		//	exit(1);
+		//}
 	}
 }
 
@@ -118,6 +131,9 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
+	uint32_t bit_offset = (node_id & warthog::DBWORD_BITS_MASK);
+	uint32_t dbindex = node_id >> warthog::LOG2_DBWORD_BITS;
+	uint32_t dbw = map_->width() >> warthog::LOG2_DBWORD_BITS;
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
 
 	while(true)
@@ -150,8 +166,9 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 		}
 		jumpcost++;
 		next_id += mapw;
+		dbindex += dbw;
 		neis >>= 8;
-		map_->get_tripleh(next_id+mapw, ((uint8_t*)&neis)[2]);
+		map_->get_tripleh(dbindex+dbw, bit_offset, ((uint8_t*)&neis)[2]);
 	}
 }
 

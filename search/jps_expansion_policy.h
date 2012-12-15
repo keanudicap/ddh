@@ -157,11 +157,7 @@ class jps_expansion_policy
 		{
 			which_ = 0;
 			num_neighbours_ = 0;
-			for(uint32_t i = 0; i < 9; i++)
-			{
-				neighbours_[i] = 0;
-				costs_[i] = warthog::INF;
-			}
+			neighbours_[0] = 0;
 		}
 };
 
