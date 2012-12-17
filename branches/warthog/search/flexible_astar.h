@@ -161,19 +161,31 @@ class flexible_astar
 
 			while(open_->size())
 			{
-				nodes_expanded_++;
+				nodes_touched_++;
 				if(open_->peek()->get_id() == goalid)
 				{
+					#ifndef NDEBUG
+					if(verbose_)
+					{
+						uint32_t x, y;
+						y = (current->get_id() / expander_->mapwidth())-2;
+						x = current->get_id() % expander_->mapwidth();
+						std::cerr << "goal found ("<<x<<", "<<y<<")...";
+						current->print(std::cerr);
+						std::cerr << std::endl;
+					}
+					#endif
 					goal = open_->peek();
 					break;
 				}
+				nodes_expanded_++;
 
 				warthog::search_node* current = open_->pop();
 				#ifndef NDEBUG
 				if(verbose_)
 				{
 					uint32_t x, y;
-					y = current->get_id() / expander_->mapwidth();
+					y = (current->get_id() / expander_->mapwidth())-2;
 					x = current->get_id() % expander_->mapwidth();
 					std::cerr << "expanding ("<<x<<", "<<y<<")...";
 					current->print(std::cerr);
@@ -209,7 +221,7 @@ class flexible_astar
 							if(verbose_)
 							{
 								uint32_t x, y;
-								y = n->get_id() / expander_->mapwidth();
+								y = (n->get_id() / expander_->mapwidth())-2;
 								x = n->get_id() % expander_->mapwidth();
 								std::cerr << "  updating ("<<x<<", "<<y<<")...";
 								n->print(std::cerr);
@@ -223,7 +235,7 @@ class flexible_astar
 							if(verbose_)
 							{
 								uint32_t x, y;
-								y = n->get_id() / expander_->mapwidth();
+								y = (n->get_id() / expander_->mapwidth())-2;
 								x = n->get_id() % expander_->mapwidth();
 								std::cerr << "  updating ("<<x<<", "<<y<<")...";
 								n->print(std::cerr);
@@ -245,7 +257,7 @@ class flexible_astar
 						if(verbose_)
 						{
 							uint32_t x, y;
-							y = n->get_id() / expander_->mapwidth();
+							y = (n->get_id() / expander_->mapwidth())-2;
 							x = n->get_id() % expander_->mapwidth();
 							std::cerr << "  generating ("<<x<<", "<<y<<")...";
 							n->print(std::cerr);
@@ -259,7 +271,7 @@ class flexible_astar
 				if(verbose_)
 				{
 					uint32_t x, y;
-					y = current->get_id() / expander_->mapwidth();
+					y = (current->get_id() / expander_->mapwidth())-2;
 					x = current->get_id() % expander_->mapwidth();
 					std::cerr <<"closing ("<<x<<", "<<y<<")...";
 					current->print(std::cerr);
