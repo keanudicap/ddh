@@ -91,7 +91,7 @@ class search_node
 			{
 				return true;
 			}
-			if(myf > other.f_)
+			if(f_ > (other.f_ + warthog::EPSILON))
 			{
 				return false;
 			}
@@ -107,12 +107,11 @@ class search_node
 		inline bool
 		operator>(const warthog::search_node& other) const
 		{
-			double myf = f_ + warthog::EPSILON;
-			if(myf > other.f_)
+			if(f_ > (other.f_+warthog::EPSILON))
 			{
 				return true;
 			}
-			if(myf < other.f_)
+			if((f_+warthog::EPSILON) < other.f_)
 			{
 				return false;
 			}
