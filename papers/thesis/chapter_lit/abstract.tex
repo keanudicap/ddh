@@ -1,8 +1,19 @@
 \chapter{Literature Review}
 \label{cha::lit::abstract}
+Pathfinding is the problem of navigating from one location to another on a 
+given two or three dimensional input map.
+The problem is among the oldest in Computer Science and appears in a range
+of common application areas including logistics, robotics and computer games.
+In this chapter we discuss two common formulations of the pathfinding problem: 
+finding a shortest path in a graph and finding a shortest path in a plane.
+We consider a range of approaches for constructing search graphs including
+grid maps, road maps and navigation meshes.
+We then compare and contrast a range of search-based approaches for efficiently
+computing both exact and approximate solutions to the problem. These include:
+heuristic methods, abstraction techniques and search space pruning algorithms.
+Particular emphasis is given to optimality-preserving methods which speed up
+search via symmetry and isomorphism detection.  Finally, we examine geometric
+techniques for solving pathfinding problems in continuous rather than discrete
+environments. 
+%This variation of the problem 
 
-Approaches for identifying and eliminating search-space symmetry have been
-proposed in areas including planning \cite{fox99}, constraint programming
-\cite{gent00}, and combinatorial optimization \cite{fukunaga08}. 
-Very few works however explicitly identify and deal with symmetry in pathfinding
-domains such as grid maps. 

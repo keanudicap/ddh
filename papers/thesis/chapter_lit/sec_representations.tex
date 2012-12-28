@@ -1,26 +1,37 @@
-\section{Search Space Representations}
-The process of navigating from one location to another involves searching a
-\emph{state space}.  Typically the search space is represented as a graph $G =
-(V, E)$ where $V$ is a set of locations known as \emph{nodes} or \emph{vertices}
-and $E$ is a set of \emph{edges} that represent transitions from one node or
-vertex to another.  Each edge in the graph has a \emph{weight} which represents
-the cost of moving from one node in the graph to an adjacent neighbouring node.
-We will assume that weights represent distance but they could stand for other
-types of metrics; for example travel time or fuel consumption.
-Search graphs can be given explicitly, in which case all vertices and edges
-are enumerated apriori, or implicitl, in which case the graph is constructed
-during search by applying a set of available actions.
-Implicit graphs are common in multi-dimensional pathfinding problems and in
-areas such as AI Planning. In two and three dimensional pathfinding, the 
-search graph is given explicitly.
-Many approaches exist for constructing a search graph from an input map.
+\section{Input Maps and Search Graphs}
+Pathfinding involves navigating from one location to another on a given input
+map. In the most common setting input maps are two or three dimensional
+Euclidean (i.e. flat) or Geodesic (i.e. curved) spaces which are represented as
+a collection of traversable and non-traversable polygons.
+To find a path between an arbitrary pair of points on a map practitioners 
+create a model of the input map known as a \emph{search graph} $G = (V, E)$. 
+Here $V$ is the set of all possible locations, often referred to as the nodes or
+\emph{vertices} of the graph, and $E$ is the set of \emph{edges} that connect
+vertices.  Edges can be thought of as single step actions that an agent
+must perform in order to move from one vertex to another.
+The cost associated with each move is called the \emph{edge weight}.
+Weights often represent distance traveled but they could stand for other
+types of metrics as well e.g. travel time or fuel consumption.
+Search graphs can be explicit, in which case all vertices and edges
+are enumerated apriori, or they can be implicit, in which case the graph is 
+gradually built during search.
+Many approaches exist for constructing a search graph from a given input map.
 
-\begin{enumerate}
-\item{Grid Maps}
-\item{Road Maps}
-\item{Visibility Graphs}
-\item{Voronoi Diagrams}
-\item{Navigation Meshes}
-\item{Shortest Path Maps}
-\end{enumerate}
+%Implicit graphs are common in settings where the input map is unknown or is too
+%large to be modeled explicitly. In this thesis, as in many pathfinding settings
+%from robotics and computer games, we will assume the input map is known and that
+%all vertices and edges can be enumerated.  
+%
+%Need to say something about the input map. Usually two and three dimensions
+%(can be n dimensions though) it consists of a description 	
+
+\subsection{Grid Maps}
+
+\subsection{Road Maps}
+
+\subsection{Navigation Meshes}
+
+\subsection{Visibility Graphs}
+
+\subsection{Voronoi Diagrams}
 
