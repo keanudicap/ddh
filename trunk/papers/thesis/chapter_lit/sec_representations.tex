@@ -2,46 +2,73 @@
 \label{cha::lit::graphs}
 Pathfinding involves navigating between an arbitrary pair of points from a given 
 \emph{input map}.
-In the most common setting input maps are two or three dimensional
-Euclidean (i.e. flat) or Geodesic (i.e. curved) spaces which are represented as
-a collection of traversable and non-traversable polygons.
-To find a path between an arbitrary pair of points on a map practitioners often
-create a model of the input map $G = (V, E)$ known as a \emph{search graph}.
-Here $V$ is the set of all possible locations, often referred to as the nodes or
-\emph{vertices} of the graph, and $E$ is the set of \emph{edges} that connect
-vertices.  Edges can be thought of as roads or corridors that an agent can move 
-through or actions that can be executed in order to transition the agent from one 
-vertex to another.
-The cost associated with each move is called the \emph{edge weight}.
-Weights often represent distance traveled but they could stand for other
-types of metrics as well e.g. travel time or fuel consumption.
-When the cost of moving between two vertices $a$ and $b$ can differ to
-cost of moving from $b$ to $a$ the graph is said to be \emph{directed}.
-When this is not the case, the graph is said to be \emph{undirected}.
-Search graphs can be explicit, in which case all vertices and edges
-are enumerated apriori, or they can be implicit, in which case the graph is 
-gradually built during search. Explicit graphs arise in many common pathfinding
-settings including computer games, logistics and robotics. Implicit graphs are
-common in n-dimensional pathfinding settings and related application areas such
-as AI Planning.
-Many approaches exist for constructing a search graph from a given input map; we 
-discuss each type in the remainder of this section.
-
-%Implicit graphs are common in settings where the input map is unknown or is too
-%large to be modeled explicitly. In this thesis, as in many pathfinding settings
-%from robotics and computer games, we will assume the input map is known and that
-%all vertices and edges can be enumerated.  
-%
-%Need to say something about the input map. Usually two and three dimensions
-%(can be n dimensions though) it consists of a description 	
+In the most common setting input maps are two-dimensional Euclidean
+(i.e. flat) or Geodesic (i.e. curved) spaces which are represented as a
+collection of traversable and non-traversable polygons (the latter are often
+called obstacles).
+In order to find an obstacle-free path from one point to another practitioners
+often begin by discretising the input map into a data structure $G = (V, E)$ 
+known as a \emph{search
+graph}. Here $V$ is a set of permissible locations that an agent can occupy;
+these are often referred to as the nodes or \emph{vertices} of the graph.
+Meanwhile $E$ is the set of \emph{edges} that connect adjacent vertices.  Edges
+can be thought of as roads or corridors that an agent can travel along or
+actions that can be executed in order to transition the agent from one vertex to
+another.
+The cost associated with each such move is called the \emph{edge weight}.
+Weights often represent distance traveled but they could stand for other types
+of metrics as well e.g. travel time or fuel consumption.  When the cost of
+moving between two vertices $a$ and $b$ can differ to cost of moving from $b$ to
+$a$ the graph is said to be \emph{directed}.  When this is not the case, the
+graph is said to be \emph{undirected}.  Search graphs can be explicit, in which
+case all vertices and edges are enumerated apriori, or they can be implicit, in
+which case the graph is gradually built during search. Explicit graphs arise in
+many settings including computer games~\citep{davis00,tozour02,champandard09},
+spatial network routing~\citep{sanders05,goldberg06} and robot motion
+planning~\citep{latombe91,choset05}.  Implicit graphs appear in higher
+dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
+application areas such as AI Planning~\citep{russel03}.  
+Many approaches exist for constructing a search graph from a given input map; we
+discuss a broad range of popular methods in the remainder of this section.
 
 \subsection{Grid Maps}
+\label{cha::lit::graphs::grid}
+A grid map is a tesselation of unit squares, often called tiles, which is
+applied over a planar input map. Each tile has up to eight adjacent neighbours
+and is marked as traversable or non-traversable depending on whether or not it
+intersects any obstacles.  Agents are often modeled as unit-size entities that
+occupy a single tile and move from the centre of one traversable tile to the
+next.  
+An alternative approach is to model agents as point-size entities that occupy 
+the intersections of the grid and which travel in straight steps along the
+explicit edges of grid and diagonally through tile interiors.
+In both cases straight steps incur a cost of 1. Diagonal steps, if permitted, 
+incur a cost of $\sqrt{2}$.  When diagonal moves are not permitted the grid map 
+is said to be \emph{4-connected}; otherwise it is \emph{8-connected}.  
+
+Grid maps are popular for several reasons: (i) they are simple to understand 
+and simple to apply (ii) they can be represented as a matrix of bits; a highly compact 
+and memory efficient storage format (iii) individual nodes can be identified and
+queried in constant time.
+One significant disadvantage of grid maps is their fixed resolution. In many cases 
+grids are too coarse to accurately model the underlying input map. Increasing the
+number of tiles is not always possible: there is always a corresponding increase in
+memory requirements and searching in a larger grid often makes pathfinding more 
+challenging.
+Another disadvantage of grid maps is that they produce unnatural paths which are
+constrained to the points of the grid. Such paths are not only aesthetically 
+displeasing but they can also be longer than stricictly necessary and may require
+post-processing to ``smooth'' them.
 
 \subsection{Road Maps}
+\label{cha::lit::graphs::road}
 
 \subsection{Navigation Meshes}
+\label{cha::lit::graphs::nav}
 
 \subsection{Visibility Graphs}
+\label{cha::lit::graphs::vis}
 
 \subsection{Voronoi Diagrams}
+\label{cha::lit::graphs::voronoi}
 
