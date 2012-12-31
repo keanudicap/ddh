@@ -95,10 +95,14 @@ RRMs can guarantee completeness but they are limited to problems in two and thre
 dimensions.}
 \item{Roadmaps are limited to static environments. Any introduction
 of new obstacles or changes in the placement of existing obstacles require the PRM
-to be re-computed.}
+to be re-computed. Rapidly-exploring Random Tree (RRT)~\citep{lavalle98} 
+is a one-shot sampling-based approach which constructs a roadmap-like data structure,
+from scratch, for each problem at hand.
+RRTs are applicable in dynamic environments but they are less reliable than roadmaps,
+and may not find a solution.}
 \item{Roadmaps compute only approximately shortest paths.}
-\item{Roadmap construction is multi-step process which is much more complicated than 
-other discretisation techniques.}
+\item{Roadmap construction is multi-step process which can be more complicated than 
+other discretisation techniques (e.g. navigation meshes or grid maps)}
 \end{itemize}
 
 \subsection{Navigation Meshes}
