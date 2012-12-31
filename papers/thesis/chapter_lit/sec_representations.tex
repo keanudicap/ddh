@@ -51,7 +51,7 @@ is said to be \emph{4-connected}; otherwise it is \emph{8-connected}.
 
 Grid maps are popular for several reasons: (i) they are simple to understand 
 and simple to apply (ii) they can be represented as a matrix of bits and stored
-efficiently (iii) individual nodes can be identified and queried in constant time.
+efficiently (iii) individual nodes can be updated or queried in constant time.
 One significant disadvantage of grid maps is their fixed resolution. In many cases 
 grids are too coarse to accurately model the underlying input map. Increasing the
 number of tiles is not always possible: there is always a corresponding increase in
@@ -62,24 +62,44 @@ constrained to the points of the grid. Such paths are not only aesthetically
 displeasing but they can also be longer than stricictly necessary and may
 require post-processing to ``smooth'' them.
 
-\subsection{Road Maps}
+\subsection{Roadmaps}
 \label{cha::lit::graphs::road}
-A road map is a spatial network which is derived from a given input map. 
-They are analogous to road networks which model automotive transportation systems 
-in the physical world.
+A roadmap is a small set of connected points that are drawn from a given
+input map. Road maps are analogus to \emph{road networks} which model automotive 
+transporation systems.  The central idea is to construct a small network of points
+which can be easily reached from anywhere on the input map (ideally
+without any search).  Such a representation allows practitioners to effectively
+factor any pathfinding problem into three smaller subproblems: find a path from
+each of the start and target position to a point on the road network then search 
+for a path on the roadmap that connects these two points.
 
-PRMs.
-Disadvantage: only probabilistically complete. Paths can be very suboptimal? Complicated?
+Canonical roadmap construction methods involve randomly sampling the input map. 
+This approach yields the Proabilistic Roadmap (PRM) which is common in settings 
+involving complex robot motion planning (e.g. moving a robotic arm which has many 
+degrees-of-freedom).
+Another approach, known as the Reachability Roadmap (RRM) is specialised for two 
+and three dimensional motion plannng problems.
+Constructing an RRM involves applying a grid tesselation over the input map in the 
+first instance and selecting a set of ``guard points'' such that every tile of the 
+grid is visible by at least one guard point.
 
-A variation of this idea~\citep{geraerts05} yields roadmaps which are representationally complete.
-Instead of sampling the input map directly this approach applies a grid tesselation over the
-space in the first instance  and then gradually constructs a set of ``guard points''. The process
-terminates when every traversable tile is observed by at least one guard point. A roadmap is constructed
-by computing a minimum spaning tree over the set of guard points. 
-
-Voronoi diagrams.
-
-Not clear which point on the input maps maps to which point on the road network. Maybe generate all visible?
+Roadmaps are advantageous because they are an effective means of discretising large
+multi-dimensional search spaces into small graphs that can be searched 
+efficiently. However, they have several disadvantages. 
+\begin{itemize}
+\item{Roadmaps have only limited completeness guarantees. For example, PRMs are only 
+probabilistically complete~\citep{barraquand97} i.e. the probability 
+of a path being found increases with the number of sampled points included in the 
+roadmap.
+RRMs can guarantee completeness but they are limited to problems in two and three 
+dimensions.}
+\item{Roadmaps are limited to static environments. Any introduction
+of new obstacles or changes in the placement of existing obstacles require the PRM
+to be re-computed.}
+\item{Roadmaps compute only approximately shortest paths.}
+\item{Roadmap construction is multi-step process which is much more complicated than 
+other discretisation techniques.}
+\end{itemize}
 
 \subsection{Navigation Meshes}
 \label{cha::lit::graphs::nav}
