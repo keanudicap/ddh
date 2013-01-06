@@ -1,4 +1,4 @@
-\section{Search Graphs}
+\section{Discrete Search Graphs}
 \label{cha::lit::graphs}
 Pathfinding is the problem of navigating between an arbitrary pair of points on
 a given \emph{input map}.  In the most common setting input maps are
@@ -14,9 +14,9 @@ an agent can occupy; these are often referred to as the nodes or \emph{vertices}
 of the graph.  Meanwhile $E$ is the set of \emph{edges} that connect adjacent
 vertices.  Edges can be thought of as roads or corridors that an agent can
 travel along or actions that can be executed in order to transition the agent
-from one vertex to another.
+from one location to another.
 The cost associated with each such move is called the \emph{edge weight}.
-Weights often represent distance traveled but they could stand for other types
+Weights often represent distance travelled but they could stand for other types
 of metrics as well e.g. travel time or fuel consumption.  When the cost of
 moving between two vertices $a$ and $b$ can differ to the cost of moving from $b$ to
 $a$ the graph is said to be \emph{directed}.  When this is not the case, the
@@ -65,41 +65,42 @@ require post-processing to ``smooth'' them.
 \subsection{Roadmaps}
 \label{cha::lit::graphs::road}
 A roadmap is a small set of connected points that are drawn from a given
-input map. Road maps are analogus to \emph{road networks} which model automotive 
-transporation systems.  The central idea is to construct a small network of points
-which can be easily reached from anywhere on the input map (ideally
-without any search).  Such a representation allows practitioners to effectively
-factor any pathfinding problem into three smaller subproblems: find a path from
-each of the start and target position to a point on the road network then search 
-for a path on the roadmap that connects these two points.
+input map. Roadmaps are analogus to \emph{road networks} which model automotive 
+transporation systems and have many similarities to highways in particular. 
+The central idea is to construct a network from a small set of traversable
+points. At least one of these points should be reachable from any valid location
+on the input map with little to no search.
 
-Canonical roadmap construction methods involve randomly sampling the input map. 
-This approach yields the Proabilistic Roadmap (PRM) which is common in settings 
-involving complex robot motion planning (e.g. moving a robotic arm which has many 
-degrees-of-freedom).
-Another approach, known as the Reachability Roadmap (RRM) is specialised for two 
-and three dimensional motion plannng problems.
-Constructing an RRM involves applying a grid tesselation over the input map in the 
-first instance and selecting a set of ``guard points'' such that every tile of the 
-grid is visible by at least one guard point.
+Canonical roadmap construction methods involve randomly sampling the input map.
+This approach yields the Proabilistic Roadmap (PRM)~\citep{kavraki94} which is
+common in settings involving complex robot motion planning (e.g. moving a
+robotic arm which has many degrees-of-freedom).  Another approach, known as the
+Reachability Roadmap (RRM)~\citep{geraerts05} is specialised for two and three
+dimensional motion planning problems.  Constructing an RRM involves applying a
+grid tesselation over the input map in the first instance and selecting a set of
+``guard points'' such that every tile of the grid is visible by at least one
+guard point.
 
-Roadmaps are advantageous because they are an effective means of discretising large
-multi-dimensional search spaces into small graphs that can be searched 
-efficiently. However, they have several disadvantages. 
+Roadmaps are advantageous because they are an effective means of discretising
+large multi-dimensional search spaces into small graphs that can be searched
+efficiently. For example: using a roadmap any pathfinding problem can be
+factored into three smaller subproblems: find a path from each of the start and
+target position to a point on the road network then search for a path on the
+roadmap that connects these two points. Disadvantages include:
 \begin{itemize}
-\item{Roadmaps have only limited completeness guarantees. For example, PRMs are only 
+\item{Limited completeness guarantees. For example, PRMs are only 
 probabilistically complete~\citep{barraquand97} i.e. the probability 
 of a path being found increases with the number of sampled points included in the 
 roadmap.
 RRMs can guarantee completeness but they are limited to problems in two and three 
 dimensions.}
-\item{Roadmaps are limited to static environments. Any introduction
-of new obstacles or changes in the placement of existing obstacles require the PRM
-to be re-computed. Rapidly-exploring Random Tree (RRT)~\citep{lavalle98} 
-is a one-shot sampling-based approach which constructs a roadmap-like data structure,
-from scratch, for each problem at hand.
-RRTs are applicable in dynamic environments but they are less reliable than roadmaps,
-and may not find a solution.}
+\item{Roadmaps are applicable only in static environments. Any introduction of
+new obstacles or changes in the placement of existing obstacles require the PRM
+to be re-computed. One attempt at overcoming this limitation is the
+Rapidly-exploring Random Tree (RRT)~\citep{lavalle98}: a one-shot sampling-based
+approach which constructs a roadmap-like data structure, from scratch, for each
+problem at hand.  RRTs are applicable in dynamic environments but they are less
+reliable than roadmaps and may not find a solution.}
 \item{Roadmaps compute only approximately shortest paths.}
 \item{Roadmap construction is multi-step process which can be more complicated than 
 other discretisation techniques (e.g. navigation meshes or grid maps)}
@@ -107,6 +108,35 @@ other discretisation techniques (e.g. navigation meshes or grid maps)}
 
 \subsection{Navigation Meshes}
 \label{cha::lit::graphs::nav}
+A navigation mesh can be described as a low-fidelity wire-frame model of an 
+input map: it is a decomposition of traversable and non-traversable space into 
+a set of adjacent heterogeneous polygons. Commonly used in computer games, 
+navigation meshes are a popular technique for representing walkable and
+non-walkable surfaces for arbitrary agents in two but more often 
+three-dimensional space.
+
+Many approaches exist for constructing navigation meshes. For example~\citep{snook00}.
+A different approach involves the use of constrained Delaunay triangulations~\citep{demyen07}.
+
+Navigation meshes are popular for several reasons:
+\begin{itemize}
+\item{They are complete.}
+\item{They are often more memory efficient than e.g. grid maps.}
+\item{The same mesh can be re-used for different size agents.}
+\item{Meshes can be easily visualised and hand-edited by game developers needing
+fine-grained control of agent navigation.}
+\item{Meshes are well understood by game developers and industry standard tools exist; e.g. NavPower and Recast.}
+\end{itemize}
+
+
+Disadvantages: 
+\begin{itemize}
+\item Need to be recomputed/repaired if the environment changes.
+\item Locating particular polygons can involve linear search.
+\item Paths are not optimal.
+\end{itemize}
+
+
 
 \subsection{Visibility Graphs}
 \label{cha::lit::graphs::vis}
