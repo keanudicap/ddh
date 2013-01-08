@@ -36,6 +36,35 @@ constrained to the points of the grid. Such paths are not only aesthetically
 displeasing but they can also be longer than stricictly necessary and may
 require post-processing to ``smooth'' them.
 
+\subsection{Navigation Meshes}
+\label{cha::lit::graphs::nav}
+A navigation mesh can be described as a low-fidelity model of an input map. 
+Typically comprising a set of convex adjacent polygons, navigations meshes are
+often used in computer games to represent walkable and non-walkable surfaces in
+two and three dimensions~\citep{snook00,tozour02}.
+There are many approaches for constructing navigation meshes.
+One recent technique triangulates the input map~\citep{demyen07,kallmann10}.  
+Another decomposes the map into voxels which are then manipulated in order to construct a 
+mesh of walkable polygons. 
+Recursive spatial indexing algorithms can also be applied to produce navigation meshes. 
+Quad Trees~\citep{finkel74,samet85}, for example, can be used to decompose an input
+map into a set of adjacent obstacle-free rectangular regions. 
+
+Meshes are popular because they are representationally complete and often more
+memory efficient than other search graphs e.g. grid maps. Another advantage is
+flexibility. For example, meshes can be hand-edited by game developers needing
+fine grained control over agent navigation. Meshes are also well understood by 
+those in the game development industry and tools exist to aid in their creation; 
+e.g. \textsc{NavPower} and \textsc{Recast Navigation}. Disadvantages include: 
+\begin{itemize}
+\item Meshes need to be recomputed/repaired if the environment changes.
+\item Computed paths often need to be smoothed or otherwise post-processed.
+\item Locating particular polygons involves search. In the case 
+of Quad Trees each such operation takes logarithmic time. In other cases
+a linear search may be required.
+\end{itemize}
+
+
 \subsection{Roadmaps}
 \label{cha::lit::graphs::road}
 A roadmap is a set of connected points that are drawn from a given input map.
@@ -48,7 +77,7 @@ order to build a connected graph. Another approach, known as the Reachability
 Roadmap (RRM)~\citep{geraerts05} applies a grid tesselation in the first
 instance and then chooses points from the grid.  Voronoi Diagrams~\citep{aurenhammer91}
 can also be regarded as a type of roadmap. In this case a network of edges is constructed
-which are all equi-distant from any surrounding obstacles; the nodes of the network are 
+which are all equi-distant from the two closest obstacles; the nodes of the network are 
 found at the intersections of these edges.
 
 Roadmaps are advantageous because they are an effective means of discretising
@@ -60,41 +89,38 @@ roadmap that connects these two points. Disadvantages include:
 \begin{itemize}
 \item{Some types of roadmaps are not complete. For example, when using a PRM the probability of 
 a path being found, if one exists, increases with the number  of samped points~\citep{barraquand97}. 
-Other types of roadmaps, such as RRMs, have stronger guarantees but their applicability
+By comparison RRMs have stronger guarantees but their applicability
 is limited to pathfinding in two and three dimensions.}
 \item{Roadmaps are applicable only in static environments. The introduction of
 new obstacles or changes to the placement of existing obstacles typically require 
-the roadmap to be re-computed. A one-shot variation of the roadmap idea has been
+the roadmap to be re-computed or repaired. A one-shot variation of the roadmap idea has been
 developed to address this limitation~\citep{lavalle98} but it is not as reliable
 as static roadmaps.}
 \item{Roadmaps compute only approximately shortest paths and they assume a single 
 robot type (i.e. they are normally not reusable).}
 \end{itemize}
 
-\subsection{Navigation Meshes}
-\label{cha::lit::graphs::nav}
-A navigation mesh can be described as a low-fidelity wire-frame model of an input
-map. Commonly used in computer games~\citep{snook00,tozour02}, navigation meshes are a
-popular technique for representing walkable and non-walkable surfaces in two but
-more often three-dimensional space.  One approach for creating a navigation mesh
-involves directly triangulating the input map~\citep{demyen07,kallmann10}.  
-Another procedure~\cite{mononen09} uses voxel decomposition in order to construct a 
-mesh of convex polygons that can be used for pathfinding.
-
-Navigation meshes are popular because they are complete and they are often more
-memory efficient than other search graphs e.g. grid maps. Another advantage is
-flexibility; e.g., meshes can often be hand-edited by level designers needing
-fine grained control over agent navigation. Meshes are also well understood by 
-game developers and industry standard tools exist to aid their creation; 
-e.g. \textsc{NavPower} and \textsc{Recast Navigation}. Disadvantages include: 
-\begin{itemize}
-\item Meshes need to be recomputed/repaired if the environment changes.
-\item Computed paths may need to be post-processed.
-\item Locating particular polygons can involve linear search.
-\end{itemize}
-
 \subsection{Shortest Path Maps}
 \label{cha::lit::graphs::spm}
+A Shortest Path Map (SPM)~\citep{mitchell87,mitchell97}, is a tree whose nodes
+form a shortest path cover of an input map.  The nodes of the tree are regions
+that are computed and organised with respect to a single source point. Each
+point interior to a region can be reached from the source by following a path in
+the SPM that is fixed.
+% Associated with each region is a root
+%which is the last common vertex on the shortest path from the source to any
+%point inside the region.  To extract a shortest path, from the source to any
+%target point, one simply walks from the target point, which is a leaf, to the
+%top of the tree, which is the source, by moving from r
+
+Developed by practitioners working in the area of Computational Geometry, SPMs
+are highly efficient data structures: they can facilitate the extraction
+of a shortest path from the source to any point on the map in just logarithmic time.
+Their primary disadvantage is that they are limited to queries originating at
+a single fixed source. Each time the source changes the SPM must be recomputed and
+each such operation requires $O(n\log_2{n})$ space and time. 
+Another disadvantage is that techniques developed for computing SPMs are complex 
+and difficult to implement in practice~\citep{surazhsky05}. 
 
 \subsection{Visibility Graphs}
 \label{cha::lit::graphs::vis}
