@@ -1,39 +1,8 @@
 \section{Discrete Search Graphs}
 \label{cha::lit::graphs}
-Pathfinding is the problem of navigating between an arbitrary pair of points on
-a given \emph{input map}.  In the most common setting input maps are
-two-dimensional Euclidean (i.e. flat) or three-dimensional Geodesic (i.e. curved) 
-spaces. They can take the form of a \emph{spatial network} (i.e. a set of
-connected points) or they can be given as a collection of traversable and
-non-traversable polytopes; the latter often being called obstacles.
-
-In order to find an obstacle-free path from one point to another practitioners
-begin by constructing from the input map a data structure $G = (V, E)$
-known as a \emph{search graph}.  Here $V$ is a set of permissible locations that
-an agent can occupy; these are often referred to as the nodes or \emph{vertices}
-of the graph.  Meanwhile $E$ is the set of \emph{edges} that connect adjacent
-vertices.  Edges can be thought of as roads or corridors that an agent can
-travel along or actions that can be executed in order to transition the agent
-from one location to another.
-The cost associated with each such move is called the \emph{edge weight}.
-Weights often represent distance travelled but they could stand for other types
-of metrics as well e.g. travel time or fuel consumption.  When the cost of
-moving between two vertices $a$ and $b$ can differ to the cost of moving from $b$ to
-$a$ the graph is said to be \emph{directed}.  When this is not the case, the
-graph is said to be \emph{undirected}.  
-
-Search graphs can be explicit, in which case all vertices and edges are
-enumerated apriori, or they can be implicit, in which case the graph is
-gradually built during search. Explicit graphs arise in many settings including
-computer games~\citep{davis00,tozour02,champandard09}, 
-routing~\citep{sanders05,goldberg06} and robot motion
-planning~\citep{latombe91,choset05}.  Implicit graphs appear in higher
-dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
-application areas such as AI Planning~\citep{russel03}.  
-
 Many approaches exist for creating a search graph from a given input map; we
 discuss a broad range of popular methods in the remainder of this section.
-
+\\ \newline
 Should mention~\citep{yap02} and (see Cindy's thesis for other ref) which 
 compare different types of representations. Also Tozour's Search Space Representations
 article.
@@ -69,15 +38,18 @@ require post-processing to ``smooth'' them.
 
 \subsection{Roadmaps}
 \label{cha::lit::graphs::road}
-A roadmap~\citep{kavraki94} is a set of connected points that are drawn from a given
-input map. Conceptually similar to \emph{road networks}, which model automotive
-transportation systems, roadmaps are used to solve high dimensional pathfinding 
-problems in the area of robotics.
-Constructing a roadmap typically involves random sampling of a configuration
-space (i.e. the input map).
-The idea is to find configurations of a robot that do not intersect any obstacles
-and to connect, in a graph, any two configurations where the robot can transition
-from one to the other without intersecting any obstacles.
+A roadmap is a set of connected points that are drawn from a given input map.
+Conceptually similar to \emph{road networks}, which model automotive
+transportation systems, roadmaps are used to solve high dimensional pathfinding
+problems in the area of robotics.  Many variants exist. The Probabilistic
+Roadmap (PRM)~\citep{kavraki94}, for example,
+ is created by randomly sampling a configuration space (i.e. the input map) in
+order to build a connected graph. Another approach, known as the Reachability
+Roadmap (RRM)~\citep{geraerts05} applies a grid tesselation in the first
+instance and then chooses points from the grid.  Voronoi Diagrams~\citep{aurenhammer91}
+can also be regarded as a type of roadmap. In this case a network of edges is constructed
+which are all equi-distant from any surrounding obstacles; the nodes of the network are 
+found at the intersections of these edges.
 
 Roadmaps are advantageous because they are an effective means of discretising
 large multi-dimensional search spaces into small graphs that can be searched
@@ -86,11 +58,10 @@ factored into three smaller subproblems: find a path from each of the start and
 target configuration to a point on the roadmap then search for a path on the
 roadmap that connects these two points. Disadvantages include:
 \begin{itemize}
-\item{Roadmaps are only probabilistically complete~\citep{barraquand97}. 
-This means that the probability of a path being found, if one exists, 
-increases with the number of sampled points.
-Other types of roadmaps~\citep{geraerts05} have stronger guarantees but their
-applicability is limited to pathfinding in two and three dimensions.}
+\item{Some types of roadmaps are not complete. For example, when using a PRM the probability of 
+a path being found, if one exists, increases with the number  of samped points~\citep{barraquand97}. 
+Other types of roadmaps, such as RRMs, have stronger guarantees but their applicability
+is limited to pathfinding in two and three dimensions.}
 \item{Roadmaps are applicable only in static environments. The introduction of
 new obstacles or changes to the placement of existing obstacles typically require 
 the roadmap to be re-computed. A one-shot variation of the roadmap idea has been
@@ -122,9 +93,26 @@ e.g. \textsc{NavPower} and \textsc{Recast Navigation}. Disadvantages include:
 \item Locating particular polygons can involve linear search.
 \end{itemize}
 
+\subsection{Shortest Path Maps}
+\label{cha::lit::graphs::spm}
+
 \subsection{Visibility Graphs}
 \label{cha::lit::graphs::vis}
-
-\subsection{Voronoi Diagrams}
-\label{cha::lit::graphs::voronoi}
+A visibility graph~\citep{lozanoperez79} is a model of an input map based on
+line-of-sight.  In the canonical case each vertex in a planar environment
+becomes a node in a graph. Edges are then added between any pair of nodes that
+are visible from one another.  Often employed in robot
+motion planning and computer games, visibility graphs are popular due to their 
+simplicity and ability to provide strong guarantees including completeness and 
+(depending on the search strategy at hand) Euclidean optimality. Disadvantages 
+include:
+\begin{itemize}
+\item Visibility graphs can be very large; in the worst case every
+vertex is visibile from every other vertex and a quadratic number
+of edges is required. Tangent Graphs~\citep{liu92} and Silhouette Zones~\citep{young01b}
+are two variant approaches that address this shortcoming in many practical
+cases but their memory requirements remain worst-case quadratic.
+\item Visibility graphs are static models and must be recomputed or 
+repaired if the environment changes.
+\end{itemize}
 
