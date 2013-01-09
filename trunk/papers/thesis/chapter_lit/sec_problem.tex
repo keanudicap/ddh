@@ -1,32 +1,69 @@
-\section{Problem Statement}
+\section{The Pathfinding Problem}
 \label{cha::lit::problem}
-Pathfinding is the problem of navigating between an arbitrary pair of points on
-a given \emph{input map}.  In the most common setting input maps are
-two-dimensional Euclidean (i.e. flat) or three-dimensional Geodesic (i.e. curved) 
-spaces. They can take the form of a \emph{spatial network} (i.e. a set of
-connected points) or they can be given as a collection of traversable and
-non-traversable polytopes; the latter often being called obstacles.
+Single-agent pathfinding is the problem of navigating a lone entity, for example
+a robot or a virtual character, from one point to another on a given~\emph{input
+map}.  In the most common setting input maps are two-dimensional Euclidean (i.e.
+flat) or three-dimensional Geodesic (i.e.  curved) spaces. They can take the
+form of a \emph{spatial network} (i.e. a set of connected points) or they can be
+described as a collection of traversable and non-traversable polytopes; the
+latter often being called obstacles.
+There are many variations of the single-agent pathfinding problem. These arise
+by adjusting certain parameters associated with the problem such as:
+\begin{itemize}
+\item The objective function. In the canonical case the aim is to minimise 
+travel distance but other objective functions (sometimes more than one)
+could also be used.
+\item The type of agent. In the canonical case agents are modeled as points
+but they could have arbitrary shapes, sizes and capabilities that 
+restrict their movement through the environment.
+\item The operating environment. In the canonical case agents operate in a 
+static fully observable environment. Depending on the application however, one 
+or both of the assumptions may need to be lifted.
+\item Solution quality. In the canonical case an optimal path is required. 
+In some real-time or resource constrained settings however a near-optimal 
+or bounded suboptimal path may be preferable.
+\item Path constraints. In the canonical case  the agent is simply required 
+to move from the start position to the target position without intersecting
+any obstacles. In other settings additional constraints may complicate this
+task; for example the agent may need to visit certain pre-specified locations 
+before reaching the target.
+\end{itemize}
 
-In order to find an obstacle-free path from one point to another practitioners
-begin by constructing from the input map a data structure $G = (V, E)$
-known as a \emph{search graph}.  Here $V$ is a set of permissible locations that
-an agent can occupy; these are often referred to as the nodes or \emph{vertices}
-of the graph.  Meanwhile $E$ is the set of \emph{edges} that connect adjacent
-vertices.  Edges can be thought of as roads or corridors that an agent can
-travel along or actions that can be executed in order to transition the agent
-from one location to another.
-The cost associated with each such move is called the \emph{edge weight}.
-Weights often represent distance travelled but they could stand for other types
-of metrics as well e.g. travel time or fuel consumption.  When the cost of
-moving between two vertices $a$ and $b$ can differ to the cost of moving from $b$ to
-$a$ the graph is said to be \emph{directed}.  When this is not the case, the
-graph is said to be \emph{undirected}.  
+\subsection{Search Graphs}
+\label{cha::lit::problem::graphs}
+Regardless of the problem variation at hand, practitioners typically all begin
+by constructing from the input map a data structure $G = (V, E)$ known as a
+\emph{search graph}.  Here $V$ is a set of permissible locations that an agent
+can occupy; these are often referred to as the nodes or \emph{vertices} of the
+graph.  Meanwhile $E$ is the set of \emph{edges} that connect adjacent vertices.
+Edges can be thought of as roads or corridors that an agent can travel along or
+actions that can be executed in order to transition the agent from one location
+to another.  The cost associated with each such move is called the \emph{edge
+weight}.  Weights often represent distance travelled but they could stand for
+other types of metrics as well; e.g.  travel time or fuel consumption.  When the
+cost of moving between two vertices $a$ and $b$ can differ to the cost of moving
+from $b$ to $a$ the graph is said to be \emph{directed}.  Otherwise 
+the graph is said to be \emph{undirected}.
 
-Search graphs can be explicit, in which case all vertices and edges are
-enumerated apriori, or they can be implicit, in which case the graph is
-gradually built during search. Explicit graphs arise in many settings including
-computer games~\citep{davis00,tozour02,champandard09}, 
+When all the vertices and edges of a search graph can be enumerated apriori the
+graph is said to be \emph{explicit}. If the vertices and edges are discovered
+by the agent during search the graph is said to be \emph{implicit}.
+Explicit graphs arise in many settings including computer 
+games~\citep{davis00,tozour02,champandard09},
 routing~\citep{sanders05,goldberg06} and robot motion
 planning~\citep{latombe91,choset05}.  Implicit graphs appear in higher
 dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
-application areas such as AI Planning~\citep{russel03}.  
+application areas such as AI Planning~\citep{russel03}.
+
+\subsection{Instances}
+\label{cha::lit::problem::instance}
+We designate the start location of each agent $s$ and its destination or 
+target location $t$. An \emph{instance}, then, is an \emph{s-t} pair that
+concretely define a pathfinding problem. We are asked to find a path
+$\pi = \langle  s = v_0, v_1, \ldots, v_{k-1},  v_k = t\rangle$ where each $v_i$
+is a vertex in $V$ and each pair of adjacent of adjacent vertices $(v_i, v_{v+1})$ 
+are connected by an associated edge in $E$.
+In the event that no such path exists, we say $\pi = \emptyset$.
+
+\subsection{Complexity}
+\label{cha::lit::problem::complexity}
