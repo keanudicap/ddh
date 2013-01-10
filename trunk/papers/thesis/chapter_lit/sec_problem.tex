@@ -11,24 +11,26 @@ of the single-agent pathfinding problem. These arise by adjusting certain
 parameters associated with the problem such as:
 \begin{itemize}
 \item The objective function. In the canonical case the aim is to minimise
-travel distance but other objective functions (or more than one at a
+travel distance but other objective functions (including more than one at a
 time) could also be used.
 \item The type of agent. In the canonical case agents are modeled as points
 but they could have arbitrary shapes, sizes and capabilities that 
-restrict their movement through the environment.
+restrict or enhance movement. % through the environment.
 \item The operating environment. In the canonical case agents operate in a 
 (i) static (ii) fully observable (iii) discrete environment. 
-Depending on the application however, any of these three assumptions may need 
+Depending on the application however, any or all of these assumptions may need 
 to be lifted.
-\item Solution quality. In the canonical case an optimal path is required. 
+\item Solution quality. In the canonical case agents are required to find 
+an optimal path.
 In some real-time or resource constrained settings however a near-optimal 
 or bounded suboptimal path may be preferable.
 \item Path constraints. In the canonical case  the agent is simply required 
 to move from the start position to the target position without intersecting
 any obstacles. In other settings additional constraints may complicate this
 task; for example the agent may need to visit certain pre-specified locations 
-before reaching the target.
+before arriving at the target.
 \end{itemize}
+
 
 In this thesis we will focus on optimal single-agent pathfinding 
 in both discrete and continuous environments. We assume the environment is
@@ -52,22 +54,21 @@ cost of moving between two vertices $a$ and $b$ can differ to the cost of moving
 from $b$ to $a$ the graph is said to be \emph{directed}.  Otherwise 
 the graph is said to be \emph{undirected}.
 
-When all the vertices and edges of a search graph can be enumerated apriori the
-graph is said to be \emph{explicit}. If the vertices and edges are discovered
-by the agent during search the graph is said to be \emph{implicit}.
-Explicit graphs arise in many settings including computer 
-games~\citep{davis00,tozour02,champandard09},
-routing~\citep{sanders05,goldberg06} and robot motion
-planning~\citep{latombe91,choset05}.  Implicit graphs appear in higher
-dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
-application areas such as AI Planning~\citep{russel03}.
 
-\subsection{Instances}
+\subsection{Paths and Instances}
 \label{cha::lit::problem::instance}
-We designate the start location of each agent $s$ and its destination or 
-target location $t$. An \emph{instance}, then, is an \emph{s-t} pair that
-concretely define a pathfinding problem. We are asked to find a path
-$\pi = \langle  s = v_0, v_1, \ldots, v_{k-1},  v_k = t\rangle$ where each $v_i$
-is a vertex in $V$ and each pair of adjacent of adjacent vertices $(v_i, v_{v+1})$ 
-are connected by an associated edge in $E$.
-In the event that no such path exists, we say $\pi = \emptyset$.
+A \emph{path} $\pi = \langle v_0, v_1, \ldots, v_{k-1},  v_k \rangle$
+can be interpreted as a walk in a search graph $G = (V, E)$.
+Each $v_i$ is a vertex in $V$ and each pair of adjacent 
+vertices $(v_i, v_{v+1})$ are connected by an associated edge in $E$.  
+When searching for a path we designate the start location of the agent $s$ and 
+its destination or target location $t$. An \emph{instance}, then, is an
+\emph{s-t} pair that concretely define a pathfinding problem. 
+
+Once a path has been found its \emph{quality} is typically evaluated in one of 
+two ways: length or cost.
+The \emph{length} of a path refers to the number of edges that comprise the path.
+The \emph{cost} of a path refers to the total weight of all edges that comprise the path. 
+An \emph{optimal} path is the lowest-cost path between vertices $s$ and $t$
+which can be found in $G$.
+

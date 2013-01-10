@@ -1,12 +1,43 @@
 \section{Types of Search Graphs}
 \label{cha::lit::graphs}
-Many approaches exist for creating a search graph from a given input map; we
-discuss a broad range of popular methods in the remainder of this section.
-\\ \newline
-Should mention~\citep{yap02} and (see Cindy's thesis for other ref) which 
-compare different types of representations. Also Tozour's Search Space Representations
-article.
-Maybe a section on choosing which one?
+
+A search graph is a discrete representation of an operating environment such as
+a Euclidean or Geodesic space in two or three dimensions.  There are many
+different approaches for constructing search graphs and in this section we 
+discuss a broad range of popular approaches: grid maps, navigation meshes, road
+maps, shortest path maps and visibility graphs.  All are examples of
+\emph{explicit} search graphs.  Explicit means that all vertices and all edges
+are enumerated apriori, before any pathfinding can begin.  Such graphs arise in
+many settings including computer games~\citep{davis00,tozour02,champandard09},
+routing~\citep{sanders05,goldberg06} and robot motion
+planning~\citep{latombe91,choset05}.  Not all search graphs are explict.  Some
+are~\emph{implicit}, which means that the vertices and edges of the graph are
+identified on-the-fly during search.  Implicit graphs appear in higher
+dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
+application areas such as AI Planning~\citep{russel03}.
+
+When comparing different types of search graphs we will make reference to whether
+or not they preserve two important properties from the operating environment:
+\emph{solution existence} and \emph{solution optimality}.
+A search graph which preserves solution existence guarantees that (i) every point
+in the environment can be mapped to a vertex in the graph and (ii) if two
+points can be connected by a path in the operating environment then they
+can also be connected by a path in the search graph (though not necessarily the
+same search graph). 
+Solution optimality is a similar but stronger guarantee: if a path between two
+points exists in the graph then there also exists in the graph a path which is 
+cost optimal with respect to the operating environment.
+
+%% some discussion about optimality implying completeness?
+%% note that there can be cases where the mapping from the
+%% environment is not complete but for the points that are mapped
+%% the graph can be optimality preserving.
+
+As we will see not every search graph preserves existence or optimality however
+each representation has its own distinct advantages and disadvantages. Choosing the
+right one depends on the particular requirements of the pathfinding problem at
+hand. We discuss in turn a variety of different search graphs and then in
+Section~\ref{cha::lit::graphs::analysis} we compare them directly.
 
 \subsection{Grid Maps}
 \label{cha::lit::graphs::grid}
@@ -142,3 +173,81 @@ cases but their memory requirements remain worst-case quadratic.
 repaired if the environment changes.
 \end{itemize}
 
+\subsection{Comparative Analysis}
+\label{cha::lit::graphs::analysis}
+Choosing the right search graph is not always a straightforward task.
+In particular, it is important to consider 
+
+
+%\begin{table}
+%\begin{tabular*}
+%
+%graph type
+%access time
+%space complexity
+%completeness preserving
+%optimality preserving
+%
+%\end{tabular*}
+%\end{table}
+
+
+The ``right'' representation 
+Many approaches exist for creating a search graph from a given input map; we
+discuss a broad range of popular methods in the remainder of this section.
+\\ \newline
+
+
+ for example a high-fidelity search graph
+is a very accurate model of the operating environment but it usually
+requires large amounts of memory to store. 
+By comparison, a roadmap is a low-fidelity model which requires
+much less memory but which may not be representationally complete.
+
+For example: grid maps are and visibility graphs are conceptually simple 
+representations but they can have large memory requirements when applied 
+in pathfinding settings with more than two dimensions.
+
+and choosing the right one depends on the specific requirements
+imposed by the problem at hand. For example, a high-fidelity 
+search graph is a very accurate model of the operating
+environment but it usually requires large amounts of memory.
+
+real-time context may not have enough time to compute
+or if the agent is operating in a real-time 
+
+For example, when operating
+an exploratory robot with a limited amount of memory, 
+
+ exploratory 
+robot with a limited amount of memory may only need to find appr
+in an industrial setting may always prefer the shortest possible
+route in order to maximise efficiency. Meanwhile, in a setting such
+as personal navigation, there may be a stronger emphasis on travelling
+along major roads to avoid getting lost -- rather than thaking the 
+absolute shortest path. 
+
+find an optimal path or is an approximately 
+
+
+There exist many different approaches for constructing search graphs, 
+each one having specific advantages and disadvantages
+
+
+commonly a Euclidean or Geodesic space in two or three dimensions.
+
+the
+latter commonly being Euclidean or Geodesic spaces which themselves 
+can be discrete or continuous in nature.
+The idea of s e
+
+The latter are spaces which themselves can be discrete or continuous.
+
+There exist many approaches for constructing search graphs
+There are many different ways of constructing search graphs including
+explicitly enumerating 
+
+Should mention~\citep{yap02} and (see Cindy's thesis for other ref) which 
+compare different types of representations. Also Tozour's Search Space Representations
+article.
+Maybe a section on choosing which one?
