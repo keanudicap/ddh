@@ -1,10 +1,10 @@
 \section{Types of Search Graphs}
 \label{cha::lit::graphs}
 
-A search graph is a discrete representation of an operating environment such as
-a Euclidean or Geodesic space in two or three dimensions.  There are many
-different approaches for constructing search graphs and in this section we 
-discuss a broad range of popular approaches: grid maps, navigation meshes, road
+%% some context? why do we need to discretise the operating environment?
+
+There are many ways to construct a search graph and in this section we discuss 
+a broad range of popular approaches: grid maps, navigation meshes, road
 maps, shortest path maps and visibility graphs.  All are examples of
 \emph{explicit} search graphs.  Explicit means that all vertices and all edges
 are enumerated apriori, before any pathfinding can begin.  Such graphs arise in
@@ -16,17 +16,17 @@ identified on-the-fly during search.  Implicit graphs appear in higher
 dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
 application areas such as AI Planning~\citep{russel03}.
 
-When comparing different types of search graphs we will make reference to whether
-or not they preserve two important properties from the operating environment:
-\emph{solution existence} and \emph{solution optimality}.
-A search graph which preserves solution existence guarantees that (i) every point
-in the environment can be mapped to a vertex in the graph and (ii) if two
-points can be connected by a path in the operating environment then they
-can also be connected by a path in the search graph (though not necessarily the
-same search graph). 
-Solution optimality is a similar but stronger guarantee: if a path between two
-points exists in the graph then there also exists in the graph a path which is 
-cost optimal with respect to the operating environment.
+When comparing different types of search graphs we will make reference to
+whether or not they preserve two important properties from the operating
+environment: \emph{solution existence} and \emph{solution optimality}.  A search
+graph which preserves solution existence guarantees that (i) every non-obstacle
+point in the environment can be mapped to a vertex in the graph and (ii) if two
+non-obstacle points can be connected by a path in the operating environment then
+they can also be connected by a path in the search graph (though not necessarily
+the same path).  A search graph which preserves solution optimality makes a similar 
+but stronger guarantee: if a path between two points exists in the graph then there
+also exists in the graph a path which is cost optimal with respect to the
+operating environment.
 
 %% some discussion about optimality implying completeness?
 %% note that there can be cases where the mapping from the
@@ -41,15 +41,18 @@ Section~\ref{cha::lit::graphs::analysis} we compare them directly.
 
 \subsection{Grid Maps}
 \label{cha::lit::graphs::grid}
-A grid map is a tesselation of unit squares, often called tiles, which is
-applied over a planar input map. Each tile has up to eight adjacent neighbours
-and is marked as traversable or non-traversable depending on whether or not it
-intersects any obstacles.  Agents are often modeled as unit-size entities that
-occupy a single tile and move from the centre of one traversable tile to the
-next.  
-An alternative approach is to model agents as point-size entities that occupy 
-the intersections of the grid and which travel in straight steps along the
-explicit edges of grid and diagonally through tile interiors.
+A grid map is a tesselation of gemetric shapes used to discretise an n-dimensional
+operating environment. The canonical case involves unit squares, called tiles, 
+which are applied over a plane~\footnote{Other types of two dimensional shapes,
+such as hexes and texes, are also used in this setting but less commonly; cf.~\citep{yap02}}.
+Each square tile has up to eight adjacent neighbours and is marked 
+as traversable or non-traversable depending on whether or not it
+intersects any obstacles.  Agents are modeled as unit-size entities that
+occupy a single traversable tile and move from the centre of one such tile 
+to the next.  
+An alternative model involves point-size agents which travel in straight 
+steps along the explicit edges of grid (and sometimes diagonally through 
+tile interiors)~\cite{nash07}.
 In both cases straight steps incur a cost of 1. Diagonal steps, if permitted, 
 incur a cost of $\sqrt{2}$.  When diagonal moves are not permitted the grid map 
 is said to be \emph{4-connected}; otherwise it is \emph{8-connected}.  
@@ -58,7 +61,7 @@ Grid maps are popular for several reasons: (i) they are simple to understand
 and simple to apply (ii) they can be represented as a matrix of bits and stored
 efficiently (iii) individual nodes can be updated or queried in constant time.
 One significant disadvantage of grid maps is their fixed resolution. In many cases 
-grids are too coarse to accurately model the underlying input map. Increasing the
+grids are too coarse to accurately model the underlying environment. Increasing the
 number of tiles is not always possible: there is always a corresponding increase in
 memory requirements and searching in a larger grid often makes pathfinding more 
 challenging.
@@ -69,12 +72,12 @@ require post-processing to ``smooth'' them.
 
 \subsection{Navigation Meshes}
 \label{cha::lit::graphs::nav}
-A navigation mesh can be described as a low-fidelity model of an input map. 
+A navigation mesh can be described as a low-fidelity model of an operating environment.
 Typically comprising a set of convex adjacent polygons, navigations meshes are
 often used in computer games to represent walkable and non-walkable surfaces in
 two and three dimensions~\citep{snook00,tozour02}.
 There are many approaches for constructing navigation meshes.
-One recent technique triangulates the input map~\citep{demyen07,kallmann10}.  
+One recent technique triangulates the environment~\citep{demyen07,kallmann10}.  
 Another decomposes the map into voxels which are then manipulated in order to construct a 
 mesh of walkable polygons. 
 Recursive spatial indexing algorithms can also be applied to produce navigation meshes. 
@@ -98,12 +101,12 @@ a linear search may be required.
 
 \subsection{Roadmaps}
 \label{cha::lit::graphs::road}
-A roadmap is a set of connected points that are drawn from a given input map.
+A roadmap is a set of connected points that are drawn from a given environment.
 Conceptually similar to \emph{road networks}, which model automotive
 transportation systems, roadmaps are used to solve high dimensional pathfinding
 problems in the area of robotics.  Many variants exist. The Probabilistic
 Roadmap (PRM)~\citep{kavraki94}, for example,
- is created by randomly sampling a configuration space (i.e. the input map) in
+ is created by randomly sampling a configuration space (i.e. the operating environment) in
 order to build a connected graph. Another approach, known as the Reachability
 Roadmap (RRM)~\citep{geraerts05} applies a grid tesselation in the first
 instance and then chooses points from the grid.  Voronoi Diagrams~\citep{aurenhammer91}
@@ -134,7 +137,7 @@ robot type (i.e. they are normally not reusable).}
 \subsection{Shortest Path Maps}
 \label{cha::lit::graphs::spm}
 A Shortest Path Map (SPM)~\citep{mitchell87,mitchell97}, is a tree whose nodes
-form a shortest path cover of an input map.  The nodes of the tree are regions
+form a shortest path cover of an environment.  The nodes of the tree are regions
 that are computed and organised with respect to a single source point. Each
 point interior to a region can be reached from the source by following a path in
 the SPM that is fixed.
@@ -155,7 +158,7 @@ and difficult to implement in practice~\citep{surazhsky05}.
 
 \subsection{Visibility Graphs}
 \label{cha::lit::graphs::vis}
-A visibility graph~\citep{lozanoperez79} is a model of an input map based on
+A visibility graph~\citep{lozanoperez79} is a model of an operating environment based on
 line-of-sight.  In the canonical case each vertex in a planar environment
 becomes a node in a graph. Edges are then added between any pair of nodes that
 are visible from one another.  Often employed in robot
@@ -171,6 +174,8 @@ are two variant approaches that address this shortcoming in many practical
 cases but their memory requirements remain worst-case quadratic.
 \item Visibility graphs are static models and must be recomputed or 
 repaired if the environment changes.
+\item Visibility graphs do not preserve solution optimality when applied
+to environments in three-dimensional space or higher.
 \end{itemize}
 
 \subsection{Comparative Analysis}
