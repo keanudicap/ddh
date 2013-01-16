@@ -1,13 +1,53 @@
 \section{Search Strategies}
-Search algorithms tend to fall into one of two categories:
-systematic search and local search.
-A number of popular systematic search strategies exist.
+\label{cha::lit::search}
+Given a search graph $G$ and a pair of vertices $s$ and $t$, which correspond to the 
+start and target positions of a single agent, our objective is to find a path in $G$
+from $s$ to $t$.
+A large number of strategies have been developed for this purpose. Most fall into
+one of three distinct paradigms:
+\begin{itemize}
+\item{\emph{Blind-search algorithms} which explore the solution space in a systematic fashion.}
+\item{\emph{Informed-search algorithms} which employ lower-bounds to improve the 
+efficiency of systematic search.}
+\item{\emph{Local-search algorithms} which employ heuristic decision-making or mimicry of
+natural processes in order to explore only select portions of the solution space.}
+\end{itemize}
 
-\begin{enumerate}
-\item{BFS, DFS}
-\item{Dijkstra's Algorithm}
-\item{A*}
-\end{enumerate}
+In the next sections we will discuss each paradigm in turn. In doing so we will sometimes
+find it useful to refer to two important properties of search algorithms: \emph{completeness} 
+and \emph{optimality}.
+We say that a search algorithm is \emph{complete} when it guarantees that it will return a
+solution if there exists a path between nodes $s$ and $t$ in $G$. 
+Optimality is a similar but stronger property which entails completeness. 
+We will say that a search algorithm is \emph{optimal} if it guarantees that every solution it 
+returns is also a shortest path from $s$ to $t$ in $G$. 
 
-Systematic search can be optimal or suboptimal. Latter can be with 
-and without gurarantees.
+Both properties are defined only with respect to the current search graph $G$.
+This has some important ramifications. For example: a path returned by an optimal search algorithm
+is not guaranteed to be \emph{truly} optimal (that is, optimal with respect to the operating environment 
+of the agent) unless $G$ is constructed in a way that preserves solution optimality.
+(cf. Section~\ref{cha::lit::graphs}).
+Similarly, in order for a complete algorithm to accurately report whether or not any path exists between 
+$s$ and $t$ it will require a graph $G$ that preserves solution existence.
+
+\subsection{The Search Process}
+\label{cha::lit::search:terms}
+Looking for a path between two locations $s$ and $t$ is a process of repeatedly
+\emph{expanding} and \emph{generating} nodes from a search graph $G$.  
+Expansion is equivalent to
+performing an action that moves the agent from its previous location to the 
+present location (the one associated with the node at hand).
+%As part of this procedure the neighbours of the current node,
+%which have become immediately reachable for the agent, are \emph{generated}.
+Generating a node simply means to evaluate it (in terms of cost) and possibly
+pushing it onto an expansion queue.
+
+\subsection{Blind Search}
+\label{cha::lit::search::blind}
+
+\subsection{Informed Search}
+\label{cha::lit::search::informed}
+
+\subsection{Local Search}
+\label{cha::lit::search::local}
+
