@@ -180,79 +180,31 @@ to environments in three-dimensional space or higher.
 
 \subsection{Comparative Analysis}
 \label{cha::lit::graphs::analysis}
-Choosing the right search graph is not always a straightforward task.
-In particular, it is important to consider 
+Selecting a technique that models an operating environment as a search graph is not
+a straightforward task. We have discussed a number of popular approaches but none
+are ideal in every situation; each has their own set of advantages and disadvantages.
 
+Shortest-path maps, for example, preserve solution existence and solution optimality 
+and they can solve any shortest path query w.r.t a single fixed source  in just logarithmic time. 
+Unfortunately their applicability is limited: in many pathfinding settings, particularly
+computer games and robotics, it is common for the source location to change frequently and
+each time it does a new Shortest-path map must be computed requiring time $O(n\log{n})$.
+Grid maps, by comparison, are much better suited in such contexts: though they only
+preserve solution existence they can be constructed in amortized linear time and operations
+on individual tiles can be performed in constant time. Unfortunately grid maps can require
+high resolutions to accurately represent an environment and this slows pathfinding search.
 
-%\begin{table}
-%\begin{tabular*}
-%
-%graph type
-%access time
-%space complexity
-%completeness preserving
-%optimality preserving
-%
-%\end{tabular*}
-%\end{table}
+Roadmaps and Navigation Meshes are techniques that produce sparse graphs because 
+they do not rely on cells of uniform size.  They can be very fast to search 
+but must be constructed as part of an offline preprocessing step. They must both
+be repaired (or recomputed) if the environment changes and they both have 
+linear-time worst-case requirements for operations on individual nodes.  
+A similar description is true of Visibility Graphs however in this case an additional 
+and often prohibitive space overhead may be required.
 
-
-The ``right'' representation 
-Many approaches exist for creating a search graph from a given input map; we
-discuss a broad range of popular methods in the remainder of this section.
-\\ \newline
-
-
- for example a high-fidelity search graph
-is a very accurate model of the operating environment but it usually
-requires large amounts of memory to store. 
-By comparison, a roadmap is a low-fidelity model which requires
-much less memory but which may not be representationally complete.
-
-For example: grid maps are and visibility graphs are conceptually simple 
-representations but they can have large memory requirements when applied 
-in pathfinding settings with more than two dimensions.
-
-and choosing the right one depends on the specific requirements
-imposed by the problem at hand. For example, a high-fidelity 
-search graph is a very accurate model of the operating
-environment but it usually requires large amounts of memory.
-
-real-time context may not have enough time to compute
-or if the agent is operating in a real-time 
-
-For example, when operating
-an exploratory robot with a limited amount of memory, 
-
- exploratory 
-robot with a limited amount of memory may only need to find appr
-in an industrial setting may always prefer the shortest possible
-route in order to maximise efficiency. Meanwhile, in a setting such
-as personal navigation, there may be a stronger emphasis on travelling
-along major roads to avoid getting lost -- rather than thaking the 
-absolute shortest path. 
-
-find an optimal path or is an approximately 
-
-
-There exist many different approaches for constructing search graphs, 
-each one having specific advantages and disadvantages
-
-
-commonly a Euclidean or Geodesic space in two or three dimensions.
-
-the
-latter commonly being Euclidean or Geodesic spaces which themselves 
-can be discrete or continuous in nature.
-The idea of s e
-
-The latter are spaces which themselves can be discrete or continuous.
-
-There exist many approaches for constructing search graphs
-There are many different ways of constructing search graphs including
-explicitly enumerating 
-
-Should mention~\citep{yap02} and (see Cindy's thesis for other ref) which 
-compare different types of representations. Also Tozour's Search Space Representations
-article.
-Maybe a section on choosing which one?
+In this thesis we will employ grid-based map representations. We do not claim this
+representation to be \emph{the best} however, as we have discussed, it has certain advantages
+that simplify pathfinding search. Moreover grid maps, as a representational technique,
+are relatively unstudied in the literature. We will thus present in later chapters of this
+thesis new techniques that significantly improve the state-of-the-art in pathfinding search 
+over grid map domains: with respect to not only efficiency but also the quality of computed solutions.
