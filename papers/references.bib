@@ -900,6 +900,16 @@ annote = {Exceedingly similar to HAA* }
 		direction of the goal is possible. This node is generated. Process is repeated, each time assuming the direct path between 
 		the latest successorand the goal is traversable. Kind of similar to jump points but the approach is suboptimal.}
 } 
+
+@article{lumelsky87,
+    author = {Vladimir J. Lumelsky and Alexander A. Stepanov},
+    title = {Path-planning strategies for a point mobile automaton moving amidst unknown obstacles of arbitrary shape},
+    journal = {Algorithmica},
+    year = {1987},
+	annote =  {Similar but older method of the type studied in yakovlev10.}
+}
+
+
 @inproceedings{sun09,
   author    = {Xiaoxun Sun and
                William Yeoh and
@@ -1536,6 +1546,18 @@ annote = {Exceedingly similar to HAA* }
  annote = {Some results showing PRMs are probabilistically complete.}
 } 
 
+@article{kallman05,
+  title={Path Planning in Triangulations},
+  author={Marcello Kallmann},
+  booktitle = {IJCAI Workshop on Reasoning Representation and Learning in Computer Games},
+  year = {2005},
+  location = {Edinburgh, Scotland},
+  annote = {Suboptimal pathfinding in a constrained delaunay triangulation. Handles clearance
+  by increasing obstacle sizes. Requires funnel algorithm to extract an actual path from a 
+  computed channel (i.e. a simple polygon) connecting the start and goal triangles.}
+}
+
+
 @inproceedings{kallmann10,
 	author    = { Marcelo Kallmann },
 	title     = { Shortest Paths with Arbitrary Clearance from Navigation Meshes },
@@ -1550,4 +1572,86 @@ annote = {Exceedingly similar to HAA* }
 	title = {Recast Navigation},
 	year = {2009},
 	url = {http://code.google.com/p/recastnavigation/}
+}
+
+@article{aurenhammer91,
+ author = {Aurenhammer, Franz},
+ title = {Voronoi diagrams - a survey of a fundamental geometric data structure},
+ journal = {ACM Comput. Surv.},
+ issue_date = {Sept. 1991},
+ volume = {23},
+ number = {3},
+ month = sep,
+ year = {1991},
+ issn = {0360-0300},
+ pages = {345--405},
+ numpages = {61},
+ url = {http://doi.acm.org/10.1145/116873.116880},
+ doi = {10.1145/116873.116880},
+ acmid = {116880},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ annote = {Title says it all really. Discusses a bunch of perspectives, including biology, math, compsci and
+	 a bunch of different application areas.}
+}
+
+@article{samet85,
+ author = {Samet, Hanan and Webber, Robert E.},
+ title = {Storing a collection of polygons using quadtrees},
+ journal = {ACM Trans. Graph.},
+ issue_date = {July 1985},
+ volume = {4},
+ number = {3},
+ month = jul,
+ year = {1985},
+ issn = {0730-0301},
+ pages = {182--222},
+ numpages = {41},
+ url = {http://doi.acm.org/10.1145/282957.282966},
+ doi = {10.1145/282957.282966},
+ acmid = {282966},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+@article{finkel74,
+author={Finkel, R.A. and Bentley, J.L.},
+title={Quad trees a data structure for retrieval on composite keys},
+year={1974},
+issn={0001-5903},
+journal={Acta Informatica},
+volume={4},
+issue={1},
+doi={10.1007/BF00288933},
+url={http://dx.doi.org/10.1007/BF00288933},
+publisher={Springer-Verlag},
+pages={1-9},
+language={English},
+annote = {Original quadtrees paper.}
+}
+
+@inbook{mitchell97,
+	author = {Joseph S. B. Mitchell},
+	title = {Shortest Paths and Networks},
+	booktitle = {Handbook of Discrete and Computational Geometry},
+	year = {1997},
+	editor = {Jacob E. Goodman and Joseph O'Rourke},
+	chapter = {24},
+	pages = {445-466},
+	publisher = {CRC Press},
+	address = {New York},
+	annote = {Survey of various CompGeom methods}
+}
+
+@article{dijkstra59,
+	author={Dijkstra, E.W.},
+	title={A note on two problems in connexion with graphs},
+	year={1959},
+	journal={Numerische Mathematik},
+	volume={1},
+	issue={1},
+	url={http://dx.doi.org/10.1007/BF01386390},
+	publisher={Springer-Verlag},
+	pages={269-271},
+	annote = {Dijkstra's Algorithm.}
 }
