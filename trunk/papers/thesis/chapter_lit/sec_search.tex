@@ -47,22 +47,21 @@ expansion queue are exhausted and the algorithm returns failure.
 \subsection{Blind Search}
 \label{cha::lit::search::blind}
 Blind search is a systematic search strategy that expand nodes from the 
-graph in a fixed order. Two classical examples are Breadth-First Search (BFS) and 
-Depth-First Search (DFS). 
+graph in a fixed order. Two classical examples are Breadth-First Search (BFS)~\citep{moore59}
+and Depth-First Search (DFS)~\citep{russel03}. 
+Both of these algorithms construct a search \emph{tree} which has the start node 
+$s$ at its root. BFS proceeds by expanding all nodes at a given level of the tree
+before moving down to the next level. DFS meanwhile both recurse down the 
+tree immediately by expanding a node as soon as it generates it.
 
-Both algorithms construct a search \emph{tree} which has the start node $s$ at its root. 
-BFS proceeds by expanding all nodes at a given level of the tree
-before moving down to the next level. DFS meanwhile recurses down the tree immediately 
-by expanding a node as soon as it generates it.
-BFS is a complete and optimal strategy but it is not very efficient; it requires
+BFS is a complete and optimal search strategy but it is not very efficient; it requires
 an amount of space and time which increases exponentially with the depth at which 
 the target node is found in the search tree.
-By comparison, DFS is much faster and much more memory efficient: it requires just
-linear time to explore a full branch of the tree, from root to leaf, and it keeps in 
-memory only the nodes found along that branch. Unfortunately DFS lacks any optimality or 
-completeness guarantees and in the worst case it will expand all nodes in the tree.
-Worse, if the depth of the tree is unbounded, or if the tree contains repeated nodes, 
-DFS may not terminate.
+By comparison, DFS requires just linear time to explore a full branch of the tree, 
+from root to leaf, and it keeps in memory only the nodes found along that branch. 
+Unfortunately DFS lacks any optimality or completeness guarantees and in the worst 
+case it will explore all possible paths in the tree. This means that if the depth of 
+the tree is unbounded, or if the tree contains repeated nodes, DFS may not terminate. 
 
 \subsection{Informed Search}
 \label{cha::lit::search::informed}
@@ -92,9 +91,22 @@ efficient~\citep{dechter85} but only if the heuristic function is both
 \emph{admissible} and \emph{monotonic}. Admissible means that $h(n)$ always
 lower-bounds the cost of the path from $n$ to $t$. Monotonic means that $h(n)$
 never decreases along any particular path.
-In terms of complexity, A* requires only linear space and computes a solution in 
+In terms of complexity, A* requires only $O(|V|)$ space and computes a solution in 
 worst-case time $O(|V|\log_2{|V|})$.
 
 \subsection{Local Search}
 \label{cha::lit::search::local}
+Local search is the name given to a family of non-systematic search algorithms.
+The central idea is to employ heuristic decision-making to drive search but 
+without the memory and time overheads associated with blind or informed strategies.
+Bug algorithms~\citep{choset05} are prototypical examples of local search
+applied to pathfinding.
+Inspired by insects from the natural world, these methods navigate in a straight 
+line toward the goal until an obstacle is encountered. They then circumnavigate 
+the obstacle (either partially or entirely) in order to find the best ``leave'' 
+point from which to continue toward the goal.
+Though they are incomplete and suboptimal, bug algorithms can be surprisingly
+effective on a range of problems (e.g. search spaces containing only convex
+obstacles). They require very little memory (typically a constant amount) and
+are attractive in cases where computational resources are very limited.
 
