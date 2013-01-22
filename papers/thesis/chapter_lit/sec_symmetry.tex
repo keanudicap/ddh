@@ -1,5 +1,33 @@
 \section{Symmetry Breaking}
 \label{cha::lit::symmetry}
+Symmetry is a naturally occurring phenomenon that arises whenever we are forced
+to enumerate permutations of multiple indistinguishable objects. Typically
+undesirable, symmetry forces search algorithms to waste time and prevents real
+progress toward the goal.  For example: a common problem in AI involves
+assigning resources to a set of functionally identical machines. Systematic
+search algorithms will proceed by generating in this case a unique state for
+every possible assignment of resource to machine -- even though many of these
+assignments produce identical results. 
+
+In the area of AI Planning, a number of works deal with the explicit identification
+and elimination of symmetries in search:
+
+\begin{itemize}
+\item \cite{fox99} describe a static symmetry-breaking technique in a 
+a propositional \textsc{GraphPlan} framework. Their
+approach identifies sets of symmetric objects and, from those, sets
+of symmetric actions. By removing both they are able to reduce the size
+of the planning graph and speed up search.
+\item Commutativity Pruning~\cite{haslum00} is a static approach for 
+identifying sets of actions whose members are all pairwise commutative.
+Since permutations of such actions lead to symmetric states, a total
+ordering is defined over the members of each set. This eliminates
+many partial-order symmetries that would otherwise appear during search.
+\item 
+
+\end{itemize}
+
+\subsection{TODO}
 Approaches for identifying and eliminating search-space symmetry have been
 proposed in areas including planning \cite{fox99}, constraint programming
 \cite{gent00}, and combinatorial optimization \cite{fukunaga08}. 
@@ -7,11 +35,10 @@ Very few works however explicitly identify and deal with symmetry in pathfinding
 domains such as grid maps. 
 
 \begin{enumerate}
-\item{Symmetry Intro}
 \item{Symmetry Breaking in CP and CO}
 \item{Isomorphism Detection}
 \item{Partial Orderings}
-\item{Commutativity Pruning}
 \item{Stubborn Sets}
+\item{Duplicate Pruning}
 \end{enumerate}
 
