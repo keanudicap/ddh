@@ -1,31 +1,51 @@
 \section{Symmetry Breaking}
 \label{cha::lit::symmetry}
 Symmetry is a naturally occurring phenomenon that arises whenever we are forced
-to enumerate permutations of multiple indistinguishable objects. Typically
-undesirable, symmetry forces search algorithms to waste time and prevents real
-progress toward the goal.  For example: a common problem in AI involves
-assigning resources to a set of functionally identical machines. Systematic
-search algorithms will proceed by generating in this case a unique state for
-every possible assignment of resource to machine -- even though many of these
-assignments produce identical results. 
+to enumerate permutations of elements in a set. Typically
+undesirable, symmetry forces search algorithms to waste time evaluating nodes that
+are equivalent to each other and prevents real progress toward the goal.
+For example: a common problem in AI involves assigning resources to a set of 
+functionally identical machines. Systematic search algorithms will proceed by 
+generating in this case a unique state for every possible assignment of resource
+to machine -- despite the fact that many of these assignments are equivalent and
+produce identical results.
 
-In the area of AI Planning, a number of works deal with the explicit identification
-and elimination of symmetries in search:
+In the context of Constraint Programming symmetries arise when interchanging
+the order in which values are assigned to variables or when the variables themselves
+are interchangeable~\citep{walsh07}. Practitioners in the field deal with symmetries
+by posting constraints that restrict the order in which assignments can occur.
+In some cases these constraints are produced by a preprocessing step,
+ e.g. as in~\citep{crawford96}, or computed dynamically during search,
+ e.g. as in~\cite{roney-dougal04}. Each approach involves a compromise between 
+effectiveness and efficiency.
+
+A number of symmetry-breaking approaches involving transition systems have been described in the
+literature of Model Checking and AI Planning. For example in~\cite{emerson96} and~\cite{pochter11}
+an equivalence between states is established by associating each state in the graph with a group of
+states that are symmetric. The authors identify a canonical state for each group and derive from
+these a quotient transition system that is free of state-symmetry. In~\citep{rintannen03} a similar
+idea is applied to propositional planning. In this case however the authors identify symmetric
+transitions rather than symmetric states.  Though less powerful than state symmetries, transition
+symmetries can be computed in low-order polynomial time; computing state symmetries is $NP$-hard in
+general.
+
+A different type of symmetry
 
 \begin{itemize}
-\item \cite{fox99} describe a static symmetry-breaking technique in a 
-a propositional \textsc{GraphPlan} framework. Their
-approach identifies sets of symmetric objects and, from those, sets
-of symmetric actions. By removing both they are able to reduce the size
-of the planning graph and speed up search.
-\item Commutativity Pruning~\cite{haslum00} is a static approach for 
-identifying sets of actions whose members are all pairwise commutative.
-Since permutations of such actions lead to symmetric states, a total
-ordering is defined over the members of each set. This eliminates
-many partial-order symmetries that would otherwise appear during search.
-\item 
+\item \cite{fox99} identify interchangeable objects and sets of symmetric actions
+in the context of propositional planning with \textsc{GraphPlan}. By removing both
+they produce smaller planning graphs and increase the efficiency of seach.
+\item Commutativity Pruning~\cite{haslum00} identifies sets of actions that are 
+pairwise commutative. To avoid symmetries arising in cases where such actions
+need to be applied sequentially, the authors propose a canonical ordering 
+\item  
 
 \end{itemize}
+
+Despite a wealth of literature on the topic of symmetry breaking, in areas
+as diverse as AI Planning, Constaint Programming, Combinatorial Optimisation
+and Model Checking, there have been no works that explicitly identify symmetry 
+in pathfinding search.
 
 \subsection{TODO}
 Approaches for identifying and eliminating search-space symmetry have been
