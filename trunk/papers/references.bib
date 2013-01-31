@@ -86,16 +86,6 @@
 	Year = {2006}}
 
 @incollection{glover92,
-	Address = {Oxford},
-	Annote = {Book info: 
-ISBN-10: 0080408060
-ISBN-13: 978-0080408064
-
-Selected papers from the Conference "Computer Science and Operations Research: New Developments in Their Interfaces" held on 8 - 10 January 1992 in Williamsburg, Virginia
-
-Not sure but this could be very similar to glover96. Seems to cover the same ground.
-
-There is also a paper with the same title as glover96 but dated to 1992. This is an extended (137 page) version of the 96 paper. It includes extra things like a proof that there exists a first order delete\add simple path connecting any tour to any other.},
 	Author = {F. Glover},
 	Booktitle = {Computer Science and Operations Research: New developments in their Interfaces},
 	Date-Added = {2009-03-16 17:34:11 +1100},
@@ -105,7 +95,16 @@ There is also a paper with the same title as glover96 but dated to 1992. This is
 	Pages = {449-509},
 	Publisher = {Pergamon Press},
 	Title = {New ejection chain and alternating path methods for traveling salesman problems},
-	Year = {1992}}
+	Year = {1992},
+	Address = {Oxford},
+	Annote = {
+	   	Book info: ISBN-10: 0080408060 ISBN-13: 978-0080408064
+		Not sure but this could be very similar to glover96. Seems to cover the same ground.
+		There is also a paper with the same title as glover96 but dated to 1992. This is an extended (137
+		page) version of the 96 paper. It includes extra things like a proof that there exists a first order
+		delete\add simple path connecting any tour to any other.
+	}
+}
 
 @techreport{glover91,
 	Annote = {Original paper describing node-based ejection chains.},
@@ -456,7 +455,12 @@ This paper describes several different ejection-chain based reference structures
 	Booktitle = {CP},
 	Pages = {880-888},
 	Title = {Breaking Value Symmetries},
-	Year = {2007}}
+	Year = {2007},
+	annote = {
+		Discusses computational limitations of static and dynammic symmetry breaking
+		for constraint programming.
+	}
+}
 
 @inproceedings{korf98,
 	Annote = { An admissible heuristic function reduces the effective depth of search, rather than the effective branching factor},
@@ -588,8 +592,7 @@ This paper describes several different ejection-chain based reference structures
 }
 
 @inproceedings{helmert08,
-	author    = {Malte Helmert and
-		 Gabriele R{\"o}ger},
+	author    = {Malte Helmert and Gabriele R{\"o}ger},
 	title     = {How Good is Almost Perfect?},
 	booktitle = {AAAI},
 	year      = {2008},
@@ -759,8 +762,21 @@ author = "John F. Dillenburg and Peter C. Nelson"
   annote = {Symmetry breaking via static analysis of problem descriptions. Interchangeable
 	  objects placed into a symmetry groups. Actions identified as symmetric if their parameters
 		  are drawn from the same symmetry group. Applied to GRAPHPLAN encodings to reduce
-		  number of actions at each layer. }
+		  number of actions at each layer. Not very strong; only symmetries appearing in the initial 
+		  state are identified during search. }
 }
+
+@inproceedings{fox02,
+  author    = {Maria Fox and Derek Long},
+  title     = {Extending the Exploitation of Symmetries in Planning},
+  booktitle = {AIPS},
+  year      = {2002},
+  pages     = {83-91},
+  ee        = {http://www.aaai.org/Library/AIPS/2002/aips02-009.php},
+  annote = {Extends fox99 to detect transition symmetries not present in the initial state
+	  but which manifest during search. Applied to GRAPHPLAN encodings.}
+}
+
 
 @inproceedings{gent00,
   author    = {Ian P. Gent and
@@ -1105,7 +1121,13 @@ annote = {Exceedingly similar to HAA* }
 	booktitle = {AAAI},
 	year      = {2011},
 	ee        = {http://www.aaai.org/ocs/index.php/AAAI/AAAI11/paper/view/3732},
-	annote = {Symmetry breaking method using path automorphisms. Creates a graph from a static problem description and computes automorphisms for it. The problem graph is then used to identify state symmetries during search. Only automorphisms that stabilise (i.e. are invariant wrt) the start and goal state are considered. Additional "shallow" pruning also identifies symmetric children of the current state using a similar approach. A canonical form for describing states is used to speed up symmetric state identification (without this identification is hard: each state has many automorphisms, each needs to be compared to every node on open + closed). Paper nicely explained but poorly structured paper. Results are OK but other types of symmetries not considered (e.g. partial orders). } 
+	annote = {
+		Symmetry breaking via approximate canonicalisation of states. State symmetries
+		are identified by computing automorphisms of a problem description graph.
+		Also presented is an approach for identifying symmetric transitions at any given
+		state. The latter is similar to rintannen03 but seems weaker. Not much new here;
+		only the problem description graph stuff.
+	}
 }
 
 @article{wang11,
@@ -1118,9 +1140,13 @@ annote = {Exceedingly similar to HAA* }
 	year      = {2011},
 	pages     = {55-90},
 	ee        = {http://dx.doi.org/10.1613/jair.3370},
-	annote = { Improves wang09 in several ways: relaxes target isolation, facilitates crossing single-width tunnels and improves makespan by reducing the number
-		of reposition operations. Solves ~99\% of random 2000-agent problems on various large BG maps. Also gives some low poly bounds on solution length and
-			memory use. The approach is complicated but the results are seriously nice. }
+	annote = {
+		Improves wang09 in several ways: relaxes target isolation, facilitates
+		crossing single-width tunnels and improves makespan by reducing the number
+		of reposition operations. Solves ~99\% of random 2000-agent problems on
+		various large BG maps. Also gives some low poly bounds on solution length
+		and memory use. The approach is complicated but the results are seriously nice.
+	}
 }
 
 @inproceedings{likitvi04,
@@ -1131,9 +1157,13 @@ annote = {Exceedingly similar to HAA* }
 	pages={93-108},
 	month={September},
 	year={2004},
-	annote = {30pct faster AC checking by caching the results of previous checks for pairs of values. A further 2x speedup enhancement keeps a pointer
-		to the last identified support in a domain. The next check begins from the pointed-to value instead of the first value in the domain
-			(minimises re-identifiction of non-supports).}
+	annote = {
+		30pct faster AC checking by caching the results of previous checks for
+		pairs of values. A further 2x speedup enhancement keeps a pointer to the
+		last identified support in a domain. The next check begins from the
+		pointed-to value instead of the first value in the domain
+			(minimises re-identifiction of non-supports).
+	}
 }
 
 @inproceedings{botea11,
@@ -1173,9 +1203,8 @@ annote = {Exceedingly similar to HAA* }
 		over the interchangeable objects.
 		Constraints are translated to the propositional logic where planning-as-SAT is used to solve
 		the problem.
-		Very similar to shallow pruning in pochter11 but appears weaker.	
+		Very similar to shallow pruning in pochter11.
 	}
-			
 }
 
 @article{felner07,
@@ -1214,11 +1243,12 @@ annote = {Exceedingly similar to HAA* }
   booktitle = {AAAI},
   year      = {1993},
   pages     = {756-761},
-  annote = {Excellent paper that describes a mechanism for the automatic construction of duplictae-detecting FSMs. 
-	  An "exploratory" BFS is initially performed over the search space up to some max depth. The BFS tree is analysed in order to identify 
-	  duplicate nodes s.t. if a node is found via two distinct paths, only one path is kept: the one which respects some given operator ordering.
-	  The sequence of operators on the other (rejected) path are used to construct a duplicate-detecting automaton. Any time a node is reached via
-	  some path in this automaton it can be pruned because an alternative path exists that respects operator ordering.
+  annote = {Excellent paper that describes a mechanism for the automatic construction of duplictae-detecting FSMs.
+	  An "exploratory" BFS is initially performed over the search space up to some max depth. The BFS tree is
+	  analysed in order to identify duplicate nodes s.t. if a node is found via two distinct paths, only one path is
+	  kept: the one which respects some given operator ordering.  The sequence of operators on the other (rejected)
+	  path are used to construct a duplicate-detecting automaton. Any time a node is reached via some path in this
+	  automaton it can be pruned because an alternative path exists that respects operator ordering.
   }
 }
 
@@ -1230,12 +1260,14 @@ annote = {Exceedingly similar to HAA* }
   year      = {1996},
   pages     = {402-416},
   ee        = {http://dx.doi.org/10.1007/3-540-61291-2_68},
-  annote = {The original PDB paper. Defines patterns as partial specifications of the goal state. i.e. a subset of the goal variables.
-	  In the case of the 15 puzzle, a partial specification is a subset of the tiles (say, {1, 2, 3, 4}). A PDB then is a database that contains,
-	  for all possible arrangements (== assignments) of these variables, an exact cost for moving them all back to the goal position.
-	  The PDB is then used as a more accurate heuristic during search. To reduce the size of PDBs, patterns that are mirrors of each other (diagonal,
-	  horizontal or vertical reflections) are combined together. 1038x reduction in node expansions but only 12x search time reduction (node expansions are 
-	  more expensive vs simpler Manhattan heuristic; lookups are needed etc).}
+  annote = {The original PDB paper. Defines patterns as partial specifications of the goal state. i.e. a subset of the
+	  goal variables.
+	  In the case of the 15 puzzle, a partial specification is a subset of the tiles (say, {1, 2, 3, 4}). A PDB then
+	  is a database that contains, for all possible arrangements (== assignments) of these variables, an exact cost
+	  for moving them all back to the goal position.  The PDB is then used as a more accurate heuristic during
+	  search. To reduce the size of PDBs, patterns that are mirrors of each other (diagonal, horizontal or vertical
+	  reflections) are combined together. 1038x reduction in node expansions but only 12x search time reduction
+	  (node expansions are more expensive vs simpler Manhattan heuristic; lookups are needed etc).}
 }
 
 @article{korf02,
@@ -1509,6 +1541,11 @@ annote = {Exceedingly similar to HAA* }
 	booktitle = {AIPS},
 	year      = {2000},
 	pages     = {140-149},
+	annote = {
+		Describes h^m heuristic and commutativity pruning. The latter is a weak form
+		of partial order reduction. Works by defining a lex-order over the set of 
+		commutative actions and only ever applying these actions wrt the ordering. 
+	}
 }
 
 @inproceedings{bohlin00,
@@ -1579,59 +1616,59 @@ annote = {Exceedingly similar to HAA* }
 }
 
 @article{aurenhammer91,
- author = {Aurenhammer, Franz},
- title = {Voronoi diagrams - a survey of a fundamental geometric data structure},
- journal = {ACM Comput. Surv.},
- issue_date = {Sept. 1991},
- volume = {23},
- number = {3},
- month = sep,
- year = {1991},
- issn = {0360-0300},
- pages = {345--405},
- numpages = {61},
- url = {http://doi.acm.org/10.1145/116873.116880},
- doi = {10.1145/116873.116880},
- acmid = {116880},
- publisher = {ACM},
- address = {New York, NY, USA},
- annote = {Title says it all really. Discusses a bunch of perspectives, including biology, math, compsci and
+	author = {Aurenhammer, Franz},
+	title = {Voronoi diagrams - a survey of a fundamental geometric data structure},
+	journal = {ACM Comput. Surv.},
+	issue_date = {Sept. 1991},
+	volume = {23},
+	number = {3},
+	month = sep,
+	year = {1991},
+	issn = {0360-0300},
+	pages = {345--405},
+	numpages = {61},
+	url = {http://doi.acm.org/10.1145/116873.116880},
+	doi = {10.1145/116873.116880},
+	acmid = {116880},
+	publisher = {ACM},
+	address = {New York, NY, USA},
+	annote = {Title says it all really. Discusses a bunch of perspectives, including biology, math, compsci and
 	 a bunch of different application areas.}
 }
 
 @article{samet85,
- author = {Samet, Hanan and Webber, Robert E.},
- title = {Storing a collection of polygons using quadtrees},
- journal = {ACM Trans. Graph.},
- issue_date = {July 1985},
- volume = {4},
- number = {3},
- month = jul,
- year = {1985},
- issn = {0730-0301},
- pages = {182--222},
- numpages = {41},
- url = {http://doi.acm.org/10.1145/282957.282966},
- doi = {10.1145/282957.282966},
- acmid = {282966},
- publisher = {ACM},
- address = {New York, NY, USA},
+	author = {Samet, Hanan and Webber, Robert E.},
+	title = {Storing a collection of polygons using quadtrees},
+	journal = {ACM Trans. Graph.},
+	issue_date = {July 1985},
+	volume = {4},
+	number = {3},
+	month = jul,
+	year = {1985},
+	issn = {0730-0301},
+	pages = {182--222},
+	numpages = {41},
+	url = {http://doi.acm.org/10.1145/282957.282966},
+	doi = {10.1145/282957.282966},
+	acmid = {282966},
+	publisher = {ACM},
+	address = {New York, NY, USA},
 } 
 
 @article{finkel74,
-author={Finkel, R.A. and Bentley, J.L.},
-title={Quad trees a data structure for retrieval on composite keys},
-year={1974},
-issn={0001-5903},
-journal={Acta Informatica},
-volume={4},
-issue={1},
-doi={10.1007/BF00288933},
-url={http://dx.doi.org/10.1007/BF00288933},
-publisher={Springer-Verlag},
-pages={1-9},
-language={English},
-annote = {Original quadtrees paper.}
+	author={Finkel, R.A. and Bentley, J.L.},
+	title={Quad trees a data structure for retrieval on composite keys},
+	year={1974},
+	issn={0001-5903},
+	journal={Acta Informatica},
+	volume={4},
+	issue={1},
+	doi={10.1007/BF00288933},
+	url={http://dx.doi.org/10.1007/BF00288933},
+	publisher={Springer-Verlag},
+	pages={1-9},
+	language={English},
+	annote = {Original quadtrees paper.}
 }
 
 @inbook{mitchell97,
@@ -1695,3 +1732,77 @@ annote = {Original quadtrees paper.}
 	publisher = {Harvard University Press},
 	annote = {Breadth-first search}
 }
+
+@article{emerson96,
+  author    = {E. Allen Emerson and
+               A. Prasad Sistla},
+  title     = {Symmetry and Model Checking},
+  journal   = {Formal Methods in System Design},
+  volume    = {9},
+  number    = {1/2},
+  year      = {1996},
+  pages     = {105-131},
+  ee        = {http://dx.doi.org/10.1007/BF00625970},
+  annote = { Symmetry breaking in model checking. Discusses computing quotient transition systems 
+	  that consist of only non-symmetric states.}
+}
+
+@inproceedings{crawford96,
+  author    = {James M. Crawford and Matthew L. Ginsberg and Eugene M. Luks and Amitabha Roy},
+  title     = {Symmetry-Breaking Predicates for Search Problems},
+  booktitle = {KR},
+  year      = {1996},
+  pages     = {148-159},
+  crossref  = {DBLP:conf/kr/1996},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{roney-dougal04,
+  author    = {Colva M. Roney-Dougal and
+               Ian P. Gent and
+               Tom Kelsey and
+               Steve Linton},
+  title     = {Tractable Symmetry Breaking Using Restricted Search Trees},
+  booktitle = {ECAI},
+  year      = {2004},
+  pages     = {211-215},
+  crossref  = {DBLP:conf/ecai/2004},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{valmari89,
+  author    = {Antti Valmari},
+  title     = {Stubborn sets for reduced state space generation},
+  booktitle = {Applications and Theory of Petri Nets},
+  year      = {1989},
+  pages     = {491-515},
+  ee        = {http://dx.doi.org/10.1007/3-540-53863-1_36},
+  annote = {
+	  Partial order reduction approach that constructs at each state a set of transitions
+	  that are independent of the transitions outside the set. By repeatedly applying only transitions
+	  from the stubborn set a reduced but equivalent state space is obtained. This paper
+	  describes the properties of stubborn sets but does not prescribe any implementation. 
+  }
+}
+
+@inproceedings{alkhazraji12,
+  author    = {Yusra Alkhazraji and
+               Martin Wehrle and
+               Robert Mattm{\"u}ller and
+               Malte Helmert},
+  title     = {A Stubborn Set Algorithm for Optimal Planning},
+  booktitle = {ECAI},
+  year      = {2012},
+  pages     = {891-892},
+  ee        = {http://dx.doi.org/10.3233/978-1-61499-098-7-891},
+  crossref  = {DBLP:conf/ecai/2012},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = {	
+  	Implements Strong Stubborn Sets using Disjunctive Action Landmarks.
+	Each landmark necessary to achieve the goal is added to the stubborn set.
+	If the operator is not enabled in the current state, landmarks are computed
+	for its preconditions (recursively) and each of those is added to the stubborn set.
+	Simple + very effective. Nice!
+  }
+}
+
