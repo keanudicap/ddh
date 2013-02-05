@@ -23,65 +23,54 @@ independent and interchangeable actions; i.e. it doesn't matter in which order
 the balls are selected and moved as the result of any ordering is the same as any other.
 
 \subsection{Approaches for Breaking State Symmetries}
+\label{cha::lit::symmetry::state}
+A range of methods for reducing state symmetries have been described in the literature of 
+search. Though different in detail each approach involves a preprocessing step that takes a given
+problem description and converts it into an equivalent form that is symmetry free or symmetry 
+reduced.
 
-A range of methods for reducing state symmetries have been described in the 
-context of AI Planning, Constraint Programming and Model Checking. Though different in detail
-the same high level approach is used in each case: the problem description is analysed
-as part of a preprocessing step and symmetry-breaking predicates are introduced 
-to avoid generating equivalent states.
+In the context of Model Checking state symmetries are handled by applying ideas from group theory:
+two states are considered symmetric if they can both be mapped to the same symmetry
+group~\citep{emerson96}.  The authors propose a transformation of the problem graph into a quotient
+graph where each node is a canonical represenative for a group of symmetric states. Being symmetry
+free, this graph is much smaller than the original and consequently much easier to search.  Similar
+ideas have also appeared in the area of Constraint Programming~\citep{crawford96,roney-dougal04} and AI
+Planning~\citep{pochter11}. In each case the authors report a significant improvement in search
+performance for a variety of practical problems. Unfortunately this approach to symmetry breaking
+reduces to repeatedly testing for graph isomorphism; a difficult problem for which no general
+polytime algorithm is known.
 
-In~\citep{emerson96} state symmetries in transition systems are broken by applying ideas from 
-group theory: two states are identified as being symmetric if they can both be mapped to the same
-symmetry group.
-The authors propose a transformation of the problem graph into a quotient graph where each node is a
-canonical represenative for a group of symmetric states. This graph is 
-much smaller than the original, free of symmetries and much easier to search.
-Unfortunately breaking symmetries in this way reduces repeatedly testing for graph isomorphism; a
-problem which is $NP$-hard in general. 
-A faster and more practical variation is to perform only approximate symmetry breaking~\cite{pochter11}.
-To achieve this the authors propose two changes to the basic approach of~\citep{emerson96}. First, they 
-only consider symmetric sub-groups where the identity of certain elements is fixed under every
-permutation. Second, they compute only approximate representatives for each subgroup, rather than
-exact represenatives. These changes allow the authors to break a large number of symmetries
-across a wide variety of planning domains.
+A faster and more practical approach to handling state symmetries is \emph{partial symmetry breaking}.
+This can involve considering only a subset of the permutations in each symmetry group~\citep{crawford96}
+or computing only an approximately canonical representative for a given symmetry group~\citep{pochter11}.
+Each of these approaches trades time spent identifying symmetry groups up-front against the risk
+of considering multiple symmetric states during search.
 
-A less powerful but much more tractable approach to identifying state symmetries focuses on 
-the identification of \emph{symmetric transitions}; i.e. actions that can be shown to have
-equivalent results.
-Fox and Long describe one such approach in the context of propositional
-planning with \textsc{GraphPlan}~\citep{fox99,fox02}. They analyse the problem description to 
+In the area of AI Planning a number of studies are concerned with the identification of 
+\emph{symmetric transitions}. These are  actions that are are applicable in the same state but which 
+can be shown to have equivalent results. 
+Fox and Long describe one version of this idea in the context of propositional
+planning with \textsc{GraphPlan}~\citep{fox99,fox02}. They analyse a given problem description to 
 identify sets of interchangeable objects and from these sets they derive symmetric actions. 
-By avoiding both they produce smaller planning graphs and increase the efficiency of seach. 
-Stronger and more general variations of this idea also appear elsewhere in the literature; e.g. 
-in~\citep{rintannen03} and \citep{pochter11}. 
-
+By avoiding such actions they produce smaller planning graphs and increase the efficiency of seach. 
+Stronger and more general variations of this idea have since appeared elsewhere in the literature, e.g. 
+in~\citep{rintannen03} and~\citep{pochter11}, but each one involves the same type of trade-offs
+discussed for other partial symmetry breaking approaches.
 
 \subsection{Approaches for Breaking Path Symmetries}
-In the context of Constraint Programming symmetries arise when interchanging
-the order in which values are assigned to variables or when the variables themselves
-are interchangeable~\citep{walsh07}. Practitioners avoid generating equivalent states
-Practitioners in the field deal with symmetries
-by posting constraints that restrict the order in which assignments can occur.
-In some cases these constraints are produced by a preprocessing step,
- e.g. as in~\citep{crawford96}, or computed dynamically during search,
- e.g. as in~\cite{roney-dougal04}. Each approach involves a compromise between 
-effectiveness and efficiency.
+\label{cha::lit::symmetry::por}
+Path Symmetries occur during search when considering sequences of independent and interchangeable
+transitions. Applied separately none of these transitions lead to symmetric state however every 
+possible interleaving of such a set of transitions always yields the same state. Path symmetries
+are a common and recurring problem in the area of Model Checking and a number of works exist 
+that deal with the problem of identifying and eliminating such interleavings. 
+These methods are collectively known as \emph{partial-order reduction} techniques. 
 
 \item Commutativity Pruning~\cite{haslum00} identifies sets of actions that are 
 pairwise commutative. To avoid symmetries arising in cases where such actions
 need to be applied sequentially, the authors propose a canonical ordering 
 \item  
 
-
-A different type of symmetry
-
-
-\end{itemize}
-
-Despite a wealth of literature on the topic of symmetry breaking, in areas
-as diverse as AI Planning, Constaint Programming, Combinatorial Optimisation
-and Model Checking, there have been no works that explicitly identify symmetry 
-in pathfinding search.
 
 \subsection{TODO}
 Approaches for identifying and eliminating search-space symmetry have been
