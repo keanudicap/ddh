@@ -1,17 +1,6 @@
 \section{Other Search Enhancements}
 \label{cha::lit::enhancements}
 
-\subsection{Iterative Deepening}
-\label{cha::lit::enhancements::deepening}
-A more recent example is Depth-First Iterative Deepening (DFID)~\citep{korf85}.
-
-DFID improves DFS by bounding the search to a fixed level $d$ and gradually
-increasing this value until the goal is found. DFID has the same memory
-requirements and the same asymptotic running time as DFS but provides additional
-completeness guarantees. It has two drawbacks: (i) it must expand many times
-nodes close to the root of the tree; (ii) like DFS it must explore in the worst
-case all possible paths to every leaf node in the tree.
-
 \subsection{Abstraction Techniques}
 \label{cha::lit::enhancements::abstraction}
 In cases where optimality is not required, hierarchical pathfinding methods
