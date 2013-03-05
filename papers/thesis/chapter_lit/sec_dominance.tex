@@ -1,0 +1,34 @@
+\section{Dominance Detection}
+\label{cha::lit::dominance}
+In many pathfinding domains, and especially in gridmaps, arbitrary problem instances rarely
+have only a single optimal solution. These paths can be symmetric to each other 
+(c.f. Section~\ref{cha::lit::symmetry}) or they can simply be equivalent in terms of cost. 
+The identification and eliminination of such equivalences is an active topic of research.
+Algorithms developed for this purpose are known as \emph{graph pruning} or 
+\emph{dominance detection} techniques. A path $\pi$ is said to dominate $\pi$ if 
+$\pi \leq \pi'$; here $\leq$ is a relation based on cost. By the same principle $\pi$ is 
+said to be strictly dominant if $\pi < \pi'$. 
+
+A number of pathfinding algorithms from the literature of Heuristic Search fit this 
+description. The \emph{dead-end heuristic} \cite{bjornsson06} and \emph{Swamps} \cite{pochter10}
+are two similar pruning techniques related to our work.
+Both decompose grid maps into a series of adjacent areas. Later, this decomposition
+is used to identify areas not relevant to optimally solving a particular
+pathfinding instance.
+This objective is similar yet orthogonal to our work where
+the aim is to reduce the effort required to explore any given area in the search
+space.
+
+A different method for pruning the search space is to identify \emph{dead} and
+\emph{redundant} cells~\cite{sturtevant10b}.  Developed in the context of
+learning-based heuristic search, this method speeds up search only after running
+multiple iterations of an iterative deepening algorithm.  Further, the
+identification of redundant cells requires additional memory overheads which
+jump points do not have.
+
+\emph{Fast expansion}~\cite{sun09} is another related work that speeds up
+optimal A* search. It avoids unnecessary open list operations when it finds a
+successor node just as good (or better) than the best node in the open list.
+Jump points are a similar yet fundamentally different idea: they allow us to
+identify large sets of nodes that would be ordinarily expanded but which can be
+skipped entirely.
