@@ -110,3 +110,25 @@ effective on a range of problems (e.g. search spaces containing only convex
 obstacles). They require very little memory (typically a constant amount) and
 are attractive in cases where computational resources are very limited.
 
+\subsection{Performance Enhancements}
+\label{cha::lit::search::enhancements}
+A variety of methods have been developed to enhance the performance of the
+search strategies we have discussed this far. Such efforts can take several 
+forms:
+
+\begin{enumerate}
+\item Reducing the size of the search space.
+\item Improving the accuracy of heuristic functions.
+\item Code and memory optimisations.
+\end{enumerate}
+
+Improved heuristics are the subject of Section~\ref{cha::lit::heuristics}.
+Strategies for reducing the size of the search space are the subject of
+Section~\ref{cha::lit::abstraction}, ~\ref{cha::lit::symmetry} and~\ref{cha::lit::database}.
+Meanwhile in Section~\ref{cha::lit::enhancements} we discuss various code
+and memory optimisations for improving the efficiency of search.
+
+Some of these enhancements, such as improved heuristics, we will discuss only in the context of
+Informed Search. Others, such as reductions to the size of the search space and code and memory
+optimisations, can be applied in conjunction with any of the search strategies we have outlined thus
+far.
