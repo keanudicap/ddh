@@ -1,38 +1,6 @@
 \section{Other Search Enhancements}
 \label{cha::lit::enhancements}
 
-\subsection{Abstraction Techniques}
-\label{cha::lit::enhancements::abstraction}
-In cases where optimality is not required, hierarchical pathfinding methods
-are pervasive.  They improve performance by decomposing the
-search space, usually offline, into a much smaller approximation.  Algorithms
-of this type, such as HPA*~\cite{botea04}, are  fast and
-memory-efficient but also suboptimal.
-
-Algorithms of this type are fast and use little memory but compute paths which are usually not
-optimal and must be refined via further search. Typical examples: HPA*~\cite{botea04} and
-MM-Abstraction~\cite{sturtevant07}.
-
-Other Abstractions:
-\begin{enumerate}
-\item{Exact: Transit, Highway Hierarchies, Contraction Hierarchies}
-\end{enumerate}
-
-\section{Improved Heuristics}
-\label{cha::lit::enhancements::heuristics}
-Algorithms of this type usually pre-compute and store distances between key pairs of locations
-in the environment. Though fast and optimal, such methods can incur signficant
-memory overheads which is often undesirable. Typical examples: Landmarks~\cite{goldberg05} and
-True Distance Heuristics~\cite{sturtevant09}.
-
-Other Heuristics:
-\begin{enumerate}
-\item{Weighted heuristics}
-\item{Dead-end and Gateway Heuristic}
-\item{Differential Heuristics}
-\item{AAAI-11 thing on one-dimensional heuristic?}
-\end{enumerate}
-
 
 \section{Database Driven Approaches}
 \label{cha::lit::enhancements::db}

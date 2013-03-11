@@ -495,11 +495,13 @@ This paper describes several different ejection-chain based reference structures
 	Year = {2004}}
 
 @inproceedings{sturtevant05,
-	Author = {Nathan R. Sturtevant and                Michael Buro},
+	Author = {Nathan R. Sturtevant and Michael Buro},
 	Booktitle = {AAAI},
 	Pages = {1392-1397},
 	Title = {Partial Pathfinding Using Map Abstraction and Refinement},
-	Year = {2005}}
+	Year = {2005},
+	annote = {PRA* paper}
+}
 
 @article{geraerts07,
 	Annote = {Corridor Map Method is a roadmap based path planner that combines reachability roadmaps with local potential field approaches to deal with dynamic obstacles and solve the coherent group movement problem.},
@@ -697,6 +699,7 @@ year      = {2010},
 	booktitle = {AIIDE},
 	year      = {2007},
 	pages     = {31-36},
+	annote = {MM Abstractions}
 }
 
 @book{choset05,
@@ -868,6 +871,28 @@ pages     = {522-536},
 	annote = {Applies a grid over roadmaps. Identifies nearby exit nodes for all locations inside a tile (transit nodes). Computes an APSP
 		for all transit nodes and also caches some data for how to quickly reach the local set of transit nodes for each tile.
 		Really fast. Doesn't cope well with path symmetries. Needs to revert to Dijkstra if optimal path does is local (not involve any transit nodes)}
+}
+
+@inproceedings{bast07,
+  author    = {Holger Bast and Stefan Funke and Domagoj Matijevic and Peter Sanders and Dominik Schultes},
+  title     = {In Transit to Constant Time Shortest-Path Queries in Road Networks},
+  booktitle = {ALENEX},
+  year      = {2007},
+  ee        = {http://www.siam.org/proceedings/alenex/2007/alx07_transit.pdf},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = { Combines Transit with Highway Hierarchies for better results.}
+}
+
+@inproceedings{schultes07,
+  author    = {Dominik Schultes and Peter Sanders},
+  title     = {Dynamic Highway-Node Routing},
+  booktitle = {WEA},
+  year      = {2007},
+  pages     = {66-79},
+  ee        = {http://dx.doi.org/10.1007/978-3-540-72845-0_6},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = {Highway Node Routing. HH + an overlay graph. Applicable in settings involving 
+	  dyamically changing roadmaps (they do some kind of repair).}
 }
 
 @inproceedings{wang09,
@@ -1359,6 +1384,7 @@ annote = {Exceedingly similar to HAA* }
 	numpages = {12},
 	publisher = {Society for Industrial and Applied Mathematics},
 	address = {Philadelphia, PA, USA},
+	ee = {http://www.siam.org/proceedings/soda/2010/SODA10_064_abrahami.pdf}
 } 
 
 @inproceedings{goldberg06,
@@ -1891,5 +1917,40 @@ annote = {Exceedingly similar to HAA* }
   ee        = {http://dx.doi.org/10.1007/BF01383879},
   bibsource = {DBLP, http://dblp.uni-trier.de},
   annote = {Early version of Sleep Sets. Refer to godefroid96 instead}
+}
+
+@ARTICLE{valtorta84,
+    author = {Marco Valtorta},
+    title = {A result on the computational complexity of heuristic estimates for the A* algorithm},
+    journal = {Information Sciences},
+    year = {1984},
+    volume = {34},
+    pages = {777--779},
+	annote = {Presents the theorem that has become known as Valtorta's Barrier:
+		Computing a heuristic by searching for a relaxed solution -- in the original state space --
+		is worse than not using the heuristic at all.
+		The barrier is broken in holte96 using homomorphic abstraction (rather than the embded kind
+		used here)
+	}
+}
+
+@inproceedings{holte96,
+    author = {R.C. Holte and R. C. Holte and M.B. Perez and M. B. Perez and R. M. Zimmer and R. M. Zimmer and A.J. MacDonald and A. J. Macdonald},
+    title = {Hierarchical A*: Searching Abstraction Hierarchies Efficiently},
+    booktitle = {In Proceedings of the National Conference on Artificial Intelligence},
+    year = {1996},
+    pages = {530--535},
+	annote = {Homomorphic abstractions for improving the accuracy of admissible heuristics.
+		Shows that this type of abstraction, rather than embedded, can be used to break Valtorta's Barrier.
+	}
+}
+
+@inproceedings{antsfeld12,
+  author    = {Leonid Antsfeld and Daniel Damir Harabor and Philip Kilby and Toby Walsh},
+  title     = {TRANSIT Routing on Video Game Maps},
+  booktitle = {AIIDE},
+  year      = {2012},
+  ee        = {http://www.aaai.org/ocs/index.php/AIIDE/AIIDE12/paper/view/5459},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
 }
 
