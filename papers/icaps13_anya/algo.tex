@@ -96,10 +96,31 @@ f(p) = g(r) + d(r, p) + h(p, t)
 \end{equation}
 where $g(r)$ is the length of the optimal path from the start point to 
 the root, $d(r, p)$ is the straight line distance from $r$ to $p$
-and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of reaching $t$ from $p$; here, we choose $h(p,t) = d(p,t)$.
+and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of reaching $t$ from~$p$.  
 
-Although each interval can contain a large number of points it is easy to
-identify the one with minimum $f$-value, 
+\begin{figure}[tb]
+  \begin{center}
+    \input{tikz/fvalue}
+  \end{center}
+  \caption{An illustration of Lemmas~\ref{lemm::choosingp}~and~\ref{lemm::mirror}.  The points $t_1$ and $t'_4$ correspond to the case 
+where the line intersects the interval; 
+$t_2$ and $t_3$ where it does not; 
+$t_4$ where the mirrored target $t'_4$ must be used.
+%The point $t_1$ corresponds 
+%to Case (i); $t_2$ and $t_3$ correspond to Case (ii); $t_4$ and $t'_4$ correspond
+%to Case (iii);
+}
+\label{fig::minf}
+\end{figure}
+
+Finding this point $p$ %that minimizes the value of $f$ 
+is not trivial in general.  
+For certain heuristics however, 
+it is easy.  
+Assume for instance 
+that the heuristics is the straight-line distance 
+between $p$ and $t$ (ignoring obstacles): $h(p,t) = d(p,t)$.  
+The point $p$ can be identified 
 thanks to the following two lemmas.  
 
 \begin{lemm}\label{lemm::choosingp}
@@ -140,21 +161,6 @@ Both lemmas are illustrated on Figure~\ref{fig::minf}.
 %\rightarrow t$ from the root point $r$ to the target point $t$ and choose the
 %point $p \in I$ which lies at their intersection.  If $r \rightarrow t$ does not
 %intersect $I$, choose $p$ as one of the two endpoints of $I$.
-
-\begin{figure}[tb]
-  \begin{center}
-    \input{tikz/fvalue}
-  \end{center}
-  \caption{An illustration of Lemmas~\ref{lemm::choosingp}~and~\ref{lemm::mirror}.  The points $t_1$ and $t'_4$ correspond to the case 
-where the line intersects the interval; 
-$t_2$ and $t_3$ where it does not; 
-$t_4$ where the mirrored target $t'_4$ must be used.
-%The point $t_1$ corresponds 
-%to Case (i); $t_2$ and $t_3$ correspond to Case (ii); $t_4$ and $t'_4$ correspond
-%to Case (iii);
-}
-\label{fig::minf}
-\end{figure}
 
 %\begin{lemm}
 %\label{lemm::minf}
