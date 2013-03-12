@@ -1,5 +1,13 @@
 \section{Improved Heuristics}
 \label{cha::lit::heuristics}
+Heuristic functions are employed in search to evaluate states in terms
+of merit. In the case of local search, heuristics are used to choose 
+a successor state from a large set of possible successors. In the case
+of informed search heuristics provide estimates on the remaining distance 
+to the goal. We discuss a range of representative works for computing such 
+lower-bounds. This is in keeping with the scope of this thesis which is
+concerned with optimality-preserving pathfinding techniques.
+
 Algorithms of this type usually pre-compute and store distances between key pairs of locations
 in the environment. Though fast and optimal, such methods can incur signficant
 memory overheads which is often undesirable. Typical examples: Landmarks~\cite{goldberg05} and

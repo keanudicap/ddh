@@ -113,22 +113,29 @@ are attractive in cases where computational resources are very limited.
 \subsection{Performance Enhancements}
 \label{cha::lit::search::enhancements}
 A variety of methods have been developed to enhance the performance of the
-search strategies we have discussed this far. Such efforts can take several 
-forms:
+search strategies we have discussed this far. Such efforts typically focus
+on one of three areas:
 
-\begin{enumerate}
+\begin{itemize}
 \item Reducing the size of the search space.
-\item Improving the accuracy of heuristic functions.
-\item Code and memory optimisations.
-\end{enumerate}
+Typical examples include spatial abstraction, graph pruning, 
+symmetry breaking and other approaches that can compact sets of states.
+We discuss a number of representative works in Section~\ref{cha::lit::abstraction}, 
+Section~\ref{cha::lit::symmetry} and Section~\ref{cha::lit::database}.
 
-Improved heuristics are the subject of Section~\ref{cha::lit::heuristics}.
-Strategies for reducing the size of the search space are the subject of
-Section~\ref{cha::lit::abstraction}, ~\ref{cha::lit::symmetry} and~\ref{cha::lit::database}.
-Meanwhile in Section~\ref{cha::lit::enhancements} we discuss various code
-and memory optimisations for improving the efficiency of search.
+\item Better heuristic functions.
+Typical examples include: database-driven heuristics, weighted heuristics and 
+heuristic portfolios. An overview of such strategies is the subject of 
+Section~\ref{cha::lit::heuristics}.
 
-Some of these enhancements, such as improved heuristics, we will discuss only in the context of
-Informed Search. Others, such as reductions to the size of the search space and code and memory
-optimisations, can be applied in conjunction with any of the search strategies we have outlined thus
-far.
+\item Code and memory optimisations. These are discussed in 
+Section~\ref{cha::lit::enhancements}.
+\end{itemize}
+
+Each approach has different strengths.  Reducing the size of the search space allows
+pathfinding solutions to be found more quickly and permits larger search spaces to be explored.
+Better heuristics help to focus the search process toward promising choice-points and often provide
+further guidance in the form of lower-bounds. Specialised data stuctures and other code and memory and
+memory optimisations facilitate machine-efficient operations for fetching, sorting and storing sets
+of states that need to be explored during search.  Needless to say these methods need not be applied
+independently. As we will see they can be, and often are, very successfully combined.
