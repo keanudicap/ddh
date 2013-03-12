@@ -1,25 +1,26 @@
 
-\begin{figure*}[tb]
- \begin{minipage}[t]{.47\linewidth}
-  \begin{center}
-    \input{tikz/corner}
-  \end{center}
-  \caption{Illustration of Lemma~\ref{lemm::corner}.
-  A similar observation has been previously made for geodesic paths \cite{mitchell87}.  }
-  \label{fig::corner}
-\end{minipage} 
-\hfill 
- \begin{minipage}[t]{0.47\linewidth}
+%\begin{figure*}[tb]
+% \begin{minipage}[t]{.47\linewidth}
+%  \begin{center}
+%    \input{tikz/corner}
+%  \end{center}
+%  \caption{Illustration of Lemma~\ref{lemm::corner}.
+%  A similar observation has been previously made for geodesic paths \cite{mitchell87}.  }
+%  \label{fig::corner}
+%\end{minipage} 
+%\hfill 
+\begin{figure}[tb]
+% \begin{minipage}[t]{0.47\linewidth}
   \begin{center}
     \input{tikz/ex1}
   \end{center}
   \caption{When pathfinding from $n_1$ to $n_2$ online algorithms such as Theta* only consider the discrete points of 
 the grid and never any points $y_i$. 
 %This strategy is not monotonic and does not guarantee optimality.
-}
+  }
   \label{fig::ex1}
-  \end{minipage}
-\end{figure*}
+%  \end{minipage}
+\end{figure}
 
 \section{Preliminaries}
 A \emph{grid} is a planar subdivision consisting of $W \times H$ square cells.
@@ -67,39 +68,43 @@ where $d((x,y), (x',y'))= \sqrt{(x-x')^2 + (y-y')^2}$
 is a uniform Euclidean distance metric.
 We will say $p_i \in \pi$ is a \emph{turning point} if the segments
 $(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
-\\
-\begin{lemm}
-\label{lemm::corner}
-%  Given two discrete points $p$ and $p'$, 
-  Any turning point in the optimal any-angle path between points $p_1$ and 
-$p_k$ is also a corner point.
-\end{lemm}
+It is well-known that the turning points in optimal any-angle paths 
+are corner points.  
+% TODO: ref?  To visibility points?  
 
-\begin{proof}
-{
-  Assume an optimal any-angle path $\pi = \langle p_1,\dots,p_k \rangle$ 
-  that includes a turning point $p_l$ ($l \not\in \{1,k\}$) 
-  which is not a corner.  
-  We will prove that $\pi$ is suboptimal 
-  which, by contradiction, will prove the lemma.  
-  If $p_{l+1}$ is visible from $p_{l-1}$, 
-  then  $\pi \setminus p_l$ is a path 
-  which is strictly shorter than $\pi$.  
-  Hence $\pi$ is suboptimal.  
-  If $p_{l+1}$ is not visible from $p_{l-1}$, 
-  then let $p'_{l}$ be a point from the segment $\langle p_l,p_{l+1} \rangle$ 
-  that (i) is visible from $p_{l-1}$ 
-  and (ii) is different from $p_l$; 
-  because $p_l$ is not a corner, 
-  such a $p'_l$ exists.  
-  Moreover, the subpath $\langle p_{l-1}, p'_{l}, p_{l+1} \rangle$ is 
-  strictly shorter than $\langle p_{l-1}, p_{l}, p_{l+1}\rangle$. 
-  Hence $\pi$ is suboptimal.
-  This case is illustrated in Figure~\ref{fig::corner}  
-  where the point $p'_l$ is chosen as close as possible from the corner $c$.  
-}
-\end{proof}
-Lemma~\ref{lemm::corner} is interesting because it allows us to define 
-any-angle paths as a sequence of straight lines which intersect only at
-discrete corner points.
+%\\
+%\begin{lemm}
+%\label{lemm::corner}
+%%  Given two discrete points $p$ and $p'$, 
+%  Any turning point in the optimal any-angle path between points $p_1$ and% 
+%$p_k$ is also a corner point.
+%\end{lemm}
+
+%\begin{proof}
+%{
+%  Assume an optimal any-angle path $\pi = \langle p_1,\dots,p_k \rangle$ 
+%  that includes a turning point $p_l$ ($l \not\in \{1,k\}$) 
+%  which is not a corner.  
+%  We will prove that $\pi$ is suboptimal 
+%  which, by contradiction, will prove the lemma.  
+%  If $p_{l+1}$ is visible from $p_{l-1}$, 
+%  then  $\pi \setminus p_l$ is a path 
+%  which is strictly shorter than $\pi$.  
+%  Hence $\pi$ is suboptimal.  
+%  If $p_{l+1}$ is not visible from $p_{l-1}$, 
+%  then let $p'_{l}$ be a point from the segment $\langle p_l,p_{l+1} \rangle$ 
+%  that (i) is visible from $p_{l-1}$ 
+%  and (ii) is different from $p_l$; 
+%  because $p_l$ is not a corner, 
+%  such a $p'_l$ exists.  
+%  Moreover, the subpath $\langle p_{l-1}, p'_{l}, p_{l+1} \rangle$ is 
+%  strictly shorter than $\langle p_{l-1}, p_{l}, p_{l+1}\rangle$. 
+%  Hence $\pi$ is suboptimal.
+%  This case is illustrated in Figure~\ref{fig::corner}  
+%  where the point $p'_l$ is chosen as close as possible from the corner $c$.  
+%}
+%\end{proof}
+%Lemma~\ref{lemm::corner} is interesting because it allows us to define 
+%any-angle paths as a sequence of straight lines which intersect only at
+%discrete corner points.
 % EOF
