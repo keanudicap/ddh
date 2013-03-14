@@ -1,23 +1,73 @@
 \section{Improved Heuristics}
 \label{cha::lit::heuristics}
-Heuristic functions are employed in search to evaluate states in terms
-of merit. In the case of local search, heuristics are used to choose 
-a successor state from a large set of possible successors. In the case
-of informed search heuristics provide estimates on the remaining distance 
-to the goal. We discuss a range of representative works for computing such 
-lower-bounds. This is in keeping with the scope of this thesis which is
-concerned with optimality-preserving pathfinding techniques.
+%Heuristic functions are employed in search to evaluate states in terms
+%of merit. In the case of local search, heuristics are used to choose 
+%a successor state from a large set of possible successors. In the case
+%of informed search, heuristics provide estimates on the remaining distance 
+%to the goal. We discuss a range of representative works for computing such 
+%lower-bounds. This is in keeping with the scope of this thesis which is
+%concerned with optimality-preserving pathfinding techniques.
 
-Algorithms of this type usually pre-compute and store distances between key pairs of locations
-in the environment. Though fast and optimal, such methods can incur signficant
-memory overheads which is often undesirable. Typical examples: Landmarks~\cite{goldberg05} and
-True Distance Heuristics~\cite{sturtevant09}.
+%A heuristic, in the context of optimal pathfinding search, is a function that 
+%estimates the distance from any given node to the goal. 
+%
+Heuristic functions are employed in optimal search to evaluate states in terms of merit. In the case
+of pathfinding, a heuristic is a function that estimates the distance from any given location on the
+map to the goal. Heuristics are useful if they can be computed efficiently (i.e.  polytime or
+better) and if they are accurate.
 
-Other Heuristics:
-\begin{enumerate}
-\item{Weighted heuristics}
-\item{Dead-end and Gateway Heuristic}
-\item{Differential Heuristics}
-\item{AAAI-11 thing on one-dimensional heuristic?}
-\end{enumerate}
+A popular default when pathfinding in the plane is $h_{SLD}$ or Straight Line Distance.
+$h_{SLD}$ is consistent, admissible and runs in constant time. In the absence of obstacles
+$h_{SLD}$ is perfect but in more complex environments it can dramatically underestimate 
+optimal distances between two arbitrary points; e.g.~\citep{goldberg05}.
+Many works focus on improving the accuracy of $h_{SLD}$ without negatively impacting its running 
+time. This approach usually translates into faster search algorithms. However, there are limits.
 
+A number of theoretical models~\citep{pohl77,helmert08} have shown that optimal search strategies
+employing even almost perfect heuristics, i.e. those having only a small additive constant for
+error, must expand, in the worst case, an exponential number of nodes before reaching the goal.
+Under certain simplifying assumptions a similar result can also be derived for the average
+case~\citep{pearl84}.  This simplified model often aligns well with models used in pathfinding
+search: constant branching factor, uniform-cost edges and a singleton goal state.  Despite this
+seemingly discouraging result researchers have demonstrated that, in many pathfinding domains of
+practical interest (e.g.~\citep{sturtevant12}), better heuristic estimates can dramatically improve 
+the performance of optimal search.
+
+One idea for improving heuristic accuracy is to take into accout domain specific movement rules.
+$h_{MD}$ (Manhattan Distance) and $h_D$ (Diagonal or Octile Distance) are two such heuristics; they
+retain all the properties of $h_{SLD}$ but provide better lower-bound estimates when pathfinding in
+square grids. Similar domain-specific heuristics have been developed for pathfinding in hexagonal
+grids~\citep{yap02} and more broadly for optimally solving large combinatorial puzzles~\citep{korf96}.
+
+A different approach improves heuristic accuracy by way of a pre-computed distance database.  
+A large family of such approaches, sometimes called \emph{memory heuristics}, has been
+described in the literature~\citep{goldberg05,bjornsson06,sturtevant07,felner09,goldenberg10}.
+ALT~\citep{goldberg05} is a typical representative. During a preprocessing step ALT selects from the
+map a set of \emph{landmark} nodes and then computes a database of optimal distances from each node
+to every landmark. Given such a database it can be shown that subtracting the distances of two nodes
+$a$ and $b$ from a fixed landmark $l$ is an admissible estimate for the true distance between 
+$a$ and $b$. For any given pair of nodes $a$ and $b$ ALT takes as its heuristic estimate the maximum 
+difference over all landmarks $l$.
+To further enhance performance some memory heuristics combine distance databases and 
+spatial abstraction into a holistic search framework. Examples include 
+The Gateway Heuristic~\citep{bjornsson06} and The Portal Heuristic~\citep{goldenberg10}.
+
+In a recent paper~\cite{rayner11} describes an approach for automatically constructing entire families of 
+accurate memory heuristics. Their approach involves embeding a multi-dimensional graph into
+a manifold. Computing the embeding requires solving a constrained optimisation 
+problem that minimises heuristic error. The authors show that their approach produces very accurate
+results in practice but solving the optimisation problem can require significant preprocessing 
+time and space.
+
+Compressed Path Databases (CPDs)~\citep{sanka05,botea11,botea13} are a powerful method 
+for automatically constructing memory-based heuritics; this time from spatial abstractions. 
+A CPD can be described as a highly compressed set of tables that store the first move on the optimal 
+path between any pair of nodes in a graph. Through a simple process of recursive lookups 
+CPDs can extract any optimal path in near-linear-time and without employing any state-space 
+search. Though among the fastest pathfinding techniques today, CPDs nevertheless require
+substantial amounts of memory and are thus not applicable in many popular pathfinding 
+
+%Pattern Databases (PDBs)~\cite{culberson96} are a powerful method for automatically constructing
+%memory-based heuristics from domain abstractions. Though often employed in solving large 
+%combinatorial problems, PDBs cannot be feasibly applied in pathfinding as the goal state is 
+%not fixed. Block A*~\cite{yap11} is one attempt at applying PDBs 
