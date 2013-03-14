@@ -16,8 +16,8 @@ are specialised for particular domains, such as road networks. We discuss both.
 Often studied in the literature of Artificial Intelligence and Heuristic Search, approximate
 abstraction methods are simple but very efficient decompositions of arbitrary two dimensional maps.
 A typical example is HPA*~\citep{botea04}. This algorithm divides a given map into a set of 
-square cells, all of equal size. During a preprocessing step an abstract graph is constructed with
-edges added to represent intra-cell and inter-cell traversals.
+square cells, all of equal size. During a preprocessing step transitions between cells are identified
+and an abstract graph is constructed with edges added to represent intra-cell and inter-cell traversals.
 Other works proceed in an analogous manner; e.g. PRA*~\citep{sturtevant05}, MMA~\citep{sturtevant07}
 and HAA*~\citep{harabor08}.  These abstractions are attractive for several reasons: they are small and 
 efficient to search, they require little additional memory and they preserve solution existence. 
