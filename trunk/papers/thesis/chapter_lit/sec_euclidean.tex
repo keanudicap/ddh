@@ -6,7 +6,7 @@ Many of the optimal pathfinding algorithms we have discussed to now are optimal 
 a graph-theoretic sense. In this section we review the state of the art for computing
 Euclidean shortest paths: i.e. shortest paths with respect to the underlying operating 
 environment of an agent and not a graph-based discretisation. We discuss two popular
-formualtions for this problem: the Any-Angle Pathfinding Problem and the Euclidean Shortest
+formulations for this problem: the Any-Angle Pathfinding Problem and the Euclidean Shortest
 Path Problem. 
 
 \subsection{Any-Angle Pathfinding Algorithms}
@@ -25,23 +25,21 @@ paths.
 A number of algorithms improve on string-pulling by integrating post-processing into node expansion
 during search. Field D*~\citep{ferguson05} is one such algorithm. It uses a simple approach based on
 linear interpolation that smooths paths one grid cell at a time.  Theta*~\citep{nash07} and its
-variant \citep{nash09,nash10} are similar ideas that can smooth much longer path segments in a
-single operation. This algorithm relies on line-of-sight checks to previously expanded ancestor
-nodes. Each successful check introduces a new shortcut: from the ancestor to the current node.
-Another approach, Block A*~\cite{yap11}, avoids line-of-sight checks entirely by
-precomputing a database of exact costs between pairs of points in a localised area. 
-Each of Field D*, Theta* and Block A* improve on string pulling in terms of solution quality. 
-In the case of Theta* and Block A*, these improved solutions can be computed faster than 
-simply running A* on the original grid. The main disadvantage that there are no optimality
-guarantees.
+variants \citep{nash09,nash10,munoz12} are similar ideas that can smooth much longer path segments in a
+single operation. This algorithm relies on line-of-sight checks from each successor of a node to its
+grandparent. A successful check introduces a new shortcut that bypasses the current node.  Another
+approach, Block A*~\cite{yap11}, avoids line-of-sight checks entirely by precomputing a database of
+exact costs between pairs of points in a localised area.  Each of Field D*, Theta* and Block A*
+improve on string pulling in terms of solution quality and, in many cases, also in terms of running
+time.  The main disadvantage of all these algorithms is that they provide no optimality guarantees.
 
 Accelerated A*~\citep{sislak09a,sislak09b} is a recent technique for the Any-Angle Pathfinding
 Problem which is conjectured to be optimal. Similar in spirit to Theta* this algorithm differs in
 two ways: (i) it performs line-of-sight checks to a set of previously expanded nodes (not just a
 single ancestor); (ii) it implements a block-based expansion strategy that allows it to consider
 sets of nodes at a time.  
-A primary advantage of Accelerated A* is that it uses less memory than competing algorithms (e.g. Theta*).
-Another advantage is that computed solutions are shorter than those produced by competing
+A primary advantage of Accelerated A* is that it uses less memory than competing algorithms (e.g.
+Theta*).  Another advantage is that computed solutions are shorter than those produced by competing
 algorithms. In a range of grid-based domains the authors show that Accelerated A* always finds the
 optimal path.  Unfortunately no theoretical guarantees are provided.  The main disadvatage of
 Accelerated A* is its running time. During each node expansion there can be a large number of
