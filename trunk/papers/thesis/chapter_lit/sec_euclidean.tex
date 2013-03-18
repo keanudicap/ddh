@@ -1,8 +1,82 @@
 \section{Euclidean Shortest Paths}
 \label{cha::lit::euclidean}
+%In Chaper~\ref{cha::anya} we give a first optimal and online algorithm for the any-angle pathfinding
+%problem. In this section we review a number of related works. 
+Many of the optimal pathfinding algorithms we have discussed to now are optimal only in 
+a graph-theoretic sense. In this section we review the state of the art for computing
+Euclidean shortest paths: i.e. shortest paths with respect to the underlying operating 
+environment of an agent and not a graph-based discretisation. We discuss two popular
+formualtions for this problem: the Any-Angle Pathfinding Problem and the Euclidean Shortest
+Path Problem. 
 
-\begin{enumerate}
-\item{Approximate: String Pulling, Theta*}
-\item{Exact: Visibility Points, Continuous Dijkstra (and friends)}
-\end{enumerate}
+\subsection{Any-Angle Pathfinding Algorithms}
+\label{cha::lit::euclidean:anyangle}
+The Any-Angle Pathfinding Problem appears in robotics and computer video games. It involves finding
+a shortest path between an arbitrary pair of points on a two-dimensional grid map but asks that
+movement along the path is not artifically constrained to the points of the grid.
 
+Within the game development community a simple and popular solution to the Any-Angle Pathfinding
+Problem is \emph{string pulling}~\cite{pinter01,botea04}.  The idea is to compute a grid-optimal
+path in the first instance and smooth the result as part of a post-processing step that improves
+both its length and aesthetic appeal. String pulling has two disadvantages: (i) it requires an
+additional computation beyond just finding a path (ii) it can only yield approximately shortest
+paths.
+
+A number of algorithms improve on string-pulling by integrating post-processing into node expansion
+during search. Field D*~\citep{ferguson05} is one such algorithm. It uses a simple approach based on
+linear interpolation that smooths paths one grid cell at a time.  Theta*~\citep{nash07} and its
+variant \citep{nash09,nash10} are similar ideas that can smooth much longer path segments in a
+single operation. This algorithm relies on line-of-sight checks to previously expanded ancestor
+nodes. Each successful check introduces a new shortcut: from the ancestor to the current node.
+Another approach, Block A*~\cite{yap11}, avoids line-of-sight checks entirely by
+precomputing a database of exact costs between pairs of points in a localised area. 
+Each of Field D*, Theta* and Block A* improve on string pulling in terms of solution quality. 
+In the case of Theta* and Block A*, these improved solutions can be computed faster than 
+simply running A* on the original grid. The main disadvantage that there are no optimality
+guarantees.
+
+Accelerated A*~\citep{sislak09a,sislak09b} is a recent technique for the Any-Angle Pathfinding
+Problem which is conjectured to be optimal. Similar in spirit to Theta* this algorithm differs in
+two ways: (i) it performs line-of-sight checks to a set of previously expanded nodes (not just a
+single ancestor); (ii) it implements a block-based expansion strategy that allows it to consider
+sets of nodes at a time.  
+A primary advantage of Accelerated A* is that it uses less memory than competing algorithms (e.g. Theta*).
+Another advantage is that computed solutions are shorter than those produced by competing
+algorithms. In a range of grid-based domains the authors show that Accelerated A* always finds the
+optimal path.  Unfortunately no theoretical guarantees are provided.  The main disadvatage of
+Accelerated A* is its running time. During each node expansion there can be a large number of
+line-of-sight checks between the current node and a set of potential alternative parent nodes.  For
+large problems with long optimal solutions this set can comprise most nodes appearing on the closed
+list.
+
+%. Similar in spirit to Theta*, this algorithm it differs
+%in two ways: (i) it checks visibility to a number of alternative parents, not just one (ii) it 
+%applies a dynamic expansion strategy to quickly traverse over empty regions. 
+%It is conjectured~\cite{sislak09b}, on the basis of limited empirical results, that Accelerated 
+%A* always finds an optimal path. However, no proof is given.
+
+\subsection{Euclidean Shortest Path Algorithms}
+\label{cha::lit::euclidean::euclidean}
+The Euclidean Shortest Path Problem is a well known and well researched topic in the areas of
+Computational Geometry and Computer Graphics. It can be seen as a generalisation of the Any-Angle 
+Pathfinding Problem. It asks for a shortest path in a plane but does not impose any restrictions on
+obstacle shape or obstacle placement (cf. grid aligned polygons made up of unit squares). 
+
+Visibility Graphs~\cite{lozanoperez79} (discussed in Section~\ref{cha::lit::graphs})
+are a a well-known and and popular technique for solving the Euclidean Shortest Path 
+Problem. Searching in such graphs requires $O(n^2log_{2}{n})$ time.  There are two 
+main disadvantages: (i) computing the graph requires an offline preprocessing step;
+(ii) the graph is static and must be repaired if the environment changes;
+(ii) storing the graph introduces an $O(n^2)$ memory overhead (each node in 
+the graph can be adjacent to every other node). Tangent Graphs~\cite{liu92} are a 
+particularly efficient variant but their space requirements remain worst-case 
+quadratic. 
+
+Other exact approaches are based on the Continuous Dijkstra~\cite{mitchell87,mitchell97} paradigm.
+The most efficient of these algorithms~\cite{hershberger99} involves a
+precomputation requiring $O(n \log_{2}{n})$ space and $O(n\log_{2}n)$ time. The result 
+is a Shortest Path Map (Section~\ref{cha::lit::graphs}); a planar subdivision of the environment 
+that can be used to find a Euclidean shortest path in just $O(\log_{2}n)$; but only for queries 
+originating at a fixed source. Like Visibility Graphs, this approach also introduces additional
+memory overheads (storing the subdivision) and the preprocessing step must be re-executed each 
+time the environment or the start location changes.
