@@ -10,7 +10,7 @@ maps, shortest path maps and visibility graphs.  All are examples of
 are enumerated apriori, before any pathfinding can begin.  Such graphs arise in
 many settings including computer games~\citep{davis00,tozour02,champandard09},
 routing~\citep{sanders05,goldberg06} and robot motion
-planning~\citep{latombe91,choset05}.  Not all search graphs are explict.  Some
+planning~\citep{latombe91,choset05}.  Not all search graphs are explicit.  Some
 are~\emph{implicit}, which means that the vertices and edges of the graph are
 identified on-the-fly during search.  Implicit graphs appear in higher
 dimensional pathfinding settings~\citep{lavalle98,bohlin00} and related
@@ -41,7 +41,7 @@ Section~\ref{cha::lit::graphs::analysis} we compare them directly.
 
 \subsection{Grid Maps}
 \label{cha::lit::graphs::grid}
-A grid map is a tesselation of gemetric shapes used to discretise an n-dimensional
+A grid map is a tessellation of geometric shapes used to discretise an n-dimensional
 operating environment. The canonical case involves unit squares, called tiles, 
 which are applied over a plane~\footnote{Other types of two dimensional shapes,
 such as hexes and texes, are also used in this setting but less commonly; cf.~\citep{yap02}}.
@@ -67,13 +67,13 @@ memory requirements and searching in a larger grid often makes pathfinding more
 challenging.
 Another disadvantage of grid maps is that they produce paths which are
 constrained to the points of the grid. Such paths are not only aesthetically
-displeasing but they can also be longer than stricictly necessary and may
+displeasing but they can also be longer than strictly necessary and may
 require post-processing to ``smooth'' them.
 
 \subsection{Navigation Meshes}
 \label{cha::lit::graphs::nav}
 A navigation mesh can be described as a low-fidelity model of an operating environment.
-Typically comprising a set of convex adjacent polygons, navigations meshes are
+Typically comprising a set of convex adjacent polygons, navigation meshes are
 often used in computer games to represent walkable and non-walkable surfaces in
 two and three dimensions~\citep{snook00,tozour02}.
 There are many approaches for constructing navigation meshes.
@@ -108,7 +108,7 @@ problems in the area of robotics.  Many variants exist. The Probabilistic
 Roadmap (PRM)~\citep{kavraki94}, for example,
  is created by randomly sampling a configuration space (i.e. the operating environment) in
 order to build a connected graph. Another approach, known as the Reachability
-Roadmap (RRM)~\citep{geraerts05} applies a grid tesselation in the first
+Roadmap (RRM)~\citep{geraerts05} applies a grid tessellation in the first
 instance and then chooses points from the grid.  Voronoi Diagrams~\citep{aurenhammer91}
 can also be regarded as a type of roadmap. In this case a network of edges is constructed
 which are all equi-distant from the two closest obstacles; the nodes of the network are 
@@ -117,12 +117,12 @@ found at the intersections of these edges.
 Roadmaps are advantageous because they are an effective means of discretising
 large multi-dimensional search spaces into small graphs that can be searched
 efficiently. For example: using a roadmap any pathfinding problem can be
-factored into three smaller subproblems: find a path from each of the start and
+factored into three smaller sub-problems: find a path from each of the start and
 target configuration to a point on the roadmap then search for a path on the
 roadmap that connects these two points. Disadvantages include:
 \begin{itemize}
 \item{Some types of roadmaps are not complete. For example, when using a PRM the probability of 
-a path being found, if one exists, increases with the number  of samped points~\citep{barraquand97}. 
+a path being found, if one exists, increases with the number  of sampled points~\citep{barraquand97}. 
 By comparison RRMs have stronger guarantees but their applicability
 is limited to pathfinding in two and three dimensions.}
 \item{Roadmaps are applicable only in static environments. The introduction of
@@ -168,7 +168,7 @@ simplicity and ability to provide strong guarantees including completeness and
 include:
 \begin{itemize}
 \item Visibility graphs can be very large; in the worst case every
-vertex is visibile from every other vertex and a quadratic number
+vertex is visible from every other vertex and a quadratic number
 of edges is required. Tangent Graphs~\citep{liu92} and Silhouette Zones~\citep{young01b}
 are two variant approaches that address this shortcoming in many practical
 cases but their memory requirements remain worst-case quadratic.

@@ -111,7 +111,7 @@ obstacles). They require very little memory (typically a constant amount) and
 are attractive in cases where computational resources are very limited.
 
 \subsection{Performance Enhancements}
-\label{cha::lit::search::enhancements}
+\label{cha::lit::search::impl}
 A variety of methods have been developed to enhance the performance of the
 search strategies we have discussed this far. Such efforts are typically focused
 in one of three areas:
@@ -129,13 +129,13 @@ heuristic portfolios. An overview of such strategies is the subject of
 Section~\ref{cha::lit::heuristics}.
 
 \item Code and memory optimisations. These are discussed in 
-Section~\ref{cha::lit::enhancements}.
+Section~\ref{cha::lit::impl}.
 \end{itemize}
 
 Each approach has different strengths.  Reducing the size of the search space allows
 pathfinding solutions to be found more quickly and permits larger search spaces to be explored.
 Better heuristics help to focus the search process toward promising choice-points and often provide
-further guidance in the form of lower-bounds. Specialised data stuctures and other code and memory and
+further guidance in the form of lower-bounds. Specialised data structures and other code and memory and
 memory optimisations facilitate machine-efficient operations for fetching, sorting and storing sets
-of states that need to be explored during search.  These methods are not mututally exclusive.
+of states that need to be explored during search.  These methods are not mutually exclusive.
 Indeed, as we will see, they can be and often are very successfully combined.

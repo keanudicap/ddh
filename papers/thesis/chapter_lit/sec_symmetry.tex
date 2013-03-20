@@ -15,7 +15,7 @@ The robot has two arms (the eponymous grippers for which the problem is named) a
 move freely between the rooms but is restricted to manipulating only one
 ball at a time.
 To solve this problem a typical systematic search algorithm will enumerate every 
-permutation of balls and grippers, despite the fact that such cofigurations are equivalent.
+permutation of balls and grippers, despite the fact that such configurations are equivalent.
 For instance: picking up a ball with the left gripper yields a state equivalent to 
 picking up a ball with the right gripper.
  Similarly, the sequence of actions necessary to move a single ball from one room to another
@@ -65,7 +65,7 @@ representative for a given symmetry group (e.g. as in ~\citep{pochter11}) and lo
 Path symmetries occur during search when considering sequences of independent and interchangeable
 transitions. Applied separately these transitions do not necessarily lead to a symmetric state but
 given a set of such transitions every possible interleaving always yields the same state. 
-Enumerating such interleavings is pointless: each one involves searching a subgraph that is 
+Enumerating such interleavings is pointless: each one involves searching a sub-graph that is 
 isomorphic to all the rest and each one yields a state that is equivalent to all the rest.
 
 Studies that deal with path symmetries can be found across the literature of Artificial Intelligence.
@@ -89,7 +89,7 @@ By far the richest source for works dealing with path symmetries is the area of 
 where practitioners reason about the operation of concurrent transition systems.  In this
 context the state of a system (sometimes called its \emph{configuration}) is defined in terms of its
 execution history; an ordered sequence of \emph{events} where each event represents a concurrent
-computation undertaken by one or more indepenent components of the system.  The objective of model
+computation undertaken by one or more independent components of the system.  The objective of model
 checking is to automatically determine whether specifications of such systems guarantee certain
 properties; e.g.  that certain events will occur or that no deadlocks exist.  Though verification is
 $\mathsf{NP}$-hard in general, practical algorithms are further hampered by the fact that many of
@@ -97,7 +97,7 @@ the events which can occur at some point in time are independent from and interc
 other events.
 
 A Marzurkiewicz Trace~\citep{mazurkiewicz86} (or simply a \emph{trace}) is a conceptual approach to
-concurrent model checking that avoids isomorphic subgraphs.  Trace semantics define an equivalence
+concurrent model checking that avoids isomorphic sub-graphs.  Trace semantics define an equivalence
 class $[\mathbf h]$ for execution histories of a concurrent system. Each history in a given
 equivalence class is identical to all the others save for the order in which interchangeable and
 independent computations occur.  A number of different strategies for searching in the space of
@@ -132,9 +132,9 @@ Sleep Sets~\citep{godefroid93,godefroid96}. A Sleep Set is a set of transitions 
 enabled in a state $s$ but which will not be executed. Sleep Sets are passed from one state to 
 another during search. The idea is to avoid executing any transitions which are independent and
 interchangeable with the last transition taken in order to reach the current state.
-For example: suppose a state $s'$ is reached by applying transition $t$ in a preceeding state $s$.
+For example: suppose a state $s'$ is reached by applying transition $t$ in a preceding state $s$.
 The sleep set of $s'$ is the sleep set of $s$ plus all enabled transitions in $s$ that 
-are indepedent and interchangeable with $t$ and minus all transitions that are not.
+are independent and interchangeable with $t$ and minus all transitions that are not.
 Sleep Sets are sound and complete but less powerful than Persistent Sets. However, two approaches 
 are orthogonal and can be combined. The result is a pruning strategy that is at least as effective
 and often more effective than either approach applied in isolation.

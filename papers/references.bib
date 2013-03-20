@@ -599,6 +599,7 @@ This paper describes several different ejection-chain based reference structures
 	booktitle = {AAAI},
 	year      = {2008},
 	pages     = {944-949},
+	ee        = {http://www.aaai.org/Library/AAAI/2008/aaai08-150.php},
 	bibsource = {DBLP, http://dblp.uni-trier.de}
 }
 
@@ -612,8 +613,7 @@ This paper describes several different ejection-chain based reference structures
 	Year = {2002}}
 @inproceedings{goldberg05,
 author    = {Andrew V. Goldberg and  Chris Harrelson},
-title     = {Computing the shortest path: A* search meets graph
-   theory},
+title     = {Computing the shortest path: {A}* search meets graph theory},
 booktitle = {SODA},
 year      = {2005},
 pages     = {156-165},
@@ -635,7 +635,8 @@ annote = {Using landmarks to compute optimal paths}
                for path-finding on maps},
   booktitle = {CIG},
   year      = {2006},
-  pages     = {27--33}
+  pages     = {27--33},
+  annote = {Various search optimisations, including arrays of stacks.}
 }
 
 @inproceedings{yap02,
@@ -663,19 +664,17 @@ year      = {2009},
 annote = { pages     = {1163-1164},}
 }
 @inproceedings{sturtevant09,
-author    = {Nathan R. Sturtevant and
-Ariel Felner and
-Max Barrer and
-Jonathan Schaeffer and
-Neil Burch},
+author    = {Nathan R. Sturtevant and Ariel Felner and Max Barrer 
+	and Jonathan Schaeffer and Neil Burch},
 title     = {Memory-Based Heuristics for Explicit State Spaces},
 booktitle = {IJCAI},
 year      = {2009},
 pages     = {609-614},
-annote = {Canonical and Differential Heuristics. Similar to ALT; requires preprocessing distances to some nearby nodes deemed important then computing and storing
-   	APSP over the important nodes.}
+annote = {Canonical and Differential Heuristics. Similar to ALT; preprocesses the map
+	to identify a small set of (either local or global) landmark nodes. 
+	An APSP matrix of distances is computed for these nodes. This database is used to
+	develop several admissible heuristics. }
 }
-
 
 @inproceedings{pochter10,
 author    = {N. Pochter and A. Zohar and
@@ -861,6 +860,9 @@ pages     = {522-536},
 	title = {Portal-Based True-Distance Heuristics for Path Finding},
 	booktitle = {SoCS},
 	year = {2010},
+	annote = { Abstraction-based memory heuristic. Seems to reinvent bast06 though it differs in
+   		how it decomposes the map. Another difference is that this work discusses path extraction
+		at length whereas bast06 mostly ignores it. }
 }
 
 @inproceedings{bast06,
@@ -914,7 +916,8 @@ pages     = {522-536},
 
 @INPROCEEDINGS{lee09,
 author={Jae-Yeong Lee and Wonpil Yu},
-booktitle={IROS}, title={A coarse-to-fine approach for fast path finding for mobile robots},
+booktitle={IROS}, 
+title={A coarse-to-fine approach for fast path finding for mobile robots},
 year={2009},
 pages={5414 -5419},
 annote = {Exceedingly similar to HAA* }
@@ -931,7 +934,7 @@ annote = {Exceedingly similar to HAA* }
 
 @article{yakovlev10,
 	author = {Yakovlev, K. S.},
-	title = {HGA*, an efficient algorithm for path planning in a plane},
+	title = {{HGA*}, an efficient algorithm for path planning in a plane},
 	journal = {J. Sci. Tech. Inf. Process.},
 	issue_date = {December  2010},
 	volume = {37},
@@ -956,11 +959,8 @@ annote = {Exceedingly similar to HAA* }
 
 
 @inproceedings{sun09,
-  author    = {Xiaoxun Sun and
-               William Yeoh and
-               Po-An Chen and
-               Sven Koenig},
-  title     = {Simple optimization techniques for A*-based search},
+  author    = {Xiaoxun Sun and William Yeoh and Po-An Chen and Sven Koenig},
+  title     = {Simple optimization techniques for {A*}-based search},
   booktitle = {AAMAS (2)},
   year      = {2009},
   pages     = {931-936},
@@ -1052,7 +1052,7 @@ annote = {Exceedingly similar to HAA* }
 
 @incollection{rabin00,
 	author = {Steve Rabin},
-	title = {A* Speed Optimizations},
+	title = {{A}* Speed Optimizations},
 	booktitle = {Game Programming Gems},
 	publisher = {Charles River Media},
 	pages = {272-287},
@@ -1067,7 +1067,7 @@ annote = {Exceedingly similar to HAA* }
 @inproceedings{koenig01,
 	author    = {Sven Koenig and
 		 Maxim Likhachev},
-	title     = {Incremental A*},
+	title     = {Incremental {A}*},
 	booktitle = {NIPS},
 	year      = {2001},
 	pages     = {1539-1546},
@@ -1131,7 +1131,7 @@ annote = {Exceedingly similar to HAA* }
 
 @inproceedings{rintanen11,
 	author    = {Jussi Rintanen},
-	title     = {Planning with SAT, Admissible Heuristics and A*},
+	title     = {Planning with {SAT}, Admissible Heuristics and {A}*},
 	booktitle = {IJCAI},
 	year      = {2011},
 	pages     = {2015-2020},
@@ -1277,6 +1277,20 @@ annote = {Exceedingly similar to HAA* }
   }
 }
 
+@inproceedings{korf96,
+  author    = {Richard E. Korf and Larry A. Taylor},
+  title     = {Finding Optimal Solutions to the Twenty-Four Puzzle},
+  booktitle = {AAAI/IAAI, Vol. 2},
+  year      = {1996},
+  pages     = {1202-1207},
+  ee        = {http://www.aaai.org/Library/AAAI/1996/aaai96-178.php},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = { Describes some new domain-specific admisslble heuristics for 
+	  solving sliding tile puzzles. The main idea is to consider interactions 
+		  between tiles. }
+}
+
+
 @inproceedings{culberson96,
   author    = {Joseph C. Culberson and
                Jonathan Schaeffer},
@@ -1389,7 +1403,7 @@ annote = {Exceedingly similar to HAA* }
 
 @inproceedings{goldberg06,
 	author = {A.V. Goldberg and Haim Kaplan and Renato F. Werneck},
-	title = {Reach for A*: Efficient Point-to-Point Shortest Path Algorithms},
+	title = {Reach for {A}*: Efficient Point-to-Point Shortest Path Algorithms},
 	booktitle={ALENEX},
 	year = {2006}
 }
@@ -1725,8 +1739,7 @@ annote = {Exceedingly similar to HAA* }
 
 @article{dechter85,
   author    = {Rina Dechter and Judea Pearl},
-  title     = {Generalized Best-First Search Strategies and the Optimality
-               of A*},
+  title     = {Generalized Best-First Search Strategies and the Optimality of {A}*},
   journal   = {J. ACM},
   volume    = {32},
   number    = {3},
@@ -1921,7 +1934,7 @@ annote = {Exceedingly similar to HAA* }
 
 @ARTICLE{valtorta84,
     author = {Marco Valtorta},
-    title = {A result on the computational complexity of heuristic estimates for the A* algorithm},
+    title = {A result on the computational complexity of heuristic estimates for the {A}* algorithm},
     journal = {Information Sciences},
     year = {1984},
     volume = {34},
@@ -1936,7 +1949,7 @@ annote = {Exceedingly similar to HAA* }
 
 @inproceedings{holte96,
     author = {R.C. Holte and R. C. Holte and M.B. Perez and M. B. Perez and R. M. Zimmer and R. M. Zimmer and A.J. MacDonald and A. J. Macdonald},
-    title = {Hierarchical A*: Searching Abstraction Hierarchies Efficiently},
+    title = {Hierarchical {A}*: Searching Abstraction Hierarchies Efficiently},
     booktitle = {In Proceedings of the National Conference on Artificial Intelligence},
     year = {1996},
     pages = {530--535},
@@ -1954,3 +1967,151 @@ annote = {Exceedingly similar to HAA* }
   bibsource = {DBLP, http://dblp.uni-trier.de},
 }
 
+@inproceedings{rayner11,
+  author    = {D. Chris Rayner and
+               Michael H. Bowling and
+               Nathan R. Sturtevant},
+  title     = {Euclidean Heuristic Optimization},
+  booktitle = {AAAI},
+  year      = {2011},
+  ee        = {http://www.aaai.org/ocs/index.php/AAAI/AAAI11/paper/view/3594},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = { Optimisation approach to creating new admissible Euclidean heuristics. 
+	  The objective function maximises a weighted heuristic distance term which is summed 
+	  over pairs of nodes in a graph. The optimization uses some kind of dimensionalty
+	  reduction mechanism to compute the heuristic values. }
+}
+
+@inproceedings{goldenberg11,
+  author    = {Meir Goldenberg and Nathan R. Sturtevant and Ariel Felner and Jonathan Schaeffer},
+  title     = {The Compressed Differential Heuristic},
+  booktitle = {AAAI},
+  year      = {2011},
+  ee        = {http://www.aaai.org/ocs/index.php/AAAI/AAAI11/paper/view/3723},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = { Presents some compression results for the differetial heuristic from
+	  sturtevant09. The idea is to precompute distances from each node to only a 
+	  subset of global landmarks (here, pivots) and run Dijkstra to derive some
+	  upper and lower-bounds for the missing costs.}
+
+}
+
+@inproceedings{botea13,
+	author = {Adi Botea and Daniel Harabor}, 
+	title = {Path Planning with Compressed All-Pairs Shortest Paths Data},
+	booktitle = {ICAPS},
+	year = {2013}
+}
+
+@inproceedings{ferguson05,
+  author    = {Dave Ferguson and
+               Anthony Stentz},
+  title     = {Field {D}*: An Interpolation-Based Path Planner and Replanner},
+  booktitle = {ISRR},
+  year      = {2005},
+  pages     = {239-253},
+  ee        = {http://dx.doi.org/10.1007/978-3-540-48113-3_22},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = {Near-optimal any-angle algorithm that smooths paths during search using 
+	  linear interpolation. Adjustments are made on a cell-by-cell basis. 
+      Compare this with nash07 where smoothing is done wrt. the last turning point.}
+}
+
+@inproceedings{sislak09a,
+  author = {David {\v{S}}i{\v{s}}l{\'a}k and P{\v{r}}emysl Volf and Michael P{\v{e}}chou{\v{c}}ek},
+  title     = {Accelerated {A}* path planning},
+  booktitle = {AAMAS (2)},
+  year      = {2009},
+  pages     = {1133-1134},
+  ee        = {http://doi.acm.org/10.1145/1558109.1558176},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = {Similar to sislak09b. Different macro node operator though.}
+}
+
+@inproceedings{sislak09b,
+	title = {Accelerated {A}* Trajectory Planning: Grid-based Path Planning Comparison},
+	author = {David {\v{S}}i{\v{s}}l{\'a}k and P{\v{r}}emysl Volf and Michael P{\v{e}}chou{\v{c}}ek},
+	booktitle = {4th Workshop on Planning and Plan Execution for Real-World Systems},
+	year = {2009},
+	ee = {http://www.mbari.org/autonomy/ICAPS09-workshop/papers/Sislak.pdf},
+	annote = {Any-angle pathfinding. Similar to nash07 but alternative parents can be
+		any node in the closed list that is located inside some ellipse that is formed
+		between the start node and the current node. Shorter paths than nash07 but more time.}
+}
+
+@inproceedings{munoz12,
+  author    = {Pablo Mu{\~n}oz and Mar\'{\i}a Dolores Rodr\'{\i}guez-Moreno},
+  title     = {Improving efficiency in any-angle path-planning algorithms},
+  booktitle = {IEEE Conf. of Intelligent Systems},
+  year      = {2012},
+  pages     = {213-218},
+  ee        = {http://dx.doi.org/10.1109/IS.2012.6335138},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = {Faster any-angle pathfinding by minimising # of heading changes. Similar ideas here
+	  to weighted A* sans any nice theoretical properties. By weighting the f-cost with a
+	  suitable penalty the authors break many almost-equivalences and and reduce both running
+	  time and number of node expansions. There is a negative effect on solution quality but it
+	  is shown, empirically, to be small.  }
+}
+
+@article{stout96,
+	author = {Briant Stout},
+	title = {Smart Moves: Intelligent Pathfinding},
+	journal = {Game Developer Magazine},
+	pages = {28-35},
+	year = {1996},
+	volume = {October}
+}
+
+@inproceedings{sanders99,
+  author    = {Peter Sanders},
+  title     = {Fast Priority Queues for Cached Memory},
+  booktitle = {ALENEX},
+  year      = {1999},
+  pages     = {312-327},
+  ee        = {http://dx.doi.org/10.1007/3-540-48518-X_19},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  annote = {Sequence Heaps; fast insert + delete operations on elements by using
+	  small sorted sequences of elements that are merged dynamically.}
+}
+
+@article{higgins02,
+	author = {Dan Higgins},
+	title = {How to Achieve Lightning Fast {A}*},
+	booktitle = {{AI} Game Programming Wisdom},
+	year = {2002},
+	pages = {133-145},
+	publisher = {Charles River Media}
+}
+
+@article{cain02,
+	author = {Timothy Cain},
+	title = {Practical Optimiztions for {A}*},
+	booktitle = {{AI} Game Programming Wisdom},
+	year = {2002},
+	pages = {146-152},
+	publisher = {Charles River Media}
+}
+
+@article{park04,
+	author = {Park, Joon-Sang and Penner, Michael and Prasanna, Viktor K.},
+	title = {Optimizing Graph Algorithms for Improved Cache Performance},
+	journal = {IEEE Trans. Parallel Distrib. Syst.},
+	issue_date = {September 2004},
+	volume = {15},
+	number = {9},
+	month = sep,
+	year = {2004},
+	issn = {1045-9219},
+	pages = {769--782},
+	numpages = {14},
+	url = {http://dx.doi.org.virtual.anu.edu.au/10.1109/TPDS.2004.44},
+	doi = {10.1109/TPDS.2004.44},
+	acmid = {1025041},
+	publisher = {IEEE Press},
+	address = {Piscataway, NJ, USA},
+	annote = {Faster Floyd-Warshall using a tiling-based graph representation and
+		faster Dijkstra using adjacent arrays and memory mapping. The former seems
+		to be just multi-valued adjacency lists; each array element is a tuple
+		of the form [id, g-value].}
+} 

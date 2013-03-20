@@ -32,7 +32,7 @@ and a singleton goal state.  Despite such seemingly discouraging results researc
 demonstrated that, in many pathfinding domains of practical interest (e.g.~\citep{sturtevant12}),
 better heuristic estimates can dramatically improve the performance of optimal search.
 
-One idea for improving heuristic accuracy is to take into accout domain specific movement rules.
+One idea for improving heuristic accuracy is to take into account domain specific movement rules.
 $h_{MD}$ (Manhattan Distance) and $h_{OD}$ (Diagonal or Octile Distance) are two such heuristics; they
 retain all the properties of $h_{SLD}$ but provide better lower-bound estimates when pathfinding in
 square grids. Similar domain-specific heuristics have been developed for pathfinding in hexagonal
@@ -56,14 +56,14 @@ settings, including robotics and video games.
 
 A different line of work has investigated the automatic construction of memory heuristics.  In a
 recent paper~\cite{rayner11} describe a process for computing entire families of Euclidean
-heuristics. Their approach involves embeding a spatial network graph into a manifold. Computing the
-embeding requires solving a constrained optimisation problem that minimises heuristic error. The
+heuristics. Their approach involves embedding a spatial network graph into a manifold. Computing the
+embedding requires solving a constrained optimisation problem that minimises heuristic error. The
 authors show that their approach produces very accurate results in practice but solving the
 optimisation problem can require significant preprocessing time and space.  Compressed Path
 Databases (CPDs)~\citep{sanka05,botea11,botea13} are another powerful method for automatically
-constructing memory-based heuritics; this time from spatial abstractions.  A CPD can be described as
+constructing memory-based heuristics; this time from spatial abstractions.  A CPD can be described as
 a highly compressed set of tables that store the first move on the optimal path between any pair of
-nodes in a graph. Through a simple process of recursive lookups CPDs can extract any optimal path in
+nodes in a graph. Through a simple process of recursive look-ups CPDs can extract any optimal path in
 near-linear-time and without employing any state-space search. Though among the fastest pathfinding
 techniques today, CPDs nevertheless require substantial amounts of memory and are thus not
 applicable in many popular pathfinding settings.
