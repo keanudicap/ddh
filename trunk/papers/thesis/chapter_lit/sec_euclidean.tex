@@ -13,7 +13,7 @@ Path Problem.
 \label{cha::lit::euclidean:anyangle}
 The Any-Angle Pathfinding Problem appears in robotics and computer video games. It involves finding
 a shortest path between an arbitrary pair of points on a two-dimensional grid map but asks that
-movement along the path is not artifically constrained to the points of the grid.
+movement along the path is not artificially constrained to the points of the grid.
 
 Within the game development community a simple and popular solution to the Any-Angle Pathfinding
 Problem is \emph{string pulling}~\cite{pinter01,botea04}.  The idea is to compute a grid-optimal
@@ -41,7 +41,7 @@ sets of nodes at a time.
 A primary advantage of Accelerated A* is that it uses less memory than competing algorithms (e.g.
 Theta*).  Another advantage is that computed solutions are shorter than those produced by competing
 algorithms. In a range of grid-based domains the authors show that Accelerated A* always finds the
-optimal path.  Unfortunately no theoretical guarantees are provided.  The main disadvatage of
+optimal path.  Unfortunately no theoretical guarantees are provided.  The main disadvantage of
 Accelerated A* is its running time. During each node expansion there can be a large number of
 line-of-sight checks between the current node and a set of potential alternative parent nodes.  For
 large problems with long optimal solutions this set can comprise most nodes appearing on the closed

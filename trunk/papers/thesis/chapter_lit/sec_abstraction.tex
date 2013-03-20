@@ -34,15 +34,15 @@ called \emph{transit nodes}. Identified during a preprocessing step, these nodes
 because they form the backbone of a highway network and thus appear on a great many number of 
 shortest paths. The existence of such nodes is a well known and often exploited
 phenomenon; c.f. Highway Hierarchies~\citep{sanders05,sanders06}, Highway-Node Routing~\citep{schultes07}
-and Contraction Hiearchies~\citep{geisberger08}. 
+and Contraction Hierarchies~\citep{geisberger08}. 
 
 Algorithms such as TRANSIT are attractive because they are typically very fast, especially when
 employed as distance oracles, and because they preserve solution optimality. Disadvantages often
 include an expensive preprocessing step, the introduction of a significant memory overhead
 (typically many times but possibly many orders larger than the space needed to store the original
 map) and degraded performance when answering shortest path rather than shortest distance queries.
-Another disadvatage is that these algorithms appear to have limited applicability. Recent
+Another disadvantage is that these algorithms appear to have limited applicability. Recent
 theoretical work~\citep{abraham10} has shown that TRANSIT-like approaches are best suited to graphs
-having very lowe degree -- as is typically the case in road networks.  When this is not the case
+having very low degree -- as is typically the case in road networks.  When this is not the case
 TRANSIT and other similar algorithms exhibit large increases in memory consumption and their
 performance can be strongly impacted in a negative way~\citep{antsfeld12}.

@@ -1,11 +1,11 @@
 \section{Discussion}
 \label{cha::lit::discussion}
 Single-agent Pathfinding is a common topic in many areas of Computer Science. It is studied in the
-context of Algorithmics, Artificial Intelligence, Computational Geometry, Computer Graphics and
-Robotics.  The most common formulation involves an agent navigating amidst obstacles in a two or
-three dimensional operating environment.  Researchers often simplify the problem by discretising the
-environment into a fixed set of connected points called a search graph. Such discretisation
-approaches include:
+context of Algorithmics, Artificial Intelligence, Computational Geometry, Computer Graphics, Game
+Development and Robotics.  The most common formulation involves an agent navigating amidst obstacles
+in a two or three dimensional operating environment.  Researchers often simplify the problem by
+discretising the environment into a fixed set of connected points called a search graph. Such
+discretisation approaches include:
 \begin{itemize}
 \item Grid Maps.
 \item Navigation Meshes.
@@ -32,7 +32,8 @@ are popular because they are complete, optimal and optimally efficient.
 Despite very attractive theoretical characteristics there exist many domains of practical 
 interest where even Informed Search strategies cannot find optimal paths within a specified
 time limit or using only a fixed amount of memory. A variety of techniques have been
-developed to speed up search in these cases. These can be broadly categorised as follows:
+developed to improve the efficiency of search in these cases. These efforts can be broadly 
+categorised as follows:
 \begin{itemize}
 \item Spatial Abstraction.
 \item Improved Heuristics.
@@ -44,19 +45,19 @@ Within the Artificial Intelligence community pathfinding with spatial abstractio
 creating small approximations of a given input graph.  Though fast and memory efficient such
 approaches do not find optimal paths.  A related strategy involves improving the accuracy of 
 heuristic functions that guide search. Such methods usually guarantee optimality but often at the 
-cost of substative memory overheads.  
+cost of substantive memory overheads.  
 
 Within the Algorithmics community a different line of research has led to the development of 
 specialised abstraction hierarchies that, unlike their counterparts in AI, can preserve solution 
 optimality. Developed for routing on road networks, these approaches are
 very fast but suffer from two drawbacks: (i) they introduce substantive memory overheads 
 (compared to the amount of space needed to store the map) and (ii) they can perform poorly on 
-graphs that do not have very low degree.
+which do not have very low degree.
 
 In some domains of practical interest, such as grid maps, it has been suggested that optimal
 pathfinding is made difficult by the existence of many equivalent optimal paths. To deal
 with such cases researchers in Artificial Intelligence have developed a variety of 
-Dominance Detection technques.  Typically preprocessing-based, such algorithms focus on the 
+Dominance Detection techniques.  Typically preprocessing-based, such algorithms focus on the 
 identification of areas on a map that do not need to be considered during search. Ignoring 
 these areas can speed up informed search strategies such as A* by many factors; albeit at the 
 cost of some memory overhead.
@@ -65,7 +66,7 @@ Equivalences in search domains can be due to paths having direct symmetries in t
 automorphisms between states) or they can be the result of interleaving equivalent and
 interchangeable actions (i.e. isomorphisms between sequences of states). A large body of work
 dealing with both types of symmetries can be found in the literature of AI Planning, Constraint
-Programming and Model Checking. Such works are usually deveolped in the context of transitions
+Programming and Model Checking. Such works are usually developed in the context of transitions
 systems having compact representations and a small set of applicable operators. By comparison,
 pathfinding domains have large explicit representations and transitions that are state-specific.
 Thus there is little work applying such ideas to pathfinding.
@@ -78,7 +79,7 @@ problems rather than graph-based solutions. A variety of efficient techniques ex
 context but all are preprocessing based and require memory overheads. The most performant of 
 these, Continuous Dijkstra, requires a fixed starting state; a very strong and often unreasonable 
 constraint. 
-Any-Angle Pathfinding an instance of the Eucliean Shortest Path Problem which is restricted
+Any-Angle Pathfinding an instance of the Euclidean Shortest Path Problem which is restricted
 to grid-based environments. The problem appears in the context of Computer Games and Robotics.
 A number of methods from AI and Game Development exist that can solve the problem but all
 are suboptimal. One recent algorithm, Accelerated A*, is conjectured to be optimal but no
