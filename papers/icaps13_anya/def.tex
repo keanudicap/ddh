@@ -34,7 +34,7 @@ Each cell is an open set of \emph{interior} points which are
 all \emph{traversable} or all \emph{non-traversable}.
 %\footnote{Such cells are sometimes called obstacles.}.
 The vertices associated with each cell are called the
-\emph{discrete} points of the grid. Each such point $p$ has a unique coordinate $(x, y)$
+\emph{discrete} points of the grid. Each such point $p = (x, y)$ has a unique coordinate
 where $x \in \{0,\dots,W\}$ and $y \in \{0,\dots,H\}$.
 % refers to an explicit vertex 
 Edges in the grid can be interpreted as open intervals of \emph{intermediate}
@@ -67,9 +67,9 @@ pair of points $d(p_1,p_2) + \dots + d(p_{k-1},p_k)$,
 where $d((x,y), (x',y'))= \sqrt{(x-x')^2 + (y-y')^2}$ 
 is a uniform Euclidean distance metric.
 We will say $p_i \in \pi$ is a \emph{turning point} if the segments
-$(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle.
+$(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle not equal to $180^{\circ}$.
 It is well-known that the turning points in optimal any-angle paths 
-are corner points.  
+are corner points; see e.g.~\cite{mitchell87}.
 % TODO: ref?  To visibility points?  
 
 %\\
