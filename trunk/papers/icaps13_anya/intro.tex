@@ -2,7 +2,7 @@
 Any-angle pathfinding is a navigation problem which appears in robotics
 and computer video games. It involves finding a shortest path between an 
 arbitrary pair of points on a two-dimensional grid map but asks that 
-movement along the path is not artifically constrained to the points of 
+movement along the path is not artificially constrained to the points of 
 the grid.  Within the game development community a simple and popular 
 solution exists known as \emph{string pulling}~\cite{pinter01,botea04}.
 The idea is to compute a grid-optimal path in the first
@@ -10,7 +10,7 @@ instance and smooth the result as part of a post-processing step that improves
 both its length and aesthetic appeal. String pulling has two disadvantages: 
 (i) it requires more computation than just finding a path (ii)
 it only yields approximately shortest paths.
-\\
+
 A number of algorithms improve on string-pulling by integrating post-processing
 into node-expansion during search. Field D*~\cite{ferguson05} uses linear 
 interpolation to smooth paths one grid cell at a time. 
@@ -19,7 +19,7 @@ Theta*~\cite{nash07}
 introduces a shortcut each time a successful line-of-sight check
 is made from the parent of the current node to any of its successors.
 Meanwhile, Block A*~\cite{yap11} employs during search a pre-computed database
-of optimal Euclidean distances between any pair of points in a localised area.
+of optimal Euclidean distances between pairs of points in a localised area.
 Each of these approaches improves on string pulling in terms of solution 
 quality and, in many cases, running time. Unfortunately none are optimal.
 Accelerated A*~\cite{sislak09b} is an any-angle algorithm that is conjectured 
@@ -28,6 +28,7 @@ it differs primarily in that line-of-sight checks are performed from a set
 of expanded nodes rather than a single ancestor. The size of the set is only
 loosely bounded and, for challenging problems, can include a large proportion
 of nodes on the Closed List.
+
 %
 % Its main disadvantage is that,
 %for challenging problems, it can perform line-of-sight checks against a large 
@@ -47,24 +48,23 @@ of nodes on the Closed List.
 %In computational geometry a problem similar to any-angle pathfinding exists 
 %which has been very well studied: finding Euclidean shortest paths among 
 %polygonal obstacles in the plane.
-\\
 Tangent Graphs~\cite{liu92} and Visibility Graphs~\cite{lozanoperez79} are 
 optimal techniques that can solve a generalised form of the any-angle pathfinding 
 problem. Their primary disadvantage is that each such graph requires quadratic 
 space in the worst case and must be computed offline.
 Other exact approaches are based on the 
 Continuous Dijkstra~\cite{mitchell87} paradigm.
-The most efficient of these algorithms~\cite{hershberger99} precomputes a 
+The most efficient of these algorithms~\cite{hershberger99} pre-computes a 
 planar subdivision of the map that can be used to extract a path in just
 logarithmic time. Unfortunately the precomputation assumes the starting location
 does not change.
-\\
+
 In this work we introduce a new approach to any-angle pathfinding 
 which addresses many of the shortcomings associated with existing research.
 Our method, Anya, bears some similarity with Continuous Dijkstra: 
 instead of searching over the individual nodes of the grid we 
 search over contiguous sets of states that form intervals.
-Each interval has a represenative point used to derive an $f$-value
+Each interval has a representative point used to derive an $f$-value
 and each is projected from one row of the grid onto another until the 
 goal is reached.
 %instead of searching over individual states from the grid we consider

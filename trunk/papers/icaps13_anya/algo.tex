@@ -45,9 +45,11 @@ make it any shorter.
   \begin{center}
     \input{tikz/ex2}
   \end{center}
+	\vspace{-1em}
 %  \caption{$(I, r)$ has three successors: $(I'_1, r)$ which is observable and $(I'_2, r')$ and $(I'_3, r')$ which are not. Notice that intervals of traversable points exist left of $I$ but the local path through $I$ to each such point is not taut.}
   \caption{$(I, r)$ has four successors: $(I'_1, r)$ and $(I'_2,r)$ which are observable and $(I'_3, r')$ and $(I'_4, r')$ which are not. Notice that intervals of traversable points exist left of $I$ but the local path through $I$ to each such point is not taut.}
 \label{fig::successors}
+\vspace{-0.5em}
 \end{figure}
 
 \begin{defi}
@@ -86,10 +88,8 @@ observable and non-observable successors.
 %can also exist a set of traversable points that are not visible from $r$.
 %In this case however the path from $r$ to each such point $p'$ is 
 %not taut so we do not generate any successor.
-
-To evaluate a search node $n = (I, r$) we will select a point $p \in I$ 
-which has a minimum $f$-value with respect to a target point $t$.
-We compute: 
+To evaluate a search node $n = (I, r)$ we select a point $p \in I$ 
+which has a minimum $f$-value with respect to a target point $p$. We compute:
 \begin{equation}
 \label{eq::f}
 f(p) = g(r) + d(r, p) + h(p, t)
@@ -102,6 +102,7 @@ and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of 
   \begin{center}
     \input{tikz/fvalue}
   \end{center}
+  \vspace{-1em}
   \caption{An illustration of Lemmas~\ref{lemm::choosingp}~and~\ref{lemm::mirror}.  The points $t_1$ and $t'_4$ correspond to the case 
 where the line intersects the interval; 
 $t_2$ and $t_3$ where it does not; 
@@ -111,6 +112,7 @@ $t_4$ where the mirrored target $t'_4$ must be used.
 %to Case (iii);
 }
 \label{fig::minf}
+  \vspace{-0.5em}
 \end{figure}
 
 Finding this point $p$ %that minimizes the value of $f$ 
@@ -125,11 +127,11 @@ thanks to the following two lemmas.
 
 \begin{lemm}\label{lemm::choosingp}
   Let $t$ and $r$ be two points 
-  and let $I$ be an interval 
-  such that the row of $I$ is between the rows of $t$ and $r$.  
+  and let $I$ be an interval
+  s.t. the row of $I$ is between the rows of $t$ and $r$.  
   Then the point $p$ of $I$ 
-  that minimizes the $f$ value 
-  is the closest point of $I$ to the intersection of $(t,r)$ 
+  with minimum $f$-value 
+  is point in $I$ closest to the intersection of $(t,r)$ 
   with the row of $I$.  
 \end{lemm}
 
@@ -144,8 +146,9 @@ thanks to the following two lemmas.
 
 If the precondition of Lemma~\ref{lemm::choosingp} is not satisfied, 
 it is possible to replace $t$ by its mirrored version $t'$ through $I$ 
-as their distance $d(p,t)$ is the same 
-while $t'$ does satisfy the precondition.  
+which does satisfy the precondition. 
+%as their distance $d(p,t)$ is the same 
+%while $t'$ does satisfy the precondition.  
 
 \begin{lemm}
 \label{lemm::mirror}
@@ -208,7 +211,7 @@ $t \in I$. By Lemma~\ref{lemm::choosingp} and \ref{lemm::mirror}
 the $f$-value of this
 interval is guaranteed to be minimum with respect to $t$.
 To extract a path we simply follow parent pointers until we
-reach the node containing the start point.
+reach the start node.
 The root points associated with the search nodes we encounter
 are the turning points on the optimal any-angle path from 
 $s$ to $t$. 
