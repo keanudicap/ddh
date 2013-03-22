@@ -33,21 +33,22 @@ A \emph{grid} is a planar subdivision consisting of $W \times H$ square cells.
 Each cell is an open set of \emph{interior} points which are 
 all \emph{traversable} or all \emph{non-traversable}.
 %\footnote{Such cells are sometimes called obstacles.}.
-The vertices associated with each cell are called the
-\emph{discrete} points of the grid. Each such point $p = (x, y)$ has a unique coordinate
-where $x \in \{0,\dots,W\}$ and $y \in \{0,\dots,H\}$.
-% refers to an explicit vertex 
-Edges in the grid can be interpreted as open intervals of \emph{intermediate}
-two points; each one representing a transition between two discrete points. 
+The vertices associated with each cell are called the \emph{discrete} points
+of the grid.  Edges in the grid can be interpreted as open intervals of
+\emph{intermediate} points; each one representing a transition between two
+discrete points.  Each type of point $p = (x, y)$ has a unique coordinate
+where $x \in [0, W]$ and $y = [0, H]$. In the case of discrete points both $x$
+and $y$ are limited to the subset of integer values from the respective
+range.
 \par
-A discrete or intermediate point is traversable if it is adjacent to 
-at least one traversable cell. Otherwise it is non-traversable.
-%We now define some terminology for discussing discrete points:
-A discrete point which is common to exactly four adjacent cells is called an \emph{intersection}.
-Any intersection where three of the adjacent cells are traversable and one is not
-is called a \emph{corner}.
-We will say that two points are \emph{visible} from one another if there exists a 
-straight-line path connecting them which does not pass through any non-traversable point.
+A discrete or intermediate point is traversable if it is adjacent to at least
+one traversable cell. Otherwise it is non-traversable.  A discrete point which
+is common to exactly four adjacent cells is called an \emph{intersection}.
+Any intersection where three of the adjacent cells are traversable and one is
+not is called a \emph{corner}.  Two points are \emph{visible} from one another
+if there exists a straight-line path connecting them that does not: (i) pass
+through any non-traversable point or (ii) pass between two diagonally-adjacent
+non-traversable cells.
 %A \emph{corner} is an intersection 
 %such that only one of its four squares is non-traversable.  
 %Intersection $i'$ is \emph{visible} from intersection $i$ 
@@ -58,20 +59,15 @@ straight-line path connecting them which does not pass through any non-traversab
 %(besides $i$ and $i'$), 
 %then intersection $i'$ is not visible from intersection $i$.  
 
-An \emph{any-angle path} $\pi$ is a sequence of points 
-$\langle p_1,\dots,p_k \rangle$ where each $p_{i}$ is visible from $p_{i-1}$
-and $p_{i+1}$.
-The \emph{length} of $\pi$ 
-is the cumulative distance between every successive
-pair of points $d(p_1,p_2) + \dots + d(p_{k-1},p_k)$, 
-where $d((x,y), (x',y'))= \sqrt{(x-x')^2 + (y-y')^2}$ 
-is a uniform Euclidean distance metric.
-We will say $p_i \in \pi$ is a \emph{turning point} if the segments
-$(p_{i-1}, p_i)$ and $(p_i, p_{i+1})$ form an angle not equal to $180^{\circ}$.
-It is well-known that the turning points in optimal any-angle paths 
-are corner points; see e.g.~\cite{mitchell87}.
-% TODO: ref?  To visibility points?  
-
+An \emph{any-angle path} $\pi$ is a sequence of points $\langle p_1,\dots,p_k
+\rangle$ where each $p_{i}$ is visible from $p_{i-1}$ and $p_{i+1}$.  The
+\emph{length} of $\pi$ is the cumulative distance between every successive
+pair of points $d(p_1,p_2) + \dots + d(p_{k-1},p_k)$, where $d((x,y),
+(x',y'))= \sqrt{(x-x')^2 + (y-y')^2}$ is a uniform Euclidean distance metric.
+We will say $p_i \in \pi$ is a \emph{turning point} if the segments $(p_{i-1},
+p_i)$ and $(p_i, p_{i+1})$ form an angle not equal to $180^{\circ}$.  It is
+well-known that the turning points in optimal any-angle paths are corner
+points; see e.g.~\cite{mitchell87}.
 %\\
 %\begin{lemm}
 %\label{lemm::corner}

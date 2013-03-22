@@ -1,13 +1,26 @@
 \section{Correctness and Optimality}
-
 To prove correctness and optimality, 
-we show that the optimal path 
+we show (i) the optimal path 
 appears in the search space 
-and that the $f$ function defined in the previous section 
-guarantees that the search node 
-corresponding to the optimal path 
-will be expanded before any node 
-associated with a sub-optimal path to the target.  
+and (ii) when the target is expanded we 
+have found an optimal path.
+%its $f$-value
+%is the length of the optimal path.
+%the $f$-value of the goal node, when 
+%expanded, is minimal
+%is expanded with a
+%a minimal $f$-function defined in the previous 
+%section is both admissible and monotonic.
+%two conditions that 
+%are both neccessary and sufficient conditions to guarantee optimality.
+%conditions which are sufficient to guarantee optimality.
+%guaranteeing optimality.
+%and thus applicable to optimal search. 
+%preserves optimality.
+%guarantees that the search node 
+%corresponding to the optimal path 
+%will be expanded before any node 
+%associated with a sub-optimal path to the target.  
 
 %First observe that the optimal path is trivially taut.  
 \begin{theorem}
@@ -23,7 +36,7 @@ associated with a sub-optimal path to the target.
   $\pi_k = \langle p_1,\dots,p_k\rangle$ 
   where $s = p_1$ and $p_{k-1}$ is either a point 
   one row apart from $p_k$ (similar to a $y_i$ point
-  mentionned in Figure~\ref{fig::ex1}) or a corner point on the same row.  
+  mentioned in Figure~\ref{fig::ex1}) or a corner point on the same row.  
   By induction, there is a node $(I,r)$ in the search tree 
   that represents the optimal path to $p_{k-1} \in I$.  
   Now following Definition~\ref{defi::successors}, 
@@ -33,10 +46,12 @@ associated with a sub-optimal path to the target.
   and $r' = p_{k-1}$ otherwise, and the node represents the optimal path.  
 \end{proof}
 
-We now assume that the search space is explored 
-%using A*, i.e., 
-by expanding the queued node with smallest $f$ value 
-as defined in Equation~(\ref{eq::f}).  
+We now assume the search space is explored 
+by A* search employing Equation~(\ref{eq::f}).
+%by always expanding the node with minimal $f$-value
+%according to Eq.~(\ref{eq::f}).  
+%by expanding the queued node with smallest $f$ value 
+%as defined in Equation~(\ref{eq::f}).  
 
 \begin{theorem}
 %  The $f$ function of Equation~(\ref{eq::f}) 
