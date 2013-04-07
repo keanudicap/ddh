@@ -100,9 +100,9 @@ class gridmap
 
 			// read from the byte just before node_id and shift down until the
 			// nei adjacent to node_id is in the lowest position
-			tiles[0] = (uint16_t)(*((uint32_t*)(db_+(pos1-1))) >> (bit_offset+7));
-			tiles[1] = (uint16_t)(*((uint32_t*)(db_+(pos2-1))) >> (bit_offset+7));
-			tiles[2] = (uint16_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
+			tiles[0] = (uint16_t)(*((uint32_t*)(db_+pos1)) >> (bit_offset));
+			tiles[1] = (uint16_t)(*((uint32_t*)(db_+pos2)) >> (bit_offset));
+			tiles[2] = (uint16_t)(*((uint32_t*)(db_+pos3)) >> (bit_offset));
 		}
 
 		// same as ::get_neighbours but each nei is stored in the upper
@@ -136,6 +136,11 @@ class gridmap
 			// 2. convert padded_id into a dbword index.
 			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
 			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
+			
+			// start reading from a prior index so that padded_id
+			// ends up in the highest position of the result
+			// (the lower bits are the contents of the cache)
+			dbindex -= 2;
 
 			// compute dbword indexes for tiles immediately above 
 			// and immediately below node_id
@@ -145,9 +150,9 @@ class gridmap
 
 			// read from the byte just before node_id and shift down until the
 			// nei right of node_id is in the highest position
-			tiles[0] = (uint16_t)((*((uint32_t*)&db_[pos1-2])) >> (bit_offset+2));
-			tiles[1] = (uint16_t)((*((uint32_t*)&db_[pos2-2])) >> (bit_offset+2));
-			tiles[2] = (uint16_t)((*((uint32_t*)&db_[pos3-2])) >> (bit_offset+2));
+			tiles[0] = (uint16_t)(*((uint32_t*)(db_+pos1)) >> (bit_offset+1));
+			tiles[1] = (uint16_t)(*((uint32_t*)(db_+pos2)) >> (bit_offset+1));
+			tiles[2] = (uint16_t)(*((uint32_t*)(db_+pos3)) >> (bit_offset+1));
 		}
 
 		// get the labels for node y and its two horizontally adjacent 
