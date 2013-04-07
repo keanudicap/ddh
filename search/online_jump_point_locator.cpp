@@ -64,7 +64,7 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 	jumpcost = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
@@ -115,7 +115,7 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 	jumpcost = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
@@ -167,24 +167,35 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	jumpnode_id = node_id;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint64_t neis;
 	bool deadend = false;
 
 	while(true)
 	{
 		// read in 16 tiles from 3 adjacent rows
+		// NB: curent node is at index 1 (not 0) in this cache
 		map_->get_neighbours_16bit(node_id + jumpcost, (uint16_t*)&neis);
+	
+		// jump ahead if the cache contains no obstacles
 		if((neis & 0xfffefffefffe) == 0xfffefffefffe)
 		{
-			jumpcost += 14;
+			jumpcost += 15; 
 			continue;
 		}
 
+		// jump ahead if first half of the cache contains no obstacles
 		if((neis & 0x00fe00fe00fe) == 0x00fe00fe00fe)
 		{
-			jumpcost += 6;
-			neis >>= 6;
+			jumpcost += 7;
+			neis >>= 7;
+		}
+
+		// jump ahead if the next few tiles in cache are not obstacles
+		if((neis & 0x000e000e000e) == 0x000e000e000e)
+		{
+			jumpcost += 3;
+			neis >>= 3;
 		}
 
 		// jump step by step (NB: neis not shifted; bitmasks change instead)
@@ -196,6 +207,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		uint64_t forced = (~neis << 1) & neis;
 		if(forced & 0x400000004) { jumpcost++; break; }
 
+		// step again
 		if((neis & 0xC0000) != 0xC0000) 
 		{
 			deadend = true;
@@ -232,21 +244,29 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 
 	while(true)
 	{
-		// read in 2 bytes from each of 3 adjacent rows
+		// read in 16 tiles from 3 adjacent rows
+		// NB: curent node is at index 1 (not 0) in this cache
 		map_->get_neighbours_upper_16bit(node_id - jumpcost, (uint16_t*)&neis);
 
-		// jump ahead if all tiles are traversable
+		// jump ahead if all cached tiles are traversable
 		if((neis & 0x7fff7fff7fff) == 0x7fff7fff7fff)
 		{
-			jumpcost += 14;
+			jumpcost += 15;
 			continue;
 		}
 
-		// jump ahead if all tiles in first byte are traversable
+		// jump ahead if all tiles in first half of cache are traversable
 		if((neis & 0x7f007f007f00) == 0x7f007f007f00)
 		{
-			jumpcost += 6;
-			neis <<= 6;
+			jumpcost += 7;
+			neis <<= 7;
+		}
+
+		// jump ahead if the next few tiles in the cache are not obstacles
+		if((neis & 0x700070007000) == 0x700070007000)
+		{
+			jumpcost += 3;
+			neis <<= 3;
 		}
 
 		// jump step by step (NB: neis not shifted; bitmasks change instead)
@@ -287,7 +307,7 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	jumpcost = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 
@@ -326,7 +346,7 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 	jumpcost = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 
@@ -363,7 +383,7 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 	jumpcost = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
 	
@@ -401,7 +421,7 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 	jumpcost = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. Assume little endian format.
+	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t neis;
 	uint32_t next_id = node_id;
 	uint32_t mapw = map_->width();
