@@ -168,6 +168,7 @@ class flexible_astar
 					if(verbose_)
 					{
 						uint32_t x, y;
+						warthog::search_node* current = open_->peek();
 						y = (current->get_id() / expander_->mapwidth())-2;
 						x = current->get_id() % expander_->mapwidth();
 						std::cerr << "goal found ("<<x<<", "<<y<<")...";

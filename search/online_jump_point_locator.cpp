@@ -168,7 +168,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
-	uint64_t neis;
+	uint64_t neis = 0;
 	bool deadend = false;
 
 	while(true)
@@ -178,43 +178,43 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		map_->get_neighbours_16bit(node_id + jumpcost, (uint16_t*)&neis);
 	
 		// jump ahead if the cache contains no obstacles
-		if((neis & 0xfffefffefffe) == 0xfffefffefffe)
+		if((neis & 0xffffffffffff) == 0xffffffffffff)
 		{
-			jumpcost += 15; 
+			jumpcost += 16; 
 			continue;
 		}
 
 		// jump ahead if first half of the cache contains no obstacles
-		if((neis & 0x00fe00fe00fe) == 0x00fe00fe00fe)
+		if((neis & 0x00ff00ff00ff) == 0x00ff00ff00ff)
 		{
-			jumpcost += 7;
-			neis >>= 7;
+			jumpcost += 8;
+			neis >>= 8;
 		}
 
-		// jump ahead if the next few tiles in cache are not obstacles
-		if((neis & 0x000e000e000e) == 0x000e000e000e)
+		// jump ahead if the next four locations have no obstacle neis
+		if((neis & 0x000f000f000f) == 0x000f000f000f)
 		{
-			jumpcost += 3;
-			neis >>= 3;
+			jumpcost += 4;
+			neis >>= 4;
 		}
 
 		// jump step by step (NB: neis not shifted; bitmasks change instead)
-		if((neis & 0x60000) != 0x60000)
+		if((neis & 0x30000) != 0x30000)
 		{
 			deadend = true;
 			break;
 		}
 		uint64_t forced = (~neis << 1) & neis;
-		if(forced & 0x400000004) { jumpcost++; break; }
+		if(forced & 0x200000002) { jumpcost++; break; }
 
 		// step again
-		if((neis & 0xC0000) != 0xC0000) 
+		if((neis & 0x60000) != 0x60000) 
 		{
 			deadend = true;
 			jumpcost++;
 			break;
 		}
-		if(forced & 0x800000008) { jumpcost+=2; break; }
+		if(forced & 0x400000004) { jumpcost+=2; break; }
 
 		jumpcost += 2;
 	}
@@ -239,7 +239,7 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	jumpcost = 0;
 	bool deadend = false;
 
-	uint64_t neis;
+	uint64_t neis = 0;
 	jumpcost = 0; // begin from the node we want to step to
 
 	while(true)
@@ -249,42 +249,42 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 		map_->get_neighbours_upper_16bit(node_id - jumpcost, (uint16_t*)&neis);
 
 		// jump ahead if all cached tiles are traversable
-		if((neis & 0x7fff7fff7fff) == 0x7fff7fff7fff)
+		if((neis & 0xffffffffffff) == 0xffffffffffff)
 		{
-			jumpcost += 15;
+			jumpcost += 16;
 			continue;
 		}
 
 		// jump ahead if all tiles in first half of cache are traversable
-		if((neis & 0x7f007f007f00) == 0x7f007f007f00)
+		if((neis & 0xff00ff00ff00) == 0xff00ff00ff00)
 		{
-			jumpcost += 7;
-			neis <<= 7;
+			jumpcost += 8;
+			neis <<= 8;
 		}
 
 		// jump ahead if the next few tiles in the cache are not obstacles
-		if((neis & 0x700070007000) == 0x700070007000)
+		if((neis & 0xf000f000f000) == 0xf000f000f000)
 		{
-			jumpcost += 3;
-			neis <<= 3;
+			jumpcost += 4;
+			neis <<= 4;
 		}
 
 		// jump step by step (NB: neis not shifted; bitmasks change instead)
-		if((neis & 0x60000000) != 0x60000000) 
+		if((neis & 0xC0000000) != 0xC0000000) 
 		{
 			deadend = true;
 			break;
 		}
 		uint64_t forced = (~neis >> 1) & neis;
-		if(forced & 0x200000002000) { jumpcost++; break; }
+		if(forced & 0x400000004000) { jumpcost++; break; }
 
-		if((neis & 0x30000000) != 0x30000000) 
+		if((neis & 0x60000000) != 0x60000000) 
 		{
 			deadend = true;
 			jumpcost++;
 			break;
 		}
-		if(forced & 0x100000001000) { jumpcost+=2; break; }
+		if(forced & 0x200000002000) { jumpcost+=2; break; }
 
 		jumpcost += 2;
 	}
