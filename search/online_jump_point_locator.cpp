@@ -168,55 +168,46 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
-	uint64_t neis = 0;
+	uint32_t neis[3] = {0, 0, 0};
 	bool deadend = false;
 
 	while(true)
 	{
-		// read in 16 tiles from 3 adjacent rows
-		// NB: curent node is at index 1 (not 0) in this cache
-		map_->get_neighbours_16bit(node_id + jumpcost, (uint16_t*)&neis);
-	
-		// jump ahead if the cache contains no obstacles
-		if((neis & 0xffffffffffff) == 0xffffffffffff)
-		{
-			jumpcost += 16; 
-			continue;
-		}
+		// read in 16 tiles from 3 adjacent rows. the curent node 
+		// (node_id + jumpcost) is at idx 0 of the middle row
+		map_->get_neighbours_32bit(node_id + jumpcost, neis);
 
-		// jump ahead if first half of the cache contains no obstacles
-		if((neis & 0x00ff00ff00ff) == 0x00ff00ff00ff)
-		{
-			jumpcost += 8;
-			neis >>= 8;
-		}
+		// a forced neighbour is found in the top or bottom row. it 
+		// can be identified as a non-obstacle tile that follows
+		// immediately  after an obstacle tile. A dead-end tile is
+		// found  on the middle row; it can be identified as sequence
+		// of non-obstacle  tile followed by an obstacle tile.   we
+		// perform a series of shift ops to find such sequences.
+		uint32_t 
+		forced_bits = (~neis[0] << 1) & neis[0];
+		forced_bits |= (~neis[2] << 1) & neis[2];
+		uint32_t 
+		deadend_bits = (neis[1] << 1) & ~neis[1];
+		deadend_bits |= (~neis[1] & 1); // bit1=0 if cur loc invalid
 
-		// jump ahead if the next four locations have no obstacle neis
-		if((neis & 0x000f000f000f) == 0x000f000f000f)
+		// stop if we find any forced or dead-end tiles
+		int stop_bits = (forced_bits | deadend_bits);
+		if(stop_bits)
 		{
-			jumpcost += 4;
-			neis >>= 4;
-		}
-
-		// jump step by step (NB: neis not shifted; bitmasks change instead)
-		if((neis & 0x30000) != 0x30000)
-		{
-			deadend = true;
+			uint32_t stop_pos = __builtin_ffs(stop_bits)-1; // retval=idx+1
+			jumpcost += stop_pos; 
+			if(deadend_bits & (1 << stop_pos)) 
+			{
+				deadend = true;
+			}
 			break;
 		}
-		uint64_t forced = (~neis << 1) & neis;
-		if(forced & 0x200000002) { jumpcost++; break; }
 
-		// step again
-		if((neis & 0x60000) != 0x60000) 
-		{
-			deadend = true;
-			jumpcost++;
-			break;
-		}
-		if(forced & 0x400000004) { jumpcost+=2; break; }
-
-		jumpcost += 2;
+		// jump to the last position in the cache. we do not jump past the end
+		// in case the last tile from the row above or below is an obstacle.
+		// Such a tile, followed by a non-obstacle tile, would yield a forced 
+		// neighbour that we don't want to miss.
+		jumpcost += 15; 
 	}
 
 	jumpnode_id = node_id + jumpcost;
@@ -239,54 +230,34 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	jumpcost = 0;
 	bool deadend = false;
 
-	uint64_t neis = 0;
+	uint32_t neis[3] = {0, 0, 0};
 	jumpcost = 0; // begin from the node we want to step to
 
 	while(true)
 	{
-		// read in 16 tiles from 3 adjacent rows
-		// NB: curent node is at index 1 (not 0) in this cache
-		map_->get_neighbours_upper_16bit(node_id - jumpcost, (uint16_t*)&neis);
+		// read in 16 tiles from each of three adjacent rows. the curent node 
+		// (node_id - jumpcost) is at idx 15 of the middle row
+		map_->get_neighbours_upper_32bit(node_id - jumpcost, neis);
+		uint32_t 
+		forced_bits = (~neis[0] >> 1) & neis[0];
+		forced_bits |= (~neis[2] >> 1) & neis[2];
+		uint32_t 
+		deadend_bits = (neis[1] >> 1) & (~neis[1]);
+		deadend_bits |= ((~neis[1]) & 0x80000000); // bit15=0 if cur loc invalid
 
-		// jump ahead if all cached tiles are traversable
-		if((neis & 0xffffffffffff) == 0xffffffffffff)
+		uint32_t stop_bits = (forced_bits | deadend_bits);
+		if(stop_bits)
 		{
-			jumpcost += 16;
-			continue;
-		}
-
-		// jump ahead if all tiles in first half of cache are traversable
-		if((neis & 0xff00ff00ff00) == 0xff00ff00ff00)
-		{
-			jumpcost += 8;
-			neis <<= 8;
-		}
-
-		// jump ahead if the next few tiles in the cache are not obstacles
-		if((neis & 0xf000f000f000) == 0xf000f000f000)
-		{
-			jumpcost += 4;
-			neis <<= 4;
-		}
-
-		// jump step by step (NB: neis not shifted; bitmasks change instead)
-		if((neis & 0xC0000000) != 0xC0000000) 
-		{
-			deadend = true;
+			uint32_t stop_pos = __builtin_clz(stop_bits);
+			jumpcost += stop_pos;
+			if(deadend_bits & (0x80000000 >> stop_pos))
+			{
+				deadend = true;
+			}
 			break;
 		}
-		uint64_t forced = (~neis >> 1) & neis;
-		if(forced & 0x400000004000) { jumpcost++; break; }
-
-		if((neis & 0x60000000) != 0x60000000) 
-		{
-			deadend = true;
-			jumpcost++;
-			break;
-		}
-		if(forced & 0x200000002000) { jumpcost+=2; break; }
-
-		jumpcost += 2;
+		jumpcost += 31;
+	
 	}
 	jumpnode_id = node_id - jumpcost;
 	if(node_id > goal_id && jumpnode_id <= goal_id)

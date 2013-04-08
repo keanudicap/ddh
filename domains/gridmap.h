@@ -83,9 +83,9 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
-		// same as ::get_neighbours but using a 16bit quantities
+		// same as ::get_neighbours but using a 32bit quantities
 		void
-		get_neighbours_16bit(uint32_t padded_id, uint16_t tiles[3])
+		get_neighbours_32bit(uint32_t padded_id, uint32_t tiles[3])
 		{
 			// 1. calculate the dbword offset for the node at index padded_id
 			// 2. convert padded_id into a dbword index.
@@ -98,11 +98,11 @@ class gridmap
 			uint32_t pos2 = dbindex;
 			uint32_t pos3 = dbindex + dbwidth_;
 
-			// read from the byte just before node_id and shift down until the
-			// nei adjacent to node_id is in the lowest position
-			tiles[0] = (uint16_t)(*((uint32_t*)(db_+pos1)) >> (bit_offset));
-			tiles[1] = (uint16_t)(*((uint32_t*)(db_+pos2)) >> (bit_offset));
-			tiles[2] = (uint16_t)(*((uint32_t*)(db_+pos3)) >> (bit_offset));
+			// read 32bits of memory; padded_id is in the 
+			// lowest bit position of tiles[1]
+			tiles[0] = (uint32_t)(*((uint64_t*)(db_+pos1)) >> (bit_offset));
+			tiles[1] = (uint32_t)(*((uint64_t*)(db_+pos2)) >> (bit_offset));
+			tiles[2] = (uint32_t)(*((uint64_t*)(db_+pos3)) >> (bit_offset));
 		}
 
 		// same as ::get_neighbours but each nei is stored in the upper
@@ -128,19 +128,18 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+2));
 		}
 
-		// same as ::get_neighbours_upper but using 16bit quantities
+		// same as ::get_neighbours_upper but using 32bit quantities
 		inline void
-		get_neighbours_upper_16bit(uint32_t padded_id, uint16_t tiles[3])
+		get_neighbours_upper_32bit(uint32_t padded_id, uint32_t tiles[3])
 		{
 			// 1. calculate the dbword offset for the node at index padded_id
 			// 2. convert padded_id into a dbword index.
 			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
 			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
 			
-			// start reading from a prior index so that padded_id
-			// ends up in the highest position of the result
-			// (the lower bits are the contents of the cache)
-			dbindex -= 2;
+			// start reading from a prior index. this way everything
+			// up to padded_id is cached.
+			dbindex -= 4;
 
 			// compute dbword indexes for tiles immediately above 
 			// and immediately below node_id
@@ -148,11 +147,11 @@ class gridmap
 			uint32_t pos2 = dbindex;
 			uint32_t pos3 = dbindex + dbwidth_;
 
-			// read from the byte just before node_id and shift down until the
-			// nei right of node_id is in the highest position
-			tiles[0] = (uint16_t)(*((uint32_t*)(db_+pos1)) >> (bit_offset+1));
-			tiles[1] = (uint16_t)(*((uint32_t*)(db_+pos2)) >> (bit_offset+1));
-			tiles[2] = (uint16_t)(*((uint32_t*)(db_+pos3)) >> (bit_offset+1));
+			// read 32bits of memory; padded_id is in the 
+			// highest bit position of tiles[1]
+			tiles[0] = (uint32_t)(*((uint64_t*)(db_+pos1)) >> (bit_offset+1));
+			tiles[1] = (uint32_t)(*((uint64_t*)(db_+pos2)) >> (bit_offset+1));
+			tiles[2] = (uint32_t)(*((uint64_t*)(db_+pos3)) >> (bit_offset+1));
 		}
 
 		// get the labels for node y and its two horizontally adjacent 
