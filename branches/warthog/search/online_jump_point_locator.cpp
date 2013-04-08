@@ -207,7 +207,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		// in case the last tile from the row above or below is an obstacle.
 		// Such a tile, followed by a non-obstacle tile, would yield a forced 
 		// neighbour that we don't want to miss.
-		jumpcost += 15; 
+		jumpcost += 31; 
 	}
 
 	jumpnode_id = node_id + jumpcost;
