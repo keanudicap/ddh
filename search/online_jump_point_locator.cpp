@@ -61,7 +61,7 @@ void
 warthog::online_jump_point_locator::jump_north(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
@@ -96,23 +96,24 @@ warthog::online_jump_point_locator::jump_north(uint32_t node_id,
 			}
 
 			// forced nei
-			jumpcost++;
+			num_steps++;
 			jumpnode_id = next_id - mapw;
 			break; 
 		}
-		jumpcost++;
+		num_steps++;
 		next_id -= mapw;
 		dbindex -= dbw;
 		neis <<= 8;
 		map_->get_tripleh(dbindex-dbw, bit_offset, ((uint8_t*)&neis)[0]);
 	}
+	jumpcost = num_steps;
 }
 
 void
 warthog::online_jump_point_locator::jump_south(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
@@ -147,23 +148,24 @@ warthog::online_jump_point_locator::jump_south(uint32_t node_id,
 			}
 
 			// forced nei
-			jumpcost++;
+			num_steps++;
 			jumpnode_id = next_id + mapw;
 			break; 
 		}
-		jumpcost++;
+		num_steps++;
 		next_id += mapw;
 		dbindex += dbw;
 		neis >>= 8;
 		map_->get_tripleh(dbindex+dbw, bit_offset, ((uint8_t*)&neis)[2]);
 	}
+	jumpcost = num_steps;
 }
 
 void
 warthog::online_jump_point_locator::jump_east(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 	jumpnode_id = node_id;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
@@ -174,8 +176,8 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	while(true)
 	{
 		// read in 16 tiles from 3 adjacent rows. the curent node 
-		// (node_id + jumpcost) is at idx 0 of the middle row
-		map_->get_neighbours_32bit(node_id + jumpcost, neis);
+		// (node_id + num_steps) is at idx 0 of the middle row
+		map_->get_neighbours_32bit(node_id + num_steps, neis);
 
 		// a forced neighbour is found in the top or bottom row. it 
 		// can be identified as a non-obstacle tile that follows
@@ -196,7 +198,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		if(stop_bits)
 		{
 			uint32_t stop_pos = __builtin_ffs(stop_bits)-1; // retval=idx+1
-			jumpcost += stop_pos; 
+			num_steps += stop_pos; 
 			deadend = deadend_bits & (1 << stop_pos);
 			break;
 		}
@@ -205,19 +207,20 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		// in case the last tile from the row above or below is an obstacle.
 		// Such a tile, followed by a non-obstacle tile, would yield a forced 
 		// neighbour that we don't want to miss.
-		jumpcost += 31; 
+		num_steps += 31; 
 	}
 
-	jumpnode_id = node_id + jumpcost;
+	jumpnode_id = node_id + num_steps;
 	if(node_id < goal_id && jumpnode_id >= goal_id)
 	{
 		jumpnode_id = goal_id;
-		jumpcost = goal_id - node_id;
+		num_steps = goal_id - node_id;
 	}
 	else if(deadend)
 	{
 		jumpnode_id = warthog::INF;
 	}
+	jumpcost = num_steps;
 	
 }
 
@@ -225,17 +228,17 @@ void
 warthog::online_jump_point_locator::jump_west(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 	bool deadend = false;
 
 	uint32_t neis[3] = {0, 0, 0};
-	jumpcost = 0; // begin from the node we want to step to
+	num_steps = 0; // begin from the node we want to step to
 
 	while(true)
 	{
 		// read in 16 tiles from each of three adjacent rows. the curent node 
-		// (node_id - jumpcost) is at idx 15 of the middle row
-		map_->get_neighbours_upper_32bit(node_id - jumpcost, neis);
+		// (node_id - num_steps) is at idx 15 of the middle row
+		map_->get_neighbours_upper_32bit(node_id - num_steps, neis);
 		uint32_t 
 		forced_bits = (~neis[0] >> 1) & neis[0];
 		forced_bits |= (~neis[2] >> 1) & neis[2];
@@ -248,30 +251,31 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 		if(stop_bits)
 		{
 			uint32_t stop_pos = __builtin_clz(stop_bits);
-			jumpcost += stop_pos;
+			num_steps += stop_pos;
 			deadend = deadend_bits & (0x80000000 >> stop_pos);
 			break;
 		}
-		jumpcost += 31;
+		num_steps += 31;
 	
 	}
-	jumpnode_id = node_id - jumpcost;
+	jumpnode_id = node_id - num_steps;
 	if(node_id > goal_id && jumpnode_id <= goal_id)
 	{
 		jumpnode_id = goal_id;
-		jumpcost = node_id - goal_id;
+		num_steps = node_id - goal_id;
 	}
 	else if(deadend)
 	{
 		jumpnode_id = warthog::INF;
 	}
+	jumpcost = num_steps;
 }
 
 void
 warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	   	uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
@@ -287,7 +291,7 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	// jump a single step at a time (no corner cutting)
 	while(true)
 	{
-		jumpcost += warthog::ROOT_TWO;
+		num_steps++;
 		next_id = next_id - mapw + 1;
 
 		// recurse straight before stepping again diagonally;
@@ -304,13 +308,14 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 
 	}
 	jumpnode_id = next_id;
+	jumpcost = num_steps*warthog::ROOT_TWO;
 }
 
 void
 warthog::online_jump_point_locator::jump_northwest(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
@@ -325,7 +330,7 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 	// jump a single step at a time (no corner cutting)
 	while(true)
 	{
-		jumpcost += warthog::ROOT_TWO;
+		num_steps++;
 		next_id = next_id - mapw - 1;
 
 		// recurse straight before stepping again diagonally;
@@ -341,13 +346,14 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
 	}
 	jumpnode_id = next_id;
+	jumpcost = num_steps*warthog::ROOT_TWO;
 }
 
 void
 warthog::online_jump_point_locator::jump_southeast(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
@@ -363,7 +369,7 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 	// jump a single step at a time (no corner cutting)
 	while(true)
 	{
-		jumpcost += warthog::ROOT_TWO;
+		num_steps++;
 		next_id = next_id + mapw + 1;
 
 		// recurse straight before stepping again diagonally;
@@ -379,13 +385,14 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
 	}
 	jumpnode_id = next_id;
+	jumpcost = num_steps*warthog::ROOT_TWO;
 }
 
 void
 warthog::online_jump_point_locator::jump_southwest(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	jumpcost = 0;
+	uint32_t num_steps = 0;
 
 	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
 	// from the grid. next_id at centre. Assume little endian format.
@@ -400,7 +407,7 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 	// jump a single step (no corner cutting)
 	while(true)
 	{
-		jumpcost += warthog::ROOT_TWO;
+		num_steps++;
 		next_id = next_id + mapw - 1;
 
 		// recurse straight before stepping again diagonally;
@@ -416,4 +423,5 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
 	}
 	jumpnode_id = next_id;
+	jumpcost = num_steps*warthog::ROOT_TWO;
 }
