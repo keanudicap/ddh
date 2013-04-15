@@ -197,10 +197,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		{
 			uint32_t stop_pos = __builtin_ffs(stop_bits)-1; // retval=idx+1
 			jumpcost += stop_pos; 
-			if(deadend_bits & (1 << stop_pos)) 
-			{
-				deadend = true;
-			}
+			deadend = deadend_bits & (1 << stop_pos);
 			break;
 		}
 
@@ -252,10 +249,7 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 		{
 			uint32_t stop_pos = __builtin_clz(stop_bits);
 			jumpcost += stop_pos;
-			if(deadend_bits & (0x80000000 >> stop_pos))
-			{
-				deadend = true;
-			}
+			deadend = deadend_bits & (0x80000000 >> stop_pos);
 			break;
 		}
 		jumpcost += 31;
