@@ -165,39 +165,34 @@ void
 warthog::online_jump_point_locator::jump_east(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	uint32_t num_steps = 0;
 	jumpnode_id = node_id;
 
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
 	uint32_t neis[3] = {0, 0, 0};
 	bool deadend = false;
+	uint32_t num_steps = 0;
 
 	while(true)
 	{
-		// read in 16 tiles from 3 adjacent rows. the curent node 
-		// (node_id + num_steps) is at idx 0 of the middle row
+		// read in tiles from 3 adjacent rows. the curent node 
+		// is in the low byte of the middle row
 		map_->get_neighbours_32bit(node_id + num_steps, neis);
 
-		// a forced neighbour is found in the top or bottom row. it 
+		// identity forced neighbours and deadend tiles. 
+		// forced neighbours are found in the top or bottom row. they 
 		// can be identified as a non-obstacle tile that follows
 		// immediately  after an obstacle tile. A dead-end tile is
-		// found  on the middle row; it can be identified as sequence
-		// of non-obstacle  tile followed by an obstacle tile.   we
-		// perform a series of shift ops to find such sequences.
+		// an obstacle found  on the middle row; 
 		uint32_t 
 		forced_bits = (~neis[0] << 1) & neis[0];
 		forced_bits |= (~neis[2] << 1) & neis[2];
 		uint32_t 
 		deadend_bits = ~neis[1];
-		//deadend_bits = (neis[1] << 1) & ~neis[1];
-		//deadend_bits |= (~neis[1] & 1); // bit1=0 if cur loc invalid
 
-		// stop if we find any forced or dead-end tiles
+		// stop if we found any forced or dead-end tiles
 		int stop_bits = (forced_bits | deadend_bits);
 		if(stop_bits)
 		{
-			uint32_t stop_pos = __builtin_ffs(stop_bits)-1; // retval=idx+1
+			uint32_t stop_pos = __builtin_ffs(stop_bits)-1; // returns idx+1
 			num_steps += stop_pos; 
 			deadend = deadend_bits & (1 << stop_pos);
 			break;
@@ -224,29 +219,29 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	
 }
 
+// analogous to ::jump_east 
 void
 warthog::online_jump_point_locator::jump_west(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
 	uint32_t num_steps = 0;
 	bool deadend = false;
-
 	uint32_t neis[3] = {0, 0, 0};
-	num_steps = 0; // begin from the node we want to step to
 
 	while(true)
 	{
-		// read in 16 tiles from each of three adjacent rows. the curent node 
-		// (node_id - num_steps) is at idx 15 of the middle row
+		// cache 32 tiles from three adjacent rows.
+		// current tile is in the high byte of the middle row
 		map_->get_neighbours_upper_32bit(node_id - num_steps, neis);
+
+		// identify forced and dead-end nodes
 		uint32_t 
 		forced_bits = (~neis[0] >> 1) & neis[0];
 		forced_bits |= (~neis[2] >> 1) & neis[2];
 		uint32_t 
 		deadend_bits = ~neis[1];
-		//deadend_bits = (neis[1] >> 1) & (~neis[1]);
-		//deadend_bits |= ((~neis[1]) & 0x80000000); // bit15=0 if cur loc invalid
 
+		// stop if we encounter any forced or deadend nodes
 		uint32_t stop_bits = (forced_bits | deadend_bits);
 		if(stop_bits)
 		{
@@ -255,6 +250,8 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 			deadend = deadend_bits & (0x80000000 >> stop_pos);
 			break;
 		}
+		// jump to the end of cache. jumping +32 involves checking
+		// for forced neis between adjacent sets of contiguous tiles
 		num_steps += 31;
 	
 	}
