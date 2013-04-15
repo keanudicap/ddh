@@ -187,8 +187,9 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 		forced_bits = (~neis[0] << 1) & neis[0];
 		forced_bits |= (~neis[2] << 1) & neis[2];
 		uint32_t 
-		deadend_bits = (neis[1] << 1) & ~neis[1];
-		deadend_bits |= (~neis[1] & 1); // bit1=0 if cur loc invalid
+		deadend_bits = ~neis[1];
+		//deadend_bits = (neis[1] << 1) & ~neis[1];
+		//deadend_bits |= (~neis[1] & 1); // bit1=0 if cur loc invalid
 
 		// stop if we find any forced or dead-end tiles
 		int stop_bits = (forced_bits | deadend_bits);
@@ -242,8 +243,9 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 		forced_bits = (~neis[0] >> 1) & neis[0];
 		forced_bits |= (~neis[2] >> 1) & neis[2];
 		uint32_t 
-		deadend_bits = (neis[1] >> 1) & (~neis[1]);
-		deadend_bits |= ((~neis[1]) & 0x80000000); // bit15=0 if cur loc invalid
+		deadend_bits = ~neis[1];
+		//deadend_bits = (neis[1] >> 1) & (~neis[1]);
+		//deadend_bits |= ((~neis[1]) & 0x80000000); // bit15=0 if cur loc invalid
 
 		uint32_t stop_bits = (forced_bits | deadend_bits);
 		if(stop_bits)
