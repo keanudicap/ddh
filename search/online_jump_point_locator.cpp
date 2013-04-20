@@ -206,12 +206,16 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	}
 
 	jumpnode_id = node_id + num_steps;
-	if(node_id < goal_id && jumpnode_id >= goal_id)
+
+	uint32_t goal_dist = goal_id - node_id;
+	if(num_steps > goal_dist)
 	{
 		jumpnode_id = goal_id;
-		num_steps = goal_id - node_id;
+		jumpcost = goal_id - node_id;
+		return;
 	}
-	else if(deadend)
+
+	if(deadend)
 	{
 		jumpnode_id = warthog::INF;
 	}
@@ -256,12 +260,16 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	
 	}
 	jumpnode_id = node_id - num_steps;
-	if(node_id > goal_id && jumpnode_id <= goal_id)
+
+	uint32_t goal_dist = node_id - goal_id;
+	if(num_steps > goal_dist)
 	{
 		jumpnode_id = goal_id;
-		num_steps = node_id - goal_id;
+		jumpcost = node_id - goal_id;
+		return;
 	}
-	else if(deadend)
+
+	if(deadend)
 	{
 		jumpnode_id = warthog::INF;
 	}
