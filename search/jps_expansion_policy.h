@@ -105,7 +105,6 @@ class jps_expansion_policy
 
 	private:
 		warthog::gridmap* map_;
-		warthog::gridmap* rmap_;
 		warthog::blocklist* nodepool_;
 		online_jump_point_locator* jpl_;
 		online_jump_point_locator* rjpl_;
@@ -113,9 +112,6 @@ class jps_expansion_policy
 		uint32_t num_neighbours_;
 		warthog::search_node* neighbours_[9];
 		double costs_[9];
-
-		warthog::gridmap*
-		create_rmap();
 
 		// computes the direction of travel; from a node n1
 		// to a node n2.
@@ -165,27 +161,6 @@ class jps_expansion_policy
 			neighbours_[0] = 0;
 		}
 
-		inline uint32_t
-		map_id_to_rmap_id(uint32_t mapid)
-		{
-			uint32_t x, y;
-			uint32_t rx, ry;
-			map_->to_unpadded_xy(mapid, x, y);
-			ry = x;
-			rx = map_->header_height() - y - 1;
-			return rmap_->to_padded_id(rx, ry);
-		}
-
-		inline uint32_t
-		rmap_id_to_map_id(uint32_t rmapid)
-		{
-			uint32_t x, y;
-			uint32_t rx, ry;
-			rmap_->to_unpadded_xy(rmapid, rx, ry);
-			x = ry;
-			y = rmap_->header_width() - rx - 1;
-			return map_->to_padded_id(x, y);
-		}
 };
 
 }

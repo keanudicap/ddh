@@ -8,10 +8,37 @@
 warthog::online_jump_point_locator::online_jump_point_locator(warthog::gridmap* map)
 	: map_(map), jumplimit_(UINT32_MAX)
 {
+	rmap_ = create_rmap();
 }
 
 warthog::online_jump_point_locator::~online_jump_point_locator()
 {
+	delete rmap_;
+}
+
+// create a copy of the grid map which is rotated by 90 degrees clockwise.
+// also create a corresponding JPL object for jumping around using this map.
+warthog::gridmap*
+warthog::online_jump_point_locator::create_rmap()
+{
+	uint32_t maph = map_->header_height();
+	uint32_t mapw = map_->header_width();
+	uint32_t rmaph = mapw;
+	uint32_t rmapw = maph;
+	warthog::gridmap* rmap = new warthog::gridmap(rmaph, rmapw);
+
+	for(uint32_t x = 0; x < mapw; x++) 
+	{
+		for(uint32_t y = 0; y < maph; y++)
+		{
+			uint32_t label = map_->get_label(map_->to_padded_id(x, y));
+			uint32_t rx = ((rmapw-1) - y);
+			uint32_t ry = x;
+			uint32_t rid = rmap->to_padded_id(rx, ry);
+			rmap->set_label(rid, label);
+		}
+	}
+	return rmap;
 }
 
 
@@ -61,109 +88,54 @@ void
 warthog::online_jump_point_locator::jump_north(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	uint32_t num_steps = 0;
+	node_id = this->map_id_to_rmap_id(node_id);
+	goal_id = this->map_id_to_rmap_id(goal_id);
+	__jump_north(node_id, goal_id, jumpnode_id, jumpcost, rmap_);
+	jumpnode_id = this->rmap_id_to_map_id(jumpnode_id);
+}
 
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
-	uint32_t neis;
-	uint32_t next_id = node_id;
-	uint32_t mapw = map_->width();
-	uint32_t bit_offset = (node_id & warthog::DBWORD_BITS_MASK);
-	uint32_t dbindex = node_id >> warthog::LOG2_DBWORD_BITS;
-	uint32_t dbw = map_->width() >> warthog::LOG2_DBWORD_BITS;
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
-
-	while(true)
-	{
-		uint8_t row0 = ((uint8_t*)&neis)[0];
-		uint8_t row1 = ((uint8_t*)&neis)[1];
-		bool stop = 
-			((~row1 & row0) & 0x5) || ((neis & 0x202) != 0x202) || (next_id == goal_id);
-		if(stop)
-		{ 
-			// we hit the goal
-			if(next_id == goal_id)
-			{
-				jumpnode_id = next_id;
-				break;
-			}
-
-			// deadend
-			if((neis & 0x202) != 0x202)
-			{
-				jumpnode_id = warthog::INF;
-				break;
-			}
-
-			// forced nei
-			num_steps++;
-			jumpnode_id = next_id - mapw;
-			break; 
-		}
-		num_steps++;
-		next_id -= mapw;
-		dbindex -= dbw;
-		neis <<= 8;
-		map_->get_tripleh(dbindex-dbw, bit_offset, ((uint8_t*)&neis)[0]);
-	}
-	jumpcost = num_steps;
+void
+warthog::online_jump_point_locator::__jump_north(uint32_t node_id, 
+		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost,
+		warthog::gridmap* mymap)
+{
+	// jumping north in the original map is the same as jumping
+	// east when we use a version of the map rotated 90 degrees.
+	__jump_east(node_id, goal_id, jumpnode_id, jumpcost, rmap_);
 }
 
 void
 warthog::online_jump_point_locator::jump_south(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
-	uint32_t num_steps = 0;
+	node_id = this->map_id_to_rmap_id(node_id);
+	goal_id = this->map_id_to_rmap_id(goal_id);
+	__jump_south(node_id, goal_id, jumpnode_id, jumpcost, rmap_);
+	jumpnode_id = this->rmap_id_to_map_id(jumpnode_id);
+}
 
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
-	uint32_t neis;
-	uint32_t next_id = node_id;
-	uint32_t mapw = map_->width();
-	uint32_t bit_offset = (node_id & warthog::DBWORD_BITS_MASK);
-	uint32_t dbindex = node_id >> warthog::LOG2_DBWORD_BITS;
-	uint32_t dbw = map_->width() >> warthog::LOG2_DBWORD_BITS;
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
-
-	while(true)
-	{
-		uint8_t row1 = ((uint8_t*)&neis)[1];
-		uint8_t row2 = ((uint8_t*)&neis)[2];
-		bool stop = 
-			((~row1 & row2) & 0x5) || ((neis & 0x20200) != 0x20200) || (next_id == goal_id);
-		if(stop)
-		{ 
-			// we hit the goal
-			if(next_id == goal_id)
-			{
-				jumpnode_id = next_id;
-				break;
-			}
-
-			// deadend
-			if((neis & 0x20200) != 0x20200)
-			{
-				jumpnode_id = warthog::INF;
-				break;
-			}
-
-			// forced nei
-			num_steps++;
-			jumpnode_id = next_id + mapw;
-			break; 
-		}
-		num_steps++;
-		next_id += mapw;
-		dbindex += dbw;
-		neis >>= 8;
-		map_->get_tripleh(dbindex+dbw, bit_offset, ((uint8_t*)&neis)[2]);
-	}
-	jumpcost = num_steps;
+void
+warthog::online_jump_point_locator::__jump_south(uint32_t node_id, 
+		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost,
+		warthog::gridmap* mymap)
+{
+	// jumping north in the original map is the same as jumping
+	// west when we use a version of the map rotated 90 degrees.
+	__jump_west(node_id, goal_id, jumpnode_id, jumpcost, rmap_);
 }
 
 void
 warthog::online_jump_point_locator::jump_east(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
+{
+	__jump_east(node_id, goal_id, jumpnode_id, jumpcost, map_);
+}
+
+
+void
+warthog::online_jump_point_locator::__jump_east(uint32_t node_id, 
+		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost, 
+		warthog::gridmap* mymap)
 {
 	jumpnode_id = node_id;
 
@@ -175,7 +147,7 @@ warthog::online_jump_point_locator::jump_east(uint32_t node_id,
 	{
 		// read in tiles from 3 adjacent rows. the curent node 
 		// is in the low byte of the middle row
-		map_->get_neighbours_32bit(node_id + num_steps, neis);
+		mymap->get_neighbours_32bit(node_id + num_steps, neis);
 
 		// identity forced neighbours and deadend tiles. 
 		// forced neighbours are found in the top or bottom row. they 
@@ -228,6 +200,14 @@ void
 warthog::online_jump_point_locator::jump_west(uint32_t node_id, 
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost)
 {
+	__jump_west(node_id, goal_id, jumpnode_id, jumpcost, map_);
+}
+
+void
+warthog::online_jump_point_locator::__jump_west(uint32_t node_id, 
+		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost, 
+		warthog::gridmap* mymap)
+{
 	uint32_t num_steps = 0;
 	bool deadend = false;
 	uint32_t neis[3] = {0, 0, 0};
@@ -236,7 +216,7 @@ warthog::online_jump_point_locator::jump_west(uint32_t node_id,
 	{
 		// cache 32 tiles from three adjacent rows.
 		// current tile is in the high byte of the middle row
-		map_->get_neighbours_upper_32bit(node_id - num_steps, neis);
+		mymap->get_neighbours_upper_32bit(node_id - num_steps, neis);
 
 		// identify forced and dead-end nodes
 		uint32_t 
