@@ -71,15 +71,17 @@ warthog::gridmap::~gridmap()
 void 
 warthog::gridmap::print(std::ostream& out)
 {
+	out << "printing padded map" << std::endl;
+	out << "-------------------" << std::endl;
 	out << "type "<< header_.type_ << std::endl;
-	out << "height "<< header_.height_ << std::endl;
-	out << "width "<< header_.width_ << std::endl;
+	out << "height "<< this->height() << std::endl;
+	out << "width "<< this->width() << std::endl;
 	out << "map" << std::endl;
 	for(unsigned int y=0; y < this->height(); y++)
 	{
 		for(unsigned int x=0; x < this->width(); x++)
 		{
-			char c = this->get_label(y*header_.width_+x);
+			char c = this->get_label(y*this->width()+x);
 			out << (c ? '.' : '@');
 		}
 		out << std::endl;

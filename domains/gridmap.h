@@ -52,7 +52,15 @@ class gridmap
 		inline uint32_t
 		to_padded_id(uint32_t x, uint32_t y)
 		{
-			return (y+2)*padded_width_ + x;
+			return to_padded_id(y * this->header_width() + x);
+		}
+
+		void
+		to_unpadded_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
+		{
+			padded_id -= 2* padded_width_;
+			y = padded_id / padded_width_;
+			x = padded_id % padded_width_;
 		}
 
 		// get the immediately adjacent neighbours of @param node_id
@@ -164,6 +172,7 @@ class gridmap
 			tiles = (uint8_t)(*((uint32_t*)(db_+(dbindex-1))) >> (bit_offset+7));
 		}
 
+		// get the label associated with the padded coordinate pair (x, y)
 		inline bool
 		get_label(uint32_t x, unsigned int y)
 		{
@@ -181,6 +190,7 @@ class gridmap
 			return (db_[dbindex] & bitmask) != 0;
 		}
 
+		// set the label associated with the padded coordinate pair (x, y)
 		inline void
 		set_label(uint32_t x, unsigned int y, bool label)
 		{
@@ -215,6 +225,18 @@ class gridmap
 		width() const 
 		{ 
 			return this->padded_width_;
+		}
+
+		inline uint32_t 
+		header_height()
+		{
+			return this->header_.height_;
+		}
+
+		inline uint32_t 
+		header_width()
+		{
+			return this->header_.width_;
 		}
 
 		void 
