@@ -17,7 +17,7 @@ warthog::online_jump_point_locator::~online_jump_point_locator()
 }
 
 // create a copy of the grid map which is rotated by 90 degrees clockwise.
-// also create a corresponding JPL object for jumping around using this map.
+// this version will be used when jumping North or South. 
 warthog::gridmap*
 warthog::online_jump_point_locator::create_rmap()
 {
@@ -141,13 +141,13 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 
 	uint32_t neis[3] = {0, 0, 0};
 	bool deadend = false;
-	uint32_t num_steps = 0;
 
+	jumpnode_id = node_id;
 	while(true)
 	{
 		// read in tiles from 3 adjacent rows. the curent node 
 		// is in the low byte of the middle row
-		mymap->get_neighbours_32bit(node_id + num_steps, neis);
+		mymap->get_neighbours_32bit(jumpnode_id, neis);
 
 		// identity forced neighbours and deadend tiles. 
 		// forced neighbours are found in the top or bottom row. they 
@@ -165,7 +165,7 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 		if(stop_bits)
 		{
 			uint32_t stop_pos = __builtin_ffs(stop_bits)-1; // returns idx+1
-			num_steps += stop_pos; 
+			jumpnode_id += stop_pos; 
 			deadend = deadend_bits & (1 << stop_pos);
 			break;
 		}
@@ -174,11 +174,10 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 		// in case the last tile from the row above or below is an obstacle.
 		// Such a tile, followed by a non-obstacle tile, would yield a forced 
 		// neighbour that we don't want to miss.
-		num_steps += 31; 
+		jumpnode_id += 31;
 	}
 
-	jumpnode_id = node_id + num_steps;
-
+	uint32_t num_steps = jumpnode_id - node_id;
 	uint32_t goal_dist = goal_id - node_id;
 	if(num_steps > goal_dist)
 	{
@@ -189,8 +188,10 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 
 	if(deadend)
 	{
-		if(num_steps > 0) { num_steps--; }
 		jumpnode_id = warthog::INF;
+		// when the node_id is an obstacle, we need to return 0
+		// we also return 0 if we could not step due to obstacles
+		num_steps -= (1 & neis[1]);
 	}
 	jumpcost = num_steps;
 	
@@ -209,15 +210,15 @@ warthog::online_jump_point_locator::__jump_west(uint32_t node_id,
 		uint32_t goal_id, uint32_t& jumpnode_id, double& jumpcost, 
 		warthog::gridmap* mymap)
 {
-	uint32_t num_steps = 0;
 	bool deadend = false;
 	uint32_t neis[3] = {0, 0, 0};
 
+	jumpnode_id = node_id;
 	while(true)
 	{
 		// cache 32 tiles from three adjacent rows.
 		// current tile is in the high byte of the middle row
-		mymap->get_neighbours_upper_32bit(node_id - num_steps, neis);
+		mymap->get_neighbours_upper_32bit(jumpnode_id, neis);
 
 		// identify forced and dead-end nodes
 		uint32_t 
@@ -231,17 +232,17 @@ warthog::online_jump_point_locator::__jump_west(uint32_t node_id,
 		if(stop_bits)
 		{
 			uint32_t stop_pos = __builtin_clz(stop_bits);
-			num_steps += stop_pos;
+			jumpnode_id -= stop_pos;
 			deadend = deadend_bits & (0x80000000 >> stop_pos);
 			break;
 		}
 		// jump to the end of cache. jumping +32 involves checking
 		// for forced neis between adjacent sets of contiguous tiles
-		num_steps += 31;
+		jumpnode_id -= 31;
 	
 	}
-	jumpnode_id = node_id - num_steps;
 
+	uint32_t num_steps = node_id - jumpnode_id;
 	uint32_t goal_dist = node_id - goal_id;
 	if(num_steps > goal_dist)
 	{
@@ -252,8 +253,10 @@ warthog::online_jump_point_locator::__jump_west(uint32_t node_id,
 
 	if(deadend)
 	{
-		if(num_steps > 0) { num_steps--; }
 		jumpnode_id = warthog::INF;
+		// when the node_id is an obstacle, we need to return 0
+		// we also return 0 if we could not step due to obstacles
+		num_steps -= (0x80000000 & num_steps);
 	}
 	jumpcost = num_steps;
 }
