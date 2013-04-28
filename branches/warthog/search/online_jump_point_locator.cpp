@@ -189,6 +189,7 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 
 	if(deadend)
 	{
+		if(num_steps > 0) { num_steps--; }
 		jumpnode_id = warthog::INF;
 	}
 	jumpcost = num_steps;
@@ -251,6 +252,7 @@ warthog::online_jump_point_locator::__jump_west(uint32_t node_id,
 
 	if(deadend)
 	{
+		if(num_steps > 0) { num_steps--; }
 		jumpnode_id = warthog::INF;
 	}
 	jumpcost = num_steps;
