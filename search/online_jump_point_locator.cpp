@@ -191,7 +191,7 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 		jumpnode_id = warthog::INF;
 		// when the node_id is an obstacle, we need to return 0
 		// we also return 0 if we could not step due to obstacles
-		num_steps -= (1 & neis[1]);
+		num_steps -= (1 && num_steps);
 	}
 	jumpcost = num_steps;
 	
@@ -254,9 +254,9 @@ warthog::online_jump_point_locator::__jump_west(uint32_t node_id,
 	if(deadend)
 	{
 		jumpnode_id = warthog::INF;
-		// when the node_id is an obstacle, we need to return 0
-		// we also return 0 if we could not step due to obstacles
-		num_steps -= (0x80000000 & num_steps);
+		// when node_id is an obstacle, we need to return 0
+		// we also return 0 if we could not take a single step
+		num_steps -= (1 && num_steps);
 	}
 	jumpcost = num_steps;
 }
