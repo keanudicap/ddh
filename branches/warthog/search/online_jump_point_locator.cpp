@@ -279,19 +279,23 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	if((neis & 1542) != 1542) { jumpnode_id = warthog::INF; return; }
 
 	// jump a single step at a time (no corner cutting)
+	uint32_t rnext_id = map_id_to_rmap_id(next_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
+	uint32_t rmapw = rmap_->width();
 	while(true)
 	{
 		num_steps++;
 		next_id = next_id - mapw + 1;
+		rnext_id = rnext_id + rmapw + 1;
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		uint32_t jp_id; 
+		uint32_t jp_id1, jp_id2;
 		double cost1, cost2;
-		jump_north(next_id, goal_id, jp_id, cost1);
-		if(jp_id != warthog::INF) { break; }
-		jump_east(next_id, goal_id, jp_id, cost2);
-		if(jp_id != warthog::INF) { break; }
+		__jump_north(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
+		if(jp_id1 != warthog::INF) { break; }
+		__jump_east(next_id, goal_id, jp_id2, cost2, map_);
+		if(jp_id2 != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
@@ -318,19 +322,23 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 	if((neis & 771) != 771) { jumpnode_id = warthog::INF; return; }
 
 	// jump a single step at a time (no corner cutting)
+	uint32_t rnext_id = map_id_to_rmap_id(next_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
+	uint32_t rmapw = rmap_->width();
 	while(true)
 	{
 		num_steps++;
 		next_id = next_id - mapw - 1;
+		rnext_id = rnext_id - (rmapw - 1);
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		uint32_t jp_id; 
+		uint32_t jp_id1, jp_id2;
 		double cost1, cost2;
-		jump_north(next_id, goal_id, jp_id, cost1);
-		if(jp_id != warthog::INF) { break; }
-		jump_west(next_id, goal_id, jp_id, cost2);
-		if(jp_id != warthog::INF) { break; }
+		__jump_north(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
+		if(jp_id1 != warthog::INF) { break; }
+		__jump_west(next_id, goal_id, jp_id2, cost2, map_);
+		if(jp_id2 != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
@@ -357,19 +365,23 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 	if((neis & 394752) != 394752) { jumpnode_id = warthog::INF; return; }
 
 	// jump a single step at a time (no corner cutting)
+	uint32_t rnext_id = map_id_to_rmap_id(next_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
+	uint32_t rmapw = rmap_->width();
 	while(true)
 	{
 		num_steps++;
 		next_id = next_id + mapw + 1;
+		rnext_id = rnext_id + rmapw - 1;
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		uint32_t jp_id; 
+		uint32_t jp_id1, jp_id2;
 		double cost1, cost2;
-		jump_south(next_id, goal_id, jp_id, cost1);
-		if(jp_id != warthog::INF) { break; }
-		jump_east(next_id, goal_id, jp_id, cost2);
-		if(jp_id != warthog::INF) { break; }
+		__jump_south(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
+		if(jp_id1 != warthog::INF) { break; }
+		__jump_east(next_id, goal_id, jp_id2, cost2, map_);
+		if(jp_id2 != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
@@ -395,19 +407,23 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 	if((neis & 197376) != 197376) { jumpnode_id = warthog::INF; return; }
 
 	// jump a single step (no corner cutting)
+	uint32_t rnext_id = map_id_to_rmap_id(next_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
+	uint32_t rmapw = rmap_->width();
 	while(true)
 	{
 		num_steps++;
 		next_id = next_id + mapw - 1;
+		rnext_id = rnext_id - (rmapw + 1);
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		uint32_t jp_id; 
+		uint32_t jp_id1, jp_id2;
 		double cost1, cost2;
-		jump_south(next_id, goal_id, jp_id, cost1);
-		if(jp_id != warthog::INF) { break; }
-		jump_west(next_id, goal_id, jp_id, cost2);
-		if(jp_id != warthog::INF) { break; }
+		__jump_south(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
+		if(jp_id1 != warthog::INF) { break; }
+		__jump_west(next_id, goal_id, jp_id2, cost2, map_);
+		if(jp_id2 != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) { next_id = warthog::INF; break; }
