@@ -13,7 +13,7 @@
 // The idea here is to improve performance when looking up the
 // addresses of nearby nodes. For example, two nodes may
 // which may be in close spatial proximity should also have
-// their addresses stored in close proximity in poolory.
+// their addresses stored in close proximity in memory.
 // This is not the case when using a simple 2d flattened
 // array.
 //

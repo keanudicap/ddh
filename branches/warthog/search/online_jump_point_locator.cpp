@@ -182,7 +182,7 @@ warthog::online_jump_point_locator::__jump_east(uint32_t node_id,
 	if(num_steps > goal_dist)
 	{
 		jumpnode_id = goal_id;
-		jumpcost = goal_id - node_id;
+		jumpcost = goal_dist;
 		return;
 	}
 
@@ -247,7 +247,7 @@ warthog::online_jump_point_locator::__jump_west(uint32_t node_id,
 	if(num_steps > goal_dist)
 	{
 		jumpnode_id = goal_id;
-		jumpcost = node_id - goal_id;
+		jumpcost = goal_dist;
 		return;
 	}
 
