@@ -91,7 +91,9 @@ class gridmap
 			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+7));
 		}
 
-		// same as ::get_neighbours but using a 32bit quantities
+		// fetches a contiguous set of tiles from three adjacent rows. each row is
+		// 32 tiles long. the middle row begins with tile padded_id. the other tiles
+		// are from the row immediately above and immediately below padded_id.
 		void
 		get_neighbours_32bit(uint32_t padded_id, uint32_t tiles[3])
 		{
@@ -113,30 +115,9 @@ class gridmap
 			tiles[2] = (uint32_t)(*((uint64_t*)(db_+pos3)) >> (bit_offset));
 		}
 
-		// same as ::get_neighbours but each nei is stored in the upper
-		// positions of the tiles array
-		inline void
-		get_neighbours_upper(uint32_t padded_id, uint8_t tiles[3])
-		{
-			// 1. calculate the dbword offset for the node at index padded_id
-			// 2. convert padded_id into a dbword index.
-			uint32_t bit_offset = (padded_id & warthog::DBWORD_BITS_MASK);
-			uint32_t dbindex = padded_id >> warthog::LOG2_DBWORD_BITS;
-
-			// compute dbword indexes for tiles immediately above 
-			// and immediately below node_id
-			uint32_t pos1 = dbindex - dbwidth_;
-			uint32_t pos2 = dbindex;
-			uint32_t pos3 = dbindex + dbwidth_;
-
-			// read from the byte just before node_id and shift down until the
-			// nei adjacent to node_id is in the lowest position
-			tiles[0] = (uint8_t)(*((uint32_t*)(db_+(pos1-1))) >> (bit_offset+2));
-			tiles[1] = (uint8_t)(*((uint32_t*)(db_+(pos2-1))) >> (bit_offset+2));
-			tiles[2] = (uint8_t)(*((uint32_t*)(db_+(pos3-1))) >> (bit_offset+2));
-		}
-
-		// same as ::get_neighbours_upper but using 32bit quantities
+		// similar to get_neighbours_32bit but padded_id is placed into the
+		// upper bit of the return value. this variant is useful when jumping
+		// toward smaller memory addresses (i.e. west instead of east).
 		inline void
 		get_neighbours_upper_32bit(uint32_t padded_id, uint32_t tiles[3])
 		{
@@ -160,16 +141,6 @@ class gridmap
 			tiles[0] = (uint32_t)(*((uint64_t*)(db_+pos1)) >> (bit_offset+1));
 			tiles[1] = (uint32_t)(*((uint64_t*)(db_+pos2)) >> (bit_offset+1));
 			tiles[2] = (uint32_t)(*((uint64_t*)(db_+pos3)) >> (bit_offset+1));
-		}
-
-		// get the labels for node y and its two horizontally adjacent 
-		// neighbours x and z; i.e. get the triple xyz
-		inline void
-		get_tripleh(uint32_t dbindex, uint32_t bit_offset, uint8_t& tiles)
-		{
-			// read from the byte just before node_id and shift down until the
-			// nei adjacent to node_id is in the lowest position
-			tiles = (uint8_t)(*((uint32_t*)(db_+(dbindex-1))) >> (bit_offset+7));
 		}
 
 		// get the label associated with the padded coordinate pair (x, y)
