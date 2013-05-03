@@ -1,7 +1,7 @@
-loadResults <- function(filename, tnames, tclasses)
+loadResults <- function(filename, tnames, tclasses, sepchar=",")
 {
 	results <- read.table(filename, col.names=tnames, colClasses=tclasses,
-	header = FALSE, sep=",")
+	header = FALSE, sep=sepchar)
 	results$map <- gsub("([a-zA-Z0-9-]+/)+", "", results$map)
 	results$name <- gsub("\t", "", results$name)
 	results$map <- gsub("\t", "", results$map)
