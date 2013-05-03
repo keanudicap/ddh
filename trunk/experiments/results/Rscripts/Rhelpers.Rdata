@@ -8,6 +8,19 @@ loadResults <- function(filename, tnames, tclasses, sepchar=",")
 	results	
 } 
 
+loadTable <- function(filename, tnames, tclasses, sepchar="\t")
+{
+        results <- read.table(filename, col.names=tnames, colClasses=tclasses,
+        header = FALSE, sep=sepchar)
+        results 
+}
+
+basename <- function(x)
+{
+	tmp <- gsub("[a-zA-Z0-9-]+/", "", x)
+	tmp
+}
+
 ams <- function(series, dist, stepsize=50) 
 {        
 	sval <- c() 
@@ -208,3 +221,8 @@ runav <- function(raw, runs)
 	out <- out[-1,]
 	out	
 }
+
+gppc_names <- c("scenario", "foo1", "total_time", "foo2", "max_time_step", "foo3", "time_20_moves", "foo4", "total_len", "foo5", "subopt", "valid")
+gppc_classes <- c("character", "character", "numeric", "character", "numeric", "character", "numeric", "character", "numeric", "character", "numeric", "character")      
+tablenames <- c("id", "name", "ne", "nt", "ng", "st", "opl", "map")
+tableclasses <- c("integer", "character", "integer", "integer", "integer", "double", "double", "character")
