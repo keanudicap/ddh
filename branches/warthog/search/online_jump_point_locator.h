@@ -14,6 +14,7 @@
 // @created: 03/09/2012
 //
 
+#include "jps.h"
 
 class warthog::gridmap;
 namespace warthog

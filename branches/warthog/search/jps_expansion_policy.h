@@ -22,7 +22,7 @@
 #include "gridmap.h"
 #include "helpers.h"
 #include "jps.h"
-#include "online_jump_point_locator.h"
+#include "offline_jump_point_locator.h"
 #include "problem_instance.h"
 #include "search_node.h"
 
@@ -106,8 +106,7 @@ class jps_expansion_policy
 	private:
 		warthog::gridmap* map_;
 		warthog::blocklist* nodepool_;
-		online_jump_point_locator* jpl_;
-		online_jump_point_locator* rjpl_;
+		offline_jump_point_locator* jpl_;
 		uint32_t which_;
 		uint32_t num_neighbours_;
 		warthog::search_node* neighbours_[9];
