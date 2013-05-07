@@ -4,7 +4,7 @@ warthog::jps_expansion_policy::jps_expansion_policy(warthog::gridmap* map)
 {
 	map_ = map;
 	nodepool_ = new warthog::blocklist(map->height(), map->width());
-	jpl_ = new warthog::online_jump_point_locator(map);
+	jpl_ = new warthog::offline_jump_point_locator(map);
 	reset();
 }
 

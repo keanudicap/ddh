@@ -55,10 +55,17 @@ class gridmap
 			return to_padded_id(y * this->header_width() + x);
 		}
 
-		void
+		inline void
 		to_unpadded_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
 		{
 			padded_id -= 2* padded_width_;
+			y = padded_id / padded_width_;
+			x = padded_id % padded_width_;
+		}
+
+		inline void
+		to_padded_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
+		{
 			y = padded_id / padded_width_;
 			x = padded_id % padded_width_;
 		}
