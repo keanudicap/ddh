@@ -94,7 +94,7 @@ class jps_expansion_policy
 		inline uint32_t
 		mem()
 		{
-			return sizeof(*this) + map_->mem() + nodepool_->mem();
+			return sizeof(*this) + map_->mem() + nodepool_->mem() + jpl_->mem();
 		}
 
 		uint32_t 
