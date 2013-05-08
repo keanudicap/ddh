@@ -26,6 +26,13 @@ class offline_jump_point_locator
 		jump(warthog::jps::direction d, uint32_t node_id, uint32_t goalid, 
 				uint32_t& jumpnode_id, double& jumpcost);
 
+		uint32_t
+		mem()
+		{
+			return sizeof(this) + sizeof(*db_)*dbsize_;
+		}
+
+
 	private:
 
 		void
@@ -58,7 +65,7 @@ class offline_jump_point_locator
 
 		warthog::gridmap* map_;
 		uint32_t dbsize_;
-		uint8_t* db_;	
+		uint16_t* db_;	
 };
 
 }
