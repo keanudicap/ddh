@@ -72,6 +72,11 @@ class offline_jump_point_locator
 		warthog::gridmap* map_;
 		uint32_t dbsize_;
 		uint16_t* db_;	
+
+		uint32_t jumppoints_[3];
+		double costs_[3];
+		uint32_t max_;
+		uint32_t current_;
 };
 
 }

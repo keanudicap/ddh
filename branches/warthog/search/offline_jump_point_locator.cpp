@@ -130,6 +130,7 @@ warthog::offline_jump_point_locator::jump(warthog::jps::direction d,
 		uint32_t node_id, uint32_t goal_id, uint32_t& jumpnode_id, 
 		double& jumpcost)
 {
+	current_ = max_ = 0;
 	switch(d)
 	{
 		case warthog::jps::NORTH:
@@ -190,8 +191,8 @@ warthog::offline_jump_point_locator::jump_northwest(uint32_t node_id,
 				jump_west(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return;
 				}
 			}
@@ -202,8 +203,8 @@ warthog::offline_jump_point_locator::jump_northwest(uint32_t node_id,
 				jump_north(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return;
 				}
 			}
@@ -245,8 +246,8 @@ warthog::offline_jump_point_locator::jump_northeast(uint32_t node_id,
 				jump_east(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return;
 				}
 			}
@@ -257,8 +258,8 @@ warthog::offline_jump_point_locator::jump_northeast(uint32_t node_id,
 				jump_north(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return;
 				}
 			}
@@ -300,8 +301,8 @@ warthog::offline_jump_point_locator::jump_southwest(uint32_t node_id,
 				jump_west(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{ 
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return; 
 				}
 			}
@@ -312,8 +313,8 @@ warthog::offline_jump_point_locator::jump_southwest(uint32_t node_id,
 				jump_south(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{ 
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return; 
 				}
 			}
@@ -355,8 +356,8 @@ warthog::offline_jump_point_locator::jump_southeast(uint32_t node_id,
 				jump_east(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{ 
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return; 
 				}
 			}
@@ -367,8 +368,8 @@ warthog::offline_jump_point_locator::jump_southeast(uint32_t node_id,
 				jump_south(nid, goal_id, jumpnode_id, jumpcost);
 				if(jumpnode_id == goal_id)
 				{ 
-					jumpnode_id = nid;
-					jumpcost = steps_to_nid * warthog::ROOT_TWO;
+					jumpnode_id = goal_id;
+					jumpcost = steps_to_nid * warthog::ROOT_TWO + jumpcost;
 					return; 
 				}
 			}
