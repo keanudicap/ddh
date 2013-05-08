@@ -41,8 +41,8 @@ class gridmap
 		to_padded_id(uint32_t node_id)
 		{
 			return node_id + 
-				// add two full padded rows
-				2*padded_width_ +
+				// padded rows before the actual map data starts
+				padded_rows_before_first_row_*padded_width_ +
 			   	// padding from each row of data before this one
 				(node_id / header_.width_) * padding_per_row_;
 		}
@@ -58,7 +58,7 @@ class gridmap
 		inline void
 		to_unpadded_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
 		{
-			padded_id -= 2* padded_width_;
+			padded_id -= padded_rows_before_first_row_* padded_width_;
 			y = padded_id / padded_width_;
 			x = padded_id % padded_width_;
 		}
@@ -193,6 +193,12 @@ class gridmap
 			}
 		}
 
+		inline uint32_t
+		padded_mapsize()
+		{
+			return padded_width_ * padded_height_;
+		}
+
 		inline uint32_t 
 		height() const
 		{ 
@@ -240,6 +246,9 @@ class gridmap
 		uint32_t padded_width_;
 		uint32_t padded_height_;
 		uint32_t padding_per_row_;
+		uint32_t padding_column_above_;
+		uint32_t padded_rows_before_first_row_;
+		uint32_t padded_rows_after_last_row_;
 		uint32_t max_id_;
 
 		gridmap(const warthog::gridmap& other) {}
