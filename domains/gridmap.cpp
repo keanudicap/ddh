@@ -11,6 +11,7 @@ warthog::gridmap::gridmap(unsigned int h, unsigned int w)
 
 warthog::gridmap::gridmap(const char* filename)
 {
+	strcpy(filename_, filename);
 	warthog::gm_parser parser(filename);
 	this->header_ = parser.get_header();
 

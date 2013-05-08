@@ -1,13 +1,14 @@
+#define __STDC_FORMAT_MACROS
 #include "gridmap.h"
 #include "online_jump_point_locator.h"
 #include "offline_jump_point_locator.h"
 
+#include <inttypes.h>
+#include <stdio.h>
+
 warthog::offline_jump_point_locator::offline_jump_point_locator(
 		warthog::gridmap* map) : map_(map)
 {
-	dbsize_ = 8*map_->padded_mapsize();
-	db_ = new uint16_t[dbsize_];
-	for(uint32_t i=0; i < dbsize_; i++) db_[i] = 0;
 	preproc();
 }
 
@@ -19,6 +20,12 @@ warthog::offline_jump_point_locator::~offline_jump_point_locator()
 void
 warthog::offline_jump_point_locator::preproc()
 {
+	if(load(map_->filename())) { return; }
+
+	dbsize_ = 8*map_->padded_mapsize();
+	db_ = new uint16_t[dbsize_];
+	for(uint32_t i=0; i < dbsize_; i++) db_[i] = 0;
+
 	warthog::online_jump_point_locator jpl(map_);
 	for(uint32_t y = 0; y < map_->header_height(); y++)
 	{
@@ -68,6 +75,54 @@ warthog::offline_jump_point_locator::preproc()
 //			std::cout << std::endl;
 		}
 	}
+
+	save(map_->filename());
+}
+
+
+bool
+warthog::offline_jump_point_locator::load(const char* filename)
+{
+	char fname[256];
+	strcpy(fname, filename);
+	strcat(fname, ".jps+");
+	FILE* f = fopen(fname, "rb");
+	std::cerr << "loading "<<fname << "... ";
+	if(f == NULL) 
+	{
+		std::cerr << "no dice. oh well. keep going.\n"<<std::endl;
+		return false;
+	}
+	
+	fread(&dbsize_, sizeof(dbsize_), 1, f);
+	std::cerr <<"#labels="<<dbsize_<<std::endl;
+
+	db_ = new uint16_t[dbsize_];
+	fread(db_, sizeof(uint16_t), dbsize_, f);
+	fclose(f);
+	return true;
+}
+
+void 
+warthog::offline_jump_point_locator::save(const char* filename)
+{
+	char fname[256];
+	strcpy(fname, filename);
+	strcat(fname, ".jps+");
+	std::cerr << "saving to file "<<fname<<"; nodes="<<dbsize_<<" size: "<<sizeof(db_[0])<<std::endl;
+
+	FILE* f = fopen(fname, "wb");
+	if(f == NULL) 
+	{
+		std::cerr << "err; cannot write jump-point graph to file "
+			<<fname<<". oh well. try to keep going.\n"<<std::endl;
+		return;
+	}
+
+	fwrite(&dbsize_, sizeof(dbsize_), 1, f);
+	fwrite(db_, sizeof(*db_), dbsize_, f);
+	fclose(f);
+	std::cerr << "jump-point graph saved to disk. file="<<fname<<std::endl;
 }
 
 void
