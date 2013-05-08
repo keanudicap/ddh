@@ -56,17 +56,20 @@ namespace warthog
 			gm_parser(const char* filename);
 			~gm_parser();
 
-			inline warthog::gm_header get_header()
+			inline warthog::gm_header 
+			get_header()
 			{
 				return this->header_;
 			}
 
-			inline unsigned int get_num_tiles() 
+			inline unsigned int 
+			get_num_tiles() 
 			{ 
 				return this->map_.size(); 
 			}
 
-			inline char get_tile_at(unsigned int index) 
+			inline char
+			get_tile_at(unsigned int index) 
 			{ 
 				if(index >= this->map_.size())
 				{

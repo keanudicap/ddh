@@ -223,6 +223,12 @@ class gridmap
 			return this->header_.width_;
 		}
 
+		inline const char*
+		filename()
+		{
+			return this->filename_;
+		}
+
 		void 
 		print(std::ostream&);
 		
@@ -240,6 +246,8 @@ class gridmap
 	private:
 		warthog::gm_header header_;
 		warthog::dbword* db_;
+		char filename_[256];
+
 		uint32_t dbwidth_;
 		uint32_t dbheight_;
 		uint32_t db_size_;

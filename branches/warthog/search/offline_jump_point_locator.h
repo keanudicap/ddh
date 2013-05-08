@@ -38,6 +38,12 @@ class offline_jump_point_locator
 		void
 		preproc();
 
+		bool
+		load(const char* filename);
+
+		void 
+		save(const char* filename);
+
 		void
 		jump_northwest(uint32_t node_id, uint32_t goal_id, 
 				uint32_t& jumpnode_id, double& jumpcost);
