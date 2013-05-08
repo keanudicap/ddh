@@ -278,7 +278,7 @@ warthog::online_jump_point_locator::jump_northeast(uint32_t node_id,
 	// (validity of subsequent steps is checked by straight jump functions)
 	uint32_t neis;
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 1542) != 1542) { jumpnode_id = warthog::INF; return; }
+	if((neis & 1542) != 1542) { jumpnode_id = warthog::INF; jumpcost=0; return; }
 
 	// jump a single step at a time (no corner cutting)
 	uint32_t rnext_id = map_id_to_rmap_id(next_id);
@@ -321,7 +321,7 @@ warthog::online_jump_point_locator::jump_northwest(uint32_t node_id,
 	// early termination (invalid first step)
 	uint32_t neis;
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 771) != 771) { jumpnode_id = warthog::INF; return; }
+	if((neis & 771) != 771) { jumpnode_id = warthog::INF; jumpcost = 0; return; }
 
 	// jump a single step at a time (no corner cutting)
 	uint32_t rnext_id = map_id_to_rmap_id(next_id);
@@ -364,7 +364,7 @@ warthog::online_jump_point_locator::jump_southeast(uint32_t node_id,
 	// (validity of subsequent steps is checked by straight jump functions)
 	uint32_t neis;
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 394752) != 394752) { jumpnode_id = warthog::INF; return; }
+	if((neis & 394752) != 394752) { jumpnode_id = warthog::INF; jumpcost = 0; return; }
 
 	// jump a single step at a time (no corner cutting)
 	uint32_t rnext_id = map_id_to_rmap_id(next_id);
@@ -406,7 +406,7 @@ warthog::online_jump_point_locator::jump_southwest(uint32_t node_id,
 
 	// early termination (first step is invalid)
 	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 197376) != 197376) { jumpnode_id = warthog::INF; return; }
+	if((neis & 197376) != 197376) { jumpnode_id = warthog::INF; jumpcost = 0; return; }
 
 	// jump a single step (no corner cutting)
 	uint32_t rnext_id = map_id_to_rmap_id(next_id);
