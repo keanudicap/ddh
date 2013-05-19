@@ -79,6 +79,32 @@ class flexible_astar
 				assert(goal->get_id() == goalid);
 				len = goal->get_g();
 			}
+
+#ifndef NDEBUG
+
+			if(verbose_)
+			{
+				std::stack<warthog::search_node*> path;
+				warthog::search_node* current = goal;
+				while(current != 0)	
+				{
+					path.push(current);
+					current = current->get_parent();
+				}
+
+				while(!path.empty())
+				{
+					warthog::search_node* n = path.top();
+					uint32_t x, y;
+					y = (n->get_id() / expander_->mapwidth())-2;
+					x = n->get_id() % expander_->mapwidth();
+					std::cerr << "final path: ("<<x<<", "<<y<<")...";
+					n->print(std::cerr);
+					std::cerr << std::endl;
+					path.pop();
+				}
+			}
+#endif
 			cleanup();
 			return len;
 		}
@@ -249,7 +275,6 @@ class flexible_astar
 					{
 						// add a new node to the fringe
 						double gval = current->get_g() + cost_to_n;
-						assert(gval != warthog::INF);
 						n->set_g(gval);
 						n->set_f(gval + heuristic_->h(n->get_id(), goalid));
 					   	n->set_parent(current);
