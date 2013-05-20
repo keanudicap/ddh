@@ -9,18 +9,21 @@
 
 #include "constants.h"
 #include "cpool.h"
+#include "jps.h"
 
 #include <iostream>
 
 namespace warthog
 {
 	
+const uint32_t NODEID_AND_STATUS_MASK = (1 << 24) - 1;
+const uint32_t STATUS_MASK = 1;
 class search_node
 {
 	public:
-		search_node(unsigned int id) 
-			: id_and_status_(id << 1), f_(0), g_(0), parent_(0), 
-			priority_(warthog::INF)
+		search_node(uint32_t id) 
+			: id_and_status_(id << 1), f_(0), g_(DBL_MAX), parent_(0), 
+			priority_(warthog::INF), searchid_(0)
 		{
 			assert(this->get_id() < ((1ul<<31)-1));
 			refcount_++;
@@ -31,23 +34,61 @@ class search_node
 			refcount_--;
 		}
 
-		inline unsigned int 
-		get_id() const { return (id_and_status_ >> 1); }
+		inline void
+		reset(uint32_t searchid)
+		{
+			id_and_status_ &= ~1;
+			f_ = g_ = DBL_MAX;
+			parent_ = 0;
+			priority_ = warthog::INF;
+			set_pdir(warthog::jps::NONE);
+			assert(get_pdir () == 0);
+			searchid_ = searchid;
+		}
+
+		inline uint32_t
+		get_searchid()
+		{
+			return searchid_;
+		}
 
 		inline void
-		set_id(unsigned int id) 
+		set_searchid(uint32_t searchid)
+		{
+			searchid_ = searchid;
+		}
+
+		inline uint32_t 
+		get_id() const { return (id_and_status_ & NODEID_AND_STATUS_MASK) >> 1; }
+
+		inline void
+		set_id(uint32_t id) 
 		{ 
-			id_and_status_ = (id << 1) | (id_and_status_ & 1); 
+			id = ((id << 1) | (id_and_status_ & 1)) & NODEID_AND_STATUS_MASK;
+			id_and_status_ |= id;
 		} 
 
+		inline warthog::jps::direction
+		get_pdir() const
+		{
+			return (warthog::jps::direction)
+			   	*(((uint8_t*)(&id_and_status_))+3);
+		}
+
+		inline void
+		set_pdir(warthog::jps::direction d)
+		{
+			*(((uint8_t*)(&id_and_status_))+3) = d;
+		}
+
 		inline bool
-		get_expanded() const { return (id_and_status_ & 1); }
+		get_expanded() const { return (id_and_status_ & STATUS_MASK); }
 
 		inline void
 		set_expanded(bool expanded) 
 		{ 
-			id_and_status_ = ((id_and_status_ >> 1) << 1) |
-			   	(unsigned int)(expanded?1:0);
+			id_and_status_ &= ~STATUS_MASK; // reset bit0
+			id_and_status_ ^= (uint32_t)(expanded?1:0); // set it anew
 		}
 
 		inline warthog::search_node* 
@@ -56,11 +97,11 @@ class search_node
 		inline void
 		set_parent(warthog::search_node* parent) { parent_ = parent; } 
 
-		inline unsigned int
+		inline uint32_t
 		get_priority() const { return priority_; }
 
 		inline void
-		set_priority(unsigned int priority) { priority_ = priority; } 
+		set_priority(uint32_t priority) { priority_ = priority; } 
 
 		inline double
 		get_g() const { return g_; }
@@ -167,26 +208,28 @@ class search_node
 		{
 			out << "search_node id:" << get_id() << " g: "<<g_
 				<<" f: "<<this->get_f()
-				<< " expanded: " << get_expanded() << " ";
+				<< " expanded: " << get_expanded() << " " 
+				<< " pdir: "<< get_pdir() << " ";
 		}
 
-		static unsigned int 
+		static uint32_t 
 		get_refcount() { return refcount_; }
 
-		unsigned int
+		uint32_t
 		mem()
 		{
 			return sizeof(*this);
 		}
 
 	private:
-		unsigned int id_and_status_; // bit 0 is expansion status; 1-31 are id
+		uint32_t id_and_status_; // bit 0 is expansion status; 1-31 are id
 		double f_;
 		double g_;
 		warthog::search_node* parent_;
-		unsigned int priority_; // expansion priority
+		uint32_t priority_; // expansion priority
+		uint32_t searchid_;
 
-		static unsigned int refcount_;
+		static uint32_t refcount_;
 };
 
 }

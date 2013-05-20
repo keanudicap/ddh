@@ -178,9 +178,11 @@ class flexible_astar
 			warthog::problem_instance instance;
 			instance.set_goal(goalid);
 			instance.set_start(startid);
+			instance.set_searchid(searchid_++);
 
 			warthog::search_node* goal = 0;
 			warthog::search_node* start = expander_->generate(startid);
+			start->reset(instance.get_searchid());
 			start->set_g(0);
 			start->set_f(heuristic_->h(startid, goalid));
 			open_->push(start);
@@ -322,7 +324,7 @@ class flexible_astar
 };
 
 template <class H, class E>
-uint32_t warthog::flexible_astar<H, E>::searchid_ = warthog::FNV32_prime;
+uint32_t warthog::flexible_astar<H, E>::searchid_ = 0;
 
 }
 
