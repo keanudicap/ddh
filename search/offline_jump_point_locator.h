@@ -24,7 +24,7 @@ class offline_jump_point_locator
 
 		void
 		jump(warthog::jps::direction d, uint32_t node_id, uint32_t goalid, 
-				uint32_t& jumpnode_id, double& jumpcost);
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 
 		uint32_t
 		mem()
@@ -46,37 +46,32 @@ class offline_jump_point_locator
 
 		void
 		jump_northwest(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
 		jump_northeast(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
 		jump_southwest(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
 		jump_southeast(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
-		jump_north(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+		jump_north(uint32_t node_id, uint32_t goal_id, double cost_to_node_id,
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
-		jump_south(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+		jump_south(uint32_t node_id, uint32_t goal_id, double cost_to_node_id,
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
-		jump_east(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+		jump_east(uint32_t node_id, uint32_t goal_id, double cost_to_node_id,
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 		void
-		jump_west(uint32_t node_id, uint32_t goal_id, 
-				uint32_t& jumpnode_id, double& jumpcost);
+		jump_west(uint32_t node_id, uint32_t goal_id, double cost_to_node_id,
+				std::vector<uint32_t>& neighbours, std::vector<double>& costs);
 
 		warthog::gridmap* map_;
 		uint32_t dbsize_;
 		uint16_t* db_;	
-
-		uint32_t jumppoints_[3];
-		double costs_[3];
-		uint32_t max_;
-		uint32_t current_;
 };
 
 }

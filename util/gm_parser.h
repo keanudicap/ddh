@@ -62,7 +62,7 @@ namespace warthog
 				return this->header_;
 			}
 
-			inline unsigned int 
+			inline uint32_t
 			get_num_tiles() 
 			{ 
 				return this->map_.size(); 
