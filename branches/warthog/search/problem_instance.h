@@ -24,9 +24,16 @@ class problem_instance
 		inline void
 		set_start(uint32_t start_id) { start_ = start_id; }
 
+		inline uint32_t
+		get_searchid() { return search_id_; } 
+
+		inline void
+		set_searchid(uint32_t search_id) { search_id_ = search_id; }
+
 	private:
 		uint32_t goal_;
 		uint32_t start_;
+		uint32_t search_id_;
 
 		// no copy
 		problem_instance(const warthog::problem_instance& other) { }
