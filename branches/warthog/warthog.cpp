@@ -9,6 +9,7 @@
 #include "gridmap.h"
 #include "gridmap_expansion_policy.h"
 #include "jps_expansion_policy.h"
+#include "jps_expansion_policy2.h"
 #include "octile_heuristic.h"
 #include "scenario_manager.h"
 
@@ -67,12 +68,12 @@ check_optimality(double len, warthog::experiment* exp)
 void
 run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 {
-	warthog::jps_expansion_policy expander(&map);
+	warthog::jps_expansion_policy2 expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
-	   	warthog::jps_expansion_policy> astar(&heuristic, &expander);
+	   	warthog::jps_expansion_policy2> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
 	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
