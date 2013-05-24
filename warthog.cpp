@@ -66,7 +66,7 @@ check_optimality(double len, warthog::experiment* exp)
 }
 
 void
-run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_jps_plus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 {
 	warthog::jps_expansion_policy2 expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
@@ -74,6 +74,45 @@ run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
 	   	warthog::jps_expansion_policy2> astar(&heuristic, &expander);
+	astar.set_verbose(verbose);
+
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
+	{
+		warthog::experiment* exp = scenmgr.get_experiment(i);
+
+		int startid = exp->starty() * exp->mapwidth() + exp->startx();
+		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
+		double len = astar.get_length(
+				map.to_padded_id(startid),
+			   	map.to_padded_id(goalid));
+		if(len == warthog::INF)
+		{
+			len = 0;
+		}
+
+		std::cout << i<<"\t" << "jps+" << "\t" 
+		<< astar.get_nodes_expanded() << "\t" 
+		<< astar.get_nodes_generated() << "\t"
+		<< astar.get_nodes_touched() << "\t"
+		<< astar.get_search_time()  << "\t"
+		<< len << "\t" 
+		<< scenmgr.last_file_loaded() << std::endl;
+
+		check_optimality(len, exp);
+	}
+	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
+}
+
+void
+run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+{
+	warthog::jps_expansion_policy expander(&map);
+	warthog::octile_heuristic heuristic(map.width(), map.height());
+
+	warthog::flexible_astar<
+		warthog::octile_heuristic,
+	   	warthog::jps_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
 	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
@@ -201,6 +240,11 @@ main(int argc, char** argv)
 	if(alg == "jps")
 	{
 		run_jps(scenmgr, map);
+	}
+
+	if(alg == "jps+")
+	{
+		run_jps_plus(scenmgr, map);
 	}
 
 	if(alg == "astar")
