@@ -22,7 +22,7 @@ class search_node
 {
 	public:
 		search_node(uint32_t id) 
-			: id_and_status_(id << 1), f_(0), g_(DBL_MAX), parent_(0), 
+			: id_and_status_(id << 1), f_(warthog::INF), g_(warthog::INF), parent_(0), 
 			priority_(warthog::INF), searchid_(0)
 		{
 			assert(this->get_id() < ((1ul<<31)-1));
@@ -38,7 +38,7 @@ class search_node
 		reset(uint32_t searchid)
 		{
 			id_and_status_ &= ~1;
-			f_ = g_ = DBL_MAX;
+			f_ = g_ = warthog::INF;
 			parent_ = 0;
 			priority_ = warthog::INF;
 			set_pdir(warthog::jps::NONE);
@@ -103,20 +103,20 @@ class search_node
 		inline void
 		set_priority(uint32_t priority) { priority_ = priority; } 
 
-		inline double
+		inline warthog::cost_t
 		get_g() const { return g_; }
 
 		inline void
-		set_g(double g) { g_ = g; }
+		set_g(warthog::cost_t g) { g_ = g; }
 
-		inline double 
+		inline warthog::cost_t 
 		get_f() const { return f_; }
 
 		inline void
-		set_f(double f) { f_ = f; }
+		set_f(warthog::cost_t f) { f_ = f; }
 
 		inline void 
-		relax(double g, warthog::search_node* parent)
+		relax(warthog::cost_t g, warthog::search_node* parent)
 		{
 			assert(g < g_);
 			f_ = (f_ - g_) + g;
@@ -127,18 +127,17 @@ class search_node
 		inline bool
 		operator<(const warthog::search_node& other) const
 		{
-			double myf = f_ + warthog::EPSILON;
-			if(myf < other.f_)
+			if(f_ < other.f_)
 			{
 				return true;
 			}
-			if(f_ > (other.f_ + warthog::EPSILON))
+			if(f_ > other.f_)
 			{
 				return false;
 			}
 
 			// break ties in favour of larger g
-			if((g_ + warthog::EPSILON) > other.g_)
+			if(g_ > other.g_)
 			{
 				return true;
 			}
@@ -148,17 +147,17 @@ class search_node
 		inline bool
 		operator>(const warthog::search_node& other) const
 		{
-			if(f_ > (other.f_+warthog::EPSILON))
+			if(f_ > other.f_)
 			{
 				return true;
 			}
-			if((f_+warthog::EPSILON) < other.f_)
+			if(f_ < other.f_)
 			{
 				return false;
 			}
 
 			// break ties in favour of larger g
-			if((g_ + warthog::EPSILON) > other.g_)
+			if(g_ > other.g_)
 			{
 				return true;
 			}
@@ -206,8 +205,8 @@ class search_node
 		inline void 
 		print(std::ostream&  out) const
 		{
-			out << "search_node id:" << get_id() << " g: "<<g_
-				<<" f: "<<this->get_f()
+			out << "search_node id:" << get_id() << " g: "<<g_ / (double)warthog::ONE
+				<<" f: "<<this->get_f() / (double)warthog::ONE
 				<< " expanded: " << get_expanded() << " " 
 				<< " pdir: "<< get_pdir() << " ";
 		}
@@ -223,8 +222,8 @@ class search_node
 
 	private:
 		uint32_t id_and_status_; // bit 0 is expansion status; 1-31 are id
-		double f_;
-		double g_;
+		warthog::cost_t f_;
+		warthog::cost_t g_;
 		warthog::search_node* parent_;
 		uint32_t priority_; // expansion priority
 		uint32_t searchid_;

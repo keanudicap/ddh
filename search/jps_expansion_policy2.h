@@ -50,7 +50,7 @@ class jps_expansion_policy2
 		expand(warthog::search_node*, warthog::problem_instance*);
 
 		inline void
-		first(warthog::search_node*& ret, double& cost)
+		first(warthog::search_node*& ret, warthog::cost_t& cost)
 		{
 			which_ = 0;
 			ret = neighbours_[which_];
@@ -65,14 +65,14 @@ class jps_expansion_policy2
 		}
 
 		inline void
-		n(warthog::search_node*& ret, double& cost)
+		n(warthog::search_node*& ret, warthog::cost_t& cost)
 		{
 			ret = neighbours_[which_];
 			cost = costs_[which_];
 		}
 
 		inline void
-		next(warthog::search_node*& ret, double& cost)
+		next(warthog::search_node*& ret, warthog::cost_t& cost)
 		{
 			if(which_ < num_neighbours_)
 			{
@@ -100,58 +100,15 @@ class jps_expansion_policy2
 		offline_jump_point_locator* jpl_;
 		uint32_t which_;
 		uint32_t num_neighbours_;
-		//warthog::search_node* neighbours_[9];
-		//double costs_[9];
 		std::vector<warthog::search_node*> neighbours_;
-		std::vector<double> costs_;
+		std::vector<warthog::cost_t> costs_;
 		std::vector<uint32_t> jp_ids_;
-
-		// computes the direction of travel; from a node n1
-		// to a node n2.
-		inline warthog::jps::direction
-		compute_direction(warthog::search_node* n1, warthog::search_node* n2)
-		{
-			if(n1 == 0) { return warthog::jps::NONE; }
-
-			uint32_t x, y, x2, y2;
-			warthog::helpers::index_to_xy(n1->get_id(), map_->width(), x, y);
-			warthog::helpers::index_to_xy(n2->get_id(), map_->width(), x2, y2);
-			warthog::jps::direction dir = warthog::jps::NONE;
-			if(y2 == y)
-			{
-				if(x2 > x)
-					dir = warthog::jps::EAST;
-				else
-					dir = warthog::jps::WEST;
-			}
-			else if(y2 < y)
-			{
-				if(x2 == x)
-					dir = warthog::jps::NORTH;
-				else if(x2 < x)
-					dir = warthog::jps::NORTHWEST;
-				else // x2 > x
-					dir = warthog::jps::NORTHEAST;
-			}
-			else // y2 > y 
-			{
-				if(x2 == x)
-					dir = warthog::jps::SOUTH;
-				else if(x2 < x)
-					dir = warthog::jps::SOUTHWEST;
-				else // x2 > x
-					dir = warthog::jps::SOUTHEAST;
-			}
-			assert(dir != warthog::jps::NONE);
-			return dir;
-		}
 
 		inline void
 		reset()
 		{
 			which_ = 0;
 			num_neighbours_ = 0;
-			//neighbours_[0] = 0;
 			neighbours_.clear();
 			costs_.clear();
 			jp_ids_.clear();

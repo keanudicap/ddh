@@ -60,7 +60,7 @@ warthog::jps_expansion_policy2::expand(
 		if(mynode->get_searchid() != searchid) { mynode->reset(searchid); }
 
 		// stupid hack
-		if((current->get_g() + costs_.at(i)) < (mynode->get_g() + warthog::EPSILON))
+		if((current->get_g() + costs_.at(i)) < mynode->get_g())
 		{
 			mynode->set_pdir(pdir);
 		}

@@ -59,7 +59,7 @@ class jps_expansion_policy
 		expand(warthog::search_node*, warthog::problem_instance*);
 
 		inline void
-		first(warthog::search_node*& ret, double& cost)
+		first(warthog::search_node*& ret, warthog::cost_t& cost)
 		{
 			which_ = 0;
 			ret = neighbours_[which_];
@@ -74,14 +74,14 @@ class jps_expansion_policy
 		}
 
 		inline void
-		n(warthog::search_node*& ret, double& cost)
+		n(warthog::search_node*& ret, warthog::cost_t& cost)
 		{
 			ret = neighbours_[which_];
 			cost = costs_[which_];
 		}
 
 		inline void
-		next(warthog::search_node*& ret, double& cost)
+		next(warthog::search_node*& ret, warthog::cost_t& cost)
 		{
 			if(which_ < num_neighbours_)
 			{
@@ -110,7 +110,7 @@ class jps_expansion_policy
 		uint32_t which_;
 		uint32_t num_neighbours_;
 		warthog::search_node* neighbours_[9];
-		double costs_[9];
+		warthog::cost_t costs_[9];
 
 		// computes the direction of travel; from a node n1
 		// to a node n2.

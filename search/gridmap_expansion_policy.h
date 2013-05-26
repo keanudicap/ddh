@@ -59,7 +59,7 @@ class gridmap_expansion_policy
 		// fetches the first neighbour of (cx_, cy_). 
 		// also resets the current neigbour iterator
 		inline void
-		first(warthog::search_node*& n, double& cost)
+		first(warthog::search_node*& n, warthog::cost_t& cost)
 		{
 			which_ = 0;
 			n = neis_[which_];
@@ -70,7 +70,7 @@ class gridmap_expansion_policy
 		// being expanded. 
 		// ::end is returned if all neighbours have been processed.
 		inline void
-		n(warthog::search_node*& n, double& cost)
+		n(warthog::search_node*& n, warthog::cost_t& cost)
 		{
 			n = neis_[which_];
 			cost = costs_[which_];
@@ -80,7 +80,7 @@ class gridmap_expansion_policy
 		// @return the node id of the next neighbour of (cx_, cy_)
 		// ::end() is returned if there is no next neighbour
 		inline void
-		next(warthog::search_node*& n, double& cost)
+		next(warthog::search_node*& n, warthog::cost_t& cost)
 		{
 			if(which_ < num_neis_) { which_++; }
 			n = neis_[which_];
@@ -119,7 +119,7 @@ class gridmap_expansion_policy
 
 		// 3x3 square of tiles + one terminal element
 		warthog::search_node* neis_[10]; 
-		double costs_[10];
+		warthog::cost_t costs_[10];
 		uint32_t which_; // current neighbour
 		uint32_t num_neis_; // might have < 9 (some could be blocked)
 };
