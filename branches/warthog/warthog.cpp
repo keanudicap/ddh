@@ -44,23 +44,40 @@ check_optimality(double len, warthog::experiment* exp)
 		return;
 	}
 
-	std::stringstream strpathlen;
-	strpathlen << std::fixed << std::setprecision(exp->precision());
-	strpathlen << len;
+	uint32_t precision = 2;
+	int epsilon = (warthog::ONE / (int)pow(10, precision)) / 2;
 
-	std::stringstream stroptlen;
-	stroptlen << std::fixed << std::setprecision(exp->precision());
-	stroptlen << exp->distance();
+	warthog::cost_t int_len = len * warthog::ONE;
+	warthog::cost_t int_opt = exp->distance() * warthog::ONE;
 
-	if(stroptlen.str().compare(strpathlen.str()))
+	for(int i = 10; i <= pow(10, precision); i = i*10)
 	{
-		std::cerr << std::setprecision(6);
+		int last_digit = int_len % i;
+		if(last_digit >= (i/2))
+		{
+			int_len += (i - last_digit);
+		}
+	}
+
+	int delta = abs(int_len - int_opt);
+	if( abs(delta - epsilon) > epsilon)
+	{
+		std::stringstream strpathlen;
+		strpathlen << std::fixed << std::setprecision(exp->precision());
+		strpathlen << len*warthog::ONE;
+
+		std::stringstream stroptlen;
+		stroptlen << std::fixed << std::setprecision(exp->precision());
+		stroptlen << exp->distance() * warthog::ONE;
+
+		std::cerr << std::setprecision(exp->precision());
 		std::cerr << "optimality check failed!" << std::endl;
 		std::cerr << std::endl;
 		std::cerr << "optimal path length: "<<stroptlen.str()
 			<<" computed length: ";
 		std::cerr << strpathlen.str()<<std::endl;
-		std::cerr << "precision: " << exp->precision()<<std::endl;
+		std::cerr << "precision: " << precision << " epsilon: "<<epsilon<<std::endl;
+		std::cerr<< "delta: "<< delta << std::endl;
 		exit(1);
 	}
 }

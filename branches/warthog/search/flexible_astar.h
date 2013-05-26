@@ -73,7 +73,7 @@ class flexible_astar
 		get_length(uint32_t startid, uint32_t goalid)
 		{
 			warthog::search_node* goal = search(startid, goalid);
-			double len = warthog::INF;
+			warthog::cost_t len = warthog::INF;
 			if(goal)
 			{
 				assert(goal->get_id() == goalid);
@@ -106,7 +106,7 @@ class flexible_astar
 			}
 #endif
 			cleanup();
-			return len;
+			return len / (double)warthog::ONE;
 		}
 
 		inline size_t
@@ -226,7 +226,7 @@ class flexible_astar
 				expander_->expand(current, &instance);
 
 				warthog::search_node* n = 0;
-				double cost_to_n = warthog::INF;
+				warthog::cost_t cost_to_n = warthog::INF;
 				for(expander_->first(n, cost_to_n); 
 						n != 0;
 					   	expander_->next(n, cost_to_n))
@@ -241,7 +241,7 @@ class flexible_astar
 					if(open_->contains(n))
 					{
 						// update a node from the fringe
-						double gval = current->get_g() + cost_to_n;
+						warthog::cost_t gval = current->get_g() + cost_to_n;
 						if(gval < n->get_g())
 						{
 							n->relax(gval, current);
@@ -276,7 +276,7 @@ class flexible_astar
 					else
 					{
 						// add a new node to the fringe
-						double gval = current->get_g() + cost_to_n;
+						warthog::cost_t gval = current->get_g() + cost_to_n;
 						n->set_g(gval);
 						n->set_f(gval + heuristic_->h(n->get_id(), goalid));
 					   	n->set_parent(current);

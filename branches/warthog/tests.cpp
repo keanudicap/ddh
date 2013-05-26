@@ -231,7 +231,7 @@ void gridmap_expansion_policy_test()
 		unsigned int mapwidth = map.width();
 		policy.expand(policy.generate(nodeid[i]), 0);
 		warthog::search_node* n = 0;
-		double cost_to_n = warthog::INF;
+		warthog::cost_t cost_to_n = warthog::INF;
 		for(policy.first(n, cost_to_n);
 				n != 0;
 				policy.next(n, cost_to_n))

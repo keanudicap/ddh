@@ -30,9 +30,9 @@ class octile_heuristic
 			double dy = abs(y-y2);
 			if(dx < dy)
 			{
-				return dx * warthog::ROOT_TWO + (dy - dx);
+				return dx * warthog::ROOT_TWO + (dy - dx) * warthog::ONE;
 			}
-			return dy * warthog::ROOT_TWO + (dx - dy);
+			return dy * warthog::ROOT_TWO + (dx - dy) * warthog::ONE;
 		}
 
 		inline double
