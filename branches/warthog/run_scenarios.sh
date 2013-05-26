@@ -29,9 +29,9 @@ else
 fi
 
 for ((x=1;x<=$runs;x++)) ; do
-	for i in `ls $1`;
+	for i in `ls $1/*.map.scen`;
 	do
-			sfile=$1/$i
+			sfile=$i
 			echo $sfile
 			./bin/warthog --scen $sfile $2 
 

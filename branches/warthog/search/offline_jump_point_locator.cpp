@@ -80,10 +80,6 @@ warthog::offline_jump_point_locator::preproc()
 				//}
 
 				db_[mapid*8 + i] |= num_steps;
-				if(mapid > 1103230 && db_[1103230*8 + 2] != 10)
-				{
-					std::cout << "wtf?!?!" <<std::endl;
-				}
 
 				if(num_steps > 32768)
 				{
@@ -95,7 +91,6 @@ warthog::offline_jump_point_locator::preproc()
 		}
 	}
 
-	assert(db_[1103230*8 + 2] == 10);
 	save(map_->filename());
 }
 
@@ -120,11 +115,6 @@ warthog::offline_jump_point_locator::load(const char* filename)
 	db_ = new uint16_t[dbsize_];
 	fread(db_, sizeof(uint16_t), dbsize_, f);
 	fclose(f);
-	assert(db_[1103230*8 + 2] == 10);
-	if(db_[1103230*8 + 2] != 10)
-	{
-		std::cout << "wtf?!?!" <<std::endl;
-	}
 	return true;
 }
 

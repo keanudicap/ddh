@@ -44,7 +44,7 @@ check_optimality(double len, warthog::experiment* exp)
 		return;
 	}
 
-	uint32_t precision = 2;
+	uint32_t precision = 1;
 	int epsilon = (warthog::ONE / (int)pow(10, precision)) / 2;
 
 	warthog::cost_t int_len = len * warthog::ONE;
