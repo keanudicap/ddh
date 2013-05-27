@@ -191,13 +191,13 @@ warthog::offline_jump_point_locator::jump_northwest(uint32_t node_id,
 	// points reachable by a vertical or horizontal jump from
 	// each intermediate location that we reach diagonally.
 	uint32_t jump_from = node_id;
+	
+	// step diagonally to an intermediate location jump_from
+	label = db_[8*jump_from + 5];
+	num_steps += label & 32767;
+	jump_from = node_id - num_steps * diag_step_delta;
 	while(!(label & 32768))
 	{
-		// step diagonally to an intermediate location jump_from
-		label = db_[8*jump_from + 5];
-		num_steps += label & 32767;
-		jump_from = node_id - num_steps * diag_step_delta;
-
 		// north of jump_from
 		uint16_t label_straight1 = db_[8*jump_from]; 
 		if(!(label_straight1 & 32768)) 
@@ -218,6 +218,9 @@ warthog::offline_jump_point_locator::jump_northwest(uint32_t node_id,
 			neighbours.push_back(jp_id);
 			costs.push_back(jp_cost * warthog::ONE + num_steps * warthog::ROOT_TWO);
 		}
+		label = db_[8*jump_from + 5];
+		num_steps += label & 32767;
+		jump_from = node_id - num_steps * diag_step_delta;
 	}
 
 	// goal test (so many div ops! and branches! how ugly!)
@@ -258,12 +261,12 @@ warthog::offline_jump_point_locator::jump_northeast(uint32_t node_id,
 	uint32_t diag_step_delta = (mapw - 1);
 	
 	uint32_t jump_from = node_id;
+	// step diagonally to an intermediate location jump_from
+	label = db_[8*jump_from + 4];
+	num_steps += label & 32767;
+	jump_from = node_id - num_steps * diag_step_delta;
 	while(!(label & 32768))
 	{
-		// step diagonally to an intermediate location jump_from
-		label = db_[8*jump_from + 4];
-		num_steps += label & 32767;
-		jump_from = node_id - num_steps * diag_step_delta;
 
 		// north of jump_from
 		uint16_t label_straight1 = db_[8*jump_from]; 
@@ -285,6 +288,9 @@ warthog::offline_jump_point_locator::jump_northeast(uint32_t node_id,
 			neighbours.push_back(jp_id);
 			costs.push_back(jp_cost * warthog::ONE + num_steps * warthog::ROOT_TWO);
 		}
+		label = db_[8*jump_from + 4];
+		num_steps += label & 32767;
+		jump_from = node_id - num_steps * diag_step_delta;
 	}
 
 	// goal test (so many div ops! and branches! how ugly!)
@@ -325,13 +331,12 @@ warthog::offline_jump_point_locator::jump_southwest(uint32_t node_id,
 	label = num_steps = 0;
 
 	uint32_t jump_from = node_id;
+	// step diagonally to an intermediate location jump_from
+	label = db_[8*jump_from + 7];
+	num_steps += label & 32767;
+	jump_from = node_id + num_steps * diag_step_delta;
 	while(!(label & 32768))
 	{
-		// step diagonally to an intermediate location jump_from
-		label = db_[8*jump_from + 7];
-		num_steps += label & 32767;
-		jump_from = node_id + num_steps * diag_step_delta;
-
 		// south of jump_from
 		uint16_t label_straight1 = db_[8*jump_from+1]; 
 		if(!(label_straight1 & 32768)) 
@@ -352,6 +357,9 @@ warthog::offline_jump_point_locator::jump_southwest(uint32_t node_id,
 			neighbours.push_back(jp_id);
 			costs.push_back(jp_cost * warthog::ONE + num_steps * warthog::ROOT_TWO);
 		}
+		label = db_[8*jump_from + 7];
+		num_steps += label & 32767;
+		jump_from = node_id + num_steps * diag_step_delta;
 	}
 
 	// goal test (so many div ops! and branches! how ugly!)
@@ -393,13 +401,13 @@ warthog::offline_jump_point_locator::jump_southeast(uint32_t node_id,
 	uint32_t diag_step_delta = (mapw + 1);
 	
 	uint32_t jump_from = node_id;
+	
+	// step diagonally to an intermediate location jump_from
+	label = db_[8*jump_from + 6];
+	num_steps += label & 32767;
+	jump_from = node_id + num_steps * diag_step_delta;
 	while(!(label & 32768))
 	{
-		// step diagonally to an intermediate location jump_from
-		label = db_[8*jump_from + 6];
-		num_steps += label & 32767;
-		jump_from = node_id + num_steps * diag_step_delta;
-
 		// south of jump_from
 		uint16_t label_straight1 = db_[8*jump_from + 1]; 
 		if(!(label_straight1 & 32768)) 
@@ -420,6 +428,10 @@ warthog::offline_jump_point_locator::jump_southeast(uint32_t node_id,
 			neighbours.push_back(jp_id);
 			costs.push_back(jp_cost * warthog::ONE + num_steps * warthog::ROOT_TWO);
 		}
+		// step diagonally to an intermediate location jump_from
+		label = db_[8*jump_from + 6];
+		num_steps += label & 32767;
+		jump_from = node_id + num_steps * diag_step_delta;
 	}
 
 	// goal test (so many div ops! and branches! how ugly!)
