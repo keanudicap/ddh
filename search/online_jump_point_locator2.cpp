@@ -322,10 +322,23 @@ warthog::online_jump_point_locator2::jump_northeast(
 	warthog::cost_t jumpcost, jp1_cost, jp2_cost, cost_to_nodeid;
 	jumpnode_id = jp1_id = jp2_id = 0;
 	jumpcost = jp1_cost = jp2_cost = cost_to_nodeid = 0;
+
+	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
+	// from the grid. node_id at centre. Assume little endian format.
+	uint32_t neis;
+	map_->get_neighbours(node_id, (uint8_t*)&neis);
+
+	// early return if the first diagonal step is invalid
+	// (validity of subsequent steps is checked by straight jump functions)
+	if((neis & 1542) != 1542) { return; }
+
+	uint32_t rnode_id = map_id_to_rmap_id(node_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	while(node_id != warthog::INF)
 	{
-		__jump_northeast(node_id, goal_id, jumpnode_id, jumpcost, 
-				jp1_id, jp1_cost, jp2_id, jp2_cost);
+		__jump_northeast(node_id, rnode_id, goal_id, rgoal_id, 
+				jumpnode_id, jumpcost, jp1_id, jp1_cost, 
+				jp2_id, jp2_cost);
 
 		if(jp1_id != warthog::INF)
 		{
@@ -333,6 +346,7 @@ warthog::online_jump_point_locator2::jump_northeast(
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::NORTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
+			if(jp2_cost == 0) { break; } // no corner cutting
 		}
 
 		if(jp2_id != warthog::INF)
@@ -340,6 +354,7 @@ warthog::online_jump_point_locator2::jump_northeast(
 			*(((uint8_t*)&jp2_id)+3) = warthog::jps::EAST;
 			jpoints.push_back(jp2_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp2_cost);
+			if(jp1_cost == 0) { break; } // no corner cutting
 		}
 		node_id = jumpnode_id;
 		cost_to_nodeid += jumpcost;
@@ -348,54 +363,38 @@ warthog::online_jump_point_locator2::jump_northeast(
 
 void
 warthog::online_jump_point_locator2::__jump_northeast(
-		uint32_t node_id, uint32_t goal_id, 
+		uint32_t& node_id, uint32_t& rnode_id, 
+		uint32_t goal_id, uint32_t rgoal_id,
 		uint32_t& jumpnode_id, warthog::cost_t& jumpcost, 
 		uint32_t& jp_id1, warthog::cost_t& cost1,
 		uint32_t& jp_id2, warthog::cost_t& cost2)
 {
 	uint32_t num_steps = 0;
 
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
-	uint32_t next_id = node_id;
-	uint32_t mapw = map_->width();
-
-	// early return if the first diagonal step is invalid
-	// (validity of subsequent steps is checked by straight jump functions)
-	uint32_t neis;
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 1542) != 1542) 
-	{ 
-		jumpnode_id = jp_id1 = jp_id2 = warthog::INF;
-	   	jumpcost=0;
-	   	return; 
-	}
-
 	// jump a single step at a time (no corner cutting)
-	uint32_t rnext_id = map_id_to_rmap_id(next_id);
-	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	uint32_t rmapw = rmap_->width();
+	uint32_t mapw = map_->width();
 	while(true)
 	{
 		num_steps++;
-		next_id = next_id - mapw + 1;
-		rnext_id = rnext_id + rmapw + 1;
+		node_id = node_id - mapw + 1;
+		rnode_id = rnode_id + rmapw + 1;
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		__jump_north(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
-		__jump_east(next_id, goal_id, jp_id2, cost2, map_);
+		__jump_north(rnode_id, rgoal_id, jp_id1, cost1, rmap_);
+		__jump_east(node_id, goal_id, jp_id2, cost2, map_);
 		if((jp_id1 & jp_id2) != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) 
 		{ 
-			next_id = jp_id1 = jp_id2 = warthog::INF; 
+			node_id = jp_id1 = jp_id2 = warthog::INF; 
 			break; 
 		}
 
 	}
-	jumpnode_id = next_id;
+	jumpnode_id = node_id;
 	jumpcost = num_steps*warthog::ROOT_TWO;
 }
 
@@ -409,10 +408,23 @@ warthog::online_jump_point_locator2::jump_northwest(
 	warthog::cost_t jumpcost, jp1_cost, jp2_cost, cost_to_nodeid;
 	jumpnode_id = jp1_id = jp2_id = 0;
 	jumpcost = jp1_cost = jp2_cost = cost_to_nodeid = 0;
+
+	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
+	// from the grid. node_id at centre. Assume little endian format.
+	uint32_t neis;
+	map_->get_neighbours(node_id, (uint8_t*)&neis);
+
+	// early return if the first diagonal step is invalid
+	// (validity of subsequent steps is checked by straight jump functions)
+	if((neis & 771) != 771) { return; }
+
+	uint32_t rnode_id = map_id_to_rmap_id(node_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	while(node_id != warthog::INF)
 	{
-		__jump_northwest(node_id, goal_id, jumpnode_id, jumpcost, 
-				jp1_id, jp1_cost, jp2_id, jp2_cost);
+		__jump_northwest(node_id, rnode_id, goal_id, rgoal_id, 
+				jumpnode_id, jumpcost, jp1_id, jp1_cost, 
+				jp2_id, jp2_cost);
 
 		if(jp1_id != warthog::INF)
 		{
@@ -420,6 +432,7 @@ warthog::online_jump_point_locator2::jump_northwest(
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::NORTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
+			if(jp2_cost == 0) { break; } // no corner cutting
 		}
 
 		if(jp2_id != warthog::INF)
@@ -427,6 +440,7 @@ warthog::online_jump_point_locator2::jump_northwest(
 			*(((uint8_t*)&jp2_id)+3) = warthog::jps::WEST;
 			jpoints.push_back(jp2_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp2_cost);
+			if(jp1_cost == 0) { break; } // no corner cutting
 		}
 		node_id = jumpnode_id;
 		cost_to_nodeid += jumpcost;
@@ -435,7 +449,8 @@ warthog::online_jump_point_locator2::jump_northwest(
 
 void
 warthog::online_jump_point_locator2::__jump_northwest(
-		uint32_t node_id, uint32_t goal_id, 
+		uint32_t& node_id, uint32_t& rnode_id, 
+		uint32_t goal_id, uint32_t rgoal_id,
 		uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 		uint32_t& jp_id1, warthog::cost_t& cost1, 
 		uint32_t& jp_id2, warthog::cost_t& cost2)
@@ -443,44 +458,29 @@ warthog::online_jump_point_locator2::__jump_northwest(
 {
 	uint32_t num_steps = 0;
 
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
-	uint32_t next_id = node_id;
-	uint32_t mapw = map_->width();
-
-	// early termination (invalid first step)
-	uint32_t neis;
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 771) != 771) 
-	{ 
-		jumpnode_id = jp_id1 = jp_id2 = warthog::INF; 
-		jumpcost = cost1 = cost2 = 0; return; 
-	}
-
 	// jump a single step at a time (no corner cutting)
-	uint32_t rnext_id = map_id_to_rmap_id(next_id);
-	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	uint32_t rmapw = rmap_->width();
+	uint32_t mapw = map_->width();
 	while(true)
 	{
 		num_steps++;
-		next_id = next_id - mapw - 1;
-		rnext_id = rnext_id - (rmapw - 1);
+		node_id = node_id - mapw - 1;
+		rnode_id = rnode_id - (rmapw - 1);
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		__jump_north(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
-		__jump_west(next_id, goal_id, jp_id2, cost2, map_);
+		__jump_north(rnode_id, rgoal_id, jp_id1, cost1, rmap_);
+		__jump_west(node_id, goal_id, jp_id2, cost2, map_);
 		if((jp_id1 & jp_id2) != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) 
 		{ 
-			next_id = jp_id1 = jp_id2 = warthog::INF;
+			node_id = jp_id1 = jp_id2 = warthog::INF;
 		   	break; 
 		}
 	}
-	jumpnode_id = next_id;
+	jumpnode_id = node_id;
 	jumpcost = num_steps*warthog::ROOT_TWO;
 }
 
@@ -494,10 +494,23 @@ warthog::online_jump_point_locator2::jump_southeast(
 	warthog::cost_t jumpcost, jp1_cost, jp2_cost, cost_to_nodeid;
 	jumpnode_id = jp1_id = jp2_id = 0;
 	jumpcost = jp1_cost = jp2_cost = cost_to_nodeid = 0;
+
+	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
+	// from the grid. next_id at centre. Assume little endian format.
+	uint32_t neis;
+	map_->get_neighbours(node_id, (uint8_t*)&neis);
+	
+	// early return if the first diagonal step is invalid
+	// (validity of subsequent steps is checked by straight jump functions)
+	if((neis & 394752) != 394752) { return; }
+
+	uint32_t rnode_id = map_id_to_rmap_id(node_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	while(node_id != warthog::INF)
 	{
-		__jump_southeast(node_id, goal_id, jumpnode_id, jumpcost, 
-				jp1_id, jp1_cost, jp2_id, jp2_cost);
+		__jump_southeast(node_id, rnode_id, goal_id, rgoal_id, 
+				jumpnode_id, jumpcost, jp1_id, jp1_cost, 
+				jp2_id, jp2_cost);
 
 		if(jp1_id != warthog::INF)
 		{
@@ -505,6 +518,7 @@ warthog::online_jump_point_locator2::jump_southeast(
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::SOUTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
+			if(jp2_cost == 0) { break; } // no corner cutting
 		}
 
 		if(jp2_id != warthog::INF)
@@ -512,6 +526,7 @@ warthog::online_jump_point_locator2::jump_southeast(
 			*(((uint8_t*)&jp2_id)+3) = warthog::jps::EAST;
 			jpoints.push_back(jp2_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp2_cost);
+			if(jp1_cost == 0) { break; } // no corner cutting
 		}
 		node_id = jumpnode_id;
 		cost_to_nodeid += jumpcost;
@@ -520,7 +535,8 @@ warthog::online_jump_point_locator2::jump_southeast(
 
 void
 warthog::online_jump_point_locator2::__jump_southeast(
-		uint32_t node_id, uint32_t goal_id, 
+		uint32_t& node_id, uint32_t& rnode_id, 
+		uint32_t goal_id, uint32_t rgoal_id,
 		uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 		uint32_t& jp_id1, warthog::cost_t& cost1, 
 		uint32_t& jp_id2, warthog::cost_t& cost2)
@@ -528,46 +544,29 @@ warthog::online_jump_point_locator2::__jump_southeast(
 {
 	uint32_t num_steps = 0;
 
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
-	uint32_t next_id = node_id;
-	uint32_t mapw = map_->width();
-	
-	// early return if the first diagonal step is invalid
-	// (validity of subsequent steps is checked by straight jump functions)
-	uint32_t neis;
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 394752) != 394752) 
-	{ 
-		jumpnode_id = jp_id1 = jp_id2 = warthog::INF; 
-		jumpcost = cost1 = cost2 = 0;
-	   	return; 
-	}
-
 	// jump a single step at a time (no corner cutting)
-	uint32_t rnext_id = map_id_to_rmap_id(next_id);
-	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	uint32_t rmapw = rmap_->width();
+	uint32_t mapw = map_->width();
 	while(true)
 	{
 		num_steps++;
-		next_id = next_id + mapw + 1;
-		rnext_id = rnext_id + rmapw - 1;
+		node_id = node_id + mapw + 1;
+		rnode_id = rnode_id + rmapw - 1;
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		__jump_south(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
-		__jump_east(next_id, goal_id, jp_id2, cost2, map_);
+		__jump_south(rnode_id, rgoal_id, jp_id1, cost1, rmap_);
+		__jump_east(node_id, goal_id, jp_id2, cost2, map_);
 		if((jp_id1 & jp_id2) != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) 
 		{ 
-			next_id = jp_id1 = jp_id2 = warthog::INF; 
+			node_id = jp_id1 = jp_id2 = warthog::INF; 
 			break; 
 		}
 	}
-	jumpnode_id = next_id;
+	jumpnode_id = node_id;
 	jumpcost = num_steps*warthog::ROOT_TWO;
 }
 
@@ -581,9 +580,21 @@ warthog::online_jump_point_locator2::jump_southwest(
 	warthog::cost_t jumpcost, jp1_cost, jp2_cost, cost_to_nodeid;
 	jumpnode_id = jp1_id = jp2_id = 0;
 	jumpcost = jp1_cost = jp2_cost = cost_to_nodeid = 0;
+	
+	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
+	// from the grid. next_id at centre. Assume little endian format.
+	uint32_t neis;
+	map_->get_neighbours(node_id, (uint8_t*)&neis);
+
+	// early termination (first step is invalid)
+	if((neis & 197376) != 197376) { return; }
+
+	uint32_t rnode_id = map_id_to_rmap_id(node_id);
+	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
 	while(node_id != warthog::INF)
 	{
-		__jump_southwest(node_id, goal_id, jumpnode_id, jumpcost, 
+		__jump_southwest(node_id, rnode_id, goal_id, rgoal_id,
+				jumpnode_id, jumpcost, 
 				jp1_id, jp1_cost, jp2_id, jp2_cost);
 
 		if(jp1_id != warthog::INF)
@@ -592,6 +603,7 @@ warthog::online_jump_point_locator2::jump_southwest(
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::SOUTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
+			if(jp2_cost == 0) { break; }
 		}
 
 		if(jp2_id != warthog::INF)
@@ -599,6 +611,7 @@ warthog::online_jump_point_locator2::jump_southwest(
 			*(((uint8_t*)&jp2_id)+3) = warthog::jps::WEST;
 			jpoints.push_back(jp2_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp2_cost);
+			if(jp1_cost == 0) { break; }
 		}
 		node_id = jumpnode_id;
 		cost_to_nodeid += jumpcost;
@@ -607,51 +620,35 @@ warthog::online_jump_point_locator2::jump_southwest(
 
 void
 warthog::online_jump_point_locator2::__jump_southwest(
-		uint32_t node_id, uint32_t goal_id,
+		uint32_t& node_id, uint32_t& rnode_id, 
+		uint32_t goal_id, uint32_t rgoal_id,
 		uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 		uint32_t& jp_id1, warthog::cost_t& cost1, 
 		uint32_t& jp_id2, warthog::cost_t& cost2)
 {
-	uint32_t num_steps = 0;
-
-	// first 3 bits of first 3 bytes represent a 3x3 cell of tiles
-	// from the grid. next_id at centre. Assume little endian format.
-	uint32_t neis;
-	uint32_t next_id = node_id;
-	uint32_t mapw = map_->width();
-
-	// early termination (first step is invalid)
-	map_->get_neighbours(next_id, (uint8_t*)&neis);
-	if((neis & 197376) != 197376) 
-	{ 
-		jumpnode_id = jp_id1 = jp_id2 = warthog::INF;
-	   	jumpcost = cost1 = cost2 = 0;;
-	   	return; 
-	}
-
 	// jump a single step (no corner cutting)
-	uint32_t rnext_id = map_id_to_rmap_id(next_id);
-	uint32_t rgoal_id = map_id_to_rmap_id(goal_id);
+	uint32_t num_steps = 0;
+	uint32_t mapw = map_->width();
 	uint32_t rmapw = rmap_->width();
 	while(true)
 	{
 		num_steps++;
-		next_id = next_id + mapw - 1;
-		rnext_id = rnext_id - (rmapw + 1);
+		node_id = node_id + mapw - 1;
+		rnode_id = rnode_id - (rmapw + 1);
 
 		// recurse straight before stepping again diagonally;
 		// (ensures we do not miss any optimal turning points)
-		__jump_south(rnext_id, rgoal_id, jp_id1, cost1, rmap_);
-		__jump_west(next_id, goal_id, jp_id2, cost2, map_);
+		__jump_south(rnode_id, rgoal_id, jp_id1, cost1, rmap_);
+		__jump_west(node_id, goal_id, jp_id2, cost2, map_);
 		if((jp_id1 & jp_id2) != warthog::INF) { break; }
 
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) 
 		{ 
-			next_id = jp_id1 = jp_id2 = warthog::INF;
+			node_id = jp_id1 = jp_id2 = warthog::INF;
 		   	break; 
 		}
 	}
-	jumpnode_id = next_id;
+	jumpnode_id = node_id;
 	jumpcost = num_steps*warthog::ROOT_TWO;
 }
