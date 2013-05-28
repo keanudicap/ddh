@@ -95,22 +95,30 @@ class online_jump_point_locator2
 		// the intermediate diagonal jump point and the straight 
 		// jump points that caused the jumping process to stop
 		void
-		__jump_northeast(uint32_t node_id, uint32_t goal_id, 
+		__jump_northeast(
+				uint32_t& node_id, uint32_t& rnode_id, 
+				uint32_t goal_id, uint32_t rgoal_id,
 				uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 				uint32_t& jp1_id, warthog::cost_t& jp1_cost,
 				uint32_t& jp2_id, warthog::cost_t& jp2_cost);
 		void
-		__jump_northwest(uint32_t node_id, uint32_t goal_id, 
+		__jump_northwest(
+				uint32_t& node_id, uint32_t& rnode_id, 
+				uint32_t goal_id, uint32_t rgoal_id,
 				uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 				uint32_t& jp1_id, warthog::cost_t& jp1_cost,
 				uint32_t& jp2_id, warthog::cost_t& jp2_cost);
 		void
-		__jump_southeast(uint32_t node_id, uint32_t goal_id, 
+		__jump_southeast(
+				uint32_t& node_id, uint32_t& rnode_id, 
+				uint32_t goal_id, uint32_t rgoal_id,
 				uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 				uint32_t& jp1_id, warthog::cost_t& jp1_cost,
 				uint32_t& jp2_id, warthog::cost_t& jp2_cost);
 		void
-		__jump_southwest(uint32_t node_id, uint32_t goal_id, 
+		__jump_southwest(
+				uint32_t& node_id, uint32_t& rnode_id, 
+				uint32_t goal_id, uint32_t rgoal_id,
 				uint32_t& jumpnode_id, warthog::cost_t& jumpcost,
 				uint32_t& jp1_id, warthog::cost_t& jp1_cost,
 				uint32_t& jp2_id, warthog::cost_t& jp2_cost);
