@@ -94,13 +94,13 @@ warthog::online_jump_point_locator2::jump_north(uint32_t node_id,
 	uint32_t jumpnode_id;
 	warthog::cost_t jumpcost;
 
-	node_id = this->map_id_to_rmap_id(node_id);
-	goal_id = this->map_id_to_rmap_id(goal_id);
-	__jump_north(node_id, goal_id, jumpnode_id, jumpcost, rmap_);
+	uint32_t rnode_id = this->map_id_to_rmap_id(node_id);
+	uint32_t rgoal_id = this->map_id_to_rmap_id(goal_id);
+	__jump_north(rnode_id, rgoal_id, jumpnode_id, jumpcost, rmap_);
 
 	if(jumpnode_id != warthog::INF)
 	{
-		jumpnode_id = this->rmap_id_to_map_id(jumpnode_id);
+		jumpnode_id = node_id - (jumpcost / warthog::ONE) * map_->width();
 		*(((uint8_t*)&jumpnode_id)+3) = warthog::jps::NORTH;
 		jpoints.push_back(jumpnode_id);
 		costs.push_back(jumpcost);
@@ -126,13 +126,13 @@ warthog::online_jump_point_locator2::jump_south(uint32_t node_id,
 	uint32_t jumpnode_id;
 	warthog::cost_t jumpcost;
 
-	node_id = this->map_id_to_rmap_id(node_id);
-	goal_id = this->map_id_to_rmap_id(goal_id);
-	__jump_south(node_id, goal_id, jumpnode_id, jumpcost, rmap_);
+	uint32_t rnode_id = this->map_id_to_rmap_id(node_id);
+	uint32_t rgoal_id = this->map_id_to_rmap_id(goal_id);
+	__jump_south(rnode_id, rgoal_id, jumpnode_id, jumpcost, rmap_);
 
 	if(jumpnode_id != warthog::INF)
 	{
-		jumpnode_id = this->rmap_id_to_map_id(jumpnode_id);
+		jumpnode_id = node_id + (jumpcost / warthog::ONE) * map_->width();
 		*(((uint8_t*)&jumpnode_id)+3) = warthog::jps::SOUTH;
 		jpoints.push_back(jumpnode_id);
 		costs.push_back(jumpcost);
@@ -342,7 +342,7 @@ warthog::online_jump_point_locator2::jump_northeast(
 
 		if(jp1_id != warthog::INF)
 		{
-			jp1_id = rmap_id_to_map_id(jp1_id);
+			jp1_id = node_id - (jp1_cost / warthog::ONE) * map_->width();
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::NORTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
@@ -428,7 +428,7 @@ warthog::online_jump_point_locator2::jump_northwest(
 
 		if(jp1_id != warthog::INF)
 		{
-			jp1_id = rmap_id_to_map_id(jp1_id);
+			jp1_id = node_id - (jp1_cost / warthog::ONE) * map_->width();
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::NORTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
@@ -514,7 +514,7 @@ warthog::online_jump_point_locator2::jump_southeast(
 
 		if(jp1_id != warthog::INF)
 		{
-			jp1_id = rmap_id_to_map_id(jp1_id);
+			jp1_id = node_id + (jp1_cost / warthog::ONE) * map_->width();
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::SOUTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
@@ -599,7 +599,7 @@ warthog::online_jump_point_locator2::jump_southwest(
 
 		if(jp1_id != warthog::INF)
 		{
-			jp1_id = rmap_id_to_map_id(jp1_id);
+			jp1_id = node_id + (jp1_cost / warthog::ONE) * map_->width();
 			*(((uint8_t*)&jp1_id)+3) = warthog::jps::SOUTH;
 			jpoints.push_back(jp1_id);
 			costs.push_back(cost_to_nodeid + jumpcost + jp1_cost);
