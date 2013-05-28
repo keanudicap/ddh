@@ -39,35 +39,35 @@ class online_jump_point_locator2
 
 	private:
 		void
-		jump_north(uint32_t node_id, uint32_t goal_id, 
+		jump_north(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_south(uint32_t node_id, uint32_t goal_id, 
+		jump_south(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_east(uint32_t node_id, uint32_t goal_id, 
+		jump_east(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_west(uint32_t node_id, uint32_t goal_id, 
+		jump_west(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_northeast(uint32_t node_id, uint32_t goal_id, 
+		jump_northeast(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_northwest(uint32_t node_id, uint32_t goal_id, 
+		jump_northwest(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_southeast(uint32_t node_id, uint32_t goal_id, 
+		jump_southeast(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 		void
-		jump_southwest(uint32_t node_id, uint32_t goal_id, 
+		jump_southwest(
 				std::vector<uint32_t>& jpoints, 
 				std::vector<warthog::cost_t>& costs);
 
@@ -157,6 +157,11 @@ class online_jump_point_locator2
 		warthog::gridmap* map_;
 		warthog::gridmap* rmap_;
 		uint32_t jumplimit_;
+
+		uint32_t current_goal_id_;
+		uint32_t current_rgoal_id_;
+		uint32_t current_node_id_;
+		uint32_t current_rnode_id_;
 };
 
 }
