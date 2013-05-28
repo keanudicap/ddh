@@ -46,7 +46,7 @@ warthog::jps2_expansion_policy::expand(
 		}
 	}
 
-	uint32_t searchid = problem->get_searchid();
+	//uint32_t searchid = problem->get_searchid();
 	uint32_t id_mask = (1 << 24)-1;
 	for(uint32_t i = 0; i < jp_ids_.size(); i++)
 	{
@@ -57,7 +57,7 @@ warthog::jps2_expansion_policy::expand(
 
 		warthog::search_node* mynode = nodepool_->generate(jp_id & id_mask);
 		neighbours_.push_back(mynode);
-		if(mynode->get_searchid() != searchid) { mynode->reset(searchid); }
+		//if(mynode->get_searchid() != searchid) { mynode->reset(searchid); }
 
 		// stupid hack
 		if((current->get_g() + costs_.at(i)) < mynode->get_g())
