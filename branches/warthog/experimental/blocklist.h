@@ -36,6 +36,12 @@ namespace blocklist_ns
 	static const uint32_t NBS_MASK = 63;
 }
 
+struct nodeblock
+{
+	uint64_t isallocated_;
+	warthog::search_node** nodes_;
+};
+
 class blocklist
 {
 	public:
@@ -56,7 +62,7 @@ class blocklist
 
 	private:
 		uint32_t num_blocks_;
-		warthog::search_node*** blocks_;
+		warthog::nodeblock* blocks_;
 		warthog::mem::cpool* blockspool_;
 		warthog::mem::cpool* pool_;
 };
