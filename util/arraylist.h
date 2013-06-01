@@ -4,9 +4,12 @@
 // arraylist.h
 //
 // A dumb but dynamically-sized array for both simple and complex types.
-// The array is initialised with an initial size. New objects are added 
-// to the end of the collection. When the number of elements exceeds 
-// the capacity of the array, its size increases by a factor of 2.
+// The array has an initial size that defaults to 100 elements. New elements are 
+// added to the end of the collection. When the number of elements exceeds 
+// the capacity of the array, its size increases according to the formula:
+// [new size] = [old size] * ::growth_factor_ + ::growth_additive_constant_.
+//
+// By default ::growth_factor_ = 2 and growth_additive_constant_ = 0.
 //
 // @author: dharabor
 // @created: 22/05/2013
@@ -17,13 +20,22 @@
 
 namespace warthog
 {
-	template <class T>
+	template <typename T>
 	class arraylist
 	{
 		public:
 			typedef T* iterator;
 
-			arraylist(size_t size=100) : max_size_(size), terminator_(0)
+			arraylist(size_t size, size_t gfactor, size_t gadd) 
+				: max_size_(size), terminator_(0), 
+				growth_factor_(gfactor), growth_additive_constant_(gadd)
+			{
+				collection_ = new T[max_size_];	
+				next_ = 0;
+			}
+
+			arraylist(size_t size=100) : max_size_(size), terminator_(0),
+				growth_factor_(2), growth_additive_constant_(0)
 			{
 				collection_ = new T[max_size_];	
 				next_ = 0;
@@ -56,7 +68,7 @@ namespace warthog
 				}
 				else
 				{
-					grow(size()*2);
+					grow(size()*growth_factor_ + growth_additive_constant_);
 					collection_[next_] = element;
 					next_++;
 				}
@@ -92,6 +104,9 @@ namespace warthog
 			size_t next_;
 			uint32_t max_size_;
 			const typename warthog::arraylist<T>::iterator terminator_;
+
+			uint32_t growth_factor_;
+			uint32_t growth_additive_constant_;
 
 			inline void 
 			grow(size_t newsize)
