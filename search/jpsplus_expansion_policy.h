@@ -1,9 +1,9 @@
-#ifndef WARTHOG_JPS_EXPANSION_POLICY2_H
-#define WARTHOG_JPS_EXPANSION_POLICY2_H
+#ifndef WARTHOG_JPSPLUS_EXPANSION_POLICY_H
+#define WARTHOG_JPSPLUS_EXPANSION_POLICY_H
 
-// jps_expansion_policy2.h
+// jpsplus_expansion_policy.h
 //
-// An experimental variation of warthog::jps_expansion_policy,
+// An experimental variation of warthog::jpsplus_expansion_policy,
 // this version is designed for efficient offline jps.
 //
 // @author: dharabor
@@ -22,11 +22,12 @@
 namespace warthog
 {
 
-class jps_expansion_policy2 
+class jps_record;
+class jpsplus_expansion_policy 
 {
 	public:
-		jps_expansion_policy2(warthog::gridmap* map);
-		~jps_expansion_policy2();
+		jpsplus_expansion_policy(warthog::gridmap* map);
+		~jpsplus_expansion_policy();
 
 		// create a warthog::search_node object from a state description
 		// (in this case, an id)
@@ -82,17 +83,35 @@ class jps_expansion_policy2
 			cost = costs_[which_];
 		}
 
-		inline uint32_t
-		mem()
-		{
-			return sizeof(*this) + map_->mem() + nodepool_->mem() + jpl_->mem();
-		}
-
 		uint32_t 
 		mapwidth()
 		{
 			return map_->width();
 		}
+
+		void
+		to_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
+		{
+			map_->to_unpadded_xy(padded_id, x, y);
+		}
+
+		inline bool
+		get_verbose() { return verbose_; }
+
+		void
+		set_verbose(bool verbose) 
+		{ 
+			verbose_ = verbose;
+		   	jpl_->set_verbose(verbose);
+		} 
+
+		inline uint32_t
+		mem()
+		{
+			return sizeof(*this) + map_->mem() + nodepool_->mem() + 
+				jpl_->mem();
+		}
+
 
 	private:
 		warthog::gridmap* map_;
@@ -102,7 +121,11 @@ class jps_expansion_policy2
 		uint32_t num_neighbours_;
 		std::vector<warthog::search_node*> neighbours_;
 		std::vector<warthog::cost_t> costs_;
-		std::vector<uint32_t> jp_ids_;
+
+		warthog::jps_record* start_node_;
+		warthog::jps_record* goal_node_;
+		uint32_t search_id_;
+		bool verbose_;
 
 		inline void
 		reset()
@@ -111,7 +134,6 @@ class jps_expansion_policy2
 			num_neighbours_ = 0;
 			neighbours_.clear();
 			costs_.clear();
-			jp_ids_.clear();
 		}
 
 };

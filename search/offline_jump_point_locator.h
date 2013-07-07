@@ -10,10 +10,17 @@
 // @created: 05/05/2013
 //
 
+#include "arraylist.h"
 #include "jps.h"
+#include "jps_record.h"
+#include "undirected_jump_point_locator.h"
+
+#include <ext/hash_map>
 
 namespace warthog
 {
+
+typedef __gnu_cxx::hash_map<uint32_t, warthog::jps_record*>::iterator jps_iter;
 
 class gridmap;
 class offline_jump_point_locator
@@ -22,21 +29,34 @@ class offline_jump_point_locator
 		offline_jump_point_locator(warthog::gridmap* map);
 		~offline_jump_point_locator();
 
+		warthog::arraylist<warthog::jps_label> const *
+		jump(warthog::jps::direction d, uint32_t node_id, uint32_t goal_id);
+
 		void
-		jump(warthog::jps::direction d, uint32_t node_id, uint32_t goalid, 
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
+		insert(warthog::jps_record* start_node, 
+				warthog::jps_record* goal_node);
+
+		void
+		undo_prior_insertions();
+
+		inline bool
+		get_verbose() { return verbose_; }
+
+		inline void
+		set_verbose(bool verbose) { verbose_ = verbose; std::cerr << "new verbose: "<<verbose_ << std::endl;  } 
 
 		uint32_t
-		mem()
-		{
-			return sizeof(this) + sizeof(*db_)*dbsize_;
-		}
-
+		mem();
 
 	private:
+		void
+		preproc_identify();
 
 		void
-		preproc();
+		preproc_build_graph();
+
+		void
+		init_jpmap();
 
 		bool
 		load(const char* filename);
@@ -45,33 +65,30 @@ class offline_jump_point_locator
 		save(const char* filename);
 
 		void
-		jump_northwest(uint32_t node_id, uint32_t goal_id, 
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
+		scan_up(warthog::jps_record* source, bool forward_labels);
+
 		void
-		jump_northeast(uint32_t node_id, uint32_t goal_id, 
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
+		scan_down(warthog::jps_record* source, bool forward_labels);
+
 		void
-		jump_southwest(uint32_t node_id, uint32_t goal_id, 
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
+		scan_left(warthog::jps_record* source, bool forward_labels);
+
 		void
-		jump_southeast(uint32_t node_id, uint32_t goal_id, 
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
+		scan_right(warthog::jps_record* source, bool forward_labels);
+
 		void
-		jump_north(uint32_t node_id, uint32_t goal_id, warthog::cost_t cost_to_node_id,
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
-		void
-		jump_south(uint32_t node_id, uint32_t goal_id, warthog::cost_t cost_to_node_id,
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
-		void
-		jump_east(uint32_t node_id, uint32_t goal_id, warthog::cost_t cost_to_node_id,
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
-		void
-		jump_west(uint32_t node_id, uint32_t goal_id, warthog::cost_t cost_to_node_id,
-				std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs);
+		insert_nongoal(warthog::jps_record* source, warthog::jps_record* goal);
 
 		warthog::gridmap* map_;
-		uint32_t dbsize_;
-		uint16_t* db_;	
+		warthog::gridmap* jpmap_;
+		warthog::undirected_jump_point_locator* jpl_;
+		__gnu_cxx::hash_map<uint32_t, warthog::jps_record*> graph_;
+		warthog::arraylist<warthog::arraylist<warthog::jps_label>*>* modified_lists_;
+
+		warthog::jps_record* start_;
+		warthog::jps_record* goal_;
+		warthog::jps_record* shadow_goal_;
+		bool verbose_;
 };
 
 }
