@@ -53,6 +53,7 @@ warthog::jps2_expansion_policy::expand(
 		// bits 0-23 store the id of the jump point
 		// bits 24-31 store the direction to the parent
 		uint32_t jp_id = jp_ids_.at(i);
+		if(jp_id == warthog::INF) { continue; }
 		warthog::jps::direction pdir = (warthog::jps::direction)*(((uint8_t*)(&jp_id))+3);
 
 		warthog::search_node* mynode = nodepool_->generate(jp_id & id_mask);
