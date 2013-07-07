@@ -42,21 +42,15 @@ namespace warthog
 			}
 
 			~arraylist()
-			{
-				delete [] collection_;
-			}
+			{ delete [] collection_; }
 
-			inline T
-			at(uint32_t index)
-			{
-				return collection_[index];
-			}
+			inline T 
+			at(uint32_t index) const
+			{ return collection_[index]; }
 
-			inline T
-			operator[](uint32_t index)
-			{
-				return collection_[index];
-			}
+		//	inline T
+		//	operator[](uint32_t index) 
+		//	{ return collection_[index]; }
 
 			inline void
 			push_back(T element)
@@ -85,18 +79,15 @@ namespace warthog
 
 			inline void
 			clear() 
-			{
-				next_ = 0;
-			}
+			{ next_ = 0; }
 
 			inline size_t
-			size()
-			{
-				return next_;
-			}
+			size() const
+			{ return next_; } 
 
 			size_t
-			mem() { return sizeof(T)*max_size_;}
+			mem() const 
+			{ return sizeof(T)*max_size_;}
 
 
 		private:
