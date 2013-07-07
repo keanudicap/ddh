@@ -23,6 +23,12 @@ namespace warthog
 namespace jps
 {
 
+// sometimes we bitpack into a 4-byte quantity the id of a 
+// jump point together with the direction of travel used 
+// to reach it. this mask is used to extract the id from 
+// the lower 3 bytes of the 4-byte quantity.
+const uint32_t id_mask = ~(UINT8_MAX << 24);
+
 typedef enum
 {
 	NONE = 0,
@@ -69,6 +75,9 @@ compute_successors(warthog::jps::direction d, uint32_t tiles)
 	return warthog::jps::compute_forced(d, tiles) |
 	   	warthog::jps::compute_natural(d, tiles);
 }
+
+warthog::jps::direction
+opposite_direction(warthog::jps::direction dir);
 
 }
 }

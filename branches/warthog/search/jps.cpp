@@ -148,3 +148,38 @@ warthog::jps::compute_natural(warthog::jps::direction d, uint32_t tiles)
 	return ret;
 }
 
+warthog::jps::direction
+warthog::jps::opposite_direction(warthog::jps::direction dir)
+{
+	warthog::jps::direction opposite_dir;
+	switch(dir)
+	{
+		case warthog::jps::NORTH:
+			opposite_dir = warthog::jps::SOUTH;
+			break;
+		case warthog::jps::SOUTH:
+			opposite_dir = warthog::jps::NORTH;
+			break;
+		case warthog::jps::EAST:
+			opposite_dir = warthog::jps::WEST;
+			break;
+		case warthog::jps::WEST:
+			opposite_dir = warthog::jps::EAST;
+			break;
+		case warthog::jps::NORTHEAST:
+			opposite_dir = warthog::jps::SOUTHWEST;
+			break;
+		case warthog::jps::NORTHWEST:
+			opposite_dir = warthog::jps::SOUTHEAST;
+			break;
+		case warthog::jps::SOUTHEAST:
+			opposite_dir = warthog::jps::NORTHWEST;
+			break;
+		case warthog::jps::SOUTHWEST:
+			opposite_dir = warthog::jps::NORTHEAST;
+			break;
+		default:
+			break;
+	}
+	return opposite_dir;
+}
