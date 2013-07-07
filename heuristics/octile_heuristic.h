@@ -18,13 +18,13 @@ namespace warthog
 class octile_heuristic
 {
 	public:
-		octile_heuristic(unsigned int mapwidth, unsigned int mapheight) 
+		octile_heuristic(uint32_t mapwidth, uint32_t mapheight) 
 	    	: mapwidth_(mapwidth), mapheight_(mapheight) { }
 		~octile_heuristic() { }
 
 		inline double
-		h(unsigned int x, unsigned int y, 
-				unsigned int x2, unsigned int y2)
+		h(uint32_t x, uint32_t y, 
+				uint32_t x2, uint32_t y2)
 		{
 			double dx = abs(x-x2);
 			double dy = abs(y-y2);
@@ -36,18 +36,40 @@ class octile_heuristic
 		}
 
 		inline double
-		h(unsigned int id, unsigned int id2)
+		h(uint32_t id, uint32_t id2)
 		{
-			unsigned int x, x2;
-			unsigned int y, y2;
+			uint32_t x, x2;
+			uint32_t y, y2;
 			warthog::helpers::index_to_xy(id, mapwidth_, x, y);
 			warthog::helpers::index_to_xy(id2,mapwidth_, x2, y2);
 			return this->h(x, y, x2, y2);
 		}
 
+		inline void
+		hsteps(uint32_t id, uint32_t id2, uint32_t& ssteps, uint32_t& dsteps)
+		{
+			uint32_t x, x2;
+			uint32_t y, y2;
+			warthog::helpers::index_to_xy(id, mapwidth_, x, y);
+			warthog::helpers::index_to_xy(id2,mapwidth_, x2, y2);
+
+			double dx = abs(x-x2);
+			double dy = abs(y-y2);
+			if(dx < dy)
+			{
+				dsteps = dx;
+				ssteps = (dy - dx);
+			}
+			else
+			{
+				dsteps = dy;
+				ssteps = dx - dy;
+			}
+		}
+
 	private:
-		unsigned int mapwidth_;
-		unsigned int mapheight_;
+		uint32_t mapwidth_;
+		uint32_t mapheight_;
 };
 
 }
