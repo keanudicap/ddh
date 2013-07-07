@@ -197,8 +197,7 @@ class flexible_astar
 					{
 						uint32_t x, y;
 						warthog::search_node* current = open_->peek();
-						y = (current->get_id() / expander_->mapwidth())-2;
-						x = current->get_id() % expander_->mapwidth();
+						expander_->to_xy(current->get_id(), x, y);
 						std::cerr << "goal found ("<<x<<", "<<y<<")...";
 						current->print(std::cerr);
 						std::cerr << std::endl;
@@ -214,8 +213,7 @@ class flexible_astar
 				if(verbose_)
 				{
 					uint32_t x, y;
-					y = (current->get_id() / expander_->mapwidth())-2;
-					x = current->get_id() % expander_->mapwidth();
+					expander_->to_xy(current->get_id(), x, y);
 					std::cerr << "expanding ("<<x<<", "<<y<<")...";
 					current->print(std::cerr);
 					std::cerr << std::endl;
@@ -250,8 +248,7 @@ class flexible_astar
 							if(verbose_)
 							{
 								uint32_t x, y;
-								y = (n->get_id() / expander_->mapwidth())-2;
-								x = n->get_id() % expander_->mapwidth();
+								expander_->to_xy(n->get_id(), x, y);
 								std::cerr << "  updating ("<<x<<", "<<y<<")...";
 								n->print(std::cerr);
 								std::cerr << std::endl;
@@ -264,8 +261,7 @@ class flexible_astar
 							if(verbose_)
 							{
 								uint32_t x, y;
-								y = (n->get_id() / expander_->mapwidth())-2;
-								x = n->get_id() % expander_->mapwidth();
+								expander_->to_xy(n->get_id(), x, y);
 								std::cerr << "  updating ("<<x<<", "<<y<<")...";
 								n->print(std::cerr);
 								std::cerr << std::endl;
@@ -285,8 +281,7 @@ class flexible_astar
 						if(verbose_)
 						{
 							uint32_t x, y;
-							y = (n->get_id() / expander_->mapwidth())-2;
-							x = n->get_id() % expander_->mapwidth();
+							expander_->to_xy(n->get_id(), x, y);
 							std::cerr << "  generating ("<<x<<", "<<y<<")...";
 							n->print(std::cerr);
 							std::cerr << std::endl;
@@ -299,8 +294,7 @@ class flexible_astar
 				if(verbose_)
 				{
 					uint32_t x, y;
-					y = (current->get_id() / expander_->mapwidth())-2;
-					x = current->get_id() % expander_->mapwidth();
+					expander_->to_xy(current->get_id(), x, y);
 					std::cerr <<"closing ("<<x<<", "<<y<<")...";
 					current->print(std::cerr);
 					std::cerr << std::endl;
