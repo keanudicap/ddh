@@ -112,7 +112,7 @@ warthog::online_jump_point_locator2::jump_north(
 
 	__jump_north(rnode_id, rgoal_id, jumpnode_id, jumpcost, rmap_);
 
-	if(jumpnode_id != warthog::INF)
+	if(jumpnode_id != warthog::INF) 
 	{
 		jumpnode_id = current_node_id_ - (jumpcost / warthog::ONE) * map_->width();
 		*(((uint8_t*)&jumpnode_id)+3) = warthog::jps::NORTH;
@@ -188,10 +188,8 @@ warthog::online_jump_point_locator2::__jump_east(uint32_t node_id,
 		uint32_t goal_id, uint32_t& jumpnode_id, warthog::cost_t& jumpcost, 
 		warthog::gridmap* mymap)
 {
-	jumpnode_id = node_id;
-
-	uint32_t neis[3] = {0, 0, 0};
 	bool deadend = false;
+	uint32_t neis[3] = {0, 0, 0};
 
 	jumpnode_id = node_id;
 	while(true)
@@ -408,11 +406,18 @@ warthog::online_jump_point_locator2::__jump_northeast(
 		// couldn't move in either straight dir; node_id is an obstacle
 		if(!(cost1 && cost2)) 
 		{ 
+			//std::cout << "hit an obstacle during NE jump" << std::endl;
+			//std::cout << "jp_id1 "<<jp_id1 << " cost1 "<<cost1<<std::endl;
+			//std::cout << "jp_id2 "<<jp_id2 << " cost2 "<<cost2<<std::endl;
 			node_id = jp_id1 = jp_id2 = warthog::INF; 
 			break; 
 		}
 
 	}
+	//if(node_id == warthog::INF)
+	//{
+	//	std::cout << "deadend reached during NE jump after "<<num_steps << " steps " << std::endl;
+	//}
 	jumpnode_id = node_id;
 	jumpcost = num_steps*warthog::ROOT_TWO;
 }
