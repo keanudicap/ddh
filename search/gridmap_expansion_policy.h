@@ -112,6 +112,12 @@ class gridmap_expansion_policy
 		{
 			return map_->width();
 		}
+
+		void
+		to_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
+		{
+			map_->to_unpadded_xy(padded_id, x, y);
+		}
 	
 	private:
 		warthog::gridmap* map_;
