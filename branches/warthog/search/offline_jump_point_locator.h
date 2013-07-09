@@ -12,15 +12,12 @@
 
 #include "arraylist.h"
 #include "jps.h"
+#include "jps_graph.h"
 #include "jps_record.h"
 #include "undirected_jump_point_locator.h"
 
-#include <ext/hash_map>
-
 namespace warthog
 {
-
-typedef __gnu_cxx::hash_map<uint32_t, warthog::jps_record*>::iterator jps_iter;
 
 class gridmap;
 class offline_jump_point_locator
@@ -65,16 +62,16 @@ class offline_jump_point_locator
 		save(const char* filename);
 
 		void
-		scan_up(warthog::jps_record* source, bool forward_labels);
+		scan_up(warthog::jps_record* source);
 
 		void
-		scan_down(warthog::jps_record* source, bool forward_labels);
+		scan_down(warthog::jps_record* source);
 
 		void
-		scan_left(warthog::jps_record* source, bool forward_labels);
+		scan_left(warthog::jps_record* source);
 
 		void
-		scan_right(warthog::jps_record* source, bool forward_labels);
+		scan_right(warthog::jps_record* source);
 
 		void
 		insert_nongoal(warthog::jps_record* source, warthog::jps_record* goal);
@@ -82,7 +79,7 @@ class offline_jump_point_locator
 		warthog::gridmap* map_;
 		warthog::gridmap* jpmap_;
 		warthog::undirected_jump_point_locator* jpl_;
-		__gnu_cxx::hash_map<uint32_t, warthog::jps_record*> graph_;
+		warthog::jps_graph* graph_;
 		warthog::arraylist<warthog::arraylist<warthog::jps_label>*>* modified_lists_;
 
 		warthog::jps_record* start_;

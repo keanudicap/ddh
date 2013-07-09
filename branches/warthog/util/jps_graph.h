@@ -36,6 +36,7 @@ class jps_graph
 				assigned_[i] = 0;
 				blocks_[i] = 0;
 			}
+			size_ = 0;
 		}
 
 		~jps_graph()
@@ -46,7 +47,7 @@ class jps_graph
 				for(uint32_t j = 0; j < blocksize_; j++)
 				{
 					uint64_t mask = (uint64_t)1 << j;
-					if(assigned_[i] & mask);
+					if(assigned_[i] & mask)
 					{
 						delete blocks_[i][j];
 					}
@@ -179,14 +180,18 @@ class jps_graph
 			return total_mem;
 		}
 
+		inline size_t
+		size() { return size_; }
+
 	private:
 		uint32_t blocksize_;
 		uint32_t log2_blocksize_;
-
 		uint64_t blockmask_;
 		uint64_t* assigned_;
 		uint32_t num_blocks_;
 		warthog::jps_record*** blocks_;
+
+		size_t size_;
 
 };
 

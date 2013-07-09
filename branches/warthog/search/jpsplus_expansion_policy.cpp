@@ -20,6 +20,7 @@ warthog::jpsplus_expansion_policy::jpsplus_expansion_policy(warthog::gridmap* ma
 
 warthog::jpsplus_expansion_policy::~jpsplus_expansion_policy()
 {
+	jpl_->undo_prior_insertions();
 	delete jpl_;
 	delete nodepool_;
 	delete start_node_;

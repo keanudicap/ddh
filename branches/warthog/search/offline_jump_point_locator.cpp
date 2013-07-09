@@ -28,12 +28,14 @@ warthog::offline_jump_point_locator::offline_jump_point_locator(
 		exit(1);
 	}
 
+
 	// try to load a preprocessed database;
 	// if no such database can be found, we create a new one.
+	graph_ = new warthog::jps_graph(map_->height() * map_->width());
 	if(!load(map_->filename()))
 	{
 		preproc_identify();
-		std::cout << "graph size: "<<graph_.size() << " jp nodes.\n";
+		std::cout << "graph size: "<<graph_->size() << " jp nodes.\n";
 		preproc_build_graph();
 		save(map_->filename());
 	}
@@ -43,14 +45,8 @@ warthog::offline_jump_point_locator::offline_jump_point_locator(
 warthog::offline_jump_point_locator::~offline_jump_point_locator()
 {
 	undo_prior_insertions();
-	for(__gnu_cxx::hash_map<uint32_t, warthog::jps_record*>::iterator it = graph_.begin();
-		it != graph_.end(); it++)
-	{
-		warthog::jps_record* tmp = (*it).second;
-		delete tmp;
-	}
-	graph_.clear();
 
+	delete graph_;
 	delete jpl_;
 	delete modified_lists_;
 	delete jpmap_;
@@ -66,12 +62,12 @@ warthog::offline_jump_point_locator::init_jpmap()
 		{
 			uint32_t mapid = jpmap_->to_padded_id(x, y);
 			bool label = 0;
-			if(graph_.find(mapid) != graph_.end())
+			if(graph_->find(mapid))
 			{
 				label = 1;
+				assert(mapid == graph_->find(mapid)->get_id());
 			}
 			jpmap_->set_label(mapid, label);
-			assert(label == (graph_.find(mapid) != graph_.end()));
 		}
 	}
 }
@@ -80,11 +76,11 @@ void
 warthog::offline_jump_point_locator::preproc_build_graph()
 {
 	// generate all successors of every jump point in the graph
-	for(__gnu_cxx::hash_map<uint32_t, warthog::jps_record*>::iterator it = graph_.begin();
-		it != graph_.end(); it++)
+	for(uint32_t index = 0; index < map_->width() * map_->height(); index++)
 	{
-		warthog::jps_record* tmp = (*it).second;
-	//	warthog::jps_record* tmp = (*graph_.find(916523)).second;
+		warthog::jps_record* tmp = graph_->find(index);
+		if(tmp == 0) { continue; }
+	//	warthog::jps_record* tmp = (*graph_->find(916523)).second;
 	//	uint32_t x, y;
 	//	map_->to_unpadded_xy(tmp->get_id(), x, y);
 	//	std::cerr << "node: "<<tmp->get_id() << " ("<< x << ", "<<y<<")"<<std::endl;
@@ -105,7 +101,7 @@ warthog::offline_jump_point_locator::preproc_build_graph()
 				//	<< "gpdir: "<<dir<<" pdir: "<< labels->at(i).get_dir() <<std::endl;
 				
 				uint32_t succ_id = labels->at(j).get_id();
-				if(graph_.find(succ_id) == graph_.end())
+				if(graph_->find(succ_id) == 0)
 				{
 					std::cerr << "err. fatal. trying to connect a node to a successor that "
 						"doesn't exist in the preprocessed graph.\n";
@@ -156,13 +152,11 @@ warthog::offline_jump_point_locator::preproc_identify()
 				if(labels.size() == 0) { continue; }
 				
 				uint32_t jumpnode_id = labels.at(0).get_id();
-				if(graph_.find(jumpnode_id) == graph_.end())
+				if(graph_->find(jumpnode_id) == 0)
 				{
 					jps_record* tmp = new jps_record(jumpnode_id);
-					graph_.insert(
-							std::pair<uint32_t, 
-							warthog::jps_record*>(jumpnode_id, tmp));
-					assert(graph_.find(jumpnode_id) != graph_.end());
+					graph_->insert(tmp);
+					assert(graph_->find(jumpnode_id));
 					//std::cout << "jumpnode: "<<jumpnode_id << " added " << std::endl;
 				}
 			}
@@ -230,7 +224,7 @@ warthog::offline_jump_point_locator::load(const char* filename)
 				}
 			}
 		}
-		graph_.insert(std::pair<uint32_t, warthog::jps_record*>(id, tmp));
+		graph_->insert(tmp);
 	}
 
 	if(ferror(f))
@@ -242,7 +236,7 @@ warthog::offline_jump_point_locator::load(const char* filename)
 #ifndef NDEBUG
 	if(verbose_)
 	{
-		std::cerr << "load graph; size: "<<graph_.size()<<std::endl;
+		std::cerr << "load graph; size: "<<graph_->size()<<std::endl;
 		std::cerr << "verbose: "<<verbose_<<std::endl;
 	}
 #endif
@@ -267,10 +261,11 @@ warthog::offline_jump_point_locator::save(const char* filename)
 		return;
 	}
 
-	for(__gnu_cxx::hash_map<uint32_t, warthog::jps_record*>::iterator it = graph_.begin();
-			it != graph_.end(); it++)
+	for(uint32_t index = 0; index < map_->width() * map_->height(); index++)
 	{
-		warthog::jps_record* record = (*it).second;
+		warthog::jps_record* record = graph_->find(index);
+		if(record == 0) { continue; }
+
 		uint32_t jp_id = record->get_id();
 		fwrite(&jp_id, sizeof(jp_id), 1, f);
 
@@ -310,16 +305,16 @@ warthog::offline_jump_point_locator::save(const char* filename)
 	}
 
 	fclose(f);
-	std::cerr << "jump-point graph (n="<<graph_.size()<<") saved to disk. file="<<fname<<std::endl;
+	std::cerr << "jump-point graph (n="<<graph_->size()<<") saved to disk. file="<<fname<<std::endl;
 }
 
 warthog::arraylist<warthog::jps_label> const *
 warthog::offline_jump_point_locator::jump(
 		warthog::jps::direction d, uint32_t node_id, uint32_t goal_id)
 {
-	jps_iter it = graph_.find(node_id);	
-	assert(it != graph_.end());
-	return (*it).second->get_list(d);
+	warthog::jps_record* record = graph_->find(node_id);	
+	assert(record);
+	return record->get_list(d);
 }
 
 void
@@ -327,18 +322,18 @@ warthog::offline_jump_point_locator::undo_prior_insertions()
 {
 	if(start_)
 	{
-		graph_.erase(start_->get_id());
+		graph_->remove(start_->get_id());
 		start_ = 0;
 	}
 	if(goal_)
 	{
 		if(shadow_goal_)
 		{
-			graph_[goal_->get_id()] = shadow_goal_;
+			graph_->insert(shadow_goal_);
 		}
 		else
 		{
-			graph_.erase(goal_->get_id());
+			graph_->remove(goal_->get_id());
 		}
 	}
 
@@ -364,10 +359,8 @@ warthog::offline_jump_point_locator::insert(
 	bool connect_goal = false;
 	if(jpmap_->get_label(start_node->get_id()) == 0)
 	{
-		assert(graph_.find(start_node->get_id()) == graph_.end());
-		graph_.insert(
-				std::pair<uint32_t, warthog::jps_record*>(
-					start_node->get_id(), start_node));
+		assert(graph_->find(start_node->get_id()) == 0);
+		graph_->insert(start_node);
 		start_ = start_node;
 		connect_start = true;
 	}
@@ -377,18 +370,16 @@ warthog::offline_jump_point_locator::insert(
 	// it may not be a jump point in every direction. 
 	if(jpmap_->get_label(goal_node->get_id()) == 0)
 	{
-		assert(graph_.find(goal_node->get_id()) == graph_.end());
-		graph_.insert(
-				std::pair<uint32_t, warthog::jps_record*>(
-					goal_node->get_id(), goal_node));
+		assert(graph_->find(goal_node->get_id()) == 0);
+		graph_->insert(goal_node);
 		goal_ = goal_node;
 		connect_goal = true;
 	}
 	else
 	{
-		assert(graph_.find(start_node->get_id()) != graph_.end());
-		shadow_goal_ = graph_[goal_node->get_id()];
-		graph_[goal_node->get_id()] = goal_node;
+		assert(graph_->find(start_node->get_id()));
+		shadow_goal_ = graph_->find(goal_node->get_id());
+		graph_->insert(goal_node);
 		goal_ = goal_node;
 		connect_goal = true;
 	}
@@ -399,10 +390,10 @@ warthog::offline_jump_point_locator::insert(
 	}
 	if(connect_goal)
 	{
-		scan_right(goal_node, false);
-		scan_left(goal_node, false);
-		scan_up(goal_node, false);
-		scan_down(goal_node, false);
+		scan_right(goal_node);
+		scan_left(goal_node);
+		scan_up(goal_node);
+		scan_down(goal_node);
 	}
 }
 
@@ -410,23 +401,16 @@ uint32_t
 warthog::offline_jump_point_locator::mem()
 {
 	uint32_t total_mem = sizeof(this);
-	for(jps_iter iter = graph_.begin(); iter != graph_.end(); iter++)
-	{
-		jps_record* tmp = (*iter).second;
-		total_mem += tmp->mem();
-	}
 	total_mem += sizeof(void*) * modified_lists_->size();
+	total_mem += graph_->mem();
 	return total_mem;
 }
 
 // scans grid nodes to the left of @param source in order to identify which jump points
 // the node needs to be connected to.
 void
-warthog::offline_jump_point_locator::scan_left(
-		warthog::jps_record* source, bool forward_labels)
+warthog::offline_jump_point_locator::scan_left(warthog::jps_record* source)
 {
-	warthog::jps_iter end = graph_.end();
-
 	uint32_t source_id = source->get_id();
 	uint32_t node_id = source_id;
 	uint32_t ssteps, dsteps;
@@ -446,23 +430,13 @@ warthog::offline_jump_point_locator::scan_left(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHWEST;
-					labels = source->get_list(warthog::jps::NORTHWEST);
-				}
-				else
-				{
-					label.dir_id_ = source_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHEAST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::SOUTHEAST);
-					modified_lists_->push_back(labels);
-				}
+				label.dir_id_ = source_id;
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHEAST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::SOUTHEAST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -481,23 +455,13 @@ warthog::offline_jump_point_locator::scan_left(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHWEST;
-					labels = source->get_list(warthog::jps::SOUTHWEST);
-				}
-				else
-				{
-					label.dir_id_ = source_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHEAST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::NORTHEAST);
-					modified_lists_->push_back(labels);
-				}
+				label.dir_id_ = source_id;
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHEAST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::NORTHEAST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -508,27 +472,16 @@ warthog::offline_jump_point_locator::scan_left(
 		// scan west
 		if(jpmap_->get_label(node_id))
 		{
-			warthog::jps_iter it = graph_.find(node_id);
 			uint32_t forced_neis = 0;
 			warthog::arraylist<warthog::jps_label>* labels = 0;
 
 			warthog::jps_label label;
-			if(forward_labels)
-			{
-				label.dir_id_ = node_id;
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::WEST;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::WEST, neis);
-				labels = source->get_list(warthog::jps::WEST);
-			}
-			else
-			{
-				label.dir_id_ = source_id;
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::EAST;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::EAST, neis);
-				warthog::jps_record* jp_node = (*it).second;
-				labels = jp_node->get_list(warthog::jps::EAST);
-				modified_lists_->push_back(labels);
-			}
+			label.dir_id_ = source_id;
+			*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::EAST;
+			forced_neis = warthog::jps::compute_forced(warthog::jps::EAST, neis);
+			warthog::jps_record* jp_node = graph_->find(node_id);
+			labels = jp_node->get_list(warthog::jps::EAST);
+			modified_lists_->push_back(labels);
 			label.ssteps_ = ssteps;
 			label.dsteps_ = 0;
 			labels->push_back(label);
@@ -543,11 +496,8 @@ warthog::offline_jump_point_locator::scan_left(
 }
 
 void
-warthog::offline_jump_point_locator::scan_right(
-		warthog::jps_record* source, bool forward_labels)
+warthog::offline_jump_point_locator::scan_right(warthog::jps_record* source)
 {
-	warthog::jps_iter end = graph_.end();
-
 	uint32_t source_id = source->get_id();
 	uint32_t node_id = source_id;
 	uint32_t ssteps, dsteps;
@@ -567,24 +517,13 @@ warthog::offline_jump_point_locator::scan_right(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
-
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHEAST;
-					labels = source->get_list(warthog::jps::NORTHEAST);
-				}
-				else
-				{
-					label.dir_id_ = source_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHWEST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::SOUTHWEST);
-					modified_lists_->push_back(labels);
-				}
+				label.dir_id_ = source_id;
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHWEST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::SOUTHWEST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -603,24 +542,13 @@ warthog::offline_jump_point_locator::scan_right(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHEAST;
-					labels = source->get_list(warthog::jps::SOUTHEAST);
-				}
-				else
-				{
-					label.dir_id_ = source_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHWEST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::NORTHWEST);
-					modified_lists_->push_back(labels);
-				}
-
+				label.dir_id_ = source_id;
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHWEST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::NORTHWEST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -631,28 +559,16 @@ warthog::offline_jump_point_locator::scan_right(
 		// scan east
 		if(jpmap_->get_label(node_id))
 		{
-			warthog::jps_iter it = graph_.find(node_id);
 			uint32_t forced_neis = 0;
 			warthog::arraylist<warthog::jps_label>* labels = 0;
 
 			warthog::jps_label label;
-			if(forward_labels)
-			{
-				label.dir_id_ = node_id;
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::EAST;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::EAST, neis);
-				labels = source->get_list(warthog::jps::EAST);
-
-			}
-			else
-			{
-				label.dir_id_ = source_id;
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::WEST;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::WEST, neis);
-				warthog::jps_record* jp_node = (*it).second;
-				labels = jp_node->get_list(warthog::jps::WEST);
-				modified_lists_->push_back(labels);
-			}
+			label.dir_id_ = source_id;
+			*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::WEST;
+			forced_neis = warthog::jps::compute_forced(warthog::jps::WEST, neis);
+			warthog::jps_record* jp_node = graph_->find(node_id);
+			labels = jp_node->get_list(warthog::jps::WEST);
+			modified_lists_->push_back(labels);
 			label.ssteps_ = ssteps;
 			label.dsteps_ = 0;
 			labels->push_back(label);
@@ -667,11 +583,8 @@ warthog::offline_jump_point_locator::scan_right(
 }
 
 void
-warthog::offline_jump_point_locator::scan_up(
-		warthog::jps_record* source, bool forward_labels)
+warthog::offline_jump_point_locator::scan_up(warthog::jps_record* source)
 {
-	warthog::jps_iter end = graph_.end();
-
 	uint32_t ssteps, dsteps, neis;
 	uint32_t source_id = source->get_id() - map_->width(); 
 	uint32_t node_id = source_id;
@@ -691,24 +604,13 @@ warthog::offline_jump_point_locator::scan_up(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
-
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHEAST;
-					labels = source->get_list(warthog::jps::NORTHEAST);
-				}
-				else
-				{
-					label.dir_id_ = source->get_id();
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHWEST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::SOUTHWEST);
-					modified_lists_->push_back(labels);
-				}
+				label.dir_id_ = source->get_id();
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHWEST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::SOUTHWEST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -727,23 +629,13 @@ warthog::offline_jump_point_locator::scan_up(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHWEST;
-					labels = source->get_list(warthog::jps::NORTHWEST);
-				}
-				else
-				{
-					label.dir_id_ = source->get_id();
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHEAST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::SOUTHEAST);
-					modified_lists_->push_back(labels);
-				}
+				label.dir_id_ = source->get_id();
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHEAST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::SOUTHEAST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -755,28 +647,16 @@ warthog::offline_jump_point_locator::scan_up(
 		// scan north
 		if(jpmap_->get_label(node_id))
 		{
-			warthog::jps_iter it = graph_.find(node_id);
 			uint32_t forced_neis = 0;
 			warthog::arraylist<warthog::jps_label>* labels = 0;
 
 			warthog::jps_label label;
-			if(forward_labels)
-			{
-				label.dir_id_ = node_id;
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTH;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::NORTH, neis);
-				labels = source->get_list(warthog::jps::NORTH);
-
-			}
-			else
-			{
-				label.dir_id_ = source->get_id();
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTH;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::SOUTH, neis);
-				warthog::jps_record* jp_node = (*it).second;
-				labels = jp_node->get_list(warthog::jps::SOUTH);
-				modified_lists_->push_back(labels);
-			}
+			label.dir_id_ = source->get_id();
+			*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTH;
+			forced_neis = warthog::jps::compute_forced(warthog::jps::SOUTH, neis);
+			warthog::jps_record* jp_node = graph_->find(node_id);
+			labels = jp_node->get_list(warthog::jps::SOUTH);
+			modified_lists_->push_back(labels);
 			label.ssteps_ = ssteps;
 			label.dsteps_ = 0;
 			labels->push_back(label);
@@ -792,11 +672,8 @@ warthog::offline_jump_point_locator::scan_up(
 }
 
 void
-warthog::offline_jump_point_locator::scan_down(
-		warthog::jps_record* source, bool forward_labels)
+warthog::offline_jump_point_locator::scan_down(warthog::jps_record* source)
 {
-	warthog::jps_iter end = graph_.end();
-
 	uint32_t ssteps, dsteps, neis;
 	uint32_t source_id = source->get_id() + map_->width(); 
 	uint32_t node_id = source_id;
@@ -816,23 +693,13 @@ warthog::offline_jump_point_locator::scan_down(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHWEST;
-					labels = source->get_list(warthog::jps::SOUTHWEST);
-				}
-				else
-				{
-					label.dir_id_ = source->get_id();
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHEAST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::NORTHEAST);
-					modified_lists_->push_back(labels);
-				}
+				label.dir_id_ = source->get_id();
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHEAST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::NORTHEAST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -851,24 +718,13 @@ warthog::offline_jump_point_locator::scan_down(
 
 			if(jpmap_->get_label(current_id))
 			{
-				warthog::jps_iter it = graph_.find(current_id);
 				warthog::arraylist<warthog::jps_label>* labels = 0;
 				warthog::jps_label label;
-				if(forward_labels)
-				{
-					label.dir_id_ = current_id;
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTHEAST;
-					labels = source->get_list(warthog::jps::SOUTHEAST);
-				}
-				else
-				{
-					label.dir_id_ = source->get_id();
-					*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHWEST;
-					warthog::jps_record* jp_node = (*it).second;
-					labels = jp_node->get_list(warthog::jps::NORTHWEST);
-					modified_lists_->push_back(labels);
-				}
-
+				label.dir_id_ = source->get_id();
+				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTHWEST;
+				warthog::jps_record* jp_node = graph_->find(current_id);
+				labels = jp_node->get_list(warthog::jps::NORTHWEST);
+				modified_lists_->push_back(labels);
 				label.ssteps_ = ssteps;
 				label.dsteps_ = dsteps;
 				labels->push_back(label);
@@ -879,28 +735,16 @@ warthog::offline_jump_point_locator::scan_down(
 		// scan south
 		if(jpmap_->get_label(node_id))
 		{
-			warthog::jps_iter it = graph_.find(node_id);
 			uint32_t forced_neis = 0;
 			warthog::arraylist<warthog::jps_label>* labels = 0;
 
 			warthog::jps_label label;
-			if(forward_labels)
-			{
-				label.dir_id_ = node_id;
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::SOUTH;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::SOUTH, neis);
-				labels = source->get_list(warthog::jps::SOUTH);
-
-			}
-			else
-			{
-				label.dir_id_ = source->get_id();
-				*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTH;
-				forced_neis = warthog::jps::compute_forced(warthog::jps::NORTH, neis);
-				warthog::jps_record* jp_node = (*it).second;
-				labels = jp_node->get_list(warthog::jps::NORTH);
-				modified_lists_->push_back(labels);
-			}
+			label.dir_id_ = source->get_id();
+			*(((uint8_t*)&label.dir_id_)+3) = warthog::jps::NORTH;
+			forced_neis = warthog::jps::compute_forced(warthog::jps::NORTH, neis);
+			warthog::jps_record* jp_node = graph_->find(node_id);
+			labels = jp_node->get_list(warthog::jps::NORTH);
+			modified_lists_->push_back(labels);
 			label.ssteps_ = ssteps;
 			label.dsteps_ = 0;
 			labels->push_back(label);
