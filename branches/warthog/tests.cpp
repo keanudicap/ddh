@@ -6,6 +6,8 @@
 #include "gridmap_expansion_policy.h"
 #include "hash_table.h"
 #include "jps_expansion_policy.h"
+#include "jps_graph.h"
+#include "jps_record.h"
 #include "pqueue.h"
 #include "octile_heuristic.h"
 #include "search_node.h"
@@ -28,11 +30,13 @@ void gridmap_expansion_policy_test();
 void flexible_astar_test();
 void test_alloc();
 void online_jps_test();
+void jps_graph_test();
 
 int main(int argc, char** argv)
 {
 	//flexible_astar_test();
-	online_jps_test();
+	//online_jps_test();
+	jps_graph_test();
 }
 
 void test_alloc()
@@ -379,3 +383,27 @@ void gridmap_access_test()
 	std::cout << "gridmap_access_test..."<<std::endl;
 }
 
+void
+jps_graph_test()
+{
+	warthog::jps_graph g(1);
+	for(int i = 0; i < 100; i++)
+	{
+		g.insert(new warthog::jps_record(i));
+		assert(g.find(i));
+		delete g.remove(i);
+		assert(g.find(i) == 0);
+	}
+
+	for(int i = 0; i < 1000; i++)
+	{
+		g.insert(new warthog::jps_record(i));
+		assert(g.find(i));
+	}
+
+	for(int i = 0; i < 1000; i++)
+	{
+		delete g.remove(i);
+		assert(g.find(i) == 0);
+	}
+}
