@@ -1,0 +1,28 @@
+Warthog: a pathfinding library.
+author: dharabor
+contact: dharabor at google mail
+------------------------------------------------------------------------------
+
+To compile: make fast
+To debug: make dev
+To profile: make profile
+
+Once compiled, run ./bin/warthog for a list of command line parameters. 
+A simple case is the following:
+
+./bin/warthog --scen orz700d.map.scen --alg jps --checkopt
+
+This invokes JPS on all instances in the scenario file orz700d.map.scen
+The parameter --checkopt is optional and may be omitted. It simply
+compares the length of a returned path with the optimal length specified
+in the scenario file.
+
+Various metrics are printed to the screen during execution. One line per instance.
+Metrics are: nodes expanded, nodes generated (i.e. put on open), nodes touched
+(i.e. evaluated, possibly resulting in an priority update) and search time 
+in microseconds (wallclock time).
+
+
+
+
+
