@@ -1,5 +1,0 @@
-#!/bin/bash
-for i in $(ls $1*.map);
-do
-	$HOGHOME/bin/opthpa -genscenarios $i 100
-done
