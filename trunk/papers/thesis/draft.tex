@@ -38,6 +38,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{tikz}
+\usepackage{amsmath}
 
 \renewcommand*{\backref}[1]{}
 \renewcommand*{\backrefalt}[4]{
@@ -48,9 +49,7 @@
   \else
     (cited on pages #2)%
   \fi
-}
-
-
+} 
 
 
 \input{macros}            
@@ -76,6 +75,8 @@
 \newcommand{\intersection}[2]{\langle #1, #2\rangle}
 \newcommand{\anya}[0]{{\bf anya}}
 \input{chapter_anya/gridtikz}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \makeindex
 \begin{document}
