@@ -1,0 +1,41 @@
+\section{Time and Space Requirements}
+Jump Point Search performs on-the-fly symmetry breaking by recursively travelling
+along the map in a given direction and checking each node it encounters for the
+presence of forced neighbours. In this section we analyse the time and space
+complexity of these operations. We distinguish between \emph{straight jumps}
+(i.e. where $\vec{d}$ is one of of the four cardinal directions) and 
+and \emph{diagonal jumps} (where $\vec{d}$ is one of the four remaining directions).
+
+\begin{lemma}
+Any straight jump operation will visit a number of nodes at most equal to the
+larger of $(h-1)$ ($h$ is the height of the map) or $(w-1)$ ($w$ is the width of the map).
+Any diagonal jump operation will visit at most $(h \times w) - (h + w) + 2$ nodes.
+\end{lemma}
+\begin{proof}
+Given an initial node $x$, Algorithm~\ref{alg::jps::jump} steps recursively in
+a fixed direction direction $\vec{d}$ until one of three stopping conditions
+are satisfied: (i) the procedure encounters the goal node (line 6); 
+(ii) the procedure encounters a node with a forced neighbour (line 9); 
+(iii) the procedure encounters an obstacle (line 3).  
+In the case of a straight jump, the algorithm can proceed at most
+until the edge of the map, which is considered an obstacle. Thus the maximum
+number of steps that can be taken is equal to $(h-1)$ or $(w-1)$).  
+In the case of a diagonal jump, Algorithm~\ref{alg::jump::jps}, before it can
+recurse, must check for jump points in one of two straight directions. The
+first time these two checks are performed the algorithm will visit at most $h
++ w - 1$ nodes. The second time these checks are performed the algorithm will
+visit $h + w - 2$ nodes. There can be up to 
+$n = \argmin \lbrace (h-1), (w-1) \rbrace$ steps 
+taken before the edge of the map is reached.
+\end{proof}
+
+Upon visiting a node, Jump Point Search inspects the set of adjacent grid
+neighbours. This operation involves up to eight memory access requests and
+requires a constant amount of space.  Unlike A*, which must generate every
+neighbour of every expanded node, Jump Point Search generates and expands in
+most cases only a small subset. In the worst case every node has a forced
+neighbour and must be expanded. Thus the search behaviour of JPS reduces to
+that of A* on maps that contain little to no symmetry.
+Figure~\ref{fig::jps::worstcase} shows an examples that approaches this
+worst-case. We examine the relative performance of Jump Point Search and A* in
+more detail in Section~\ref{cha::jps::results}.
