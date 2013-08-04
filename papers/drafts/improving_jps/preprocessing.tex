@@ -1,0 +1,21 @@
+\section{Preprocessing}
+\label{sec::preprocessing}
+We outline two different preprocessing approaches:
+
+\begin{enumerate}
+\item{We replace all the neighbours of every node
+with jump points that lie in the same relative direction}.
+\item{We construct a graph that contains only jump points
+and insert the start and goal as necessary.}
+\end{enumerate}
+
+One straightfoward approach to speeding up JPS is to preprocess
+the entire map and replace the neighbours of each node
+with the first jump point that can be reached by travelling in the
+direction of each neighbour. A sketch of this idea has been 
+outlined already~\cite{harabor12}.
+Preprocessing eliminates entirely the need to search for jump
+points but it has two disadvantages (i) jump points need to be recomputed
+if the map changes (some local repair seems enough) and (ii) it introduces 
+a substantive memory overhead: we need to keep for each node 8 distinct identifiers. 
+The overhead can be as large as $4\times8$ bytes per node.
