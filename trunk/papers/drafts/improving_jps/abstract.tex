@@ -1,0 +1,13 @@
+\begin{abstract}
+This document gives some ideas for improving Jump Point Search (JPS).  Our
+first idea improves the neighbour pruning rules of JPS and allows us to ignore
+during search nodes that JPS was previously forced to expand.  Our second idea
+involves manipulating ``blocks'' of grid nodes rather than individual nodes.
+It is our intuition that such techniques will improve the performance of JPS
+for two reasons: i) it will reduce the number of operations (a group of nodes
+will be processed in one go); ii) it will reduce the number of cache misses
+(by manipulation pieces of data that are adjacent in memory).  Our third idea
+involves offline pre-processing of the input map in order to identify jump
+points apriori and thus significanty speed up search -- albeit at the cost
+of additional memory.
+\end{abstract}
