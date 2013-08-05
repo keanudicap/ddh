@@ -1,0 +1,34 @@
+\chapter{Conclusion}
+\label{cha::conclusion}
+My work in this area can be broadly classified as a search space pruning
+technique. Where it differs from existing efforts is that, instead of trying to
+identify areas that do not have to be crossed during search, I aim to identify
+and prune symmetric nodes that prevent the fast exploration of an area. This
+idea nicely complements existing search-space reduction techniques and, as it
+turns out, also complements most grid-based abstraction methods and memory
+heuristic approaches.
+
+\subsection{Comments re JPS}
+One interesting direction for further work is Jump Point Search is well suited
+for applications such as robotics and computer games; both of which often
+involve pathfinding across uniform-cost grid maps.  We have given some simple
+suggestion by which JPS can be extended to weighted grid maps: simply consider
+as forced any neighbouring tile which has a different terrain type than the
+current node. The effectiveness of this approach depends on the topgraphy of
+the map: grid maps of the type typically found in computer games can often be
+divided into different regions, each having a distinct type of terrain. In
+these cases JPS breaks symmetries when pathfinding across a particular region
+and stops when it encounters a node that functions as a transition point from
+one region to another. A more general approach to weighted grids, and an
+interesting direction for future work, is to adapt the neighbour pruning rules
+of JPS to explicltly calculate the cost of local paths through and around the
+current node.  Using such an approach the search is will not necessarily stop
+to expand a node each time a path crosses from weighted region to another.
+
+Another interesting direction is to extend jump points to other types of
+grids, such as hexagons or texes~\cite{yap02}. We propose to achieve this by
+developing  a series of pruning rules analogous to those given for square
+grids.  As the branching factor on these domains is lower than square grids,
+we posit that jump points could be even more effective than observed in the
+current paper.  Another interesting direction is combining jump points with
+other speedup techniques: e.g. Swamps or HPA*.

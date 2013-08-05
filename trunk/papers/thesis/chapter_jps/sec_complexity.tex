@@ -11,18 +11,20 @@ until one of three stopping conditions are satisfied:
 
 In the case of a straight jump
 (i.e. one where $\vec{d}$ is one of the four cardinal directions)
-Algorithm~\ref{alg::jump::jps} will recurse at most until it reaches the edge of
+Algorithm~\ref{alg::jps::jump} will recurse at most until it reaches the edge of
 the map. In the process it will check up to $(h-1)$ or $(w-1)$ nodes 
 (depending on whether the direction of travel is horizontal or vertical).
 In the case of a diagonal jump Algorithm~\ref{alg::jps::jump} can once again
 recurse at most until it reaches the edge of the map. However it must perform two 
 straight jumps before recursing diagonally. Assuming there are no obstacles that
-can result in early termination, it is easy to see that the procedure will visit
+will result in early termination, it is easy to see that the procedure can visit
 every node on the map, checking each one for forced neighbours. 
 Each forced neighbour check requires a constant amount of memory and takes a constant
 amount of time. Moreover, since JPS does not cache the results of these operations, 
 the same node can be checked multiple times during the course of solving single 
-pathfinding problem. We will show in Section~\ref{cha::jps::results}
+pathfinding problem. 
+
+We will show in Section~\ref{cha::jps::results}
 that although JPS performs a large number of forced neighbour checks, much more than
 the number of nodes expanded, each of these operations can be performed much more 
 quickly than expanding a node. The reason for this efficiency is due to the fact that
