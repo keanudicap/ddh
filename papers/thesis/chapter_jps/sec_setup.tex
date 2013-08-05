@@ -1,8 +1,8 @@
 \section{Experimental Setup}
 \label{cha::jps::setup}
-We evaluate the performance of jump point pruning on four benchmarks taken from the freely
-available pathfinding library Hierarchical Open Graph
-(HOG, \url{http://www.googlecode.com/p/hog2}): 
+We implemented Jump Point Search using the freely available pathfinding library
+Hierarchical Open Graph (HOG)\url{http://www.googlecode.com/p/hog2}. We 
+evaluate its performance on four benchmarks provided by HOG:
 \begin{itemize}
 
 \item{\textbf{Adaptive Depth}
@@ -31,8 +31,9 @@ again due to Nathan Sturtevant and available from \url{http://movingai.com}.
 }
 
 \item{\textbf{Rooms} is a set of 300 maps of size
-256$\times$256 which are divided into symmetric rows of small rectangular areas
-($7\times7$), connected by randomly placed entrances. This benchmark has
+256$\times$256 which are divided into symmetric rows of small 
+rectangular areas (each of size $8\times8$) that are connected by entrances
+randomly placed along their perimeter. This benchmark has
 previously appeared in \cite{pochter10}.
 For this benchmark we randomly generated 100 valid problems per map for a 
 total of 30000 instances.
