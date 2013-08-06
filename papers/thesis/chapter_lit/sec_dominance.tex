@@ -36,13 +36,13 @@ search, MSA* is only able to achieve this in some cases.  It is also worth notin
 different empty room decomposition method from the one described in our work.
 
 A different technique for pruning the search space is to identify \emph{dead} and \emph{redundant}
-cells~\cite{sturtevant10b}.  Developed in the context of learning-based heuristic search, this
+cells~\citep{sturtevant10b}.  Developed in the context of learning-based heuristic search, this
 method speeds up search only after running multiple iterations of an iterative deepening algorithm.
 During each iteration the algorithm stores the $g$-value associated with each expanded node and
 prunes from subsequent iterations all nodes that were found to have zero $g$-cost-increasing
 neighbours.
 
-Fast Expansion~\cite{sun09} is another related work that speeds up A* pathfinding search. 
+Fast Expansion~\citep{sun09} is another related work that speeds up A* pathfinding search. 
 This algorithm detects when a newly generated (or newly relaxed) node has an $f$-value that 
 dominates the $f$-value of the best node on the open list. The idea is to expand such nodes 
 immediately and avoid unnecessary operations on the open list.

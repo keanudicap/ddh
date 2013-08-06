@@ -3,8 +3,8 @@ Jump Point Search performs on-the-fly symmetry breaking by recursively travellin
 along the map in a given direction and checking each node it encounters for the
 presence of forced neighbours. 
 Given an initial node $x$, Algorithm~\ref{alg::jps::jump} steps recursively in
-a fixed direction direction $\vec{d}$, checking each node it encounters, 
-until one of three stopping conditions are satisfied: 
+a fixed direction direction $\vec{d}$ until one of three stopping conditions 
+are satisfied: 
 (i) the procedure encounters the goal node (line 6); 
 (ii) the procedure encounters a node with a forced neighbour (line 9); 
 (iii) the procedure encounters an obstacle or the edge of the map (line 3).  
