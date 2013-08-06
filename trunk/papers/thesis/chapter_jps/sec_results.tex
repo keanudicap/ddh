@@ -16,7 +16,7 @@ speedups; the best results for each column are in bold.
 \input chapter_jps/table_nodes
 
 \subsection{Comparison with Swamps}
-We begin by comparing JPS to Swamps~\cite{pochter10}: an optimality preserving
+We begin by comparing JPS to Swamps~\citep{pochter10}: an optimality preserving
 pruning technique for speeding up pathfinding.  We used the authors' source
 code, and their implementation of A*, and ran all experiments using their
 recommended running parameters: a swamp seed radius of 6 and ``no change
@@ -39,8 +39,19 @@ could be easily combined: first, apply a Swamps-based decomposition to prune
 areas not relevant to the current search.  Then, use JPS to search the
 remaining portions of the map.
 
+\begin{figure*}[t!]
+   \begin{center}
+	   \includegraphics[width=0.98\columnwidth]
+		{chapter_jps/diagrams/speedup.pdf}
+   \end{center}
+   \caption{Average A* search time speedup on our each of our four benchmarks. }
+
+\label{fig::jps::speedup}
+\end{figure*}
+
+
 \subsection{Comparison with HPA*}
-Next, we compare JPS to the HPA* algorithm~\cite{botea04}.  Though
+Next, we compare JPS to the HPA* algorithm~\citep{botea04}.  Though
 sub-optimal, HPA* is very fast and widely applied in video games.  To evaluate
 HPA* we measure the total cost of insertion and hierarchical search. We did
 not refine any abstract paths, assuming instead that a database of
@@ -69,14 +80,4 @@ database is not available), can be sufficiently amortized over the time
 required to find an abstract path.  One direction for further work could be to
 use jump point pruning to speed up HPA*: for example during insertion and
 refinement.
-
-\begin{figure*}[tb]
-   \begin{center}
-	   \includegraphics[width=0.95\columnwidth, trim = 10mm 10mm 10mm 0mm]
-		{chapter_jps/diagrams/speedup.pdf}
-   \end{center}
-   \caption{Average A* search time speedup on our each of our four benchmarks. }
-
-\label{fig::jps::speedup}
-\end{figure*}
 

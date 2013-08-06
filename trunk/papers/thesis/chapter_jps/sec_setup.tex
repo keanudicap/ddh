@@ -1,8 +1,8 @@
 \section{Experimental Setup}
 \label{cha::jps::setup}
 We implemented Jump Point Search using the freely available pathfinding library
-Hierarchical Open Graph (HOG)\url{http://www.googlecode.com/p/hog2}. We 
-evaluate its performance on four benchmarks provided by HOG:
+Hierarchical Open Graph\footnote{\url{http://www.googlecode.com/p/hog2}} (HOG).
+We evaluate its performance on four benchmarks provided by HOG:
 \begin{itemize}
 
 \item{\textbf{Adaptive Depth}
@@ -16,7 +16,7 @@ total of 1200 instances.
 \item{\textbf{Baldur's Gate} is a set of 120 maps taken from BioWare's popular
 roleplaying game \emph{Baldur's Gate II: Shadows of Amn}; it 
 appears regularly as a standard benchmark in the literature
-\cite{bjornsson06,harabor10,pochter10}.
+\citep{bjornsson06,harabor10,pochter10}.
 We use the variaton due to Nathan Sturtevant where all maps have been scaled to size
 $512\times512$ to more accurately represent modern pathfinding environments.
 Maps and all instances are available from \url{http://movingai.com}
@@ -34,7 +34,7 @@ again due to Nathan Sturtevant and available from \url{http://movingai.com}.
 256$\times$256 which are divided into symmetric rows of small 
 rectangular areas (each of size $8\times8$) that are connected by entrances
 randomly placed along their perimeter. This benchmark has
-previously appeared in \cite{pochter10}.
+previously appeared in \citep{pochter10}.
 For this benchmark we randomly generated 100 valid problems per map for a 
 total of 30000 instances.
 }
