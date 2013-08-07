@@ -1,8 +1,48 @@
 \section{Introduction}
 \label{sec::introduction}
-Jump Point Search (JPS) is the combination of A* search with a simple
-node expansion operator that prunes potential successors if
-they can be reached by path which is shorter than, or symmetric to,
-the current path.
+Finding a shortest path between two points on a grid is a problem that often 
+appears in application areas such as robotics and computer games. 
+Many solution approaches exist; the most recent employ ideas from the
+literature of AI Search (e.g. ~\cite{pochter10,goldenberg10,yap11,urasKH13})
+and also Algorithmics (e.g.~\cite{storandt13,antsfeld12}). Such grid-based
+pathfinding problems are popular with researchers because the formulation is
+simple to understand and apply but the process of finding optimal paths
+between arbitrary start-target pairs can be surprisingly challenging. At least
+one reason for this difficulty can be attributed to the existence of path
+symmetries; myriad in many standard grid-based benchmarks but seldom
+found in other types of spatial networks such as road maps.  Symmetry in
+pathfinding arises when the individual steps (or actions) that are represented
+by the edges of a path can be permuted in order to derive a new equivalent
+path that has identical cost.  Symmetries are problematic in pathfinding (and
+in search settings more generally) because standard algorithms have difficulty
+distinguishing between equivalent states.  In the presence of symmetry the A*
+algorithm, for example, will waste much time looking at permutations of all
+shortest paths: from the start node to each expanded node.
 
-The oddside margin is {\the\oddsidemargin}. The evenside margin is {\the\evensidemargin}.
+Jump Point Search (JPS)~\cite{harabor11b} is a recent and very effective 
+technique for for identifying and eliminating path symmetries on-the-fly. 
+JPS can be described as the combination of A* search with two simple 
+neighbour-pruning rules. When applied recursively during search these
+rules allow JPS to identify and avoid entirely many nodes that are 
+equivalent and that would otherwise need to be generated
+and expanded before the target is reached.
+JPS can improve the performance of optimal grid-based pathfinding search 
+by an order of magnitude and more. Moreover, JPS achieves this without 
+any pre-processing and without the introduction of any memory overheads.
+
+In this paper we propose a number of ideas that can further improve the
+performance of Jump Point Search. Our first contribution is an enhanced
+set of neighbour pruning rules which can further reduce the number of 
+nodes expanded during search. Our second contribution is an enhancement
+to JPS that allows it to consider sets of nodes in a single operation 
+rather than considering node one at a time.
+Our third contribution is a variation of JPS that breaks symmetries
+during an offline pre-computation step.
+We evaluate our ideas on a large range of grid-based benchmarks and
+find that our enhancements can improve the performance of Jump Point Search
+by (some impressive amount). In the case of our first
+two contributions, we achieve this without compromising optimality, without
+preprocessing and without any memory overheads. In the case of our third
+contribution, some preprocessing and additional memory are introduced 
+in order to increase the performance of search.
+
