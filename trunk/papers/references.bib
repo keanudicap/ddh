@@ -2115,3 +2115,36 @@ annote = {Exceedingly similar to HAA* }
 		to be just multi-valued adjacency lists; each array element is a tuple
 		of the form [id, g-value].}
 } 
+
+@inproceedings{arzLS13,
+author    = {Julian Arz and Dennis Luxen and Peter Sanders},
+title     = {Transit Node Routing Reconsidered},
+booktitle = {SEA},
+year      = {2013},
+pages     = {55-66},
+ee        = {http://dx.doi.org/10.1007/978-3-642-38527-8_7},
+bibsource = {DBLP, http://dblp.uni-trier.de},
+annote = {Better locality filters for Transit Routing. Precomputes and compresses a database of nodes
+	that can be reached optimally from each source without passing through any transit node. Also some 
+	discussion about using the algorithm for faster SSSP computations. }
+}
+
+@inproceedings{storandt13,
+	author = {Sabine Storandt}, 
+	title = {The Hierarchy in Grid Graphs},
+	booktitle = {SoCS},
+	year = {2013},
+	annote = {Applies contraction hierarchies to grid domains.}
+}
+
+@inproceedings{urasKH13,
+	author = {Tansel Uras and Sven Koenig and Carlos Hern\`{a}ndez},
+	title = {Subgoal Graphs in for Optimal Pathfinding in Eight-Neighbour Grids},
+	booktitle = {ICAPS},
+	year = {2013},
+	annote = {SUB and friends. Reformulates a grid map into something akin to a visibility graph where
+		the only edges added are between nodes that can be reached optimally by a path equal to the heuristic
+		distance between them. Damn fast; but the two-level grid does not preserve solution completeness.}
+}
+
+
