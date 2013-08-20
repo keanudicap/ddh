@@ -79,15 +79,15 @@ and keep searching for the next $8$ cells.
 There are three reasons why the agent may have to stop: 
 a cell with a forced neighbour (above or below) was found 
 or an obstacle was reached.  
-A byte is computed for each reason 
+A byte $B_S$ is computed for each reason 
 and they are merged with a byte-wise or.  
 A forced neighbour exists in position $i$ 
 if there is an obstacle at position $i-1$ 
 and no obstacle at position $i$; 
 this is computed with the byte-wise operations \texttt{(B>>1\ \& !B)}.  
-For instance on row $1$, $B_{\mathrm{below}} = [0,0,0,0,1,1,0,0]$ 
+For instance on row $1$, $B_{\mathrm{below}} = [0,0,1,1,0,0,0,0]$ 
 which leads to 
-$\mathit{forced\_neighbour}(B_{\mathrm{below}}) = [0,0,0,0,0,0,1,0]$.  
+$\mathit{forced\_neighbour}(B_{\mathrm{below}}) = [0,0,0,0,1,0,0,0]$.  
 The byte that represents the current row already indicates 
 where the obstacles are.  
 In the example of the figure, 
