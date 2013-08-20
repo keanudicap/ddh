@@ -1,37 +1,60 @@
 \section{Preprocessing}
 \label{sec::preprocessing}
-%We outline two different preprocessing approaches:
-%
-%\begin{enumerate}
-%\item{We replace all the neighbours of every node
-%with jump points that lie in the same relative direction}.
-%\item{We construct a graph that contains only jump points
-%and insert the start and goal as necessary.}
-%\end{enumerate}
-%
-%One straightfoward approach to speeding up JPS is to preprocess
-%the entire map and replace the neighbours of each node
-%with the first jump point that can be reached by travelling in the
-%direction of each neighbour. 
-%Preprocessing eliminates entirely the need to search for jump
-%points but it has two disadvantages (i) jump points need to be recomputed
-%if the map changes (some local repair seems enough) and (ii) it introduces 
-%a substantive memory overhead: we need to keep for each node 8 distinct identifiers. 
-%The overhead can be as large as $4\times8$ bytes per node.
 
-Jumping from one point to another in the grid avoids many unnecessary A* open
-list operations and, as we will show, can dramatically improve the performance 
-of online pathfinding search.
-Identifying these jump points however often requires inspecting checking large
-a large number of nodes from the grid for the presence of forced neighbours.
-Though each such operation usually take very little time the procedure is 
-repeated many times and represents a bottleneck for the algorithm.  In
-this section we develop JPS+: a variant of Jump Point Search which
-pre-processes the map and replaces each adjacent neighbour of a grid node with
-a jump point that lies in the same relative direction. The result of the
-pre-processing is an adjacency list data structure that allows computing the
-jump point successors of arbitrary nodes in constant time.
+While the previous section has shown 
+that identification of jump point can be accelerated, 
+it is still possible to improve further the performance 
+by preprocessing the position of the jump point 
+from each position in the grid.  
 
+Remember that a jump point 
+is a point in the current direction of travel 
+that satisfies one of these conditions: 
+\begin{itemize}
+\item 
+  the point has a forced neighbour; 
+\item 
+  the point is the target; or 
+\item 
+  the current move is diagonal 
+  and there is a straight-path for the point to a jump point.  
+\end{itemize}
+For any node, 
+the first type and some of the last type of jump points 
+can be identified a priori (before the target is known); 
+it is stored in an adjacency list data structure 
+and retrieved in constant time at runtime.  
+The second and some of the last type of jump points 
+cannot be found at pre-process, 
+but it is easy to identify them at runtime: 
+one just needs to check whether the current jump 
+crosses the row or column of the target.  
+Notice however that the jump must be attempted 
+even if it leads to an obstacle.  
+
+This is illustrated on Figure~\ref{fig:preproc}.  
+The left side of the figure shows the precomputed jump points 
+for node $N = \langle 4,5\rangle$.  
+Nodes $3$---$5$ are typical examples of jump points.  
+The other nodes, however, would normally be discarded 
+at runtime because they lead to dead-ends; 
+those nodes are called \emph{sterile jump points}.  
+
+Consider now the grid on the right, when $T$ is the target node.  
+Travelling South-East, the jump point from $N$ is $J$.  
+However $J$ was not identified at preprocessing time 
+because $T$ was unknown.  
+Instead, the sterile jump point $S$ is recorded in the database.  
+Normalement $S$ would be discarded at runtime 
+because it is a deadend.  
+A cheap test however demonstrates that the jump $N\rightarrow S$ 
+crosses both the row and the column of $T$.  
+Node $J$ is identified as the first intersection node 
+and is therefore dynamically introduced as the jump point from $N$.  
+
+TALK ABOUT PREPROCESS AND HOW CHEAP IT IS.  
+MAYBE PROVIDE EVIDENCE OF THAT.  
+DISCUSS THE SIZE OF THE DATA STRUCTURE?
 
 \begin{figure}[tb]
        \begin{center}
@@ -47,24 +70,7 @@ To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or
        \label{fig:preproc}
 \end{figure}
 
-Figure~\ref{fig:preproc}(a) illustrates our graph reformulation idea for a 
-single node $x$. We simply search for a jump point in the direction
-of each grid neighbour of $x$. In JPS, we discard all nodes along a failed
-path. By comparison, JPS+ must store the last node along a failed path.
-These \emph{sterile jump points} are required 
-to guarantee optimality during search but are never added to the A* open list.
-To see why they are necessary, consider Figure~\ref{fig:preproc}(b).
-Here we reach $x$ from $p$ and try to jump from $x$ to $y$. 
-Notice that each such jump may cross the goal or column of the target node
-$t$. In JPS the diagonal recursion would have terminated at node $y'$, having detected
-the goal $t$ along a non-failed straight jump.
-JPS+ simulates this behaviour by explicitly inserting an intermediate node $y'$ 
-at the point where the jump to $y$ crosses the column of $t$.
-This condition is sufficient to preserve optimality during search. The proof
-involves showing that JPS+ simulates exactly the behaviour of JPS. We omit it 
-for brevity.
-
-\subsection{Properties}
+\subsection*{Properties}
 JPS+ requires an offline pre-processing step that has quadratic time complexity
 and linear space requirements w.r.t the number of nodes in the grid.
 Preprocessing eliminates entirely the need to search for jump
