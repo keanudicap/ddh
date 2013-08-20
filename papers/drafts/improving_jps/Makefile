@@ -1,4 +1,4 @@
-main.ps: *.tex references.bib
+main.pdf: *.tex diagrams/*.tex references.bib
 	pdflatex main
 	bibtex main
 	pdflatex main
