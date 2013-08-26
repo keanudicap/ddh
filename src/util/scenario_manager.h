@@ -15,6 +15,8 @@
 
 #include "experiment.h"
 #include "gridmap.h"
+#include "gridmap_expansion_policy.h"
+#include "octile_heuristic.h"
 
 #include <vector>
 #include <fstream>
@@ -60,7 +62,7 @@ class scenario_manager
 		
 		void generate_experiments(warthog::gridmap*, int num);
 		void load_scenario(const char* filelocation);
-		void write_scenario(const char* filelocation);
+		void write_scenario(std::ostream& out);
 		void clear() { experiments_.clear(); }
 		void sort(); // organise by increasing solution length
 
