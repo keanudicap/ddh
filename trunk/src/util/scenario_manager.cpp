@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <string>
 
-static int head_offset = 0;
-static int tail_offset = 0;
+static uint32_t head_offset = 0;
+static uint32_t tail_offset = 0;
 static const int MAXTRIES=10000000;
 
 warthog::scenario_manager::scenario_manager() : version_(1)
@@ -49,8 +49,8 @@ warthog::scenario_manager::generate_experiments(
 			{
 				head_offset += 10;
 				tail_offset += 20;
-				std::cout << "\rgenerated: "<< generated << "/" << num;
-				std::cout << std::flush;
+				std::cerr << "\rgenerated: "<< generated << "/" << num;
+				std::cerr << std::flush;
 			}
 		}
 		tries++;
@@ -60,58 +60,49 @@ warthog::scenario_manager::generate_experiments(
 			tail_offset += 10;
 		}
 	}
-	std::cout << " experiments_." << std::endl;
+	std::cerr << " experiments." << std::endl;
 	sort();
 }
 
 warthog::experiment* 
 warthog::scenario_manager::generate_single_experiment(warthog::gridmap* map)
 {
-	return 0;
-	/*
-	graph *g = absMap->getGraph(0);
-	const char* _map = absMap->getMap()->getMapName();
+	warthog::gridmap_expansion_policy expander(map);
+	warthog::octile_heuristic heuristic(map->width(), map->height());
+	warthog::flexible_astar<
+		warthog::octile_heuristic,
+	   	warthog::gridmap_expansion_policy> astar(&heuristic, &expander);
 
-	node *r1, *r2;
-	experiment* newexp;
+	warthog::experiment* newexp;
+	uint32_t raw_mapsize = map->header_height() * map->header_width();
 
-	r1 = r2 = 0;
-	path *p=0;
-
-	if(head_offset + 100 >= g->getNumNodes())
+	uint32_t window_size = raw_mapsize * 0.01;
+	if(head_offset + window_size >= raw_mapsize)
 		head_offset = 0;
-	if(tail_offset + 100 >= g->getNumNodes())
+	if(tail_offset + window_size >= raw_mapsize)
 		tail_offset = 0;
 
-	int id1 = (rand() % 100) + head_offset;
-	int id2 = g->getNumNodes() - ((rand() % 100) + tail_offset);
-	//std::cout << "id1: "<<id1 << " id2: "<< id2;
+	int id1_ = ((rand() % window_size) + head_offset) % raw_mapsize;
+	int id2_ = (raw_mapsize - ((rand() % window_size) + tail_offset)) % raw_mapsize;
+	int id1 = map->to_padded_id(id1_);
+	int id2 = map->to_padded_id(id2_);
+	double dist = astar.get_length(map->to_padded_id(id1), map->to_padded_id(id2));
+	double inf = warthog::INF / (double) warthog::ONE;
 
-	r1 = g->getNode(id1);
-	r2 = g->getNode(id2);
-
-	aStarOld searchalg;
-	p = searchalg.getPath(absMap, r1, r2);
-
-	if(!p)
+	if(dist == inf)
 	{
 	//	std::cout << " no path;" <<std::endl;
-		return NULL;
+		return 0;
 	}
 	//std::cout << " found path;" << std::endl;
 		
-	double dist = r2->getLabelF(kTemporaryLabel); // fValue
-	int x1, x2, y1, y2;
-	int mapwidth = absMap->getMap()->getMapWidth();
-	int mapheight = absMap->getMap()->getMapHeight();
-	
-	x1 = r1->getLabelL(kFirstData); y1 = r1->getLabelL(kFirstData+1);
-	x2 = r2->getLabelL(kFirstData); y2 = r2->getLabelL(kFirstData+1);
-	newexp = new experiment(x1, y1, x2, y2, mapwidth, mapheight, 0, dist, _map);
-	
-	delete p;
+	uint32_t x1, x2, y1, y2;
+	map->to_unpadded_xy(id1,x1,y1);
+	map->to_unpadded_xy(id2, x2, y2);
+	newexp = new experiment(x1, y1, x2, y2, 
+			map->header_width(), map->header_height(), 
+			dist, std::string(map->filename()));
 	return newexp;
-	*/
 }
 
 void 
@@ -146,15 +137,10 @@ warthog::scenario_manager::load_scenario(const char* filelocation)
 	{
 		load_v1_scenario(infile);
 	}
-
-	else if(version == 3)
-	{
-		load_v3_scenario(infile);
-	}
 	else
 	{
 		std::cerr << "err; scenario_manager::load_scenario "
-			<< " scenario file contains invalid version number. \n";
+			<< " scenario has invalid version number. \n";
 		infile.close();
 		exit(1);
 	}
@@ -188,35 +174,16 @@ warthog::scenario_manager::load_v1_scenario(std::ifstream& infile)
 }
 
 void 
-warthog::scenario_manager::load_v3_scenario(std::ifstream& infile)
+warthog::scenario_manager::write_scenario(std::ostream& scenariofile)
 {
-	int xs, ys, xg, yg;
-	std::string dist;
-	std::string mapfile;
-	while(infile>>mapfile>>xs>>ys>>xg>>yg>>dist)
-	{
-		double dbl_dist = strtod(dist.c_str(),0);
-		experiments_.push_back(
-			new experiment(xs, ys, xg, yg, 1, 1, dbl_dist, mapfile));
 
-		int precision = 0;
-		if(dist.find(".") != std::string::npos)
-		{
-			precision = dist.size() - (dist.find(".")+1);
-		}
-		experiments_.back()->set_precision(precision);
-	}
-}
-
-void 
-warthog::scenario_manager::write_scenario(const char* filelocation)
-{
+	std::cerr << "dumping scenario file..\n";
 	if(experiments_.size() == 0) // nothing to write
 		return;
 
-	std::ofstream scenariofile;
+	//std::ofstream scenariofile;
 	scenariofile.precision(16);
-	scenariofile.open(filelocation, std::ios::out);
+	//scenariofile.open(filelocation, std::ios::out);
 	scenariofile << "version " << version_<<std::endl;
 
 	for(unsigned int i=0; i<experiments_.size(); i++)
@@ -225,7 +192,7 @@ warthog::scenario_manager::write_scenario(const char* filelocation)
 		cur->print(scenariofile);
 		scenariofile << std::endl;
 	}
-	scenariofile.close();		
+	//scenariofile.close();		
 }
 
 void 

@@ -31,8 +31,9 @@ help()
 {
 	std::cerr << "Valid options:\n"
 	<< "--alg [jps | astar]\n"
-	<< "--scen [filename]\n"
-	<< "--map [filename] (optional)\n"
+	<< "--scen [scenario filename]\n"
+	<< "--gen [map filename]\n"
+	<< "--map [map filename] (optional)\n"
 	<< "--checkopt (optional)\n"
 	<< "--verbose (optional)\n";
 }
@@ -251,6 +252,7 @@ main(int argc, char** argv)
 		{"map",  optional_argument, 0, 2},
 		{"checkopt",  no_argument, 0, 3},
 		{"verbose",  no_argument, 0, 4},
+		{"gen", required_argument, 0, 5}
 	};
 
 	warthog::util::cfg cfg;
@@ -270,6 +272,16 @@ main(int argc, char** argv)
 	std::string sfile = cfg.get_param_value("scen");
 	std::string mfile = cfg.get_param_value("map");
 	std::string alg = cfg.get_param_value("alg");
+	std::string gen = cfg.get_param_value("gen");
+
+	if(gen != "")
+	{
+		warthog::scenario_manager sm;
+		warthog::gridmap gm(gen.c_str());
+		sm.generate_experiments(&gm, 1000) ;
+		sm.write_scenario(std::cout);
+		return 0;
+	}
 
 	// load scenario file
 	if(sfile == "")
