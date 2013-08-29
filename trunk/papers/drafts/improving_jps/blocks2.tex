@@ -61,16 +61,17 @@ Because each node is represented by a single bit,
 it is possible to manipulate large blocks of data.  
 The status of the eight nodes in the blue rectangle 
 starting from $\langle x,y\rangle = \langle 2,2\rangle$ in the figure 
-could for instance be represented by a single byte $B$ 
+could for instance be represented by a single byte 
+$B = [0,0,0,0,0,1,0,0]$ 
 whereby the $i$th bit $B[i]$ of the byte is set to $1$ 
 iff the node $\langle x+i,y\rangle$ of the grid contains an obstacle.  
-(Practically, we use 32-bit words in the implementation, 
-but this discussion will stick with 8-bit bytes for simplicity.)
+(Practically, the implementation uses 32-bit words, 
+but this discussion will stick to 8-bit bytes for simplicity.)
 In particular, it would be easy to see that the block 
 between $\langle 2,3\rangle$ and $\langle 9,3\rangle$ 
 is obstacle-free because the corresponding byte evaluates to $0$.  
 
-More generally, we can build a byte 
+More generally, we can build a byte $B_S$ 
 which will represent the list of positions 
 at which the agent must stop.  
 If this byte evaluates to $0$, 
@@ -79,7 +80,7 @@ and keep searching for the next $8$ cells.
 There are three reasons why the agent may have to stop: 
 a cell with a forced neighbour (above or below) was found 
 or an obstacle was reached.  
-A byte $B_S$ is computed for each reason 
+A byte is computed for each reason 
 and they are merged with a byte-wise or.  
 A forced neighbour exists in position $i$ 
 if there is an obstacle at position $i-1$ 
@@ -87,19 +88,19 @@ and no obstacle at position $i$;
 this is computed with the byte-wise operations \texttt{(B>>1\ \& !B)}.  
 For instance on row $1$, $B_{\mathrm{below}} = [0,0,1,1,0,0,0,0]$ 
 which leads to 
-$\mathit{forced\_neighbour}(B_{\mathrm{below}}) = [0,0,0,0,1,0,0,0]$.  
+$\mathit{forced\_neighbours}(B_{\mathrm{below}}) = [0,0,0,0,1,0,0,0]$.  
 The byte that represents the current row already indicates 
 where the obstacles are.  
 In the example of the figure, 
 we obtain the byte $B_S = 
-\mathit{forced\_neighbour}(B_{\mathrm{below}})\ |\ 
-\mathit{forced\_neighbour}(B_{\mathrm{above}})\ |\ 
+\mathit{forced\_neighbours}(B_{\mathrm{below}})\ |\ 
+\mathit{forced\_neighbours}(B_{\mathrm{above}})\ |\ 
 B_{\mathrm{current}}
 = [0,0,0,0,1,1,0,0]$.  
 Because $B_S \neq 0$, 
 we know that the search has to stop.  
 We use the C \texttt{ffs} command 
-to extract the position of the first $1$ 
+to extract the position of the first $1$ in $B_S$ 
 and determine the position where to jump to.  
 Since this position contains no obstacle, 
 it is a jump point; 

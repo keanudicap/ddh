@@ -17,14 +17,14 @@ that satisfies one of these conditions:
   the point is the target; or 
 \item 
   the current move is diagonal 
-  and there is a straight-path for the point to a jump point.  
+  and there is a straight-path from this point to a jump point.  
 \end{itemize}
 For any node, 
-the first type and some of the last type of jump points 
+the jump points of the first type and some of the last type 
 can be identified a priori (before the target is known); 
-it is stored in an adjacency list data structure 
+they are stored in an adjacency list data structure 
 and retrieved in constant time at runtime.  
-The second and some of the last type of jump points 
+The jump points of the second type and the rest of those of the last type 
 cannot be found at pre-process, 
 but it is easy to identify them at runtime: 
 one just needs to check whether the current jump 
@@ -45,9 +45,10 @@ Travelling South-East, the jump point from $N$ is $J$.
 However $J$ was not identified at preprocessing time 
 because $T$ was unknown.  
 Instead, the sterile jump point $S$ is recorded in the database.  
-Normalement $S$ would be discarded at runtime 
+Normally $S$ would be discarded at runtime 
 because it is a deadend.  
-A cheap test however demonstrates that the jump $N\rightarrow S$ 
+Sterile jump points are kept in the database though, 
+and a cheap test however demonstrates that the jump $N\rightarrow S$ 
 crosses both the row and the column of $T$.  
 Node $J$ is identified as the first intersection node 
 and is therefore dynamically introduced as the jump point from $N$.  
