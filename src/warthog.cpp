@@ -10,7 +10,7 @@
 #include "gridmap_expansion_policy.h"
 #include "jps_expansion_policy.h"
 #include "jps2_expansion_policy.h"
-#include "jps_expansion_policy2.h"
+#include "jps2plus_expansion_policy.h"
 #include "octile_heuristic.h"
 #include "scenario_manager.h"
 
@@ -85,14 +85,14 @@ check_optimality(double len, warthog::experiment* exp)
 }
 
 void
-run_jps_plus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_jps2plus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 {
-	warthog::jps_expansion_policy2 expander(&map);
+	warthog::jps2plus_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
 	warthog::flexible_astar<
 		warthog::octile_heuristic,
-	   	warthog::jps_expansion_policy2> astar(&heuristic, &expander);
+	   	warthog::jps2plus_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
 	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
@@ -110,7 +110,7 @@ run_jps_plus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 			len = 0;
 		}
 
-		std::cout << i<<"\t" << "jps+" << "\t" 
+		std::cout << i<<"\t" << "jps2+" << "\t" 
 		<< astar.get_nodes_expanded() << "\t" 
 		<< astar.get_nodes_generated() << "\t"
 		<< astar.get_nodes_touched() << "\t"
@@ -316,9 +316,9 @@ main(int argc, char** argv)
 		run_jps2(scenmgr, map);
 	}
 
-	if(alg == "jps+")
+	if(alg == "jps2+")
 	{
-		run_jps_plus(scenmgr, map);
+		run_jps2plus(scenmgr, map);
 	}
 
 	if(alg == "astar")

@@ -1,10 +1,10 @@
-#include "jps_expansion_policy2.h"
+#include "jps2plus_expansion_policy.h"
 
-warthog::jps_expansion_policy2::jps_expansion_policy2(warthog::gridmap* map)
+warthog::jps2plus_expansion_policy::jps2plus_expansion_policy(warthog::gridmap* map)
 {
 	map_ = map;
 	nodepool_ = new warthog::blocklist2(map->height(), map->width());
-	jpl_ = new warthog::offline_jump_point_locator(map);
+	jpl_ = new warthog::offline_jump_point_locator2(map);
 	reset();
 
 	neighbours_.reserve(100);
@@ -12,14 +12,14 @@ warthog::jps_expansion_policy2::jps_expansion_policy2(warthog::gridmap* map)
 	jp_ids_.reserve(100);
 }
 
-warthog::jps_expansion_policy2::~jps_expansion_policy2()
+warthog::jps2plus_expansion_policy::~jps2plus_expansion_policy()
 {
 	delete jpl_;
 	delete nodepool_;
 }
 
 void 
-warthog::jps_expansion_policy2::expand(
+warthog::jps2plus_expansion_policy::expand(
 		warthog::search_node* current, warthog::problem_instance* problem)
 {
 	reset();
@@ -65,10 +65,10 @@ warthog::jps_expansion_policy2::expand(
 			mynode->set_pdir(pdir);
 		}
 	}
-	if(problem->get_start() == current_id && neighbours_.size() == 0)
-	{
-		std::cerr << "stop plz.." << std::endl;
-	}
+	//if(problem->get_start() == current_id && neighbours_.size() == 0)
+	//{
+	//	std::cerr << "stop plz.." << std::endl;
+	//}
 	num_neighbours_ = neighbours_.size();
 
 	// terminator (historical; yeah, this code is stupid)

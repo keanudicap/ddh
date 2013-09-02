@@ -1,10 +1,13 @@
-#ifndef WARTHOG_OFFLINE_JUMP_POINT_LOCATOR_H
-#define WARTHOG_OFFLINE_JUMP_POINT_LOCATOR_H
+#ifndef WARTHOG_OFFLINE_JUMP_POINT_LOCATOR2_H
+#define WARTHOG_OFFLINE_JUMP_POINT_LOCATOR2_H
 
-// offline_jump_point_locator.h
+// offline_jump_point_locator2.h
 //
-// Identifies jump points using a pre-computed database that stores
+// Variant of warthog::offline_jump_point_locator.
+// Jump points are identified using a pre-computed database that stores
 // distances from each node to jump points in every direction.
+// This version additionally prunes all jump points that do not have at
+// least one forced neighbour. 
 //
 // @author: dharabor
 // @created: 05/05/2013
@@ -16,11 +19,11 @@ namespace warthog
 {
 
 class gridmap;
-class offline_jump_point_locator
+class offline_jump_point_locator2
 {
 	public:
-		offline_jump_point_locator(warthog::gridmap* map);
-		~offline_jump_point_locator();
+		offline_jump_point_locator2(warthog::gridmap* map);
+		~offline_jump_point_locator2();
 
 		void
 		jump(warthog::jps::direction d, uint32_t node_id, uint32_t goalid, 

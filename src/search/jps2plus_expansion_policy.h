@@ -1,7 +1,7 @@
-#ifndef WARTHOG_JPS_EXPANSION_POLICY2_H
-#define WARTHOG_JPS_EXPANSION_POLICY2_H
+#ifndef WARTHOG_JPS2PLUS_EXPANSION_POLICY_H
+#define WARTHOG_JPS2PLUS_EXPANSION_POLICY_H
 
-// jps_expansion_policy2.h
+// jps2plus_expansion_policy.h
 //
 // An experimental variation of warthog::jps_expansion_policy,
 // this version is designed for efficient offline jps.
@@ -13,7 +13,7 @@
 #include "gridmap.h"
 #include "helpers.h"
 #include "jps.h"
-#include "offline_jump_point_locator.h"
+#include "offline_jump_point_locator2.h"
 #include "problem_instance.h"
 #include "search_node.h"
 
@@ -22,11 +22,11 @@
 namespace warthog
 {
 
-class jps_expansion_policy2 
+class jps2plus_expansion_policy 
 {
 	public:
-		jps_expansion_policy2(warthog::gridmap* map);
-		~jps_expansion_policy2();
+		jps2plus_expansion_policy(warthog::gridmap* map);
+		~jps2plus_expansion_policy();
 
 		// create a warthog::search_node object from a state description
 		// (in this case, an id)
@@ -97,7 +97,7 @@ class jps_expansion_policy2
 	private:
 		warthog::gridmap* map_;
 		warthog::blocklist2* nodepool_;
-		offline_jump_point_locator* jpl_;
+		offline_jump_point_locator2* jpl_;
 		uint32_t which_;
 		uint32_t num_neighbours_;
 		std::vector<warthog::search_node*> neighbours_;
