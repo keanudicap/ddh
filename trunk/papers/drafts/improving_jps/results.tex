@@ -22,6 +22,16 @@ benchmarks in terms of average search time and average nodes expanded. We measur
 in terms of relative improvement compared with A*. A speedup value of 2 for example indicates 
 a two-fold improvement. Under this scheme, higher values are always better.
 
+The results demonstrate the superiority of the approaches presented in this paper.  JPS (B)'s improvement is over one order of magnitude to the point where the additional pruning rule provides only another $10\%$ improvement.  JPS+ (P) gives another order of magnitude; this demonstrates that a substantial amount of time of JPS is spent in finding the next jump point and that any improvement in this direction is beneficial.  
+
+WHY IS IT NOT WORKING SO WELL FOR DRAGON AGE???  
+
+The bottom part of Figure~\ref{fig::speedup} shows a nice correlation 
+between the total runtime and the number of nodes expanded.  
+Clearly the JPS family's performance 
+can be explained by how it quickly identifies 
+nodes that can be skipped.  
+
 \begin{figure}[tb]
        \begin{center}
 		   \includegraphics[width=0.95\columnwidth, trim = 0mm 0mm 0mm 0mm]
@@ -43,3 +53,12 @@ significant overhead. Thus, if the start and goal are very close, it is sometime
 A* will be faster than Jump Point Search. The same is also true if JPS must explore very large
 empty areas which contain nodes that appear promising but e.g. eventually lead to a dead-end.
 
+Figure~\ref{fig::expansion_time} also provides 
+interesting insights for improvement: 
+the on-line version of JPS spends substantial time expanding a single node; 
+any improvement on this side would result 
+in huge performance boost.  
+This includes pre-processing techniques lighter 
+than JPS+.  
+
+% EOF
