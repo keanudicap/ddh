@@ -10,6 +10,7 @@
 #include "gridmap_expansion_policy.h"
 #include "jps_expansion_policy.h"
 #include "jps2_expansion_policy.h"
+#include "jpsplus_expansion_policy.h"
 #include "jps2plus_expansion_policy.h"
 #include "octile_heuristic.h"
 #include "scenario_manager.h"
@@ -30,7 +31,7 @@ void
 help()
 {
 	std::cerr << "Valid options:\n"
-	<< "--alg [jps | astar]\n"
+	<< "--alg [jps | jps2 | jps+ | jps2+ | astar]\n"
 	<< "--scen [scenario filename]\n"
 	<< "--gen [map filename]\n"
 	<< "--map [map filename] (optional)\n"
@@ -82,6 +83,45 @@ check_optimality(double len, warthog::experiment* exp)
 		std::cerr<< "delta: "<< delta << std::endl;
 		exit(1);
 	}
+}
+
+void
+run_jpsplus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+{
+	warthog::jpsplus_expansion_policy expander(&map);
+	warthog::octile_heuristic heuristic(map.width(), map.height());
+
+	warthog::flexible_astar<
+		warthog::octile_heuristic,
+	   	warthog::jpsplus_expansion_policy> astar(&heuristic, &expander);
+	astar.set_verbose(verbose);
+
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
+	{
+		warthog::experiment* exp = scenmgr.get_experiment(i);
+
+		int startid = exp->starty() * exp->mapwidth() + exp->startx();
+		int goalid = exp->goaly() * exp->mapwidth() + exp->goalx();
+		double len = astar.get_length(
+				map.to_padded_id(startid),
+			   	map.to_padded_id(goalid));
+		if(len == warthog::INF)
+		{
+			len = 0;
+		}
+
+		std::cout << i<<"\t" << "jps+" << "\t" 
+		<< astar.get_nodes_expanded() << "\t" 
+		<< astar.get_nodes_generated() << "\t"
+		<< astar.get_nodes_touched() << "\t"
+		<< astar.get_search_time()  << "\t"
+		<< len << "\t" 
+		<< scenmgr.last_file_loaded() << std::endl;
+
+		check_optimality(len, exp);
+	}
+	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
 }
 
 void
@@ -309,6 +349,11 @@ main(int argc, char** argv)
 	if(alg == "jps")
 	{
 		run_jps(scenmgr, map);
+	}
+
+	if(alg == "jps+")
+	{
+		run_jpsplus(scenmgr, map);
 	}
 
 	if(alg == "jps2")
