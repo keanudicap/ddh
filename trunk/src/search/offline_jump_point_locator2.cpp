@@ -1,13 +1,13 @@
 #define __STDC_FORMAT_MACROS
 #include "gridmap.h"
 #include "online_jump_point_locator.h"
-#include "offline_jump_point_locator.h"
+#include "offline_jump_point_locator2.h"
 
 #include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
 
-warthog::offline_jump_point_locator::offline_jump_point_locator(
+warthog::offline_jump_point_locator2::offline_jump_point_locator2(
 		warthog::gridmap* map) : map_(map)
 {
 	if(map_->padded_mapsize() > ((1 << 23)-1)) 
@@ -23,13 +23,13 @@ warthog::offline_jump_point_locator::offline_jump_point_locator(
 	preproc();
 }
 
-warthog::offline_jump_point_locator::~offline_jump_point_locator()
+warthog::offline_jump_point_locator2::~offline_jump_point_locator2()
 {
 	delete [] db_;
 }
 
 void
-warthog::offline_jump_point_locator::preproc()
+warthog::offline_jump_point_locator2::preproc()
 {
 	if(load(map_->filename())) { return; }
 
@@ -96,7 +96,7 @@ warthog::offline_jump_point_locator::preproc()
 
 
 bool
-warthog::offline_jump_point_locator::load(const char* filename)
+warthog::offline_jump_point_locator2::load(const char* filename)
 {
 	char fname[256];
 	strcpy(fname, filename);
@@ -119,7 +119,7 @@ warthog::offline_jump_point_locator::load(const char* filename)
 }
 
 void 
-warthog::offline_jump_point_locator::save(const char* filename)
+warthog::offline_jump_point_locator2::save(const char* filename)
 {
 	char fname[256];
 	strcpy(fname, filename);
@@ -141,7 +141,7 @@ warthog::offline_jump_point_locator::save(const char* filename)
 }
 
 void
-warthog::offline_jump_point_locator::jump(warthog::jps::direction d, 
+warthog::offline_jump_point_locator2::jump(warthog::jps::direction d, 
 		uint32_t node_id, uint32_t goal_id, 
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
@@ -177,7 +177,7 @@ warthog::offline_jump_point_locator::jump(warthog::jps::direction d,
 }
 
 void
-warthog::offline_jump_point_locator::jump_northwest(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_northwest(uint32_t node_id,
 	  	uint32_t goal_id,
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 
@@ -251,7 +251,7 @@ warthog::offline_jump_point_locator::jump_northwest(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_northeast(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_northeast(uint32_t node_id,
 	  	uint32_t goal_id, 
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
@@ -321,7 +321,7 @@ warthog::offline_jump_point_locator::jump_northeast(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_southwest(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_southwest(uint32_t node_id,
 	  	uint32_t goal_id, 
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
@@ -390,7 +390,7 @@ warthog::offline_jump_point_locator::jump_southwest(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_southeast(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_southeast(uint32_t node_id,
 	  	uint32_t goal_id, 
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 	
@@ -462,7 +462,7 @@ warthog::offline_jump_point_locator::jump_southeast(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_north(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_north(uint32_t node_id,
 	  	uint32_t goal_id, warthog::cost_t cost_to_node_id,
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
@@ -496,7 +496,7 @@ warthog::offline_jump_point_locator::jump_north(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_south(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_south(uint32_t node_id,
 	  	uint32_t goal_id, warthog::cost_t cost_to_node_id, 
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
@@ -530,7 +530,7 @@ warthog::offline_jump_point_locator::jump_south(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_east(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_east(uint32_t node_id,
 	  	uint32_t goal_id, warthog::cost_t cost_to_node_id,
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
@@ -558,7 +558,7 @@ warthog::offline_jump_point_locator::jump_east(uint32_t node_id,
 }
 
 void
-warthog::offline_jump_point_locator::jump_west(uint32_t node_id,
+warthog::offline_jump_point_locator2::jump_west(uint32_t node_id,
 	  	uint32_t goal_id, warthog::cost_t cost_to_node_id,
 		std::vector<uint32_t>& neighbours, std::vector<warthog::cost_t>& costs)
 {
