@@ -1,3 +1,30 @@
 \section{Conclusion}
 \label{sec::conclusion}
-Some concluding remarks will conclusively conclude this paper.
+We study several optimisation techniques applicable to Jump Point Search (JPS).
+%: a recent grid-based pathfinding technique which employs online symmetry breaking 
+%to speed up search by up to one order of magnitude. 
+Our first improvement, block-based jumping, involves simple bitwise
+operations that allow us to consider sets of nodes at one time (c.f. one
+at a time) in order to detect jump points more efficiently. Our second
+improvement is a pre-processing technique which computes and stores jump point
+successors for every node on the map. Our third improvement is a simple node
+pruning strategy that helps JPS avoid many unnecessary node expansion operations.
+
+On a variety of realistic video-game domains we show that we can improve 
+the performance of online JPS by several factors while maintainig
+completeness, optimality and adding little-to-no extra memory. With the addition
+of a pre-processing step and a small amount of extra memory (< 10MB in most cases) 
+we can increase the performance of JPS by up to one order of magnitude.  This is
+remarkable as JPS itself is often one order faster than traditional online 
+pathfinding techniques such as A*.
+
+We also compare our approach with SUB-S (which is guaranteed optimal) and SUB-TL 
+(which is not). Both approaches are very recent and very fast pathfinding techniques from the 
+literature~\cite{uras13}. We find that in most cases our enhanced variants of online 
+JPS are competitive with and often faster than SUB-S. Meanwhile, we find that JPS with
+preprocessing and node pruning has complementary strengths to SUB-TL; each method having
+certain advantages and disadvantages for different classes of test instances.
+
+There are several interestting directions for further work. One possibility involves
+updating JPS' pre-computed database of jump points when the envrionment changes; another 
+is to investigate stronger pruning rules for JPS, for example in the style of SUB-TL;
