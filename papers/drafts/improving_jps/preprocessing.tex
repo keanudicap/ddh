@@ -1,3 +1,16 @@
+\begin{figure*}[tb]
+       \label{fig:preproc}
+       \begin{center}
+%		   \includegraphics[width=0.95\columnwidth]
+%		{diagrams/preproc.png}
+         \scalebox{.8}{\input{diagrams/preproc.tex}}
+       \end{center}
+%	\vspace{-3pt}
+       \caption{(a) A jump point is computed in place of each grid neighbour of node $x$.
+		(b) When jumping from $x$ to $y$ we may cross the row or column of the target $t$ (here, both). 
+To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or column of $t$ (whichever is closest to $x$).}
+\end{figure*}
+
 \section{Preprocessing}
 \label{sec::preprocessing}
 
@@ -56,20 +69,6 @@ and is therefore dynamically introduced as the jump point from $N$.
 TALK ABOUT PREPROCESS AND HOW CHEAP IT IS.  
 MAYBE PROVIDE EVIDENCE OF THAT.  
 DISCUSS THE SIZE OF THE DATA STRUCTURE?
-
-\begin{figure}[tb]
-       \begin{center}
-%		   \includegraphics[width=0.95\columnwidth]
-%			{diagrams/preproc.png}
-         \scalebox{.8}{\input{diagrams/preproc.tex}}
-       \end{center}
-	\vspace{-3pt}
-       \caption{(a) A jump point is computed in place of each grid neighbour of node $x$.
-		(b) When jumping from $x$ to $y$ we may cross the row or column of the target $t$ (here, both). 
-To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or column of $t$ (whichever is closest to $x$).}
-
-       \label{fig:preproc}
-\end{figure}
 
 \subsection*{Properties}
 JPS+ requires an offline pre-processing step that has quadratic time complexity

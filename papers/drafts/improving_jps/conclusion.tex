@@ -13,14 +13,14 @@ pruning strategy that helps JPS avoid many unnecessary node expansion operations
 On a variety of realistic video-game domains we show that we can improve 
 the performance of online JPS by several factors while maintainig
 completeness, optimality and adding little-to-no extra memory. With the addition
-of a pre-processing step and a small amount of extra memory (< 10MB in most cases) 
+of a pre-processing step and a small amount of extra memory ($<$ 10MB in most cases) 
 we can increase the performance of JPS by up to one order of magnitude.  This is
 remarkable as JPS itself is often one order faster than traditional online 
 pathfinding techniques such as A*.
 
 We also compare our approach with SUB-S (which is guaranteed optimal) and SUB-TL 
 (which is not). Both approaches are very recent and very fast pathfinding techniques from the 
-literature~\cite{uras13}. We find that in most cases our enhanced variants of online 
+literature~\cite{urasKH13}. We find that in most cases our enhanced variants of online 
 JPS are competitive with and often faster than SUB-S. Meanwhile, we find that JPS with
 preprocessing and node pruning has complementary strengths to SUB-TL; each method having
 certain advantages and disadvantages for different classes of test instances.
