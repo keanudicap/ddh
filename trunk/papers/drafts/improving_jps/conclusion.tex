@@ -10,13 +10,14 @@ improvement is a pre-processing technique which computes and stores jump point
 successors for every node on the map. Our third improvement is a simple node
 pruning strategy that helps JPS avoid many unnecessary node expansion operations.
 
-On a variety of realistic video-game domains we show that we can improve 
-the performance of online JPS by several factors while maintainig
-completeness, optimality and adding little-to-no extra memory. With the addition
-of a pre-processing step and a small amount of extra memory ($<$ 10MB in most cases) 
-we can increase the performance of JPS by up to one order of magnitude.  This is
-remarkable as JPS itself is often one order faster than traditional online 
-pathfinding techniques such as A*.
+On a variety of realistic video-game domains we show that we can improve the
+performance of online JPS by several factors while maintainig completeness,
+optimality and adding little-to-no extra memory. With the addition of a fast
+pre-processing step (tens or hundreds of milliseconds in our experiments) and
+a small amount of extra memory ($<$ 10MB in most cases we tested) we can
+increase the performance of JPS by up to one order of magnitude.  To put this
+improvement into context, consider that JPS itself is often one order faster
+than traditional online pathfinding techniques such as A{*}~\cite{harabor11b}.
 
 We also compare our approach with SUB-S (which is guaranteed optimal) and SUB-TL 
 (which is not). Both approaches are very recent and very fast pathfinding techniques from the 
