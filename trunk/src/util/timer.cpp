@@ -15,6 +15,19 @@ warthog::timer::timer()
 
 }
 
+double 
+warthog::timer::get_time_nano()
+{
+#ifdef OS_MAC
+	uint64_t raw_time = mach_absolute_time();
+	Nanoseconds nanosecs = AbsoluteToNanoseconds(*(AbsoluteTime*)&raw_time);
+	return (double) UnsignedWideToUInt64(nanosecs);
+#else
+	timespec raw_time;
+	clock_gettime(CLOCK_MONOTONIC , &raw_time);
+	return (double)(raw_time.tv_nsec);
+#endif
+}
 
 void warthog::timer::start()
 {
