@@ -42,6 +42,7 @@ public:
 	void stop();
 	double elapsed_time_nano();
 	double elapsed_time_micro();
+	double get_time_nano();
 };
 
 }
