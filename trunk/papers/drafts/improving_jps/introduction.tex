@@ -1,12 +1,11 @@
 \section{Introduction}
 \label{sec::introduction}
-Finding a shortest path between two points on a grid is a problem that often 
+Grid-based pathfinding is a problem that often
 appears in application areas such as robotics and computer games. 
 %Many solution approaches exist; the most recent employ ideas from the
 %literature of AI Search (e.g. ~\cite{pochter10,goldenberg10,yap11,urasKH13})
 %and also Algorithmics (e.g.~\cite{storandt13,antsfeld12}). Such grid-based
-Grid-based
-pathfinding problems are popular with researchers because the formulation is
+Grids are popular with researchers because the encoding is
 simple to understand and apply but the process of finding optimal paths
 between arbitrary start-target pairs can be surprisingly challenging. At least
 one reason for this difficulty can be attributed to the existence of 
@@ -43,7 +42,7 @@ A{*}) instead of manipulating nodes on the open and closed lists -- i.e.
 searching.
 
 In this paper we propose a number of ideas that to improve the
-performance of Jump Point Search. We focus on (i) more efficient online 
+performance of Jump Point Search. We focus on: (i) more efficient online 
 symmetry breaking that reduces the time spent scanning the grid; 
 (ii) more effective online pruning strategies that avoid expanding some jump
 points; (iii) pre-computation strategies for breaking symmetries offline.
