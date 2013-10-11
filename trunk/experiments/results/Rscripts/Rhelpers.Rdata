@@ -17,7 +17,7 @@ loadTable <- function(filename, tnames, tclasses, sepchar="\t")
 
 basename <- function(x)
 {
-	tmp <- gsub("[a-zA-Z0-9-]+/", "", x)
+	tmp <- gsub("[a-z|A-Z|0-9|-|.]*[/]+", "", x)
 	tmp
 }
 
@@ -102,7 +102,7 @@ speedup <- function(target, baseline, stepsize=25)
 	results
 }
 
-summary <- function(series, dist, runs=1, stepsize=25)
+mysummary <- function(series, dist, runs=1, stepsize=25)
 {
 	runrows = length(series)/runs	
 	first <- 1
@@ -124,9 +124,30 @@ summary <- function(series, dist, runs=1, stepsize=25)
 	retval
 }
 
+myapply <- function(myx, myfactors, FUN)
+{
+	mylevels <- levels(as.factor(myfactors))
+	for(i in seq(1, length(mylevels)))
+	{
+		tmp <- subset(myx, myfactors == mylevels[i])
+		val <- FUN(tmp) #c(round(mean(tmp), digits=2), round(sd(tmp), digits=2))
+		if(i == 1)
+		{
+			retval <- t(as.data.frame(val))
+			#colnames(retval) <- c("mean", "sd")
+		}
+		else
+		{
+			retval <- rbind(retval, val)
+		}
+	}
+	rownames(retval) <- mylevels
+	retval
+}
+
 plotsummary <- function(series, dist, runs=1, stepsize=25)
 {
-	tmp <- summary(series, dist, runs, stepsize)
+	tmp <- mysummary(series, dist, runs, stepsize)
 	minVal <- min(tmp[,2:(runs+1)])
 	maxVal <- max(tmp[,2:(runs+1)])
 	plot(tmp[,2] ~ tmp$dist, type="l", lty=1, main="n-Runs Summary",
@@ -220,6 +241,44 @@ runav <- function(raw, runs)
 	}
 	out <- out[-1,]
 	out	
+}
+
+## prints minor log ticks on plots
+## ax is the target axis
+## ticks_ration is the size ratio between minor and major ticks
+axis.log10 <- function(ax, ticks_ratio=0.5, ...)
+{
+  lims <- par("usr")
+  print(lims)
+  if(ax %in%c(1,3)) lims <- lims[1:2] else lims <- lims[3:4]
+  print(lims)
+  mn <- floor(min(lims))
+  mx <- ceiling(max(lims))
+
+  major.ticks <- seq(mn, mx, by=1)
+  major.labels <- 10^major.ticks
+  print(major.ticks)
+
+  axis(ax,at=major.ticks,labels=major.labels,...)
+
+  minor.ticks <- log10(seq(1, 10, by=1))
+  minor.ticks <- c(outer(minor.ticks, major.ticks,`+`)) 
+  #print(minor.ticks)
+  axis(ax,at=minor.ticks,tcl=par("tcl")*ticks_ratio,labels=FALSE)
+}
+
+# label the benchmarks explicitly
+gppc12_benchmark_labels <- function(x)
+{
+	stopifnot(class(x) == "character")
+	benchmark <- rep("", length(x))
+	benchmark[grepl("^[A-Z]", x)] <- "sc"
+	benchmark[grepl("^[a-z]+[0-9]+[a-z]*.map", x)] <- "dao"
+	benchmark[grepl("^[a-z]+_", x)] <- "da2"
+	benchmark[grepl("maze", x)] <- "maze"
+	benchmark[grepl("random", x)] <- "random"
+	benchmark[grepl("room", x)] <- "room"
+	benchmark
 }
 
 gppc_names <- c("scenario", "foo1", "total_time", "foo2", "max_time_step", "foo3", "time_20_moves", "foo4", "total_len", "foo5", "subopt", "valid")
