@@ -25,11 +25,11 @@ To see that this strategy is optimality preserving we need only observe that
 for each intermediate jump point that is pruned the $g$-value of any of its
 successors remains unchanged. We simply generate these nodes earlier without
 first expanding the intermediate location.  The parent of each newly orphaned
-successor becomes the starting location from where we initiated the jump. To
-extract a concrete path we simply walk from the starting location to the
-successor in a diagonal-first way: i.e. we follow the heuristic but take all
-diagonal steps as early as possible. Such a path is guaranteed to be valid and
-thus obstacle-free.
+successor then becomes the starting location from where we initiated the jump. To
+extract a concrete path we simply walk from one jump point on the final
+path to the next in a diagonal-first way: i.e. we follow the octile heuristic but 
+take all diagonal steps as early as possible. Such a path is guaranteed to be 
+valid and thus obstacle-free.
 
 Our pruning strategy is applied entirely online; it does not require any
 special data structures and does not store nor require any additional
