@@ -1,24 +1,10 @@
-\begin{figure*}[tb]
-       \label{fig:preproc}
-       \begin{center}
-%		   \includegraphics[width=0.95\columnwidth]
-%		{diagrams/preproc.png}
-         \scalebox{.8}{\input{diagrams/preproc.tex}}
-       \end{center}
-%	\vspace{-3pt}
-       \caption{(a) A jump point is computed in place of each grid neighbour of node $x$.
-		(b) When jumping from $x$ to $y$ we may cross the row or column of the target $t$ (here, both). 
-To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or column of $t$ (whichever is closest to $x$).}
-\end{figure*}
 
 \section{Preprocessing}
 \label{sec::preprocessing}
-
 In the preceeding section we have suggested a strategy for enhancing the
 online performance of Jump Point Search.  In this section we give an offline
-pre-processing technique which can improve the algorithm further still.
-
-Recall that Jump Point Search distinguishes between two different kinds of
+technique which can improve the algorithm further still. First, recall that 
+Jump Point Search distinguishes between two different kinds of
 nodes:
 \begin{itemize}
 \item Straight jump points. Reached by travelling in a
@@ -74,21 +60,23 @@ of $N$. We apply the same intersection test more broadly -- to all
 successors of $N$. This is sufficient to guarantee both completeness 
 and optimality. We call this revised pre-processing based algorithm 
 JPS+.
-
+%\\ \noindent
 \subsection*{Properties}
+%\textbf{Properties: }
 JPS+ requires an offline pre-processing step that has worst-case quadratic 
 time complexity and linear space requirements w.r.t the number of nodes in 
 the grid. The time bound is very loose: it arises only in the case 
 where the map is obstacle free and one diagonal jump can result in
 every node on the map being scanned. In most cases only a small portion
-of the total map needs to be scanned. Moreover, if pre-compute using block-based 
-symmetry breaking the entire procedure completes much faster still. 
-Infact we will show that on our test machine (a midrange desktop
+of the total map needs to be scanned. Moreover, if we pre-compute using block-based 
+symmetry breaking the entire procedure completes very quickly.
+We will show that on our test machine (a midrange desktop
 circa 2010) pre-processing never takes more than several hundred milliseconds,
 even when the procedure is applied to large grid maps containing millions
 of nodes.
-
+%\\ \noindent
 \subsection*{Advantages and Disadvantages}
+%\textbf{Advantages and Disadvantages:} 
 The main advantage of JPS+ is speed: instead of scanning the grid for
 jump points we can simply look up the set of jump point successors
 of any given location on the grid in constant time.
