@@ -148,19 +148,40 @@ compare it with the position of any obstacle bit in $B_N$.  If this position
 is less than the position of any obstacle bit in $B_N$ that position is a jump point;
 otherwise we have hit a dead-end.  Alternatively, if $B_S$ evaluates to zero
 there is no reason to stop: we jump ahead 7 positions and repeat the procedure
-until termination.
+until termination. 
 
-Naturally the described approach must be slightly adapted for cases
-where the direction of travel is right-to-left instead of left-to-right (we
-shift left instead of right throughout and we replace \texttt{ffs} with the
-analogous instruction \texttt{msb}). In the case of up-down travel we have
-found it helpful to store a redundant copy of the map that is rotated by 90
-degrees. Other possibilities also exist that do not incur an overhead: for
-example the map may be stored as blocks of size $m \times n$ that each contain
-bits from several rows and columns. Such an approach would also benefit
-diagonal travel which in our implementation remains step-by-step.
+We not yet discussed how to handle the target location which Jump Point Search
+treats as a special case.  To avoid jumping over the target
+we compare its position to the position of the node where the block-based
+symmetry-breaking procedure terminated -- either due to finding a successor or
+a reaching dead-end. If the target lies between these two locations we
+generate it as any other jump point successor.
 
+% Stupid LaTeX! Why do you force me to put this here?!?! Grr!
+\begin{figure*}[tb]
+       \label{fig:preproc}
+       \begin{center}
+%		   \includegraphics[width=0.95\columnwidth]
+%		{diagrams/preproc.png}
+         \scalebox{.8}{\input{diagrams/preproc.tex}}
+       \end{center}
+%	\vspace{-3pt}
+       \caption{\small (a) A jump point is computed in place of each grid neighbour of node $x$.
+		(b) When jumping from $x$ to $y$ we may cross the row or column of the target $t$ (here, both). 
+To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or column of $t$ (whichever is closest to $x$).}
+\end{figure*}
 
+\subsection*{Additional Considerations}
+The procedure we have described in our running example is applicable in the case
+where JPS scans the grid right-to-left. The modification for left-to-right
+scanning is simple: we shift left instead of right throughout and we
+replace \texttt{ffs} with the analogous instruction \texttt{msb}.  In the case
+of up-down travel we have found helpful to store a redundant copy of the
+map that is rotated by 90 degrees. Other possibilities also exist that do not
+incur an overhead: for example the map may be stored as blocks of size $m
+\times n$ that each contain bits from several rows and columns. Such an
+approach would also benefit diagonal travel (which in our implementation
+remains step-by-step) but may reduce the step size during horizontal scanning.
 %
 %whether an 
 %
