@@ -8,16 +8,22 @@ many variations, or symmetries, of the same path exist.  Symmetry slows down
 search by forcing otherwise performant algorithms to waste time considering
 many equivalent states.  We speed things up by developing new online and
 offline symmetry-breaking techniques that eliminate a large number of
-symmetric states. Our contributions are optimality preserving, memory
-efficient and can have a dramatic positive effect on the performance of
-pathfinding search. Moreover, our work is mostly orthogonal with a wide range
-of efficiency-improving techniques which have been previously described in the
-literature.  \par Our first contribution, Rectangular Symmetry Reduction
-(RSR), breaks symmetries during an offline preprocessing step. This approach
-is optimal, requires very little overhead (usually a few seconds of
-preprocessing time and a linear amount of memory) and is often better than
-recent search space reduction algorithms.  Our second contribution, Jump Point
-Search (JPS), improves on the performance of RSR by several factors and
+symmetric states.  Our contributions are optimality preserving, memory
+efficient and can have a dramatic positive effect on algorithmic performance 
+They are especially well suited to speeding up pathfinding search on grid-maps 
+of the type widely employed in computer games and robotics.
+Moreover, our work is largely orthogonal with a wide range of
+efficiency-improving techniques that have been previously described in the
+academic literature.
+\par 
+We investigate a number of novel symmetry breaking approaches.
+Rectangular Symmetry Reduction identifies symmetric path segments during an 
+offline pre-processing step.
+This approach is optimal, requires very little overhead (usually a few seconds of
+up-front time and a linear amount of memory) and it can improve
+the performance of classical pathfinding algorithms such as A* by several factors.
+Our second contribution, Jump Point
+Search (JPS), significant improves on the performance of RSR and
 represents the current state of the art for pathfinding on grid-map domains.
 In its online form JPS requires zero preprocessing, zero additional memory and
 always finds the shortest path. Our experiments show that JPS can consistently
@@ -26,13 +32,13 @@ In its offline form JPS reformulates the search space to achieve even better
 performance but requires an up-front investment of time. The algorithm has
 zero memory overheads when applied to graphs that stored as an adjacency list.
 When applied to graphs stored as an adjacency matrix, the algorithm introduces
-a linear-sized memory overhead.
+a linear-sized memory overhead. 
 \par
 In addition to RSR and JPS we study the related any-angle pathfinding problem.
-Commonly appearing in robotics and digital entertainment domains, this problem
-involves finding a shortest path in a grid-map domain but asks that the path
-is not constrained to the points of the grid.  Though a range of existing
-approaches have been developed to solve this problem all require trading away
-at least one of: speed, space efficiency or optimality.  We give new results
-showing that this problem can be solved both optimally and online.
-
+Recently formulated but nevertheless well studied, this problem involves finding 
+a shortest path in a grid-map domain but asks that the path
+is not constrained to the points of the grid.  Though a range of approaches have
+been suggested there are no effective techniques, to date, that are both optimal
+and online.
+As a final contribution we give a first algorithm that can provably compute 
+solutions having both of these desirable characteristics.
