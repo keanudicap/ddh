@@ -21,13 +21,3 @@ are guaranteed to be optimal.  Jump point pruning is fast, requires no
 preprocessing and introduces no memory overheads. It is also largely orthogonal to many
 existing speedup techniques applicable to grid maps.
 
-We make the following contributions: (i) a detailed description of the jump
-points algorithm; (ii) a theoretical result which shows that searching with jump
-points preserves optimality;  (iii) an empirical analysis comparing our method
-with two state-of-the-art search space reduction algorithms.  We run experiments
-on a range of synthetic and real-world benchmarks from the literature and
-find that jump points improve the search time performance of standard A* by
-an order of magnitude and more.  We also report significant improvement over
-Swamps~\cite{pochter10}, a recent optimality preserving pruning technique, and
-performance that is competitive with, and in many cases dominates,
-HPA*~\cite{botea04}; a well known sub-optimal pathfinding algorithm.
