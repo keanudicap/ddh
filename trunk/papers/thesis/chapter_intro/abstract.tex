@@ -1,32 +1,36 @@
 \chapter{Introduction}
-\label{cha:intro}
+\label{cha::intro}
 
-\section{The Pathfinding Problem}
-Pathfinding is the problem of navigating from A to B. It is a very old
-problem in Computer Science and one which commonly appears in a variety
-of settings including robotics, logistics, personal navigation and 
-digital entertainment.
+Pathfinding is the name given to a broad class of related problems
+often appearing in Computer Science. In the canonical case the
+pathfinding problem asks that we navigate between an arbitrary pair of 
+start and target locations drawn from a map. Such problems
+appear in a myriad of important and real-life contexts. For example:
+\begin{itemize}
+\item Pathfinding is at the heart of all personal GPS navigation devices.
+\item Pathfinding is used by transportation and logistics companies to 
+improve performance and reduce operating costs.
+\item Pathfinding is central to the correct operation of personal and industrial robots.
+\item Pathfinding powers the AI systems of many modern computer games.
+\end{itemize}
 
-\section{Practical Challenges and Tradeoffs}
-Put here an example showing why symmetry is a problem.
+\noindent Just as there are many possible application areas for pathfinding there are
+equally many variations of the problem as well. Frequently we are
+asked to find a path which is optimal with regard to distance. In other cases
+a more desirable path can be one that minimises travel time or even travel
+cost.  Sometimes it may not necessary -- or even possible -- to compute an
+optimal path: low-power or real-time computing devices place
+strict limits on the amount of resources (CPU, memory) that are available for
+navigation.  In these cases near-optimal, bounded sub-optimal or indeed any
+path at all will often suffice. Other types of pathfinding problems include
+(but are not limited to) finding a path in a dynamic environment, finding a path 
+in three or more dimensions, navigating in the presence of other moving entities and
+even chasing a moving target. All these topics have received 
+extensive attention from both researchers and industrial practitioners.
 
-\section{Contributions and Target Applications}
-\subsection{Rectangular Symmetry Reduction}
-\subsection{Jump Point Search}
-\subsection{Any-angle Pathfinding}
-
-\section{Publications and Thesis Overview}
-\label{sec:outline}
-This thesis is structured as follows: Chapter~\ref{cha:related}
-surveys related work from academic and industry literature and provides 
-a background for remaining chapters.
-Chapter~\ref{cha:rsr}
-presents Rectangular Symmetry Reduction. This work was
-previously reported in~\cite{harabor10,harabor11a}.
-Chapter~\ref{cha:jps} presents Jump Point Search. This work was
-previously reported in~\cite{harabor11b,harabor12}.
-Chapter~\ref{cha:anya} presents ANYA, our approach for solving
-the any-angle pathfinding problem.
-Chapter~\ref{cha:conc} presents the conclusion of the thesis
-and a summary of future work.
+In this thesis we will aim to compute distance-optimal paths in a discrete
+and static two-dimensional environment. Our target applications are robotics and computer games.
+We will study a range of different approaches but in each case our objective will
+be (i) to find the shortest path, (ii) as quickly as possible and (iii) as efficiently
+as possible with respect to available memory and pre-computation time. 
 
