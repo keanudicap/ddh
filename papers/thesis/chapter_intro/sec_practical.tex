@@ -1,16 +1,17 @@
 \section{Practical Considerations}
 \label{cha::intro::practical}
 
-%There are two common questions which every pathfinding practitioner must address
-%at the outset:
+There are two common questions which every pathfinding practitioner must address
+at the outset:
 %Regardless of the particular variant at hand there exist two common questions that 
 %each formulation must address:
-% (i) how to construct a map that represents the operating 
-%environment in which we want to navigate and (ii) how to actually search the map
-%for a path.
-The first question which every pathfinding practitioner must address at the 
-outset is how to best construct a map that represents the operating
-environment in which we want to navigate.
+ (i) how to construct a map that represents the operating 
+environment in which we want to navigate and (ii) how to actually search the map
+for a path. We discuss each in turn.
+%The first question which every pathfinding practitioner must address at the 
+%outset is how to best construct a map that represents the operating
+%environment in which we want to navigate.
+
 Maps used for pathfinding are exactly analogous to their real-life cartographic 
 counterparts: they document the salient features of an environment such as the
 %\section{Types of Maps}
@@ -19,33 +20,44 @@ counterparts: they document the salient features of an environment such as the
 %in a physical or virtual environment -- we need to first construct a map to
 %represent the salient features of the environment; features such as the
 locations of roads, the lengths of road segments, terrain type and elevation
-and the placement of both natural and artifical obstructions such as buildings 
+and the placement of both natural and artificial obstructions such as buildings 
 or waterways. 
 Depending on the application and setting some of these 
 features may be more important or less important; still others we might choose
  to simply ignore. For example:
 
 \begin{itemize}
-\item
-In computer games the virtual environment is 
-often discretised into a grid of traversable and non-traversable cells. Another
-popular approach,  known as a navigation mesh, discretises the environment into 
-a set of simple polygons. Grids are often favoured for their simplicity while 
-meshes are favoured for their typically small size. 
+\item In computer games the virtual environment is often discretised into a grid of 
+cells, each of which is either traversable or non-traversable. 
+%An alternative approach
+%discretises the environment into a mesh of simple polygons that can be traversed.
+%popular approach,  known as a navigation mesh, discretises the environment into 
+%a set of simple polygons. Grids are often favoured for their simplicity while 
+%meshes are favoured for their typically small size. 
 %The main
 %advantage of grids is simplicity; their main disadvantage is that at high resolutions
 %grids become very large and ineffcient to search. Navigation meshes meanwhile
 %require less space but they are complicated to construct and need to be repaired
 %if the environment changes.
 %In other domains specialised types of maps used for pathfinding have also arisen: 
-\item In logistics and personal navigation road maps are ubiquitous while 
-in robotics visibility graphs are very popular. Both capture details of the physical 
-environment that are most salient for the application at hand. In the case of road maps, it is critial
-to accurately describe the features of physical transportation networks but details about the rest
-of the world can be discarded. Similarly, visibility graphs only capture information
-about which points in the environment can be reached from one another by travelling in a straight
-line; everything else is secondary from the perspective of a mobile robot.
+\item In logistics and personal navigation road maps accurately describe the
+features of transportation networks but details about the rest of the world
+are omitted.
+\item In robotics,  visibility graphs capture information about which points
+in the environment can be reached from one another by travelling in a straight line.
+All other information is secondary from the perspective of a mobile robot.
 \end{itemize}
+%
+%are discarded.
+%In 
+%In logistics and personal navigation road maps are ubiquitous while 
+%in robotics visibility graphs are very popular. Both capture details of the physical 
+%environment that are most salient for the application at hand. In the case of road maps, it is critial
+%to accurately describe the features of physical transportation networks but details about the rest
+%of the world can be discarded. Similarly, visibility graphs only capture information
+%about which points in the environment can be reached from one another by travelling in a straight
+%line; everything else is secondary from the perspective of a mobile robot.
+%\end{itemize}
 %Grid maps are simple to construct and very popular
 %with researchers and practitiners 
 %build information rich topographic models and they are popular with researchers
@@ -84,98 +96,27 @@ line; everything else is secondary from the perspective of a mobile robot.
 %about points in the environment that can be reached from one another by travelling in a straight
 %line; everything else is secondary from the perspective of a mobile robot.
 %
-Many types of maps exist but for the purposes of pathfinding there is no single ``best'' choice.
-Each map emphasises different features of the physical or virtual environment and each has distinct strengths 
-and weaknesses -- characteristics which sometines only become apparent in a particular application 
-or setting.
+Many more types of maps exist but for the purposes of pathfinding there is no single ``best'' choice.
+Each type of map emphasises different features of the physical or virtual environment and each 
+has distinct strengths and weaknesses -- characteristics which sometimes only become apparent in 
+a particular application or setting. 
 
-The second question which every pathfinding practitioner must address at the outset is how
-to actually search the map for a path. The academic literature is rich with works that describe different 
-techniques for solving such problems. Some approaches are inspired by the behaviour of real-life
-insects; others are systematic techniques developed to automatically solve mazes. Some approaches
-come with performance and efficiency guarantees while others do not. 
-
-In this thesis we will build directly on the A{*} algorithm: a milestone technique from the area 
-of Artificial Intelligence, A{*} promises to always return the shortest path if one exists. Moreover, 
-it promises to do so using the least amount of possible effort. Our contribution is an
-enhancement of A{*}
-
+Having decided on a particular type of map, pathfinding practitioners must also decide, often
+at the same time, how to actually search the map for a path.
+The academic literature is rich with works that describe different 
+techniques for solving pathfinding problems. Examples include:
 \begin{itemize}
-\item Local search algorithms, some sometimes which mimic the behaviour of real-life insects. 
-These approaches are often very fast and very memory efficient but they make no guarantees that 
-they can actually find a path if one exists.
-\item Blind search algorithms. Developed for solving mazes,  these ``classical'' approaches can
-often (not always) guarantee that a path will be found and sometimes even that the path
-will be optimal -- but they are typically not very efficient.
-\item Informed search algorithms. This family of approaches will always find the optimal path if 
-one exists. The A{*} algorithm is a notable example; it comes with strong guarantees about
-efficiency and optimality and is regarded by many as the gold standard approach for pathfinding. 
-\item Near-optimal pathfinding techniques. Such approaches are usually very fast, very memory
-efficient and will find a path if one exists. Often such methods also come with guarantees
-about the quality of the paths they return.
+\item Search algorithms inspired by the behaviour of real-life insects.
+\item Blind-search algorithms developed to systematically solve mazes.
+\item Informed-search algorithms that employ heuristic lower-bounds in order
+to search the most promising areas of the map first.
 \end{itemize}
 
-
-Just as there are many different types of maps there are equally many different types of approaches that have 
-been developed to actually find a path between arbitary pairs of start and target locations.
-%Road maps are another specialised representation technique widely employed in logistics and personal 
-%navigation. They describe the features of physical transportation networks: 
-%usually roads but also e.g. public transportation routes or rail lines. Road maps are simple to understand
-%and information rich but they can be time consuming to accurately construct and they 
-%are not very useful for certain types of pathfinding; e.g. computer games or robotics.
-
-%Visibility graphs are special kinds of maps developed specifically for robotics applications.
-%%Their construction requires only a description of the position and size of 
-%%obstacles in an environment.
-%%The resulting map simply 
-%A visibility graph describes which pairs of points in an environment are mutually observable 
-%and can thus can be reached from one another by travelling in a straight line. Like road maps, 
-%visibility graphs are simple to understand and they can be quickly constructed. 
-%The main drawback is that they can be quite dense and thus computationally inefficient 
-%to search when trying to find a path. Another disadvantage is that visibility graphs often
-%do not record information about the underlying terrain. Such details can be important; e.g.
-%certain types of terrain are easier to traverse than others.
-
-\section{Search Techniques}
-\label{cha::intro::search}
-
-
-\begin{itemize}
-\item there are many application areas where the problem is interesting
-\item there are many variations of the problem
-\item solving the problem  involves (i) choosing a domain representation
-and (ii) choosing a search strategy. both choices are important and they
-can have a dramatic effect on how challenging (or not) pathfinding can be.
-\item many domain representations exist; discuss a few of the most popular
-including grid maps.
-\item many solution strategies exist; discuss a few possibilities and
-spell out that e.g. A* is regarded as the gold standard by industry
-practitioners: cite gamasutra and mention that many practitioners use A*
--- if not directly then as a basic building block.
-\item
-Approaches attempting to do better than A* have typically focused on 
-exploiting the domain 
-\end{itemize}
-
-
-particular constraints on what the path 
-
-Such activities are central
-to a great many application areas. For example: in robotics 
-
-Such activities are
-central to a great many applic
-
-
-of central importance in so much of daily life the problem is studied
-
-
-
-are of central importance in a great many application areas.
-
-Since navigation
-activities are central to a great many applicaton 
-
-cartographic
-representa
+\noindent Some approaches always find the shortest path while others do not. Some come with performance and and 
+efficiency guarantees while others do not. Depending on the target application (and even map type)
+some techniques may dominate others but there is no single ``best'' technique that is preferable in all cases.
+%In this thesis we will build directly on the A{*} algorithm: a milestone technique from the area 
+%of Artificial Intelligence, A{*} promises to always return the shortest path if one exists. Moreover, 
+%it promises to do so using the least amount of possible effort. Our contribution is an
+%enhancement of A{*}
 

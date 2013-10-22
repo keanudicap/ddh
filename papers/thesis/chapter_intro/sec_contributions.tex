@@ -1,27 +1,289 @@
-\section{Practical Challenges and Tradeoffs}
-Put here an example showing why symmetry is a problem.
+\section{Contributions}
+\label{cha::intro::contributions}
+We address our first research challenge, related to the difficulty of
+pathfinding on grid maps, by developing Rectangular Symmetry Reduction and
+Jump Point Search: two very fast and in some cases very economical algorithms
+that can dramatically improve the performance of pathfinding search.  Our
+central insight in this case concerns the novel application of symmetry
+elimination to pathfinding.
 
-\section{Contributions and Target Applications}
-In this thesis we will aim to compute shortest paths in a static environment
-represented as a two-dimensional grid of traversable and non-traversable cells.
-This common formulation appears often in contexts such as robotics and especially 
-computer games. Despite their apparent simplicity problems of this type can often 
-be surprisingly challenging to solve. This is because practitioners 
-(game developers in this case) must often satisfy two very different and competing 
-requirements. On the one hand characters in games should appear intelligent and 
-when they move they should find short realistic-looking paths. On the other hand, 
-paths should be computed quickly and with as few resources as possible. 
-This situation has led game developers to con
+We address our second research challenge, related to the optimality of paths
+on a grid, by giving a new theoretical results which show that the Any-Angle
+Pathfinding problem can be solved exactly and online. We also describe in
+detail the implementation and correct operation of a corresponding search
+algorithm, Anya, which appears especially well suited to pathfinding in
+computer games.
 
-In modern computer games 
+\subsection{Symmetry Breaking in Pathfinding Search}
+In this thesis we speed up grid-optimal pathfinding in an entirely novel way:
+through the identification and elimination of path symmetries.  Unlike the
+majority of works from the literature, in which a path is concretely defined
+in terms of a specific set of nodes and edges, we consider a path as an
+ordered sequence of independent and (often) interchangeable steps or actions.
+By taking an alternative view of the problem we show that many of the paths
+between two points on a grid map are simply permutations of each other; i.e.
+they all involve the same set of actions and they all have identical cost.
 
-for example it is not unusual to dedicate only 1-10\% of 
-CPU resources for all AI-related activities -- including pathfinding~\cite{tozour08}.
-Likewise, there are often very restrictive limitations placed on the amount
-of available memory. This situation has led researchers and game developers
-to consider 
+We show that in the presence of path symmetry classical and usually very
+performant algorithms such as A{*} will waste much time looking at
+permutations of all shortest paths: from the start node to each expanded node.
+To avoid this behaviour we develop a range of pathfinding techniques that can
+discard from consideration many equivalent paths and in the process
+dramatically speed up grid-based pathfinding.  Improvements range from as
+little as several factors to as much as two orders of magnitude.  In addition
+to being very fast we show that symmetry breaking in pathfinding can be very
+economical: our approaches require little-to-no upfront pre-processing and
+little-to-no additional memory; making them especially well suited to
+pathfinding in computer games.
 
-\subsection{Rectangular Symmetry Reduction}
-\subsection{Jump Point Search}
-\subsection{Any-angle Pathfinding}
+\subsubsection{Rectangular Symmetry Reduction}
+\label{cha::intro::contributions::rsr}
+Rectangular Symmetry Reduction (RSR) is an offline symmetry breaking algorithm
+for grid maps. It is fast, memory efficient, optimality preserving and can, in
+some cases, eliminate entirely the need to search.  RSR decomposes an
+arbitrary uniform-cost grid map into a set of empty rectangles and removes
+from each such rectangle all interior nodes.  Macro edges are then added
+between selected pairs of perimeter nodes to facilitate provably optimal
+traversal through each rectangle.  We develop two variants of RSR: one for
+4-connected grid maps and the other for 8-connected grid maps; both common
+domains that often appear in the AI literature and in real-life computer
+games.
 
+In addition to the basic algorithm we also develop two pruning strategies
+which can significantly reduce the number of nodes that need to be explored
+during search.  The first enhancement is applied offline and allows us to
+discard in many cases nodes from the perimeter of an empty rectangle. The
+second enhancement is applied online and allows us to speed up node expansion
+by selectively evaluating either all neighbours associated with a node or only
+a small subset.
+
+We evaluate RSR on a range of uniform-cost grid maps from the academic
+literature and find that it can improve the running time of A* search by
+several factors. In certain cases the speedup can be as much as one order of
+magnitude. When we compare RSR to Swamps~\citep{pochter10}, a contemporary and
+state-of-the-art graph pruning technique, we find that the two approaches have
+complementary strengths and that they could be easily combined. We also
+identify a range of benchmark problems on which RSR dominates convincingly.
+
+\subsubsection{Jump Point Search}
+\label{cha::intro::contributions::jps}
+Jump Point Search (JPS) an online pruning strategy that deals with path
+symmetry by selectively expanding only certain nodes on a grid map which we
+call \emph{jump points}.  Moving from one jump point to the next involves
+travelling in a fixed direction while repeatedly applying a set of simple
+neighbour pruning rules until either an obstacle or a jump point is reached.
+Because we do not expand any intermediate nodes can improve the search time
+performance of standard A{*} by an order of magnitude and more.  JPS is unique
+in the pathfinding literature in that it has very few disadvantages: it is
+simple, yet highly effective; it preserves optimality, yet requires no extra
+memory;  it is extremely fast, yet requires no pre-processing.  Further, our
+method is completely orthogonal to and easily combined with competing speedup
+techniques from the literature.  We are unaware of any other algorithm which
+has all these features.
+
+In addition to the basic algorithm we make three further contributions: (i) we
+enhance the pruning rules of JPS, allowing it to ignore many nodes that must
+otherwise be expanded; (ii) we give a new and more efficient procedure for
+online symmetry breaking by manipulating ``blocks'' of nodes at a single time
+rather than individual nodes; (iii) we give new offline pre-processing
+technique that can identify jump points apriori in order to further speed up
+pathfinding search.
+On benchmark domains taken from real computer games we show that our
+enhancements can improve JPS performance by anywhere from several factors to
+over one order of magnitude. We also compare our approaches with SUB: a very
+recent state-of-the art pathfinding algorithm. We find that the two techniques
+have complementary strengths. In addition we show that there are large 
+sets of benchmark instances where our improved JPS variants are faster.
+
+\subsection{Optimal Any-angle Pathfinding}
+\label{cha::intro::contributions::anya}
+We a new optimal algorithm for solving the Any-Angle Pathfinding Problem.
+Our approach involves searching over sets of states
+represented as intervals. From each interval we select a representative point
+to derive a corresponding $f$-value for the set.  We give theoretical results
+that show our algorithm, Anya, always returns an optimal path. Moreover it
+does so entirely online and without any pre-processing. To the best of our
+knowledge Anya is the first algorithm of its kind.  The result answers an 
+open question from the areas of Artificial Intelligence and Game Development: 
+is there an any-angle pathfinding algorithm which is online and optimal?
+The answer is yes.
+
+%
+%
+%often in a purely online fashion and without the introduction of any
+%additional memory overheads. We also 
+%
+%
+%In this thesis we study a a range of pathfinding algorithms applicable
+%to pathfinding in computer games. 
+%
+%In this thesis we will aim to compute shortest paths in a static environment
+%represented as a two-dimensional grid of traversable and non-traversable cells.
+%This common formulation appears often in contexts such as robotics and especially 
+%computer games. Despite their apparent simplicity problems of this type can often 
+%be surprisingly challenging to solve. This is because practitioners 
+%(game developers in this case) must often satisfy two very different and competing 
+%requirements. On the one hand characters in games should appear intelligent and 
+%when they move they should find short realistic-looking paths. On the other hand, 
+%paths should be computed quickly and with as few resources as possible. 
+%This situation has led game developers to con
+%
+%In modern computer games 
+%
+%%for example it is not unusual to dedicate only 1-10\% of 
+%%CPU resources for all AI-related activities -- including pathfinding~\cite{tozour08}.
+%%Likewise, there are often very restrictive limitations placed on the amount
+%%of available memory. This situation has led researchers and game developers
+%%to consider 
+%
+%%A more general variant is known as the Euclidean
+%%Shortest Path Problem. It differs from the Any-Angle case in that it does
+%%not require a grid map as input: any planar map will sufficie.
+%%Game developers have historically approached this challenge using a
+%%post-processing technique known as ``string pulling''. Applied to a grid-optimal
+%%path between the start and target location, such techniques simply ``pull''
+%%the endpoints of the path until it is taut.
+%%More recent approaches improve things by incorporating the post-processing step into 
+%%online search. Both methods typically yield only approximately shortest paths.
+%%
+%
+%
+%
+%
+%We will describe novel
+%algorithms that break symmetries both entirely online and also using a small pre-computation step. 
+%Our approaches are not only fast but also memory efficient; in some cases requiring zero additional
+%space. Moreover, these ideas are almost entirely orthogonal to existing speedup techniques and can
+%therefore be combined to achieve even better performance.
+%
+%When compared to other works
+%from the literature we find that our symmetry-breaking approaches have several compelling advantages:
+%
+%
+%The second major challenge facing 
+%
+%
+%Symmetry is manifest in pathfinding when there exist many variants of the same path. 
+%Symmetry slows 
+%
+%
+%
+%
+%
+%\begin{itemize}
+%\item Spatial abstraction techniques such as HPA{*} and PRA{*} create  a small approximation of the 
+%map that is faster to search; for example by dividing the cells of the grid into connected neighbourhoods, 
+%each of which can be treated as a single macro-location. Such techniques are usually very fast but
+%they trade optimality for speed. Computing the abstraction requires a pre-computation step and introduces 
+%a small memory overhead.
+%\item Graph pruning techniques such as Swamps~\citep{pochter08} reduce pathfinding effort by 
+%identifying areas of the map that can be ignored because crossing them would not improve the
+%length of any optimal path. These approaches require a pre
+%
+%
+%\end{itemize}
+%is often
+%
+%including spatial abstraction, graph pruning and memory heuristics. Each
+%of these approaches involves some kind of trade-off. k
+%
+%
+%
+%
+%
+%shortest path
+%
+%shortest path 
+%
+%they are often coarse approximations of the underlying environment. This means that
+%(i) computed paths, even those which are optimal with respect to the grid, are only approximations
+%
+% Higher resolution grids
+%can help to mitigate such problems but the size of map grows by a factor of four each time
+%the dimensions of the map (i.e. the length and width) are doubled. Moreover, pathfinding on 
+%grid maps is surprisingly challenging; depending on the topography of the map 
+%(the total number of cells and the density and placement of obstacles) even a performant
+%algorithm such as A{*}, often regarded as the gold standard in computer games, 
+%can explore a large portion of all traversable cells before finding an optimal path
+%between the start and tar
+%
+%
+%\begin{itemize}
+%\item Local search algorithms, some sometimes which mimic the behaviour of real-life insects. 
+%These approaches are often very fast and very memory efficient but they make no guarantees that 
+%they can actually find a path if one exists.
+%\item Blind search algorithms. Developed for solving mazes,  these ``classical'' approaches can
+%often (not always) guarantee that a path will be found and sometimes even that the path
+%will be optimal -- but they are typically not very efficient.
+%\item Informed search algorithms. This family of approaches will always find the optimal path if 
+%one exists. The A{*} algorithm is a notable example; it comes with strong guarantees about
+%efficiency and optimality and is regarded by many as the gold standard approach for pathfinding. 
+%\item Near-optimal pathfinding techniques. Such approaches are usually very fast, very memory
+%efficient and will find a path if one exists. Often such methods also come with guarantees
+%about the quality of the paths they return.
+%\end{itemize}
+%
+%
+%Just as there are many different types of maps there are equally many different types of approaches that have 
+%been developed to actually find a path between arbitary pairs of start and target locations.
+%%Road maps are another specialised representation technique widely employed in logistics and personal 
+%%navigation. They describe the features of physical transportation networks: 
+%%usually roads but also e.g. public transportation routes or rail lines. Road maps are simple to understand
+%%and information rich but they can be time consuming to accurately construct and they 
+%%are not very useful for certain types of pathfinding; e.g. computer games or robotics.
+%
+%%Visibility graphs are special kinds of maps developed specifically for robotics applications.
+%%%Their construction requires only a description of the position and size of 
+%%%obstacles in an environment.
+%%%The resulting map simply 
+%%A visibility graph describes which pairs of points in an environment are mutually observable 
+%%and can thus can be reached from one another by travelling in a straight line. Like road maps, 
+%%visibility graphs are simple to understand and they can be quickly constructed. 
+%%The main drawback is that they can be quite dense and thus computationally inefficient 
+%%to search when trying to find a path. Another disadvantage is that visibility graphs often
+%%do not record information about the underlying terrain. Such details can be important; e.g.
+%%certain types of terrain are easier to traverse than others.
+%
+%\section{Search Techniques}
+%\label{cha::intro::search}
+%
+%
+%\begin{itemize}
+%\item there are many application areas where the problem is interesting
+%\item there are many variations of the problem
+%\item solving the problem  involves (i) choosing a domain representation
+%and (ii) choosing a search strategy. both choices are important and they
+%can have a dramatic effect on how challenging (or not) pathfinding can be.
+%\item many domain representations exist; discuss a few of the most popular
+%including grid maps.
+%\item many solution strategies exist; discuss a few possibilities and
+%spell out that e.g. A* is regarded as the gold standard by industry
+%practitioners: cite gamasutra and mention that many practitioners use A*
+%-- if not directly then as a basic building block.
+%\item
+%Approaches attempting to do better than A* have typically focused on 
+%exploiting the domain 
+%\end{itemize}
+%
+%
+%particular constraints on what the path 
+%
+%Such activities are central
+%to a great many application areas. For example: in robotics 
+%
+%Such activities are
+%central to a great many applic
+%
+%
+%of central importance in so much of daily life the problem is studied
+%
+%
+%
+%are of central importance in a great many application areas.
+%
+%Since navigation
+%activities are central to a great many applicaton 
+%
+%cartographic
+%representa
+%
