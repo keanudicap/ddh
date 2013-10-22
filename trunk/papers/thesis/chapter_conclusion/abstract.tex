@@ -8,7 +8,16 @@ idea nicely complements existing search-space reduction techniques and, as it
 turns out, also complements most grid-based abstraction methods and memory
 heuristic approaches.
 
-\subsection{Comments re JPS}
+Our work in this area represents a significant advancement of the state-of-the-art.
+We have shown that finding distance-optimal paths on many of the most challenging 
+grid-based pathfinding benchmarks from the literature, maps drawn from real computer games,
+can be reduced to almost trivial problems that require very little effort to solve.
+
+\section{Future Work}
+We discuss future work in terms of our two main contributions: Symmetry breaking
+in pathfinding search and Any-angle pathfinding.
+
+\subsection{Symmetry Breaking}
 One interesting direction for further work is Jump Point Search is well suited
 for applications such as robotics and computer games; both of which often
 involve pathfinding across uniform-cost grid maps.  We have given some simple
@@ -30,11 +39,29 @@ grids, such as hexagons or texes~\citep{yap02}. We propose to achieve this by
 developing  a series of pruning rules analogous to those given for square
 grids.  As the branching factor on these domains is lower than square grids,
 we posit that jump points could be even more effective than observed in the
-current paper.  Another interesting direction is combining jump points with
-other speedup techniques: e.g. Swamps or HPA*.
+current paper.  
 
-\section{Clipboard}
-Our work in this area represents a significant advancement of the state-of-the-art.
-We have shown that finding distance-optimal paths on many of the most challenging 
-grid-based pathfinding benchmarks from the literature, maps drawn from real computer games,
-can be reduced to almost trivial problems that require very little effort to solve.
+Another interesting direction is combining jump points with
+other speedup techniques: e.g. Swamps or HPA*. 
+
+Stronger pruning operators are another interesting possibility. SUB~\cite{urasKH13}
+is a recent offline pruning algorithm that can prune an intermediate node from
+a path as long as the distance between the start and target location is the same
+as the lower-bound distance given by the local heuristic (usually Octile Distance).
+It seems reasonable to (i) combine this style of pruning with online JPS and
+(ii) combine JPS' directional pruning approach to reducing the branching
+factor of SUB in order to further enhance the performance of that algorithm.
+
+
+\subsection{Any-angle Pathfinding}
+An obvious direction for further work is a concrete implementation of Anya
+together with an empirical evaluation. This is a topic of current research.
+
+Another interesting direction is to generalise the theoretical results from
+Anya to the problem of finding Euclidean-optimal paths in continuous planar
+environments with polygonal obstacles -- rather than the square obstacles of
+the type found in grid maps. Such a generalisation could be achieved by (i) 
+using a grid to tesselate the environment and (ii) testing if any obstacles
+intersect the current interval as we move it from one row of the grid to anoter.
+Each time we detect an intersection we generate a successor interval whose y-axis
+is the same as the obstacle rather than the y-axis of the next row.
