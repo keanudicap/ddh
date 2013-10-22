@@ -25,7 +25,7 @@ between two points on a grid map are simply permutations of each other; i.e.
 they all involve the same set of actions and they all have identical cost.
 
 We show that in the presence of path symmetry classical and usually very
-performant algorithms such as A{*} will waste much time looking at
+performant algorithms such as A{*}~\citep{hart68} will waste much time looking at
 permutations of all shortest paths: from the start node to each expanded node.
 To avoid this behaviour we develop a range of pathfinding techniques that can
 discard from consideration many equivalent paths and in the process
@@ -58,7 +58,7 @@ by selectively evaluating either all neighbours associated with a node or only
 a small subset.
 
 We evaluate RSR on a range of uniform-cost grid maps from the academic
-literature and find that it can improve the running time of A* search by
+literature and find that it can improve the running time of A{*} search by
 several factors. In certain cases the speedup can be as much as one order of
 magnitude. When we compare RSR to Swamps~\citep{pochter10}, a contemporary and
 state-of-the-art graph pruning technique, we find that the two approaches have
@@ -90,10 +90,11 @@ technique that can identify jump points apriori in order to further speed up
 pathfinding search.
 On benchmark domains taken from real computer games we show that our
 enhancements can improve JPS performance by anywhere from several factors to
-over one order of magnitude. We also compare our approaches with SUB: a very
-recent state-of-the art pathfinding algorithm. We find that the two techniques
-have complementary strengths. In addition we show that there are large 
-sets of benchmark instances where our improved JPS variants are faster.
+over one order of magnitude. We also compare our approaches with
+SUB~\citep{urasKH13}: a very recent state-of-the art pathfinding algorithm. We
+find that the two techniques have complementary strengths. In addition we show
+that there are large sets of benchmark instances where our improved JPS
+variants are faster.
 
 \subsection{Optimal Any-angle Pathfinding}
 \label{cha::intro::contributions::anya}
