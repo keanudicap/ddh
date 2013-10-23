@@ -1,67 +1,38 @@
 \chapter{Conclusion}
 \label{cha::conclusion}
-My work in this area can be broadly classified as a search space pruning
-technique. Where it differs from existing efforts is that, instead of trying to
-identify areas that do not have to be crossed during search, I aim to identify
-and prune symmetric nodes that prevent the fast exploration of an area. This
-idea nicely complements existing search-space reduction techniques and, as it
-turns out, also complements most grid-based abstraction methods and memory
-heuristic approaches.
 
-Our work in this area represents a significant advancement of the state-of-the-art.
-We have shown that finding distance-optimal paths on many of the most challenging 
-grid-based pathfinding benchmarks from the literature, maps drawn from real computer games,
-can be reduced to almost trivial problems that require very little effort to solve.
+Pathfinding is a problem that has received significant attention from both
+researchers and industrial practitioners. Despite numerous studies, many types
+of pathfinding problems remain very challenging to solve. In the case of
+mobile robots and computer games, where the world is often represented as a
+grid, there exist two signficant research challenges: (i) grids are dense and
+contain many nodes which makes grid-optimal pathfinding difficult; (ii)
+grid-optimal paths are often not Euclidean-optimal which is undesirable from
+an efficiency perspective and also from an aesthetic perspective.
 
-\section{Future Work}
-We discuss future work in terms of our two main contributions: Symmetry breaking
-in pathfinding search and Any-angle pathfinding.
+To address the first of these challenges we have developed Rectangular
+Symmetry Reduction (RSR) and Jump Point Search (JPS): two novel and performant
+pathfinding algorithms that speed up grid-optimal search by identifying and
+eliminating from consideration paths that are symmetric permutations of each
+other.  JPS and RSR can improve the runtime performance of classical
+algorithms such as A{*} by anywhere from several factors to one and sometimes
+two orders of magnitude -- all without extensive pre-processing or the
+introduction of large memory overheads.
 
-\subsection{Symmetry Breaking}
-One interesting direction for further work is Jump Point Search is well suited
-for applications such as robotics and computer games; both of which often
-involve pathfinding across uniform-cost grid maps.  We have given some simple
-suggestion by which JPS can be extended to weighted grid maps: simply consider
-as forced any neighbouring tile which has a different terrain type than the
-current node. The effectiveness of this approach depends on the topgraphy of
-the map: grid maps of the type typically found in computer games can often be
-divided into different regions, each having a distinct type of terrain. In
-these cases JPS breaks symmetries when pathfinding across a particular region
-and stops when it encounters a node that functions as a transition point from
-one region to another. A more general approach to weighted grids, and an
-interesting direction for future work, is to adapt the neighbour pruning rules
-of JPS to explicltly calculate the cost of local paths through and around the
-current node.  Using such an approach the search is will not necessarily stop
-to expand a node each time a path crosses from weighted region to another.
+To address the second research challenge we have developed Anya: a novel
+approach for computing Euclidean-optimal paths on a grid map. Previous
+attempts at computing such paths have either been online methods that yield
+only approximate solutions or exact methods that require an offline
+pre-computation step.  Anya is the first algorithm that, to the best of our
+knowledge, combines the advantages of both approaches without any of the
+disadvantages.
 
-Another interesting direction is to extend jump points to other types of
-grids, such as hexagons or texes~\citep{yap02}. We propose to achieve this by
-developing  a series of pruning rules analogous to those given for square
-grids.  As the branching factor on these domains is lower than square grids,
-we posit that jump points could be even more effective than observed in the
-current paper.  
+Our work represents a significant advancement of the state-of-the-art. With
+RSR and JPS we have shown that optimal pathfinding on many of the most
+challenging grid-based benchmarks from the literature, maps drawn from real
+computer games, can be reduced to almost trivial problems that require very
+little effort to solve.  With Anya we have resolved an open question from the
+areas of Artificial Intelligence and Game Development: is there an Any-angle
+pathfinding algorithm which is both online and optimal?  The answer is yes.
 
-Another interesting direction is combining jump points with
-other speedup techniques: e.g. Swamps or HPA*. 
-
-Stronger pruning operators are another interesting possibility. SUB~\cite{urasKH13}
-is a recent offline pruning algorithm that can prune an intermediate node from
-a path as long as the distance between the start and target location is the same
-as the lower-bound distance given by the local heuristic (usually Octile Distance).
-It seems reasonable to (i) combine this style of pruning with online JPS and
-(ii) combine JPS' directional pruning approach to reducing the branching
-factor of SUB in order to further enhance the performance of that algorithm.
-
-
-\subsection{Any-angle Pathfinding}
-An obvious direction for further work is a concrete implementation of Anya
-together with an empirical evaluation. This is a topic of current research.
-
-Another interesting direction is to generalise the theoretical results from
-Anya to the problem of finding Euclidean-optimal paths in continuous planar
-environments with polygonal obstacles -- rather than the square obstacles of
-the type found in grid maps. Such a generalisation could be achieved by (i) 
-using a grid to tesselate the environment and (ii) testing if any obstacles
-intersect the current interval as we move it from one row of the grid to anoter.
-Each time we detect an intersection we generate a successor interval whose y-axis
-is the same as the obstacle rather than the y-axis of the next row.
+\newpage

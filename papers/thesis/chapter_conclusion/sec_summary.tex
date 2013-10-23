@@ -1,0 +1,73 @@
+\section{Summary}
+\label{cha::conclusion::summary}
+We study distance-optimal pathfinding in discrete and static two-dimensional
+environments. Our target applications are mobile robot navigation and
+pathfinding in computer games, both settings where the world is commonly
+represented as a grid. Our objectives throughout this thesis have been to: (i)
+find the shortest path; (ii) as quickly as possible; (iii) as economically as
+possible with respect to available resources such as memory and
+pre-computation time.
+
+We identified two signficant challenges that arise when trying to find optimal
+paths on grid domains: (i) grids are dense and finding an optimal path often
+means expanding very many nodes; (ii) paths which are grid-optimal are often
+not Euclidean-optimal which is undesirable from both an an efficiency
+perspective and an aesthetic perspective. We address the first of these
+challenges in Chapter~\ref{cha::rsr}, Chapter~\ref{cha::jps} and
+Chapter~\ref{cha::jps2}.  We address the second of these challenges in
+Chapter~\ref{cha::anya}.
+
+In Chapter~\ref{cha::rsr} we identify one signficiant factor that makes
+pathfinding in grids challenging: the existence of equivalent permutations for
+each shortest path in a grid. We formalise this idea by defining concretely
+what it means for two paths to be symmetric. We then give a description of and
+experimental evaluation for an offline symmetry-breaking approach called
+Rectangular Symmetry Reduction (RSR). We show that RSR can improve the
+performance of the classical A{*} algorithm by several factors in most of our
+benchmark domains and up to one order of magnitude in some other cases. We
+also compare RSR with two contemporary pathfinding algorithms:
+Swamps~\citep{pochter10} and the Portal Heuristic~\citep{goldenberg10}. We
+find that RSR has complementary strengths with these approaches and we
+identify many instances where RSR dominates convincingly.
+
+In Chapter~\ref{cha::jps} we present Jump Point Search (JPS): an alternative
+symmetry breaking procedure which selectively expanding only certain nodes on
+a grid map which called \emph{jump points}.  JPS is recursive in nature,
+guaranteed optimal and applied entirely online. It requires no pre-processing
+and introduces no memory overheads. It can improve the performance of standard
+A{*} by one order of magnitude and more in each of our benchmark domains. JPS
+compares favourably with and convincingly dominates contemporary optimal
+speedup techniques such as Swamps. It is also competitive with the non-optimal
+hierarchical pathfinding method HPA{*}.  JPS is unique in the pathfinding
+literature in that it has very few disadvantages: it is simple, yet highly
+effective; it preserves optimality, yet requires no extra memory;  it is
+extremely fast, yet requires no pre-processing.  Further, JPS is completely
+orthogonal to and easily combined with competing speedup techniques from the
+literature.  We are unaware of any other algorithm which has all these
+features.
+
+In Chapter~\ref{cha::jps2} we present several enhancements that further
+improve the performance of Jump Point Search. The first enhancement is a set
+of improved pruning rules that allow JPS to prune from consideration certain
+types of nodes known as intermediate jump points.  The second enhancement
+allows JPS to consider ``blocks'' of nodes at one time when breaking
+symmetries.  The third enhancement is an offline pre-processing technique that
+speeds up search by identifying jump points apriori.  We show in an empirical
+evaluation that these improvements have a strong positive effect on Jump Point
+Search, improving runtimes by anywhere from several factors to one order of
+magnitude. We also compare our approach with two variants of a
+SUB~\citep{urasKH13} a recent and very fast approach that breaks path
+symmetries during an offline pre-processing step. We find that the two
+techniques have complementary strengths and we identify large sets of
+instances where JPS is faster.
+
+In Chapter~\ref{cha::anya} we turn our attention to the problem of finding a
+Euclidean-optimal path in a grid map. We describe Anya: a novel approach to
+this problem which involves considering sets of states together as an
+interval. From each interval we select a single representative point which we
+use to compute an $f$-value for the entire set.  During search intervals are
+projected from one row of the grid to another until the target is reached. We
+give theoretical results showing Anya always finds a Euclidean-optimal path if
+one exists. Moreover, Anya does in an entirely online fashion. We are unaware
+of any other approach with these desirable characteristics.
+
