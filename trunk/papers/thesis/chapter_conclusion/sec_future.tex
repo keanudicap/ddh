@@ -4,17 +4,17 @@ We discuss future work in terms of our two main contributions: Symmetry breaking
 in pathfinding search and optimal approaches for Any-angle pathfinding.
 
 \subsection{Symmetry Breaking}
-One interesting direction for further work involves stronger pruning rules
-for Jump Point Search on both weighted and unweighted grid maps.
-In the weighted case we have given one simple suggestion for adapting the 
-existing algorithm: simply stop whenever any neighbouring tile has a different
-terrain type than the current node. 
-A more general approach is to explicltly calculate the 
-weighted cost of local paths: from the parent node to each neighbouring node. 
-The advantage is that we do not necessarily need to stop each time the path
-transitions from one weighted region to another. We need to be careful however
-to balance the additional time required to explicltly compute the costs of 
-each local path vs. the time savings from performing fewer node expansions.
+One interesting direction for further work involves stronger pruning rules for
+Jump Point Search on both weighted and unweighted grid maps.  In
+Chapter~\ref{cha::jps::weighted} we have given one simple suggestion for
+adapting the existing algorithm to weighted grids: simply stop whenever any
+neighbouring tile has a different terrain type than the current node.  A more
+general approach is to explicitly calculate the weighted cost of local paths:
+from the parent node to each neighbouring node.  The advantage is that we do
+not necessarily need to stop each time the path transitions from one weighted
+region to another. We need to be careful however to balance the additional
+time required to explicitly compute the costs of each local path vs. the time
+savings from performing fewer node expansions.
 
 In the case of unweighted grid maps we believe stronger symmetry breaking
 rules are possible which will allow us to jump over at least some of the
@@ -41,10 +41,10 @@ given for square grids.  As the branching factor on these domains is lower
 than square grids, we posit that jump points could be even more effective 
 than we have observed for square grids.
 
-Finally, synthesisng JPS with complementary speedup techniques from the
+Finally, synthesising JPS with complementary speedup techniques from the
 literature appears to be a promising line of research. For example JPS could
 be used to speed up optimal search in an implementation of
-Swamps~\citep{pochter08} or to speed up start and target insertion in an
+Swamps~\citep{pochter10} or to speed up start and target insertion in an
 approximate hierarchical pathfinder such as HPA{*}~\citep{botea04}.
 
 \subsection{Any-angle Pathfinding}
@@ -55,7 +55,7 @@ Another interesting direction is to generalise the theoretical results from
 Anya to the problem of finding Euclidean-optimal paths in continuous planar
 environments with polygonal obstacles -- rather than the square obstacles of
 the type found in grid maps. Such a generalisation could be achieved by (i) 
-using a grid to tesselate the environment and (ii) testing if any obstacles
-intersect the current interval as we move it from one row of the grid to anoter.
+using a grid to tessellate the environment and (ii) testing if any obstacles
+intersect the current interval as we move it from one row of the grid to another.
 Each time we detect an intersection we generate a successor interval whose y-axis
 is the same as the obstacle rather than the y-axis of the next row.
