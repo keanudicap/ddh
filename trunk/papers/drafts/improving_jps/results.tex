@@ -23,8 +23,6 @@ Higher values are always better.}
 \label{fig::vs_jps2011}
 \end{figure*}
 
-
-
 We have previously observed that the bottleneck of the JPS 2011 algorithm is individual node
 expansion operations. In Table~\ref{table::expansion} we give results for the average
 time required to expand one million random starting nodes from each input map in
@@ -39,7 +37,9 @@ We show the spread of results after having assigned all test instances into buck
 similar length.
 We observe that any of our alternative approaches is strictly faster than the original. 
 Moreover, JPS (B) and JPS (B + P) have all the same advantages as JPS 2011: they are 
-fast, optimal, online and require no extra memory vs. JPS 2011.
+fast, optimal, online and require, in principle at least, no extra memory vs. JPS 2011
+(recall that in practice we store a rotated copy of map twice to improve memory access
+patterns).
 A summary of pre-processing requirements is given in Table~\ref{table::preproc}. Note
 that JPS+ and JPS+ (P) have the same requirements and are not listed separately.
 
@@ -108,7 +108,7 @@ We have shown with JPS+ and JPS+ (P) that further improvements are also possible
 In our experiments we employ an offline pre-processing step together with a small 
 amount of memory (10MB or less in most cases) in order to identify apriori all jump 
 point successors of each grid node.
-The main advantage is performance: JPS+ and JPS+ (P) we can improve the search times of 
+The main advantage is performance: JPS+ and JPS+ (P) can improve the search times of 
 JPS 2011 by up to one order of magnitude and more.
 The main disadvantage is that if the map changes the pre-processed
 database needs to be re-computed. We have shown that each such pre-computation

@@ -1,7 +1,7 @@
 
 \section{Preprocessing}
 \label{sec::preprocessing}
-In the preceeding section we have suggested a strategy for enhancing the
+In the preceding section we have suggested a strategy for enhancing the
 online performance of Jump Point Search.  In this section we give an offline
 technique which can improve the algorithm further still. First, recall that 
 Jump Point Search distinguishes between two different kinds of
@@ -54,7 +54,7 @@ because $T$ was unknown.
 Instead, the sterile jump point $S$ is recorded in the precomputed 
 database. We use the location of $S$ to determine whether the jump from 
 $N$ to $S$ crosses the row or column of $T$ (and where) and then test 
-whether $T$ is reachanble from that location. This procedure 
+whether $T$ is reachable from that location. This procedure 
 leads us to identify and generate $J$ as a diagonal jump point successor
 of $N$. We apply the same intersection test more broadly -- to all 
 successors of $N$. This is sufficient to guarantee both completeness 
@@ -95,4 +95,4 @@ using one byte per successor we could jump up to 127 steps
 at one time. The disadvantage of this approach is that more nodes may be 
 expanded during search than strictly necessary. A hybrid 
 algorithm that combines a pre-computed database with a recursive
-jumping procedure is another memory-efficient possiblity.
+jumping procedure is another memory-efficient possibility.

@@ -61,10 +61,12 @@ node is traversable or not.
       \end{tikzpicture}%
     }
   %\end{center}
-  \caption{\small A current search state 
-    (the grid is assumed larger than the part presented).
-  The red numbers show in which order the traversability of the nodes 
-  is tested.}
+  \caption{\small 
+A current search state (the grid is assumed larger than the part presented).
+The red numbers show in which order the traversability of the nodes is tested.
+The blue rectangle represents the byte that is returned when we scan the
+grid to read the value of location $N = \langle 2, 2\rangle$.
+}
   \label{fig::gridforblocks}
 \end{figure}
 
@@ -89,11 +91,12 @@ that contains values for the nodes up to $\langle 2, 9\rangle$:
 \begin{equation}
 B_{N} = [0,0,0,0,0,1,0,0]
 \end{equation}
-Note that in practice we may have to first shift the returned value until 
-the bit corresponding to location $\langle 2, 2\rangle$ is in the lowest
-position. In a similar fashion and using only two further memory operations we 
-can read the values for all nodes immediately above and immediately
-below those in byte $B$:
+Each zero valued bit in $B_N$ represents a traversable node and each set bit
+represents an obstacle.  Note that in practice we read several bytes at one
+time and shift the returned value until the bit corresponding to location
+$\langle 2, 2\rangle$ is in the lowest position. In a similar fashion and
+using only two further memory operations we can read the values for all nodes
+immediately above and immediately below those in byte $B$:
 \begin{gather}
 B_{\uparrow} = [0, 0, 0, 0, 0, 0, 0, 0]\\
 B_{\downarrow} = [0, 0, 1, 1, 0, 0, 0, 0]
@@ -150,8 +153,8 @@ otherwise we have hit a dead-end.  Alternatively, if $B_S$ evaluates to zero
 there is no reason to stop: we jump ahead 7 positions and repeat the procedure
 until termination. 
 
-We not yet discussed how to handle the target location which Jump Point Search
-treats as a special case.  To avoid jumping over the target
+We have not yet discussed how to handle the target location. Jump Point Search
+treats this as a special case.  To avoid jumping over the target
 we compare its position to the position of the node where the block-based
 symmetry-breaking procedure terminated -- either due to finding a successor or
 a reaching dead-end. If the target lies between these two locations we
