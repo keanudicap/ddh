@@ -2,7 +2,7 @@
 Jump Point Search (JPS) is the combination of A* search with 
 simple pruning rules that, taken together and applied recursively, 
 can identify and eliminate many 
-uniform-cost path symmetries. %from a given undirected grid map. 
+path symmetries from an undirected and 8-connected grid map. %from a given undirected grid map. 
 There are two sets of rules: pruning rules and jumping rules. 
 \\ \newline
 \textbf{Pruning Rules:}
@@ -25,9 +25,12 @@ of the following rules applies:
 			{diagrams/pruningrules.pdf}
        \end{center}
 	\vspace{-3pt}
-       \caption{\small (a) When the move from $p$ to $x$ is straight only one natural neighbour remains.
-(b) When the move from $p$ to $x$ is diagonal, three natural neighbours remain. (c) Obstacles around $x$
-cause some neighbours to become forced. }
+       \caption{\small 
+When the move from $p$ to $x$ is straight (as in (a)) only one natural neighbour remains.
+When the move from $p$ to $x$ is diagonal (as in (c)), three natural neighbours remain. 
+When obstacles are adjacent to $x$  some neighbours become forced; we illustrate this
+in for straight moves (q.v. (b)) and for diagonal moves (q.v. (d)).
+}
        \label{fig:pruning}
 \end{figure}
 

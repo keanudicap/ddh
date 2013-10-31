@@ -15,11 +15,11 @@ We argue that the intermediate jump points can be safely pruned without
 affecting the optimality of Jump Point Search.  
 Each intermediate jump point has at most three successors: the first is a jump 
 point that is reachable horizontally, the second is a jump point that is reachable 
-veritcally and the third is the next intermediate jump point that can be reached 
+vertically and the third is the next intermediate jump point that can be reached 
 without changing direction.
 When we prune an intermediate jump point we store its successors in a list and
 generate them in its stead. We apply this procedure recursively to any
-successors which are also intermediate jump ponts and terminate only when a
+successors which are also intermediate jump points and terminate only when a
 dead-end is reached. Figure~\ref{fig::pruning} shows an example.
 
 To see that our strategy is optimality preserving we need only observe that
