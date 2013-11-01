@@ -85,9 +85,10 @@ Each one of these nodes will be individually tested and each test
 involves reading a separate value from the grid.
 
 We will exploit the fact that memory entries are organised into fixed-size 
-lines of contiguous bytes. Thus, when we read the value of the
-byte containing location $\langle 2, 2\rangle$ we will be returned a byte
-that contains values for the nodes up to $\langle 2, 9\rangle$:
+lines of contiguous bytes. Thus, when we scan the grid to read the value of 
+location $N = \langle 2, 2\rangle$ we would like to be returned a byte $B_N$
+that contains other bit-values too, such as those for locations up to
+$\langle 2, 9\rangle$. In this case we have:
 \begin{equation}
 B_{N} = [0,0,0,0,0,1,0,0]
 \end{equation}
@@ -159,20 +160,6 @@ we compare its position to the position of the node where the block-based
 symmetry-breaking procedure terminated -- either due to finding a successor or
 a reaching dead-end. If the target lies between these two locations we
 generate it as any other jump point successor.
-
-% Stupid LaTeX! Why do you force me to put this here?!?! Grr!
-\begin{figure*}[tb]
-       \label{fig:preproc}
-       \begin{center}
-%		   \includegraphics[width=0.95\columnwidth]
-%		{diagrams/preproc.png}
-         \scalebox{.8}{\input{diagrams/preproc.tex}}
-       \end{center}
-%	\vspace{-3pt}
-       \caption{\small (a) A jump point is computed in place of each grid neighbour of node $x$.
-		(b) When jumping from $x$ to $y$ we may cross the row or column of the target $t$ (here, both). 
-To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or column of $t$ (whichever is closest to $x$).}
-\end{figure*}
 
 \subsection*{Additional Considerations}
 The procedure we have described in our running example is applicable in the case

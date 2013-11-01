@@ -29,8 +29,8 @@ time required to expand one million random starting nodes from each input map in
 each benchmark set. We find that block-based jumping and pre-processing jump points
 each improve average times by one and two orders of magnitude respectively vs. JPS 2011.
 Pruning intermediate jump points from the search tree increases the average branching 
-factor by several times but the end result in terms of time-per-expansion is still much 
-better. In Figure~\ref{fig::vs_jps2011} we give a summary of search performance, in terms
+factor by several times but the time-per-expansion is still much better. 
+In Figure~\ref{fig::vs_jps2011} we give a summary of search performance, in terms
 of time and node expansions, for all GPPC instances on each of our three benchmark sets. 
 In each case and for each metric we consider relative improvement vs. JPS 2011.
 We show the spread of results after having assigned all test instances into buckets of 
@@ -49,10 +49,11 @@ that JPS+ and JPS+ (P) have the same requirements and are not listed separately.
 SUB~\cite{urasKH13} is a recent pathfinding technique from the literature.
 As one of the joint winners of the 2012 Grid-based Path Planning Competition (GPPC) 
 SUB has been shown to be very fast and is considered the current state of the art.
-We compare against two variants: SUB-S (S for Simple) and SUB-TL
-(TL for Two Level). The former is guaranteed optimal while the latter is not.
-To evaluate SUB-S and SUB-TL we used the authors' original C++ implementation which 
-we obtained from~{\small \url{http://gppc-2012.googlecode.com/svn/trunk/entries/SUB-a/}}.
+We compare against two variants described by the original authors: SUB-S (S
+for Simple) and SUB-TL (TL for Two Level). The former is guaranteed optimal
+while the latter is not.  To evaluate SUB-S and SUB-TL we used the authors'
+original C++ implementation which we obtained from~{\small
+\url{http://gppc-2012.googlecode.com/svn/trunk/entries/SUB-a/}}.
 
 %The basic version of the algorithm, which its authors term SUB-S (S for Simple),
 %is both complete and optimal. 

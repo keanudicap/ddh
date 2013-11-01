@@ -1,44 +1,3 @@
-\section{Improved Pruning Rules}
-\label{sec::pruning}
-We have seen that JPS distinguishes between jump points that have at least 
-one forced neighbour and those that have none.
-The former can be regarded as
-the grid equivalent of a visibility point: they are adjacent to at least one
-obstacle, and they are on at least one optimal path between two neighbours
-that are not mutually observable. If JPS prunes any of these nodes it is
-entirely possible that it will not return an optimal path.  The second type of
-jump points are not adjacent to any obstacle. They are simply intermediate
-locations where the optimal path can change direction in order to reach the
-first type of jump point or the goal.
-\par
-We argue that the intermediate jump points can be safely pruned without
-affecting the optimality of Jump Point Search.  
-Each intermediate jump point has at most three successors: the first is a jump 
-point that is reachable horizontally, the second is a jump point that is reachable 
-vertically and the third is the next intermediate jump point that can be reached 
-without changing direction.
-When we prune an intermediate jump point we store its successors in a list and
-generate them in its stead. We apply this procedure recursively to any
-successors which are also intermediate jump points and terminate only when a
-dead-end is reached. Figure~\ref{fig::pruning} shows an example.
-
-To see that our strategy is optimality preserving we need only observe that
-for each intermediate jump point that is pruned the $g$-value of any of its
-successors remains unchanged. We simply generate these nodes earlier without
-first expanding an intermediate location.  The parent of each newly orphaned
-successor then becomes the starting location from where we initiated the jump. To
-extract a concrete path we simply walk from one jump point on the final
-path to the next in a diagonal-first way: i.e. we follow the octile heuristic but 
-take all diagonal steps as early as possible. Such a path is guaranteed to be 
-valid and thus obstacle-free.
-
-Our pruning strategy is applied entirely online; it does not require any
-special data structures and does not store nor require any additional
-information.  It allows us to jump further than we otherwise might but comes
-at the cost of up to two additional open list operations for each node that we
-prune. Nevertheless, we will show empirically that pruning intermediate nodes
-from the search tree improves the performance of Jump Point Search.
-
 \begin{figure}[tb]
   %\begin{center}
     \scalebox{0.74}{%
@@ -85,4 +44,46 @@ from the search tree improves the performance of Jump Point Search.
 	in a single operation.}
   \label{fig::pruning}
 \end{figure}
+
+\section{Improved Pruning Rules}
+\label{sec::pruning}
+We have seen that JPS distinguishes between jump points that have at least 
+one forced neighbour and those that have none.
+The former can be regarded as
+the grid equivalent of a visibility point: they are adjacent to at least one
+obstacle, and they are on at least one optimal path between two neighbours
+that are not mutually observable. If JPS prunes any of these nodes it is
+entirely possible that it will not return an optimal path.  The second type of
+jump points are not adjacent to any obstacle. They are simply intermediate
+locations where the optimal path can change direction in order to reach the
+first type of jump point or the goal.
+\par
+We argue that intermediate jump points can be safely pruned without
+affecting the optimality of Jump Point Search.  
+Each intermediate jump point has at most three successors: the first is a jump 
+point that is reachable horizontally, the second is a jump point that is reachable 
+vertically and the third is the next intermediate jump point that can be reached 
+without changing direction.
+When we prune an intermediate jump point we store its successors in a list and
+generate them in its stead. We apply this procedure recursively to any
+successors which are also intermediate jump points and terminate only when a
+dead-end is reached. Figure~\ref{fig::pruning} shows an example.
+
+To see that our strategy is optimality preserving we need only observe that
+for each intermediate jump point that is pruned the $g$-value of any of its
+successors remains unchanged. We simply generate these nodes earlier without
+first expanding any intermediary location.  Once we have pruned such a node 
+The parent of each newly orphaned successor becomes the starting location from
+where we initiated the jump. To extract a concrete path we simply walk from
+one jump point on the final path to the next in a diagonal-first way: i.e. we
+follow the octile heuristic but take all diagonal steps as early as possible.
+Such a path is guaranteed to be valid and thus obstacle-free.
+
+Our pruning strategy is applied entirely online; it does not require any
+special data structures and does not store nor compute any additional
+information.  It can be combined with other suggestions discussed in the 
+current work and it allows us to jump further than we otherwise might. The 
+cost is up to two additional open list operations for each node that we
+prune. Nevertheless, we will show empirically that pruning intermediate nodes
+from the search tree improves the performance of Jump Point Search.
 
