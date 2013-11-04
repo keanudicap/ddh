@@ -1,0 +1,61 @@
+\section{Discussion}
+\label{cha::jps2::conclusion}
+We study several techniques for improving Jump Point Search (JPS):
+a recent symmetry-breaking algorithm that facilitates fast pathfinding 
+on grid maps such as those commonly found in computer games.
+%: a recent grid-based pathfinding technique which employs online symmetry breaking 
+%to speed up search by up to one order of magnitude. 
+Our first improvement allows us to detect jump points 
+more efficiently by considering sets of nodes at one time (cf. one at a time). 
+Our second improvement is a pre-processing strategy which computes and stores jump point
+successors for every node on the map. Our third improvement is a 
+pruning strategy that avoids many node expansion operations.
+We speed up JPS by anywhere from several factors 
+(in the purely online case) to over one order of magnitude (using preprocessing).
+%To put this result into context consider that JPS itself is often one order faster
+%than traditional online pathfinding techniques such as A{*}~\cite{harabor11b}.
+Experiments on maps drawn from real computer games show that our 
+work is competitive with and often faster than some very recent 
+state-of-the-art grid-based pathfinding techniques.
+%With the addition of a fast
+%pre-processing step (tens or hundreds of milliseconds in our experiments) and
+%a small amount of extra memory ($<$ 10MB in most cases we tested) we can
+%increase the performance of JPS by up to one order of magnitude.  
+%
+%We also compare our approach with SUB-S (which is guaranteed optimal) and SUB-TL 
+%(which is not). Both approaches are very recent and very fast pathfinding techniques from the 
+%literature~\cite{urasKH13}. We find that in most cases our enhanced variants of online 
+%JPS are competitive with and often faster than SUB-S. Meanwhile, we find that JPS with
+%preprocessing and node pruning has complementary strengths to SUB-TL; each method having
+%certain advantages and disadvantages for different classes of test instances.
+
+There are several interesting directions for further work. One possibility is
+stronger pruning rules that will allow us to jump over some of the remaining
+nodes in the graph. For example: we might consider %combining JPS with Fast
+%Expansion~\cite{sun09}; i.e. we 
+pruning a node $n$ if all of its successors have
+an $f$-value that is not larger than $f(n)$. A stronger variant of this idea
+is to keep jumping as long as we are heading in the same direction as when we
+reached $n$ --- or in a new direction which is a component of the one used to
+reach $n$. It is likely that this procedure will increase the branching factor
+at $n$ but we posit that fewer node expansions will be required overall because
+we do not need to stop each time the path turns due to an obstacle.
+
+Combinations of JPS with existing grid-based speedup 
+techniques appears to be another fruitful direction for further research. 
+A number of well-known speedup techniques, both optimal and sub-optimal,
+work by limiting the scope of grid search to a corridor of nodes relevant
+for the instance at hand; e.g. Swamps~\cite{pochter10}, HPA{*}~\cite{botea04}
+or any number of pruning-based heuristics e.g.~\cite{bjornsson05,goldenberg10}.
+JPS can be trivially combined with such approaches to further speed up search.
+
+As a final interesting possibility we posit that JPS+ can be applied in 
+dynamic environments by selectively updating the pre-processed database each 
+time the map changes.
+
+%A similar idea is described in~\ref{urasKH13} where the authors 
+%employ a preprocessing technique that interleaves direction vectors. 
+%Beside
+%Since their
+%approach does not explicitly break symmetries the result is a graph with 
+%

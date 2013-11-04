@@ -1,0 +1,59 @@
+\section{Introduction}
+\label{cha::jps2::introduction}
+Grid-based pathfinding is a problem that often
+appears in application areas such as robotics and computer games. 
+%Many solution approaches exist; the most recent employ ideas from the
+%literature of AI Search (e.g. ~\cite{pochter10,goldenberg10,yap11,urasKH13})
+%and also Algorithmics (e.g.~\cite{storandt13,antsfeld12}). Such grid-based
+Grids are popular with researchers because the encoding is
+simple to understand and apply but the process of finding optimal paths
+between arbitrary start-target pairs can be surprisingly challenging. At least
+one reason for this difficulty can be attributed to the existence of 
+symmetries: myriad in grid maps but less common in other domains such as
+road networks. A path is considered symmetric when its individual steps 
+(or actions) can be permuted in order to derive a new and equivalent path
+that has identical cost.
+In the presence of symmetry classical algorithms such as A* will waste much 
+time looking at permutations of all shortest paths: from the start node to each expanded node.
+
+Jump Point Search (JPS)~\cite{harabor11b} is a recent and very effective 
+technique for for identifying and eliminating path symmetries on-the-fly. 
+JPS can be described as the combination of A* search with two simple 
+neighbour-pruning rules. When applied recursively these rules
+can improve the performance of optimal grid-based pathfinding by an order of 
+magnitude and more -- all without any pre-processing and without the 
+introduction of any memory overheads.
+
+
+The efficiency of JPS depends on being able to quickly scan many nodes
+from the underlying grid map in order to identify jump points.
+One the one hand such a procedure can typically save many unnecessary
+node expansions. On the other hand the same operation proceeds in a 
+step-by-step manner and it can scan the same node multiple times during 
+a single search. 
+Consider Table~\ref{table::jps2::bottleneck}, where we give a comparative
+breakdown of how JPS and A{*} spend their time during search.
+The results are obtained by running
+a large set of standard instances on three realistic game benchmarks
+that appeared in the 2012 Grid-based Path Planning Competition. Observe that
+JPS spends $\sim$90\% of its time generating successors (cf. $\sim$40\% for
+A{*}) instead of manipulating nodes on the open and closed lists -- i.e.
+searching.
+
+In this paper we propose a number of ideas that to improve the
+performance of Jump Point Search. We focus on: (i) more efficient online 
+symmetry breaking that reduces the time spent scanning the grid; 
+(ii) more effective online pruning strategies that avoid expanding some jump
+points; (iii) pre-computation strategies for breaking symmetries offline.
+We evaluate our ideas on three realistic grid-based benchmarks and
+find that our enhancements can improve the performance of Jump Point Search
+by anywhere from several factors to over one order of magnitude. 
+%In the case of 
+%our first two contributions, we achieve this without compromising optimality, without
+%preprocessing and without any memory overheads. In the case of our third
+%contribution, some preprocessing and additional memory are introduced 
+%in order to increase the performance of search.
+
+\input{chapter_jps2/table_bottleneck}
+
+%\newpage

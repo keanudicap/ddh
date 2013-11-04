@@ -1,27 +1,18 @@
 \chapter{Improving Jump Point Search}
 \label{cha::jps2}
-In this chapter we improve Jump Point Search in several ways:
-\begin{enumerate}
-\item{We give a revised set of neighbour pruning rules that are simpler and also more powerful.
-In the process we show that the only set of nodes that JPS needs to consider during search, 
-aside form the start and target, are those nodes which have one or more forced neighbours.
-We demonstrate empirically that this improvement yields a reduction in the average number of 
-nodes expanded and improves the runtime efficiency of pathfinding search.}
-\item{We extend the symmetry breaking approach employed by JPS to consider sets of nodes at
-one time, rather than single nodes and their immediate neighbours. Our approach involves
-manipulating contiguous sets of nodes from multiple adjacent rows. Using simple bitwise 
-operations we show that the online identification of jump points can be performed much more
-efficiently than suggested by previous work.}
-\item{We explore two distinct pre-processing techniques that can further enhance 
-Jump Point Search. The first of these is a simple reformulation of the input graph:
-it replaces the immediate neighbours of each node with a jump point successor that lies
-in the same relative direction. The result is a database of jump points that can be queried
-in constant time. Our second approach is similar in nature but yields a reformulated graph
-that contains only nodes from the grid that have at least one forced neighbour. 
-It uses significantly less memory than a full jump-point database but often requires an 
-additional operation to insert the start and target node before search can begin.}
-\end{enumerate}
+We give several online and offline optimisation techniques to improve the
+performance of Jump Point Search (JPS): a recent and very effective
+symmetry-breaking algorithm that speeds up pathfinding in computer games.
+First, we give a new and more efficient procedure for online symmetry breaking
+by manipulating ``blocks'' of nodes at a single time rather than individual
+nodes. Second, we enhance the pruning rules of JPS, allowing it to ignore many
+nodes that must otherwise be expanded. Third, we give a new offline
+pre-processing technique that can identify jump points apriori in order to
+further speed up pathfinding search. On three benchmark domains taken from
+real computer games we show that our  enhancements can improve JPS performance
+by anywhere from several factors  to over one order of magnitude. We also
+compare our approaches with SUB: a very recent state-of-the-art offline
+pathfinding algorithm. We show that our improvements are competitive with this
+approach and often faster.
 
-We give a extensive empirical analysis that demonstrates the benefit of each idea on
-a range of common pathfinding benchmarks taken from the AI literature.
-
+\newpage
