@@ -38,18 +38,18 @@ can be easily identified at run-time.
 The precomputation is illustrated on Figure~\ref{fig:preproc}(a).
 The left side of the figure shows the precomputed jump points 
 for node $N = \langle 4,5\rangle$.  
-Nodes $3$---$5$ are typical examples of straight or diagonal 
+Nodes $1$--$3$ are typical examples of straight or diagonal 
 jump points.  
-The others, nodes $1, 2$ and $6$ --- $8$, would normally be discarded 
+The others, nodes $4$--$8$, would normally be discarded 
 by JPS because they lead to dead-ends; we will remember them 
 anyway but we distinguish them as \emph{sterile jump points} and never
-generate them (unless they are also the target).
+generate them (unless they lead to the target).
 
 Consider now Figure\ref{fig:preproc}(b), where $T$ is the target node.  
 Travelling South-East away from $N$, JPS would normally identify 
 $J$ as a diagonal jump point because it is an intermediate turning
 point on the way to $T$.
-However $J$ was not identified at as a jump point during preprocessing 
+However $J$ was not identified as a jump point during preprocessing 
 because $T$ was unknown.  
 Instead, the sterile jump point $S$ is recorded in the precomputed 
 database. We use the location of $S$ to determine whether the jump from 

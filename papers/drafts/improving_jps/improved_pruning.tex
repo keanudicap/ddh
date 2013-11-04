@@ -72,8 +72,8 @@ dead-end is reached. Figure~\ref{fig::pruning} shows an example.
 To see that our strategy is optimality preserving we need only observe that
 for each intermediate jump point that is pruned the $g$-value of any of its
 successors remains unchanged. We simply generate these nodes earlier without
-first expanding any intermediary location.  Once we have pruned such a node 
-The parent of each newly orphaned successor becomes the starting location from
+first expanding any intermediary location.  Once we have pruned such a node, 
+the parent of each newly orphaned successor becomes the starting location from
 where we initiated the jump. To extract a concrete path we simply walk from
 one jump point on the final path to the next in a diagonal-first way: i.e. we
 follow the octile heuristic but take all diagonal steps as early as possible.

@@ -34,7 +34,7 @@ in for straight moves (q.v. (b)) and for diagonal moves (q.v. (d)).
        \label{fig:pruning}
 \end{figure}
 
-We illustrate these rules in Figure~\ref{fig:pruning}(a) and ~\ref{fig:pruning}(c).
+We illustrate these rules in Figure~\ref{fig:pruning}(a) and \ref{fig:pruning}(c).
 Observe that to test each rule we need to look only at
 the neighbours of the current node $x$. 
 Pruned neighbours are marked in grey. Remaining neighbours, marked
@@ -90,7 +90,6 @@ Notice that JPS prunes nodes entirely online; the algorithm involves no preproce
 
 % Stupid LaTeX! Why do you force me to put this here?!?! Grr!
 \begin{figure*}[tb]
-       \label{fig:preproc}
        \begin{center}
 %		   \includegraphics[width=0.95\columnwidth]
 %		{diagrams/preproc.png}
@@ -100,4 +99,5 @@ Notice that JPS prunes nodes entirely online; the algorithm involves no preproce
        \caption{\small (a) A jump point is computed in place of each grid neighbour of node $x$.
 		(b) When jumping from $x$ to $y$ we may cross the row or column of the target $t$ (here, both). 
 To avoid jumping over $t$ we insert an intermediate successor $y'$ on the row or column of $t$ (whichever is closest to $x$).}
+       \label{fig:preproc}
 \end{figure*}
