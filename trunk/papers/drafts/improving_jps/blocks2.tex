@@ -78,8 +78,8 @@ and its parent is $P = \langle 1,1\rangle$.
 At this stage, the horizontal and vertical axes must be scanned 
 for jump points before another diagonal move is taken.  
 As it turns out, a jump point will be found at location $\langle 6,2\rangle$.  
-When looking for a horizontal jump point on row $2$, Jump Point Search will 
-scan the grid in more or less in the order given by the numbers in red, 
+When looking for a horizontal jump point on row~$2$, Jump Point Search will 
+scan the grid more or less in the order given by the numbers in red, 
 depending on the actual implementation.  
 Each one of these nodes will be individually tested and each test
 involves reading a separate value from the grid.
@@ -131,10 +131,10 @@ $B[i]$, if there is an obstacle at position $B[i-1]$
 and no obstacle at position $B[i]$. We test for this condition with the
 following bitwise operation (assuming left-to-right travel):
 \begin{equation}
-\texttt{forced(B) = (B>>1\ \& !B)}
+\texttt{forced(B) = (B\ \& !(B<<1))}
 \end{equation}
 When we apply this procedure to $B_{\downarrow}$ we find a potential jump 
-point at bit position 4; $\texttt{forced}(B_{\uparrow})$ yields no potential jump points.
+point at bit position~$3$; $\texttt{forced}(B_{\uparrow})$ yields no potential jump points.
 
 In order to minimise the number of branching instructions (important
 to prevent CPU stalling) we do not test the individual results of 
@@ -143,7 +143,7 @@ of bitwise disjunction into a single byte $B_{S}$ (S for stop).
 For the example in Figure~\ref{fig::gridforblocks} we have 
 \begin{flalign}
 B_S &= \mathrm{forced}(B_{\uparrow})\quad|\quad \mathrm{forced}(B_{\downarrow})\quad | \quad B_N & \\
-B_S &= [0,0,0,0,1,1,0,0] & 
+B_S &= [0,0,0,1,0,1,0,0] & 
 \end{flalign}
 
 Because $B_S \neq 0$, we know that the search has to stop.  Using the

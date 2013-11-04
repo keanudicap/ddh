@@ -17,7 +17,7 @@ In the presence of symmetry classical algorithms such as A* will waste much
 time looking at permutations of all shortest paths: from the start node to each expanded node.
 
 Jump Point Search (JPS)~\cite{harabor11b} is a recent and very effective 
-technique for for identifying and eliminating path symmetries on-the-fly. 
+technique for identifying and eliminating path symmetries on-the-fly. 
 JPS can be described as the combination of A* search with two simple 
 neighbour-pruning rules. When applied recursively these rules
 can improve the performance of optimal grid-based pathfinding by an order of 
@@ -28,7 +28,7 @@ introduction of any memory overheads.
 
 The efficiency of JPS depends on being able to quickly scan many nodes
 from the underlying grid map in order to identify jump points.
-One the one hand such a procedure can typically save many unnecessary
+On the one hand such a procedure can typically save many unnecessary
 node expansions. On the other hand the same operation proceeds in a 
 step-by-step manner and it can scan the same node multiple times during 
 a single search. 
