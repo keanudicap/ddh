@@ -103,7 +103,7 @@ B_{\uparrow} = [0, 0, 0, 0, 0, 0, 0, 0]\\
 B_{\downarrow} = [0, 0, 1, 1, 0, 0, 0, 0]
 \end{gather}
 
-Note that our implementation uses 32-bit words but for this discussion
+\noindent Note that our implementation uses 32-bit words but for this discussion
 we will continue to use 8-bit bytes as they are easier to work with.  
 
 %The advantages of such an approach are immediately obvious: instead of
@@ -112,10 +112,11 @@ we will continue to use 8-bit bytes as they are easier to work with.
 %whether the corresponding byte evaluates to zero.
 When searching recursively along a given row or column
 there are three possible reasons that cause JPS to stop: 
-a forced neighbour is found in the row above or the row below or a 
-dead-end is detected straight ahead.
-We can easily test for each of these conditions using simple
-bitwise operations on the bytes $B_{N}, B_{\uparrow}$ and $B_{\downarrow}$.
+a forced neighbour is found in an adjacent row, a dead-end is 
+detected in the current row or the target node is detected in the
+current now.
+We can easily test for each of these conditions via simple
+operations on the bytes $B_{N}, B_{\uparrow}$ and $B_{\downarrow}$.
 \\ \noindent
 \textbf{Detecting dead-ends:}
 A dead-end exists in position $B[i]$ of byte $B$ if $B[i] = 0$ and 
@@ -147,25 +148,24 @@ B_S &= [0,0,0,1,0,1,0,0] &
 \end{flalign}
 
 Because $B_S \neq 0$, we know that the search has to stop.  Using the
-\texttt{ffs} command we extract the position of the first set bit in $B_S$ and
-compare it with the position of any obstacle bit in $B_N$.  If this position
-is less than the position of any obstacle bit in $B_N$ that position is a jump point;
-otherwise we have hit a dead-end.  Alternatively, if $B_S$ evaluates to zero
-there is no reason to stop: we jump ahead 7 positions and repeat the procedure
-until termination. 
-
-We have not yet discussed how to handle the target location. Jump Point Search
-treats this as a special case.  To avoid jumping over the target
-we compare its position to the position of the node where the block-based
-symmetry-breaking procedure terminated -- either due to finding a successor or
-a reaching dead-end. If the target lies between these two locations we
-generate it as any other jump point successor.
+\texttt{ffs} command we extract the position of the first set bit in $B_S$
+(call this bit $b_S$) and compare it with the position of the first set bit
+in $B_N$ (call this bit $b_N$).  If $b_S \leq b_N$ we have discovered a jump point at
+location $B_N[b_S-1]$; otherwise we have hit a dead-end.  Alternatively, if
+$B_S$ evaluates to zero there is no reason to stop: we jump ahead 7 positions
+(not 8) and repeat the procedure until termination.
+\\ \noindent
+\textbf{Detecting the target node:}
+To avoid jumping over the target node we compare its position to the position
+of the node where the block-based symmetry-breaking procedure terminated --
+either due to finding a successor or a reaching dead-end. If the target lies
+between these two locations we generate it as any other jump point successor.
 
 \subsection*{Additional Considerations}
 The procedure we have described in our running example is applicable in the case
-where JPS scans the grid right-to-left. The modification for left-to-right
-scanning is simple: we shift left instead of right throughout and we
-replace \texttt{ffs} with the analogous instruction \texttt{msb}.  In the case
+where JPS scans the grid left-to-right. The modification for right-to-left
+scanning is simple: we shift the current node into the most signficant position
+of $B_N$ and replace \texttt{ffs} with the analogous instruction \texttt{msb}.  In the case
 of up-down travel we have found helpful to store a redundant copy of the
 map that is rotated by 90 degrees. Other possibilities also exist that do not
 incur an overhead: for example the map may be stored as blocks of size $m

@@ -3,7 +3,7 @@
 In the preceding section we have suggested a strategy for enhancing the
 online performance of Jump Point Search.  In this section we give an offline
 technique which can improve the algorithm further still. First, recall that 
-Jump Point Search distinguishes between two different kinds of
+Jump Point Search distinguishes between three different kinds of
 nodes:
 \begin{itemize}
 \item Straight jump points. Reached by travelling in a
@@ -77,22 +77,19 @@ of nodes.
 %\\ \noindent
 \subsection*{Advantages and Disadvantages}
 %\textbf{Advantages and Disadvantages:} 
-The main advantage of JPS+ is speed: instead of scanning the grid for
-jump points we can simply look up the set of jump point successors
-of any given location on the grid in constant time.
-On the other hand, preprocessing has two disadvantages (i) jump points need to be recomputed
-if the map changes (some local repair seems enough) and (ii) it introduces 
-a substantive memory overhead: we need to keep for each node 8 distinct 
-identifiers (one for each successor). 
-The overhead can be as large as $4\times8$ bytes per node. In our
-implementation we have found it sufficient to store only three bytes 
-per successor: the first 23 bits store the id and the final bit distinguishes
-each successor as sterile or not. 
+The main advantage of JPS+ is speed: instead of scanning the grid for jump
+points we can simply look up the set of jump point successors of any given
+location on the grid in constant time.  On the other hand, preprocessing has
+two disadvantages (i) jump points need to be recomputed if the map changes
+(some local repair seems enough) and (ii) it introduces a substantive memory
+overhead: we need to keep for each node 8 distinct labels (one for each
+successor).  In our implementation we use two bytes per label. The first 15
+bits indicate the number of steps to reach the successor and the final bit
+distinguishes the successor as sterile or not.
 \par
-We can use less memory if we
-store intermediate locations instead of actual jump points: for example
-using one byte per successor we could jump up to 127 steps 
-at one time. The disadvantage of this approach is that more nodes may be 
-expanded during search than strictly necessary. A hybrid 
-algorithm that combines a pre-computed database with a recursive
-jumping procedure is another memory-efficient possibility.
+We can use less memory if we store labels for intermediate locations instead
+of actual jump points: for example using one byte per label we could jump up
+to 127 steps at one time. The disadvantage of this approach is that more nodes
+may be expanded during search than strictly necessary. A hybrid algorithm that
+combines a single-byte database with a recursive jumping procedure is another
+memory-efficient possibility.

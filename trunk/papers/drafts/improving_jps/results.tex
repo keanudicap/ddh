@@ -118,9 +118,10 @@ milliseconds. Moreover the pre-computation can be easily parallelised over
 several time slices with JPS (B + P) employed as a fallback algorithm in
 the interim.
 
-We have compared our JPS-based approaches against two variants of SUB: a very fast 
-and very recent preprocessing-based pathfinding technique which was judged to be 
-among the most performant entrants in the 2012 Grid Based Path Planning Competition. 
+We have compared our JPS-based approaches against two variants of SUB~\cite{urasKH13}.
+%a very fast 
+%and very recent preprocessing-based pathfinding technique which was judged to be 
+%among the most performant entrants in the 2012 Grid Based Path Planning Competition. 
 The first variant, SUB-S guarantees optimality; the second, SUB-TL, does not. 
 We find that across most benchmark instances JPS (B) and 
 JPS (B + P) are not only competitive with but faster than SUB-S. When we compare
