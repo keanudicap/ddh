@@ -2,15 +2,17 @@
 \label{sec::conclusion}
 
 We study several techniques for improving Jump Point Search (JPS).  
-The first improvement builds on the property 
-that JPS spends a large time searching for long-distance straight paths, 
-and uses the bit representation of the map to consider many nodes at a time.  
-The second improvement, based on the property 
-that most rules for computing jump points are goal-independent, 
-is a pre-processing strategy 
-which computes and stores jump point successors for every node on the map.  
-Our third improvement is a pruning strategy 
-that avoids many expansion operations.  
+The first improvement is motivated by the observation that JPS spends
+a majority of its time scanning the grid for successors rather than
+manipulating nodes from the open and closed list (i.e. searching). 
+We give a new procedure to detect jump points more efficiently
+by considering sets of nodes from the grid at one time (cf. one at a time).
+The second improvement is motivated by the observation that most jump
+points are goal-independent. We give a new pre-processing strategy
+which computes and stores such jump points for every node on the map.  
+Our third improvement is motivated by the observation that some
+jump points are simply intermediary locations on the grid. We give a new 
+pruning strategy that avoids expanding such nodes.
 
 There are several interesting directions for further work. One possibility is
 stronger pruning rules that will allow us to jump over some of the remaining
@@ -29,18 +31,14 @@ techniques appears to be another fruitful direction for further research.
 A number of well-known speedup techniques, both optimal and sub-optimal,
 work by limiting the scope of grid search to a corridor of nodes relevant
 for the instance at hand; e.g. Swamps~\cite{pochter10}, HPA{*}~\cite{botea04}
-or any number of pruning-based heuristics e.g.~\cite{bjornsson05,goldenberg10}.
+or any number of pruning-based heuristics e.g.~\cite{bjornsson06,goldenberg10}.
 JPS can be trivially combined with such approaches to further speed up search.
 
-One strength of the JPS family 
-is that it performs very well even online.  
-We have shown however that pre-computed jump points 
-accelerate significantly the search.  
-It is possible to combine both approaches, 
-by populating the jump point database 
-as they are discovered online.  
-We want to apply this feature in dynamic environments 
-where obstacles appear or disappear, 
-immediately rendering any pre-processed information obsolete.  
+One strength of the JPS family is that it performs very well even online.  We
+have shown however that pre-computed jump points accelerate significantly the
+search.  It is possible to combine both approaches, by populating a database
+with jump points as they are discovered online.  We want to apply this feature
+in dynamic environments where obstacles appear or disappear, immediately
+rendering any pre-processed information obsolete.
 
 % EOF
