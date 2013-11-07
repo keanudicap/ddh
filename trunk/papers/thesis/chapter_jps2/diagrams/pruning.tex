@@ -1,4 +1,5 @@
 \begin{figure}[tb]
+\center
   %\begin{center}
     \scalebox{0.74}{%
       \begin{tikzpicture}
@@ -37,10 +38,12 @@
       \end{tikzpicture}%
     }
   %\end{center}
-  \caption{\small We prune all intermediate jump points (here nodes 1, 4 and 6) and
-	instead generate their immediate successors (nodes 2, 3, 5 and 7) as
-	children of the node from where initiated the jump (i.e., $S$). This 
-	allows us to jump from location $\langle 1, 1\rangle$ to $\langle 6, 6\rangle$ (and beyond)
-	in a single operation.}
+\caption{\small
+We prune all intermediate jump points (here nodes 1, 4 and 6) and
+instead generate their immediate successors (nodes 2, 3, 5 and 7) as
+children of the node from where initiated the jump (i.e., $S$). This 
+allows us to jump from location $\langle 1, 1\rangle$ to $\langle 6, 6\rangle$ (and beyond)
+in a single operation.
+}
   \label{fig::pruning}
 \end{figure}
