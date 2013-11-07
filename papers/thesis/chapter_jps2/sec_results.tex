@@ -19,17 +19,17 @@ To avoid confusion we will denote the original algorithm as JPS 2011.
 against the original. We consider two metrics: nodes expanded and search time. An improvement factor of 2 
 for search time means twice as fast; for node expansions it means half as many nodes expanded. 
 Higher values are always better.}
-\label{fig::vs_jps2011}
+\label{fig::jps2::vs_jps2011}
 \end{figure*}
 
 We have previously observed that the bottleneck of the JPS 2011 algorithm is individual node
-expansion operations. In Table~\ref{table::expansion} we give results for the average
+expansion operations. In Table~\ref{table::jps2::expansion} we give results for the average
 time required to expand one million random starting nodes from each input map in
 each benchmark set. We find that block-based jumping and pre-processing jump points
 each improve average times by one and two orders of magnitude respectively vs. JPS 2011.
 Pruning intermediate jump points from the search tree increases the average branching 
 factor by several times but the time-per-expansion is still much better. 
-In Figure~\ref{fig::vs_jps2011} we give a summary of search performance, in terms
+In Figure~\ref{fig::jps2::vs_jps2011} we give a summary of search performance, in terms
 of time and node expansions, for all GPPC instances on each of our three benchmark sets. 
 In each case and for each metric we consider relative improvement vs. JPS 2011.
 We show the spread of results after having assigned all test instances into buckets of 
@@ -39,7 +39,7 @@ Moreover, JPS (B) and JPS (B + P) have all the same advantages as JPS 2011: they
 fast, optimal, online and require, in principle at least, no extra memory vs. JPS 2011
 (recall that in practice we store a rotated copy of map twice to improve memory access
 patterns).
-A summary of pre-processing requirements is given in Table~\ref{table::preproc}. Note
+A summary of pre-processing requirements is given in Table~\ref{table::jps2::preproc}. Note
 that JPS+ and JPS+ (P) have the same requirements and are not listed separately.
 
 \input chapter_jps2/table_preproc
@@ -65,7 +65,7 @@ original C++ implementation which we obtained from~{\small
 %To avoid a large growth in its branching-factor SUB-TL also prunes other additional 
 %edges from the graph but this latter step makes the algorithm sub-optimal in certain cases.
 
-Table~\ref{table::preproc} compares the pre-processing requirements of 
+Table~\ref{table::jps2::preproc} compares the pre-processing requirements of 
 SUB-S and SUB-TL with JPS+ (JPS+ (P) has identical requirements and is not shown). 
 We observe that both JPS+ and SUB are able to pre-process most maps in well under a second 
 and in most cases using less than 10MB of memory. A small number of notable exceptions 
@@ -73,7 +73,7 @@ arise for both JPS+ and SUB-TL.
 %Notable exceptions include one StarCraft map on which SUB-TL needed more than 23 seconds of 
 %pre-processing time and one DA:O map for which JPS+ required over 21MB of space 
 %(c.f. 0.2 seconds pre-proc time for JPS+ and $\sim$10MB of space for SUB-TL, respectively).
-In Figure~\ref{fig::vs_sub} we compare our four JPS variants with SUB-S and SUB-TL across all
+In Figure~\ref{fig::jps2::vs_sub} we compare our four JPS variants with SUB-S and SUB-TL across all
 game map instances from the 2012 GPPC. We find that JPS (B) and JPS (B + P) are both
 competitive with, and often faster than, than SUB-S. Meanwhile, JPS+ (P) appears competitive 
 with SUB-TL for a large set of instances.
@@ -94,7 +94,7 @@ tested instances respectively.
 \label{fig::vs_sub}
 \end{figure*}
 
-\section{Discussion}
+\section{Analysis}
 The results demonstrate the superiority of the approaches presented in this
 paper. In JPS (B) and JPS (B + P) we have improved the performance of
 JPS 2011 by several factors all while retaining
