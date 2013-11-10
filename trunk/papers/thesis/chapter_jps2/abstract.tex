@@ -12,9 +12,9 @@ In this chapter give several online and offline optimisation techniques to
 further improve the performance of Jump Point Search. In particular:
 \begin{itemize}
 \item We give a new and more efficient procedure for online symmetry breaking. 
-We exploit the fact that grids can be efficiently represented using a bitwise
-encoding. This encoding allows us to manipulate ``blocks'' of nodes from the 
-grid at a single time. We show that using such an encoding it is possible
+We describe how an efficient bitwise encoding of the grid that
+allows us to manipulate ``blocks'' of nodes.
+We show that using such an encoding it is possible
 for JPS to effectively break symmetries for many nodes at the same time -- 
 rather than considering each node individually.
 \item We describe a new variant of JPS which uses offline pre-processing to 
@@ -35,4 +35,5 @@ and requires either no time and memory overhead or only a small amount.
 Moreover, we demonstrate that our improvements are competitive with and often 
 faster than two very recent state-of-the-art pathfinding algorithms from the literature.
 
-\newpage
+The contributions in this chapter have previous appeared in~\citep{haraborG14}
+

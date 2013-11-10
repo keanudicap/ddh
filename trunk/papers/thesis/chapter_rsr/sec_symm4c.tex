@@ -27,7 +27,9 @@ The cost of each edge is equal to the Manhattan distance between its two endpoin
 \includegraphics[scale=0.30, trim = 10mm 10mm 10mm 0mm]{chapter_rsr/diagrams/4c_example.png}
 \end{center}
 \vspace{-3pt}
-\caption{RSR decomposes a grid map into a set of empty rectangles. 
+\caption[Rectangular Symmetry Reduction on 4-connected maps]{
+\small
+RSR decomposes a grid map into a set of empty rectangles. 
 Nodes interior to each rectangle are pruned and macro edges are then added 
 in their place to facilitate optimal travel from one side of the perimeter to the other.}
 \label{fig::rsr::overview}
@@ -95,10 +97,12 @@ to all nodes on the perimeter of its rectangle.
            \includegraphics[scale=0.50, trim = 10mm 10mm 10mm 0mm]{chapter_rsr/diagrams/roomtraversal.png}
        \end{center}
 	\vspace{-3pt}
-       \caption{(Top) When $m$ and $n$ are in the empty rectangle no insertion (or search) is necessary.
-				(Bottom) $m$ is a previously pruned interior node.
-				We insert $m$ into the graph and connect it to neighbours on each side of the empty rectangle.}
-	%\vspace{-15pt}
+\caption[Examples of online insertion]
+{\small
+(Top) When $m$ and $n$ are in the empty rectangle no insertion (or search) is necessary.
+(Bottom) $m$ is a previously pruned interior node.
+We insert $m$ into the graph and connect it to neighbours on each side of the empty rectangle.}
+%\vspace{-15pt}
 	\label{fig::rsr::insertion}
 \end{figure}
 
@@ -157,7 +161,9 @@ and $u$ moves upwards in any order (e.g right-right-up, right-up-right, up-right
 %	\vspace{-4pt}
 \centering
 \includegraphics[width=0.95\columnwidth, trim = 10mm 10mm 10mm 0mm]{chapter_rsr/diagrams/rsr_example.png}
-\caption{(Left) A* solving a problem on an unmodified ($86\times88$) grid map. 
+\caption[Searching with A{*} vs. A{*} + RSR] 
+{\small
+(Left) A* solving a problem on an unmodified ($86\times88$) grid map. 
 Expanded nodes are marked dark grey.
 (Right) A* solving the same problem using our modified grid map. 
 The algorithm only considers nodes along the perimeter of the identified rectangles.}

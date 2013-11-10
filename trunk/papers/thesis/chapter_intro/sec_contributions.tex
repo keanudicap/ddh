@@ -19,7 +19,7 @@ In this thesis we speed up grid-optimal pathfinding in an entirely novel way:
 through the identification and elimination of path symmetries.  Unlike the
 majority of works from the literature, in which a path is concretely defined
 in terms of a specific set of nodes and edges, we consider a path as an
-ordered sequence of independent and (often) interchangeable steps or actions.
+ordered sequence of (often) interchangeable steps or actions.
 By taking an alternative view of the problem we show that many of the paths
 between two points on a grid map are simply permutations of each other; i.e.
 they all involve the same set of actions and they all have identical cost.
@@ -29,8 +29,8 @@ performant algorithms such as A{*}~\citep{hart68} will waste much time looking a
 permutations of all shortest paths: from the start node to each expanded node.
 To avoid this behaviour we develop a range of pathfinding techniques that can
 discard from consideration many equivalent paths and in the process
-dramatically speed up grid-based pathfinding.  Improvements range from as
-little as several factors to as much as two orders of magnitude.  In addition
+dramatically speed up grid-based pathfinding.  Improvements typically range from 
+several factors to as much as two orders of magnitude.  In addition
 to being very fast we show that symmetry breaking in pathfinding can be very
 economical: our approaches require little-to-no upfront pre-processing and
 little-to-no additional memory; making them especially well suited to
@@ -82,32 +82,31 @@ techniques from the literature.  We are unaware of any other algorithm which
 has all these features.
 
 In addition to the basic algorithm we make three further contributions: (i) we
-enhance the pruning rules of JPS, allowing it to ignore many nodes that must
-otherwise be expanded; (ii) we give a new and more efficient procedure for
-online symmetry breaking by manipulating ``blocks'' of nodes at a single time
-rather than individual nodes; (iii) we give new offline pre-processing
-technique that can identify jump points apriori in order to further speed up
-pathfinding search.
-On benchmark domains taken from real computer games we show that our
-enhancements can improve JPS performance by anywhere from several factors to
-over one order of magnitude. We also compare our approaches with
-SUB~\citep{urasKH13}: a very recent state-of-the art pathfinding algorithm. We
-find that the two techniques have complementary strengths. In addition we show
-that there are large sets of benchmark instances where our improved JPS
-variants are faster.
+give a new and more efficient procedure for online symmetry breaking by
+manipulating ``blocks'' of nodes at a single time rather than individual
+nodes; (ii) we give new offline pre-processing technique that can identify
+jump points apriori in order to further speed up pathfinding search.  (iii) we
+enhance the pruning rules of JPS, allowing it to ignore many intermediate
+nodes that must otherwise be expanded; On benchmark domains taken from real
+computer games we show that our enhancements can improve JPS performance by
+anywhere from several factors to over one order of magnitude. We also compare
+our approaches with SUB~\citep{urasKH13}: a very recent state-of-the art
+pathfinding algorithm. We find that the two techniques have complementary
+strengths. In addition we show that there are large sets of benchmark
+instances where our improved JPS variants are faster.
 
 \subsection{Optimal Any-angle Pathfinding}
 \label{cha::intro::contributions::anya}
-We a new optimal algorithm for solving the Any-Angle Pathfinding Problem.
-Our approach involves searching over sets of states
-represented as intervals. From each interval we select a representative point
-to derive a corresponding $f$-value for the set.  We give theoretical results
-that show our algorithm, Anya, always returns an optimal path. Moreover it
-does so entirely online and without any pre-processing. To the best of our
-knowledge Anya is the first algorithm of its kind.  The result answers an 
-open question from the areas of Artificial Intelligence and Game Development: 
-is there an any-angle pathfinding algorithm which is online and optimal?
-The answer is yes.
+We develop a new optimal algorithm for solving the Any-Angle Pathfinding
+Problem.  Our approach involves searching over sets of states represented as
+intervals. From each interval we select a representative point to derive a
+corresponding $f$-value for the set.  We give theoretical results that show
+our algorithm, Anya, always returns an optimal path. Moreover it does so
+entirely online and without any pre-processing. To the best of our knowledge
+Anya is the first known algorithm to provide such features and guarantees.
+Anya answers an open question from the areas of Artificial Intelligence and
+Game Development: is there an any-angle pathfinding algorithm which is online
+and optimal?  The answer is yes.
 
 %
 %
