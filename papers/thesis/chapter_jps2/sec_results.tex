@@ -15,7 +15,8 @@ To avoid confusion we will denote the original algorithm as JPS 2011.
 		   \includegraphics[width=\columnwidth, trim = 0mm 0mm 0mm 0mm]
 			{chapter_jps2/diagrams/improvement_vs_jps.pdf}
        \end{center}
-	   \caption{We measure the relative performance (or improvement factor) of each of our new JPS variants 
+\caption[Performance of improved JPS variants vs. original JPS] 
+{\small We measure the relative performance (or improvement factor) of each of our new JPS variants 
 against the original. We consider two metrics: nodes expanded and search time. An improvement factor of 2 
 for search time means twice as fast; for node expansions it means half as many nodes expanded. 
 Higher values are always better.}
@@ -87,11 +88,13 @@ tested instances respectively.
 		   \includegraphics[width=\columnwidth, trim = 0mm 0mm 0mm 0mm]
 			{chapter_jps2/diagrams/jps_vs_sub_boxplot.pdf}
        \end{center}
-	   \caption{We compare the raw search time performance of our improved JPS variants (both online
-		   and offline) with two recent and very performant algorithms: simple subgoal graphs (SUB-S) 
-		   and two-level subgoal graphs with local edge pruning (SUB-TL). All JPS variants and SUB-S 
-		   are provably optimal. SUB-TL is not.}
-\label{fig::vs_sub}
+\caption[Search time performance: JPS+ vs. SUB] 
+{\small
+We compare the raw search time performance of our improved JPS variants (both online
+and offline) with two recent and very performant algorithms: simple subgoal graphs (SUB-S) 
+and two-level subgoal graphs with local edge pruning (SUB-TL). All JPS variants and SUB-S 
+are provably optimal. SUB-TL is not.}
+\label{fig::jps2::vs_sub}
 \end{figure*}
 
 \section{Analysis}

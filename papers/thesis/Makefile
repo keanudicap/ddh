@@ -1,13 +1,13 @@
 
-all: draft
+all: full
 
-full: *.tex references.bib
+full: 
 	pdflatex thesis
 	bibtex thesis
 	pdflatex thesis
 	pdflatex thesis
 
-draft: *.tex references.bib
+draft: 
 	pdflatex draft
 	bibtex draft
 	pdflatex draft
