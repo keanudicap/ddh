@@ -1,39 +1,46 @@
 \section{Implementation Enhancements}
 \label{cha::lit::impl}
-An efficient implementation of any given search strategy can have a dramatic positive effect on
-running time and memory requirements. The same is true in the case of the contra-positive.  
-Such works usually focus on one of three areas:
+An efficient implementation of any given search strategy can have a dramatic
+positive effect on running time and memory requirements. The same is true in
+the case of the contra-positive.  Such works usually focus on one of three
+areas:
 \begin{enumerate}
 \item More efficient data structures for use during search.
 \item Optimising common instructions and common numerical operations.
 \item Optimising memory access patterns.
 \end{enumerate}
-We review a number of representative works from the literature which focus on each of these
-issues. In keeping with the scope of this thesis we focus on strategies for improving
-the performance of best-first search algorithms such as A*~\citep{hart68} and 
-Dijkstra's Algorithm~\citep{dijkstra59}. A standard implementation of either of these algorithms
-typically employs a Binary Heap for efficiently inserting, deleting and updating elements from 
-the open list; e.g.~\citep{stout96,botea04}.  
-Though operations to elements on the heap have logarithmic complexity (quite efficient indeed!) 
-a number of works have identified cases where this running time can be further improved. 
+We review a number of representative works from the literature which focus on
+each of these issues. In keeping with the scope of this thesis we focus on
+strategies for improving the performance of best-first search algorithms such
+as A*~\citep{hart68} and Dijkstra's Algorithm~\citep{dijkstra59}. A standard
+implementation of either of these algorithms typically employs a Binary Heap
+for efficiently inserting, deleting and updating elements from the open list;
+e.g.~\citep{stout96,botea04}.  Though operations to elements on the heap have
+logarithmic complexity (quite efficient indeed!) a number of works have
+identified cases where this running time can be further improved.
 
-Sequence Heaps~\citep{sanders99} are data structures organised around small sorted sequences of
-elements which are sized to fit into fast cache. The main idea is to create a cache-aware data
-structure which is optimised for insert and delete operations~\footnote{Elements which need to be
-updated can be deleted and inserted anew.}. A different optimisation technique involves implementing
-the open list as a rotating array of stacks~\citep{Cazenave:06}. Applicable in cases where the
-range of $f$-values in the open list is bounded by a relatively small value, this approach achieves
-constant-time insert, delete and update operations. If the elements in a stack need to be sorted by
-some secondary criterion (e.g. highest $g$-value) the complexity is higher but still better than a
-standard Binary Heap since sorting is limited to the elements in a single stack.
+Sequence Heaps~\citep{sanders99} are data structures organised around small
+sorted sequences of elements which are sized to fit into fast cache. The main
+idea is to create a cache-aware data structure which is optimised for insert
+and delete operations~\footnote{Elements which need to be updated can be
+deleted and inserted anew.}. A different optimisation technique involves
+implementing the open list as a rotating array of stacks~\citep{Cazenave:06}.
+Applicable in cases where the range of $f$-values in the open list is bounded
+by a relatively small value, this approach achieves constant-time insert,
+delete and update operations. If the elements in a stack need to be sorted by
+some secondary criterion (e.g. highest $g$-value) the computation requirements
+are higher but still better than a standard Binary Heap since sorting is
+limited to the elements in a single stack.
 
-Fast Expansion~\citep{sun09} is a recent optimisation technique that can avoid unnecessary 
-operations on the open list. The idea is a simple recursive suggestion: during node expansion 
-if a successor has an $f$-value as good as the best node on the open list, expand the node 
-immediately and place it directly on the closed list. 
+Fast Expansion~\citep{sun09} is a recent optimisation technique that can avoid
+unnecessary operations on the open list. The idea is a simple recursive
+suggestion: during node expansion if a successor has an $f$-value as good as
+the best node on the open list, expand the node immediately and place it
+directly on the closed list.
 
-A number of works aim to speed up search through better memory organisation; 
-e.g.~\citep{rabin00,higgins02,cain02,park04,Cazenave:06}. These recommendations include:
+A number of works aim to speed up search through better memory organisation;
+e.g.~\citep{rabin00,higgins02,cain02,park04,Cazenave:06}. These
+recommendations include:
 \begin{enumerate}
 \item Memory pre-allocation.
 \item Lazy initialisation of data structures.
