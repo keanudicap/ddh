@@ -6,62 +6,63 @@ our objective is to find a path in $G$ from $s$ to $t$.
 A large number of strategies have been developed for this purpose. Most fall into
 one of three distinct paradigms:
 \begin{itemize}
-\item{\emph{Blind-search algorithms} which explore the solution space in a systematic fashion.}
-\item{\emph{Informed-search algorithms} which employ lower-bounds to improve the 
-efficiency of systematic search.}
+\item{\emph{Blind-search algorithms} which explore the search space in a systematic 
+fashion using a fixed node expansion order.}
+\item{\emph{Informed-search algorithms} which explore the search space in a systematic
+fashion but employ sorting and ranking to ensure that the most promising nodes
+are expanded first.}
 \item{\emph{Local-search algorithms} which employ heuristic decision-making or mimicry of
-natural processes in order to explore only select portions of the solution space.}
+natural processes in order to explore only select portions of the search space.}
 \end{itemize}
 
-In the course of discussing each paradigm we will sometimes
-find it useful to refer to two important properties of search algorithms: \emph{completeness} 
-and \emph{optimality}.
-A search algorithm is \emph{complete} when it guarantees that it will return a
-path between the nodes $s$ and $t$ if one exists in $G$.
-Optimality is a stronger property which entails completeness.
-A search algorithm is \emph{optimal} if: (i) it guarantees completeness and (ii)
-it guarantees that every returned path is a shortest path in $G$.
+In the course of discussing each paradigm we will sometimes find it useful to
+refer to two important properties of search algorithms: \emph{completeness}
+and \emph{optimality}.  A search algorithm is \emph{complete} when it
+guarantees that it will return a path between the nodes $s$ and $t$ if one
+exists in $G$.  Optimality is a stronger property which entails completeness.
+A search algorithm is \emph{optimal} if: (i) it guarantees completeness and
+(ii) it guarantees that every returned path is a shortest path in $G$.
 
-Note that both properties are defined only with respect to the current search graph and 
-not the operating environment.
-This has some important ramifications. For example: 
-in order for a complete algorithm to accurately report whether or not any path exists between 
-$s$ and $t$ it will require a graph $G$ that preserves solution existence.
-Similarly, a path returned by an optimal search algorithm
-is not guaranteed to be \emph{truly} optimal unless $G$ is constructed in a way that 
-preserves solution optimality.
+Note that both properties are defined only with respect to the current search
+graph and not the operating environment.  This has some important
+ramifications. For example: in order for a complete algorithm to accurately
+report whether or not any path exists between $s$ and $t$ it will require a
+graph $G$ that preserves solution existence.  Similarly, a path returned by an
+optimal search algorithm is not guaranteed to be \emph{truly} optimal in the
+environment unless $G$ is constructed in a way that preserves solution
+optimality.
 
 \subsection{The Search Process}
 \label{cha::lit::search:terms}
-Looking for a path between two locations $s$ and $t$ is a process of repeatedly
-\emph{expanding} and \emph{generating} nodes from a search graph $G$.
-Expanding a node $n$ is equivalent to performing an action that moves the agent 
-from its present location to the location associated with node $n$.
-As part of this operation the \emph{successors} of $n$ (those nodes immediately 
-adjacent to $n$ in the graph $G$) become generated. This means they are evaluated 
-in terms of cost and added to an expansion queue. 
-This process continues until either (i)
-the target node is reached and a path is returned or (ii) all the nodes in the
-expansion queue are exhausted and the algorithm returns failure.
+Looking for a path between two locations $s$ and $t$ is a process of
+repeatedly \emph{expanding} and \emph{generating} nodes from a search graph
+$G$.  Expanding a node $n$ is equivalent to performing an action that moves
+the agent from its present location to the location associated with node $n$.
+As part of this operation the \emph{successors} of $n$ (those nodes
+immediately adjacent to $n$ in the graph $G$) become generated. This means
+they are evaluated in terms of cost and added to an expansion queue.  This
+process continues until either (i) the target node is expanded and a path is
+returned or (ii) all the nodes in the expansion queue are exhausted and the
+algorithm returns failure.
 
 \subsection{Blind Search}
 \label{cha::lit::search::blind}
-Blind search is a systematic search strategy that expand nodes from the 
-graph in a fixed order. Two classical examples are Breadth-First Search (BFS)~\citep{moore59}
-and Depth-First Search (DFS)~\citep{russel03}. 
-Both of these algorithms construct a search \emph{tree} which has the start node 
-$s$ at its root. BFS proceeds by expanding all nodes at a given level of the tree
-before moving down to the next level. DFS meanwhile both recurse down the 
-tree immediately by expanding a node as soon as it generates it.
+Blind search is a systematic search strategy that expands nodes from the graph
+in a fixed order. Two classical examples are Breadth-First Search
+(BFS)~\citep{moore59} and Depth-First Search (DFS)~\citep{russel03}.  Both of
+these algorithms construct a search \emph{tree} which has the start node $s$
+at its root. BFS proceeds by expanding all nodes at a given level of the tree
+before moving down to the next level. DFS meanwhile expands a node and
+immediately recurses down the tree by choosing one of its successors to
+explore next.  \footnote{The selection strategy is usually fixed.}
 
-BFS is a complete and optimal search strategy but it is not very efficient; it requires
-an amount of space and time which increases exponentially with the depth at which 
-the target node is found in the search tree.
-By comparison, DFS requires just linear time to explore a full branch of the tree, 
-from root to leaf, and it keeps in memory only the nodes found along that branch. 
-Unfortunately DFS lacks any optimality or completeness guarantees and in the worst 
-case it will explore all possible paths in the tree. This means that if the depth of 
-the tree is unbounded, or if the tree contains repeated nodes, DFS may not terminate. 
+BFS is a complete and optimal search strategy but it is not very efficient; it
+requires an amount of space and time which increases exponentially with the
+depth of the search tree.  DFS, by comparison, requires just linear time and
+space but lacks any optimality or completeness guarantees. In the worst case
+DFS will explore all possible paths in the tree. This means that if the depth
+of the tree is unbounded, or if the tree contains repeated nodes, DFS may not
+terminate.
 
 \subsection{Informed Search}
 \label{cha::lit::search::informed}
@@ -73,7 +74,7 @@ In a typical implementation a priority queue, called the
 known as the \emph{closed list}, keeps track of nodes already expanded.
 
 Among the best known and most popular implementations of informed search is 
-A*~\citep{hart68}. This algorithm computes, for every generated node $n$, a 
+A{*}~\citep{hart68}. This algorithm computes, for every generated node $n$, a 
 priority $f(n)$:
 
 \begin{equation}
@@ -86,12 +87,14 @@ cost of the path from $n$ to the target node $t$.  Taken together these two
 values, $g(n)$ and $h(n)$, provide an estimate of the total cost of a path from
 $s$ to $t$ via $n$.  
 
-A* can be shown to be complete, optimal and optimally
+A{*} can be shown to be complete, optimal and optimally
 efficient~\citep{dechter85} but only if the heuristic function is both
 \emph{admissible} and \emph{monotonic}. Admissible means that $h(n)$ always
 lower-bounds the cost of the path from $n$ to $t$. Monotonic means that $h(n)$
-never decreases along any particular path.
-In terms of complexity, A* requires only $O(|V|)$ space and computes a solution in 
+never decreases along any particular path. Optimally efficient means that no
+algorithm which has access to the same information as A{*} can possibly
+expand fewer nodes than A{*}
+In terms of complexity, A{*} requires $O(|V|)$ space and computes a solution in 
 worst-case time $O(|V|\log_2{|V|})$.
 
 \subsection{Local Search}
@@ -107,8 +110,8 @@ the obstacle (either partially or entirely) in order to find the best ``leave''
 point from which to continue toward the goal.
 Though they are incomplete and suboptimal, bug algorithms can be surprisingly
 effective on a range of problems (e.g. search spaces containing only convex
-obstacles). They require very little memory (typically a constant amount) and
-are attractive in cases where computational resources are very limited.
+obstacles). They require little memory (typically a constant amount) and
+are attractive in cases where computational resources are limited.
 
 \subsection{Performance Enhancements}
 \label{cha::lit::search::impl}
@@ -121,7 +124,9 @@ in one of three areas:
 Typical examples include spatial abstraction, graph pruning, 
 symmetry breaking and other approaches that can compact sets of states.
 We discuss a number of representative works in Section~\ref{cha::lit::abstraction}
-and Section~\ref{cha::lit::symmetry}. %and Section~\ref{cha::lit::database}.
+and Section~\ref{cha::lit::symmetry}. Often such approaches involve a 
+pre-computation step before any pathfinding can begin.
+%and Section~\ref{cha::lit::database}.
 
 \item Better heuristic functions.
 Typical examples include: database-driven heuristics, weighted heuristics and 

@@ -43,8 +43,8 @@ Section~\ref{cha::lit::graphs::analysis} we compare them directly.
 \label{cha::lit::graphs::grid}
 A grid map is a tessellation of geometric shapes used to discretise an n-dimensional
 operating environment. The canonical case involves unit squares, called tiles, 
-which are applied over a plane~\footnote{Other types of two dimensional shapes,
-such as hexes and texes, are also used in this setting but less commonly; cf.~\citep{yap02}}.
+which are applied over a plane.\footnote{Other types of two dimensional shapes,
+such as hexes and texes, are also used in this setting but less commonly; cf.~\citep{yap02}.}.
 Each square tile has up to eight adjacent neighbours and is marked 
 as traversable or non-traversable depending on whether or not it
 intersects any obstacles.  Agents are modeled as unit-size entities that
@@ -66,23 +66,23 @@ number of tiles is not always possible: there is always a corresponding increase
 memory requirements and searching in a larger grid often makes pathfinding more 
 challenging.
 Another disadvantage of grid maps is that they produce paths which are
-constrained to the points of the grid. Such paths are not only aesthetically
+constrained to the points of the grid. Such paths may be not only aesthetically
 displeasing but they can also be longer than strictly necessary and may
 require post-processing to ``smooth'' them.
 
 \subsection{Navigation Meshes}
 \label{cha::lit::graphs::nav}
-A navigation mesh can be described as a low-fidelity model of an operating environment.
-Typically comprising a set of convex adjacent polygons, navigation meshes are
-often used in computer games to represent walkable and non-walkable surfaces in
-two and three dimensions~\citep{snook00,tozour02}.
-There are many approaches for constructing navigation meshes.
-One recent technique triangulates the environment~\citep{demyen07,kallmann10}.  
-Another decomposes the map into voxels which are then manipulated in order to construct a 
-mesh of walkable polygons. 
-Recursive spatial indexing algorithms can also be applied to produce navigation meshes. 
-Quad Trees~\citep{finkel74,samet85}, for example, can be used to decompose an input
-map into a set of adjacent obstacle-free rectangular regions. 
+A navigation mesh can be described as a low-fidelity model of an operating
+environment.  Typically comprising a set of convex adjacent polygons,
+navigation meshes are often used in computer games to represent walkable and
+non-walkable surfaces in two and three dimensions~\citep{snook00,tozour02}.
+There are many approaches for constructing navigation meshes.  One recent
+technique triangulates the environment~\citep{demyen07,kallmann10}.  Another
+decomposes the map into voxels (three-dimensonal pixels) which are then
+manipulated in order to construct a mesh of walkable polygons.  Recursive
+spatial indexing algorithms can also be applied to produce navigation meshes.
+Quad Trees~\citep{finkel74,samet85}, for example, can be used to decompose an
+input map into a set of adjacent obstacle-free rectangular regions.
 
 Meshes are popular because they are representationally complete and often more
 memory efficient than other search graphs e.g. grid maps. Another advantage is
@@ -94,10 +94,9 @@ e.g. \textsc{NavPower} and \textsc{Recast Navigation}. Disadvantages include:
 \item Meshes need to be recomputed/repaired if the environment changes.
 \item Computed paths often need to be smoothed or otherwise post-processed.
 \item Locating particular polygons involves search. In the case 
-of Quad Trees each such operation takes logarithmic time. In other cases
-a linear search may be required.
+of Quad Trees each such operation takes logarithmic time. In other cases,
+such as when a polygon ordering is not defined, linear search may be required.
 \end{itemize}
-
 
 \subsection{Roadmaps}
 \label{cha::lit::graphs::road}
@@ -116,7 +115,10 @@ found at the intersections of these edges.
 
 Roadmaps are advantageous because they are an effective means of discretising
 large multi-dimensional search spaces into small graphs that can be searched
-efficiently. For example: using a roadmap any pathfinding problem can be
+efficiently.\footnote{An example of a search space with more than three dimensions
+is the operating environment of an industrial robot arm with $k > 3$ degrees of
+freedom. Such robots can be found in e.g. automotive manufacturing.}
+For example: using a roadmap any pathfinding problem can be
 factored into three smaller sub-problems: find a path from each of the start and
 target configuration to a point on the roadmap then search for a path on the
 roadmap that connects these two points. Disadvantages include:
@@ -127,11 +129,11 @@ By comparison RRMs have stronger guarantees but their applicability
 is limited to pathfinding in two and three dimensions.}
 \item{Roadmaps are applicable only in static environments. The introduction of
 new obstacles or changes to the placement of existing obstacles typically require 
-the roadmap to be re-computed or repaired. A one-shot variation of the roadmap idea has been
-developed to address this limitation~\citep{lavalle98} but it is not as reliable
-as static roadmaps.}
+the roadmap to be re-computed or repaired. A one-shot variation of the roadmap idea,
+known as Rapidly-exploring Random Trees, has been developed to address this 
+limitation~\citep{lavalle98} but it is not as reliable as static roadmaps.}
 \item{Roadmaps compute only approximately shortest paths and they assume a single 
-robot type (i.e. they are normally not reusable).}
+robot type (i.e. they are normally not reusable across different types of robots).}
 \end{itemize}
 
 \subsection{Shortest Path Maps}
@@ -139,8 +141,8 @@ robot type (i.e. they are normally not reusable).}
 A Shortest Path Map (SPM)~\citep{mitchell87,mitchell97}, is a tree whose nodes
 form a shortest path cover of an environment.  The nodes of the tree are regions
 that are computed and organised with respect to a single source point. Each
-point interior to a region can be reached from the source by following a path in
-the SPM that is fixed.
+point interior to a region can be reached from the source by following an optimal 
+path in the SPM that is fixed.
 % Associated with each region is a root
 %which is the last common vertex on the shortest path from the source to any
 %point inside the region.  To extract a shortest path, from the source to any
@@ -149,7 +151,8 @@ the SPM that is fixed.
 
 Developed by practitioners working in the area of Computational Geometry, SPMs
 are highly efficient data structures: they can facilitate the extraction
-of a shortest path from the source to any point on the map in just logarithmic time.
+of a shortest path from the source to any point on the map in time logarithmic to
+the depth of the tree.
 Their primary disadvantage is that they are limited to queries originating at
 a single fixed source. Each time the source changes the SPM must be recomputed and
 each such operation requires $O(n\log_2{n})$ space and time. 
@@ -175,36 +178,51 @@ cases but their memory requirements remain worst-case quadratic.
 \item Visibility graphs are static models and must be recomputed or 
 repaired if the environment changes.
 \item Visibility graphs do not preserve solution optimality when applied
-to environments in three-dimensional space or higher.
+to environments in three-dimensional space or higher.\footnote{
+In two dimensions an optimal path can only circumvent a polygonal 
+obstacle by passing through one or more of its vertices.
+The problem in e.g. three dimensions is that an optimal path can cross 
+a polyhedral obstacle at any point along its surface -- not just at the vertices
+that define its faces. The same observation 
+is true for obstacles in higher-dimensional spaces.}
 \end{itemize}
 
 \subsection{Comparative Analysis}
 \label{cha::lit::graphs::analysis}
-Selecting a technique that models an operating environment as a search graph is not
-a straightforward task. We have discussed a number of popular approaches but none
-are ideal in every situation; each has their own set of advantages and disadvantages.
+Selecting a technique that models an operating environment as a search graph
+is not a straightforward task. We have discussed a number of popular
+approaches but none are ideal in every situation; each has their own set of
+advantages and disadvantages.
 
-Shortest-path maps, for example, preserve solution existence and solution optimality 
-and they can solve any shortest path query w.r.t a single fixed source  in just logarithmic time. 
-Unfortunately their applicability is limited: in many pathfinding settings, particularly
-computer games and robotics, it is common for the source location to change frequently and
-each time it does a new Shortest-path map must be computed requiring time $O(n\log{n})$.
-Grid maps, by comparison, are much better suited in such contexts: though they only
-preserve solution existence they can be constructed in amortized linear time and operations
-on individual tiles can be performed in constant time. Unfortunately grid maps can require
-high resolutions to accurately represent an environment and this slows pathfinding search.
+Shortest-path maps, for example, preserve solution existence and solution
+optimality and they can solve any shortest path query w.r.t a single fixed
+source  in just logarithmic time.  Unfortunately their applicability is
+limited: in many pathfinding settings, particularly computer games and
+robotics, it is common for the source location to change frequently and each
+time it does a new Shortest-path map must be computed requiring time
+$O(n\log{n})$.  Grid maps, by comparison, are much better suited in such
+contexts: though they only preserve solution existence they can be constructed
+in amortized linear time and operations on individual tiles can be performed
+in constant time. Unfortunately grid maps can require high resolutions to
+accurately represent an environment and this slows pathfinding search.
 
-Roadmaps and Navigation Meshes are techniques that produce sparse graphs because 
-they do not rely on cells of uniform size.  They can be very fast to search 
-but must be constructed as part of an offline preprocessing step. They must both
-be repaired (or recomputed) if the environment changes and they both have 
-linear-time worst-case requirements for operations on individual nodes.  
-A similar description is true of Visibility Graphs however in this case an additional 
-and often prohibitive space overhead may be required.
+Roadmaps and Navigation Meshes are techniques that produce sparse graphs
+because they do not rely on cells of uniform size.  They can be very fast to
+search but must be constructed as part of an offline preprocessing step. They
+must both be repaired (or recomputed) if the environment changes and they both
+have linear-time worst-case requirements for operations on individual nodes.
+A similar description is true of Visibility Graphs however in this case an
+additional and often prohibitive space overhead may be required.
 
-In this thesis we will employ grid-based map representations. We do not claim this
-representation to be \emph{the best} however, as we have discussed, it has certain advantages
-that simplify pathfinding search. Moreover grid maps, as a representational technique,
-are relatively unstudied in the literature. We will thus present in later chapters of this
-thesis new techniques that significantly improve the state-of-the-art in pathfinding search 
-over grid map domains: with respect to not only efficiency but also the quality of computed solutions.
+In this thesis we will employ grid-based map representations. We do not claim
+this representation to be \emph{the best} however, as we have discussed, it
+has certain advantages that simplify pathfinding search. Moreover, grids are
+very popular with academic and industry practitioners; often appearing in
+real-world applications and often employed as benchmark problems for search
+algorithms.  Despite widespread use very few works from the pathfinding
+literature are explicitly concerned with grids as objects for study and
+analysis. In later chapters we will see that grids present a unique set of
+challenges when it comes to finding shortest paths and we will present a range
+of grid-based techniques that significantly improve the state-of-the-art for
+pathfinding search on grid-based domains.  We focus not only on improving the
+efficiency of search but also the quality of computed solutions.
