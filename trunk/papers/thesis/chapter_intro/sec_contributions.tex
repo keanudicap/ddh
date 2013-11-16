@@ -8,21 +8,22 @@ central insight in this case concerns the novel application of symmetry
 elimination to pathfinding.
 
 We address our second research challenge, related to the optimality of paths
-on a grid, by giving a new theoretical results which show that the Any-Angle
+on a grid, by giving a new theoretical results which show that the Any-angle
 Pathfinding problem can be solved exactly and online. We also describe in
 detail the implementation and correct operation of a corresponding search
 algorithm, Anya, which appears especially well suited to pathfinding in
 computer games.
 
 \subsection{Symmetry Breaking in Pathfinding Search}
-In this thesis we speed up grid-optimal pathfinding in an entirely novel way:
-through the identification and elimination of path symmetries.  Unlike the
-majority of works from the literature, in which a path is concretely defined
-in terms of a specific set of nodes and edges, we consider a path as an
-ordered sequence of (often) interchangeable steps or actions.
-By taking an alternative view of the problem we show that many of the paths
-between two points on a grid map are simply permutations of each other; i.e.
-they all involve the same set of actions and they all have identical cost.
+In Chapters~\ref{cha::rsr},~\ref{cha::jps} and \ref{cha::jps2} we speed up
+grid-optimal pathfinding in an entirely novel way: through the identification
+and elimination of path symmetries.  Unlike the majority of works from the
+literature, in which a path is concretely defined in terms of a specific set
+of nodes and edges, we consider a path as an ordered sequence of (often)
+interchangeable steps or actions.  By taking an alternative view of the
+problem we show that many of the paths between two points on a grid map are
+simply permutations of each other; i.e.  they all involve the same set of
+actions and they all have identical cost.
 
 We show that in the presence of path symmetry classical and usually very
 performant algorithms such as A{*}~\citep{hart68} will waste much time looking at
@@ -38,16 +39,16 @@ pathfinding in computer games.
 
 \subsubsection{Rectangular Symmetry Reduction}
 \label{cha::intro::contributions::rsr}
-Rectangular Symmetry Reduction (RSR) is an offline symmetry breaking algorithm
-for grid maps. It is fast, memory efficient, optimality preserving and can, in
-some cases, eliminate entirely the need to search.  RSR decomposes an
-arbitrary uniform-cost grid map into a set of empty rectangles and removes
-from each such rectangle all interior nodes.  Macro edges are then added
-between selected pairs of perimeter nodes to facilitate provably optimal
-traversal through each rectangle.  We develop two variants of RSR: one for
-4-connected grid maps and the other for 8-connected grid maps; both common
-domains that often appear in the AI literature and in real-life computer
-games.
+In Chapter~\ref{cha::rsr} we present Rectangular Symmetry Reduction (RSR): an
+offline symmetry breaking algorithm for grid maps. It is fast, memory
+efficient, optimality preserving and can, in some cases, eliminate entirely
+the need to search.  RSR decomposes an arbitrary uniform-cost grid map into a
+set of empty rectangles and removes from each such rectangle all interior
+nodes.  Macro edges are then added between selected pairs of perimeter nodes
+to facilitate provably optimal traversal through each rectangle.  We develop
+two variants of RSR: one for 4-connected grid maps and the other for
+8-connected grid maps; both common domains that often appear in the AI
+literature and in real-life computer games.
 
 In addition to the basic algorithm we also develop two pruning strategies
 which can significantly reduce the number of nodes that need to be explored
@@ -67,46 +68,46 @@ identify a range of benchmark problems on which RSR dominates convincingly.
 
 \subsubsection{Jump Point Search}
 \label{cha::intro::contributions::jps}
-Jump Point Search (JPS) an online pruning strategy that deals with path
-symmetry by selectively expanding only certain nodes on a grid map which we
-call \emph{jump points}.  Moving from one jump point to the next involves
-travelling in a fixed direction while repeatedly applying a set of simple
-neighbour pruning rules until either an obstacle or a jump point is reached.
-Because we do not expand any intermediate nodes can improve the search time
-performance of standard A{*} by an order of magnitude and more.  JPS is unique
-in the pathfinding literature in that it has very few disadvantages: it is
-simple, yet highly effective; it preserves optimality, yet requires no extra
-memory;  it is extremely fast, yet requires no pre-processing.  Further, our
-method is completely orthogonal to and easily combined with competing speedup
-techniques from the literature.  We are unaware of any other algorithm which
-has all these features.
+In Chapter~\ref{cha::jps} we present Jump Point Search (JPS): an online
+pruning strategy that deals with path symmetry by selectively expanding only
+certain nodes on a grid map which we call \emph{jump points}.  Moving from one
+jump point to the next involves travelling in a fixed direction while
+repeatedly applying a set of simple neighbour pruning rules until either an
+obstacle or a jump point is reached.  Because we do not expand any
+intermediate nodes can improve the search time performance of standard A{*} by
+an order of magnitude and more.  JPS is unique in the pathfinding literature
+in that it has very few disadvantages: it is simple, yet highly effective; it
+preserves optimality, yet requires no extra memory;  it is extremely fast, yet
+requires no pre-processing.  Further, our method is completely orthogonal to
+and easily combined with competing speedup techniques from the literature.  We
+are unaware of any other algorithm which has all these features.
 
-In addition to the basic algorithm we make three further contributions: (i) we
-give a new and more efficient procedure for online symmetry breaking by
-manipulating ``blocks'' of nodes at a single time rather than individual
-nodes; (ii) we give new offline pre-processing technique that can identify
-jump points apriori in order to further speed up pathfinding search.  (iii) we
-enhance the pruning rules of JPS, allowing it to ignore many intermediate
-nodes that must otherwise be expanded; On benchmark domains taken from real
-computer games we show that our enhancements can improve JPS performance by
-anywhere from several factors to over one order of magnitude. We also compare
-our approaches with SUB~\citep{urasKH13}: a very recent state-of-the art
-pathfinding algorithm. We find that the two techniques have complementary
-strengths. In addition we show that there are large sets of benchmark
-instances where our improved JPS variants are faster.
+In Chapter~\ref{cha::jps2} we extend the ideas of JPS in order to make three
+further contributions: (i) we give a new and more efficient procedure for
+online symmetry breaking by manipulating ``blocks'' of nodes at a single time
+rather than individual nodes; (ii) we give new offline pre-processing
+technique that can identify jump points apriori in order to further speed up
+pathfinding search.  (iii) we enhance the pruning rules of JPS, allowing it to
+ignore many intermediate nodes that must otherwise be expanded; On benchmark
+domains taken from real computer games we show that our enhancements can
+improve JPS performance by anywhere from several factors to over one order of
+magnitude. We also compare our approaches with SUB~\citep{urasKH13}: a very
+recent state-of-the art pathfinding algorithm. We find that the two techniques
+have complementary strengths. In addition we show that there are large sets of
+benchmark instances where our improved JPS variants are faster.
 
 \subsection{Optimal Any-angle Pathfinding}
 \label{cha::intro::contributions::anya}
-We develop a new optimal algorithm for solving the Any-Angle Pathfinding
-Problem.  Our approach involves searching over sets of states represented as
-intervals. From each interval we select a representative point to derive a
-corresponding $f$-value for the set.  We give theoretical results that show
-our algorithm, Anya, always returns an optimal path. Moreover it does so
-entirely online and without any pre-processing. To the best of our knowledge
-Anya is the first known algorithm to provide such features and guarantees.
-Anya answers an open question from the areas of Artificial Intelligence and
-Game Development: is there an any-angle pathfinding algorithm which is online
-and optimal?  The answer is yes.
+In Chapter~\ref{cha::anya} we develop a new optimal algorithm for solving the
+Any-angle Pathfinding Problem.  Our approach involves searching over sets of
+states represented as intervals. From each interval we select a representative
+point to derive a corresponding $f$-value for the set.  We give theoretical
+results that show our algorithm, Anya, always returns an optimal path.
+Moreover it does so entirely online and without any pre-processing. To the
+best of our knowledge Anya is the first known algorithm to provide such
+features and guarantees.  Anya answers an open question from the areas of
+Artificial Intelligence and Game Development: is there an any-angle
+pathfinding algorithm which is online and optimal?  The answer is yes.
 
 %
 %
@@ -137,7 +138,7 @@ and optimal?  The answer is yes.
 %%to consider 
 %
 %%A more general variant is known as the Euclidean
-%%Shortest Path Problem. It differs from the Any-Angle case in that it does
+%%Shortest Path Problem. It differs from the Any-angle case in that it does
 %%not require a grid map as input: any planar map will sufficie.
 %%Game developers have historically approached this challenge using a
 %%post-processing technique known as ``string pulling''. Applied to a grid-optimal
