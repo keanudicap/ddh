@@ -30,8 +30,8 @@ The cost of each edge is equal to the Manhattan distance between its two endpoin
 \caption[Rectangular Symmetry Reduction on 4-connected maps]{
 \small
 RSR decomposes a grid map into a set of empty rectangles. 
-Nodes interior to each rectangle are pruned and macro edges are then added 
-in their place to facilitate optimal travel from one side of the perimeter to the other.}
+Nodes interior to each rectangle are pruned leaving a set of perimeter nodes.
+Macro edges are then added to facilitate optimal travel from one side of the perimeter to the other.}
 \label{fig::rsr::overview}
 \end{figure}
 
@@ -184,7 +184,7 @@ improvement) and returns an optimal solution 3 times faster.
 \subsection{Identifying Empty Rooms}
 \label{cha::rsr::rectangles}
 In this section we give a simple but effective flood-fill-based algorithm for decomposing a 
-grid map into empty rectangular rectangles.
+grid map into empty rectangles.
 We will try to build large rectangles before small ones and prefer rectangles which
 contain as many interior nodes as possible:
 
@@ -200,7 +200,8 @@ interior nodes in the rectangle of each $t$ as its priority.}
 \item{\label{rectanglesalg:step3} Take from the heap the tile $t$ with highest priority
 which has not already been assigned to a rectangle. }
 
-\item{\label{rommsalg:step4} Verify the priority of $t$ by building another maximal size
+\item{\label{rommsalg:step4} Verify the priority of $t$\footnote{Some of the tiles in the associated rectangle
+may have been assigned to another rectangle since we added $t$ to the heap.} by building another maximal size
 empty rectangle (as per Step \ref{rectanglesalg:step1}) which has $t$ as its upper
 left corner and contains no obstacles or tiles already assigned to another rectangle.}
 
