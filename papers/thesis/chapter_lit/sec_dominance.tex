@@ -1,48 +1,57 @@
 \section{Dominance Detection}
 \label{cha::lit::dominance}
-In many pathfinding domains, and especially in gridmaps, arbitrary problem instances rarely
-have only a single optimal solution. These solutions can be symmetric to each other 
-(c.f. Section~\ref{cha::lit::symmetry}) or they can simply be equivalent in terms of cost.
-Pathfinding instances that have many equivalent solutions are difficult to solve; even for 
-efficient search algorithms such as A*. In such cases, before even one optimal path can be found,
-A* must usually generate (and often expand) every node on every other equivalent optimal path.
-This is wasteful and prevents A* from making real progress toward the target. 
-A number of works can be found in the literature of Heuristic Search that identify and
-eliminate equivalent paths. Such algorithms are known as \emph{graph pruning} 
-or \emph{dominance detection} techniques. We briefly outline them here.
+In many pathfinding domains, and especially in gridmaps, arbitrary problem
+instances rarely have only a single optimal solution. These solutions can be
+symmetric to each other (c.f. Section~\ref{cha::lit::symmetry}) or they can
+simply be equivalent in terms of cost.  Pathfinding instances that have many
+equivalent solutions are more difficult to solve; even for efficient search
+algorithms such as A{*}. In such cases, before even one optimal path can be
+found, A{*} must usually generate (and often expand) every node on every other
+equivalent optimal path.  This is wasteful and prevents A{*} from making real
+progress toward the target.  A number of works can be found in the literature
+of Heuristic Search that identify and eliminate equivalent paths. Such
+algorithms are known as \emph{graph pruning} or \emph{dominance detection}
+techniques. We briefly outline them here.
 
 \begin{definition}
 A path $\pi$ \emph{dominates} another path $\pi'$ if $cost(\pi) \leq cost(\pi')$. 
 If $cost(\pi) < cost(\pi')$ then $\pi$ is \emph{strictly dominant}.
 \end{definition}
 
-The Dead-end Heuristic~\citep{bjornsson06} and Swamps~\citep{pochter09,pochter10} are two very
-similar a graph pruning techniques that can eliminate from consideration many dominated and strictly
-dominated paths.  Both rely on an offline preprocessing phase that decomposes a given map into
-obstacle-free areas.  During online search each of these two algorithms consults the decomposed map
-in order to identify areas that are relevant for the instance at hand and areas that can be ignored
-entirely because exploring them could not improve the length of any path.
+The Dead-end Heuristic~\citep{bjornsson06} and
+Swamps~\citep{pochter09,pochter10} are two graph pruning techniques that can
+eliminate from consideration many dominated and strictly dominated paths.
+Both rely on an offline preprocessing phase that decomposes a given map into
+obstacle-free areas.  During online search each of these two algorithms
+consults the decomposed map in order to identify areas that are relevant for
+the instance at hand and areas that can be ignored entirely because exploring
+them could not improve the length of any path.
 %It can be seen as a technique for detecting areas that don't have to be searched
 %in the instance at hand and, as before, is complementary to our work.
 
-MSA*~\citep{bolanca09} is another recent pruning technique which is orthogonal to both Swamps and
-the Dead-end Heuristic.  Where those algorithms identify areas that can be ignored during search,
-MSA* generates, on the fly, macro-edges that facilitate fast travel through areas that do have to be
-searched.  It relies on a preprocessing step that decomposes a given grid map into a series of empty
-rectangular rooms. The key idea is that each such room can be traversed in a single macro step. MSA* 
-is similar in spirit to Rectangular Symmetry Reduction; an alternative pruning
-algorithm that we introduce in Chapter~\ref{cha::rsr}.  While our work can consistently speed up A*
-search, MSA* is only able to achieve this in some cases.  It is also worth noting that MSA* uses a
-different empty room decomposition method from the one described in our work.
+MSA{*}~\citep{bolanca09} is another recent pruning technique which is
+orthogonal to both Swamps and the Dead-end Heuristic.  Where those algorithms
+identify areas that can be ignored during search, MSA{*} generates, on the
+fly, macro-edges that facilitate fast travel through areas that do have to be
+searched.  It relies on a preprocessing step that decomposes a given grid map
+into a series of empty rectangular rooms. The key idea is that each such room
+can be traversed in a single macro step. MSA{*} is similar in spirit to
+Rectangular Symmetry Reduction; an alternative pruning algorithm that we
+introduce in Chapter~\ref{cha::rsr}.  While our work can consistently speed up
+A{*} search, MSA{*} is only able to achieve this in some cases.  It is also
+worth noting that MSA{*} uses a different empty room decomposition method from
+the one described in our work.
 
-A different technique for pruning the search space is to identify \emph{dead} and \emph{redundant}
-cells~\citep{sturtevant10b}.  Developed in the context of learning-based heuristic search, this
-method speeds up search only after running multiple iterations of an iterative deepening algorithm.
-During each iteration the algorithm stores the $g$-value associated with each expanded node and
-prunes from subsequent iterations all nodes that were found to have zero $g$-cost-increasing
-neighbours.
+A different technique for pruning the search space is to identify \emph{dead}
+and \emph{redundant} cells~\citep{sturtevant10b}.  Developed in the context of
+learning-based heuristic search, this method speeds up search only after
+running multiple iterations of an iterative deepening algorithm.  During each
+iteration the algorithm stores the $g$-value associated with each expanded
+node and prunes from subsequent iterations all nodes that were found to have
+zero $g$-cost-increasing neighbours.
 
-Fast Expansion~\citep{sun09} is another related work that speeds up A* pathfinding search. 
-This algorithm detects when a newly generated (or newly relaxed) node has an $f$-value that 
-dominates the $f$-value of the best node on the open list. The idea is to expand such nodes 
-immediately and avoid unnecessary operations on the open list.
+Fast Expansion~\citep{sun09} is another related work that speeds up A{*}
+pathfinding search.  This algorithm detects when a successor of the current
+node has an $f$-value that dominates the $f$-value of the best node
+on the open list. The idea is to expand such nodes immediately and avoid
+unnecessary operations on the open list.
