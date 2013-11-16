@@ -1,58 +1,62 @@
 \section{Symmetry Breaking}
 \label{cha::lit::symmetry}
-Symmetry is a naturally occurring phenomenon that arises whenever we are forced
-to enumerate permutations of elements in a set. Typically
-undesirable, symmetry forces search algorithms to waste time and prevents real 
-progress toward the goal.
-In the context of graph search, two kinds of symmetries can arise: \emph{state
+Symmetry is a naturally occurring phenomenon that arises whenever we are
+forced to enumerate permutations of elements in a set. Symmetry forces search
+algorithms to waste time and prevents real progress toward the goal.  In the
+context of graph search, two kinds of symmetries can arise: \emph{state
 symmetries}, which are equivalences between the individual nodes of a graph,
-and \emph{path symmetries}, which are equivalences between ordered sequences of
-nodes.
-For an example of each consider the \textsc{Gripper} domain: a simple
-but challenging series of problems from the area of AI Planning. A typical instance
-involves a robot tasked with moving a series of identical balls between two adjacent rooms.
-The robot has two arms (the eponymous grippers for which the problem is named) and can
-move freely between the rooms but is restricted to manipulating only one
-ball at a time.
-To solve this problem a typical systematic search algorithm will enumerate every 
-permutation of balls and grippers, despite the fact that such configurations are equivalent.
-For instance: picking up a ball with the left gripper yields a state equivalent to 
-picking up a ball with the right gripper.
- Similarly, the sequence of actions necessary to move a single ball from one room to another
-is independent and interchangeable with the sequence of actions that moves any other ball;
-thus it doesn't matter in which order the balls are selected as every interleaving of the set
-of all such action sequences leads to the same state.
+and \emph{path symmetries}, which are equivalences between ordered sequences
+of nodes.  For an example of each consider the \textsc{Gripper} domain: a
+simple but challenging series of problems from the area of AI Planning. A
+typical instance involves a robot tasked with moving a series of identical
+balls between two adjacent rooms.  The robot has two arms (the eponymous
+grippers for which the problem is named) and can move freely between the rooms
+but is restricted to manipulating only one ball at a time.  To solve this
+problem a typical systematic search algorithm will enumerate every permutation
+of balls and grippers, despite the fact that such configurations are
+equivalent.  For instance: picking up a ball with the left gripper yields a
+state equivalent to picking up a ball with the right gripper.
+ Similarly, the sequence of actions necessary to move a single ball from one
+ room to another
+is independent and interchangeable with the sequence of actions that moves any
+other ball; thus it doesn't matter in which order the balls are selected as
+every interleaving of the set of all such action sequences leads to the same
+state.
 
 \subsection{Approaches for Breaking State Symmetries}
 \label{cha::lit::symmetry::state}
-A range of methods for reducing state symmetries have been described in the literature of 
-search. Though different in detail each approach involves a preprocessing step that takes a given
-problem description and converts it into an equivalent form that is symmetry free or symmetry 
-reduced.
+A range of methods for reducing state symmetries have been described in the
+literature of search. Though different in detail each approach involves a
+preprocessing step that takes a given problem description and converts it into
+an equivalent form that is symmetry free or symmetry reduced.
 
-One recurring idea for breaking symmetries involves the application of concepts from
-group theory: two nodes in a graph are considered symmetric if they can both be mapped
-to the same symmetry group. \cite{emerson96} describe such an algorithm in the context
-of Model Checking. Their method proceeds by mapping every node in a problem graph to a
-a canonical representative from its associated symmetry group. The result of this process
-is an equivalent \emph{quotient graph} that consists only of these canonical representatives. 
-Being symmetry free this graph is much smaller than the original and consequently much 
-easier to search. Other algorithms using similar principles have been also proposed; for example
-in Constraint Programming~\citep{crawford96,roney-dougal04} and AI Planning~\citep{pochter11}. 
-In each case the authors report a significant improvement in search performance for a variety 
-of practical problems.
-Unfortunately this approach to symmetry breaking reduces to repeatedly testing for graph
-isomorphism; a difficult problem for which no general polytime algorithm is known.
+One recurring idea for breaking symmetries involves the application of
+concepts from group theory: two nodes in a graph are considered symmetric if
+they can both be mapped to the same symmetry group. \cite{emerson96} describe
+such an algorithm in the context of Model Checking. Their method proceeds by
+mapping every node in a problem graph to a a canonical representative from its
+associated symmetry group. The result of this process is an equivalent
+\emph{quotient graph} that consists only of these canonical representatives.
+Being symmetry free this graph is much smaller than the original and
+consequently much easier to search. Other algorithms using similar principles
+have also been proposed; for example in Constraint
+Programming~\citep{crawford96,roney-dougal04} and AI
+Planning~\citep{pochter11}.  In each case the authors report a significant
+improvement in search performance for a variety of practical problems.
+Unfortunately this approach to symmetry breaking reduces to repeatedly testing
+for graph isomorphism; a difficult problem for which no general polytime
+algorithm is known.
 
-A faster and more practical strategy for dealing with state symmetries involves considering 
-only a subset of the permutations in each symmetry group. This is known as 
-\emph{partial symmetry breaking}. The idea is to trade time spent identifying symmetry 
-groups up-front against the risk of considering multiple symmetric states during search.
-Examples of such techniques include: computing only a subset of the permutations in each 
-symmetry group (e.g. as in ~\citep{crawford96}), computing only an approximately canonical 
-representative for a given symmetry group (e.g. as in ~\citep{pochter11}) and looking for 
-\emph{symmetric transitions} rather than symmetric states 
-(e.g. as in~\citep{fox99,fox02,rintannen03}).
+A faster and more practical strategy for dealing with state symmetries
+involves considering only a subset of the permutations in each symmetry group.
+This is known as \emph{partial symmetry breaking}. The idea is to trade time
+spent identifying symmetry groups up-front against the risk of considering
+multiple symmetric states during search.  Examples of such techniques include:
+computing only a subset of the permutations in each symmetry group (e.g. as in
+~\citep{crawford96}), computing only an approximately canonical representative
+for a given symmetry group (e.g. as in ~\citep{pochter11}) and looking for
+\emph{symmetric transitions} rather than symmetric states (e.g. as
+in~\citep{fox99,fox02,rintannen03}).
 %This latter idea has appeared several times in the context of AI Planning; the objective 
 %in this case is to identify actions that are applicable in the same state but which can 
 %be shown to have equivalent results.
@@ -62,80 +66,98 @@ representative for a given symmetry group (e.g. as in ~\citep{pochter11}) and lo
 
 \subsection{Approaches for Breaking Path Symmetries}
 \label{cha::lit::symmetry::path}
-Path symmetries occur during search when considering sequences of independent and interchangeable
-transitions. Applied separately these transitions do not necessarily lead to a symmetric state but
-given a set of such transitions every possible interleaving always yields the same state. 
-Enumerating such interleavings is pointless: each one involves searching a sub-graph that is 
-isomorphic to all the rest and each one yields a state that is equivalent to all the rest.
+Path symmetries occur during search when considering sequences of independent
+and interchangeable transitions. Applied separately these transitions do not
+necessarily lead to a symmetric state but given a set of such transitions
+every possible interleaving always yields the same state.  Enumerating such
+interleavings is pointless: each one involves searching a sub-graph that is
+isomorphic to all the rest and each one yields a state that is equivalent to
+all the rest.
 
-Studies that deal with path symmetries can be found across the literature of Artificial Intelligence.
-In the area of Heuristic Search for example practitioners often study combinatorial puzzles such as Sliding 
-Tile and Rubik's Cube. Both are highly symmetric domains where interleavings of available
-actions often yield the same state. To improve the efficiency of search algorithms for such problems
-~\cite{taylor93} propose constructing automatons that detect redundant interleavings.
-Their approach is complete and optimal but suffers from two drawbacks: (i) it does not prune any nodes
-from the search space; only transitions (ii) its effectiveness depends on a preprocessing step that
-samples the search space; if the sample is not representative of the search space more broadly then
-the pruning power of the automaton is reduced.
+Studies that deal with path symmetries can be found across the literature of
+Artificial Intelligence.  In the area of Heuristic Search for example
+practitioners often study combinatorial puzzles such as Sliding Tile and
+Rubik's Cube. Both are highly symmetric domains where interleavings of
+available actions often yield the same state. To improve the efficiency of
+search algorithms for such problems ~\cite{taylor93} propose constructing
+automatons that detect redundant interleavings.  Their approach is complete
+and optimal but suffers from two drawbacks: (i) it does not prune any nodes
+from the search space; only transitions (ii) its effectiveness depends on a
+preprocessing step that samples the search space; if the sample is not
+representative of the search space more broadly then the pruning power of the
+automaton is reduced.
 
-Automaton-based pruning can be regarded as a type of canonical ordering over sequences of 
-transitions in the search space. A similar idea, which appears in the area of AI Planning, is
-Commutativity Pruning~\citep{haslum00}. This algorithm deals with interleavings of independent and 
-interchangeable actions by only considering actions sequences that respect a given lexicographic 
-order. Like~\citep{taylor93} this approach focuses on pruning redundant sequences of transitions.
-It has the same advantages (complete, optimal) but unlike that work it requires no preprocessing.
+Automaton-based pruning can be regarded as a type of canonical ordering over
+sequences of transitions in the search space. A similar idea, which appears in
+the area of AI Planning, is Commutativity Pruning~\citep{haslum00}. This
+algorithm deals with interleavings of independent and interchangeable actions
+by only considering actions sequences that respect a given lexicographic
+order. Like~\cite{taylor93}'s work this approach focuses on pruning redundant
+sequences of transitions.  It has the same advantages (complete, optimal) but
+unlike that work it requires no preprocessing.
 
-By far the richest source for works dealing with path symmetries is the area of Model Checking
-where practitioners reason about the operation of concurrent transition systems.  In this
-context the state of a system (sometimes called its \emph{configuration}) is defined in terms of its
-execution history; an ordered sequence of \emph{events} where each event represents a concurrent
-computation undertaken by one or more independent components of the system.  The objective of model
-checking is to automatically determine whether specifications of such systems guarantee certain
-properties; e.g.  that certain events will occur or that no deadlocks exist.  Though verification is
-$\mathsf{NP}$-hard in general, practical algorithms are further hampered by the fact that many of
-the events which can occur at some point in time are independent from and interchangeable with many
-other events.
+A rich source for works dealing with path symmetries is the area
+of Model Checking where practitioners reason about the operation of concurrent
+transition systems.  In this context the state of a system (sometimes called
+its \emph{configuration}) is defined in terms of its execution history; an
+ordered sequence of \emph{events} where each event represents a concurrent
+computation undertaken by one or more independent components of the system.
+The objective of model checking is to automatically determine whether
+specifications of such systems guarantee certain properties; e.g.  that
+certain events will occur or that no deadlocks exist.  Though verification is
+$\mathsf{NP}$-hard in general, practical algorithms are further hampered by
+the fact that many of the events which can occur at some point in time are
+independent from and interchangeable with many other events. 
 
-A Marzurkiewicz Trace~\citep{mazurkiewicz86} (or simply a \emph{trace}) is a conceptual approach to
-concurrent model checking that avoids isomorphic sub-graphs.  Trace semantics define an equivalence
-class $[\mathbf h]$ for execution histories of a concurrent system. Each history in a given
-equivalence class is identical to all the others save for the order in which interchangeable and
-independent computations occur.  A number of different strategies for searching in the space of
-Mazurckiewicz Traces have been proposed~\citep{esparza08}. All of them define a precedence relation
-$\prec$ over histories. This is combined with a strategy such as depth-first search in order to
-explore the space of all possible traces.  The idea is that only one interleaving from each
-equivalence class is ever considered: the one that is $\prec$-minimal.  Provided that $\prec$ is
-well-founded and preserved by extensions it can be shown that this strategy is both sound and
-complete.  Moreover, if $\prec$ is a total order then the maximum length of any history is linearly
-bounded.
+A Marzurkiewicz Trace~\citep{mazurkiewicz86} (or simply a \emph{trace}) is a
+conceptual approach to concurrent model checking that avoids isomorphic
+sub-graphs.  Trace semantics define an equivalence class $[\mathbf h]$ for
+execution histories of a concurrent system. Each history in a given
+equivalence class is identical to all the others save for the order in which
+interchangeable and independent computations occur.  A number of different
+strategies for searching in the space of Mazurckiewicz Traces have been
+proposed~\citep{esparza08}. All of them define a precedence relation $\prec$
+over histories. This is combined with a strategy such as depth-first search in
+order to explore the space of all possible traces.  The idea is that only one
+interleaving from each equivalence class is ever considered: the one that is
+$\prec$-minimal.  Provided that $\prec$ is well-founded and preserved by
+extensions it can be shown that this strategy is both sound and complete.
+Moreover, if $\prec$ is a total order then the maximum length of any history
+is linearly bounded.
 
-A more general approach, which is similar to but which does not instantiate Mazurckiewicz Trace
-semantics, is Persistent Sets. This is a family of related algorithms
-~\citep{overman82,valmari89,godefroid91,godefroid96,wehrle12,alkhazraji12} that all
-proceed in a similar manner: they construct in each state $s$ a set of enabled transitions $T$ such
-that every non-empty sequence of transitions composed using only elements of $T$ is independent from
-(i.e. can be interleaved with) every enabled transition outside $T$. During search only transitions
-found in $T$ are followed; all other transitions enabled in the current state are ignored.  Like
-Mazurckiewicz Traces, Persistent Sets are both sound and complete. They differ in two important
-ways: (i) Persistent Sets do not require the specification of any precedence relation; (ii)
-Persistent Sets do not guarantee that every state that is reached during search has a lex-minimal or
-even unique execution history. This latter property means that a search algorithm employing
-Persistent Sets may explore several interleavings of the same set of transitions instead of just
-one.
+A more general approach, which is similar to but which does not instantiate
+Mazurckiewicz Trace semantics, is Persistent Sets. This is a family of related
+algorithms
+~\citep{overman82,valmari89,godefroid91,godefroid96,wehrle12,alkhazraji12}
+that all proceed in a similar manner: they construct in each state $s$ a set
+of enabled transitions $T$ such that every non-empty sequence of transitions
+composed using only elements of $T$ is independent from (i.e. can be
+interleaved with) every enabled transition outside $T$. During search only
+transitions found in $T$ are followed; all other transitions enabled in the
+current state are ignored.  Like Mazurckiewicz Traces, Persistent Sets are
+both sound and complete. They differ in two important ways: (i) Persistent
+Sets do not require the specification of any precedence relation; (ii)
+Persistent Sets do not guarantee that every state that is reached during
+search has a lex-minimal or even unique execution history. This latter
+property means that a search algorithm employing Persistent Sets may explore
+several interleavings of the same set of transitions instead of just one.
 %Another approach involves the development of Persistent Set algorithms for AI
 %Planning~\citep{alkhazraji12,wehrle12} while a third formulates planning as Petri Net
 %unfolding~\citep{hickmott07}. In this latter case interleavings of independent and interchangeable
 %actions are handled by computing Mazurckiewicz Traces.
 
-A similar idea, which addresses some of the drawbacks associated with Persistent Sets, is 
-Sleep Sets~\citep{godefroid93,godefroid96}. A Sleep Set is a set of transitions which are
-enabled in a state $s$ but which will not be executed. Sleep Sets are passed from one state to 
-another during search. The idea is to avoid executing any transitions which are independent and
-interchangeable with the last transition taken in order to reach the current state.
-For example: suppose a state $s'$ is reached by applying transition $t$ in a preceding state $s$.
-The sleep set of $s'$ is the sleep set of $s$ plus all enabled transitions in $s$ that 
-are independent and interchangeable with $t$ and minus all transitions that are not.
-Sleep Sets are sound and complete but less powerful than Persistent Sets. However, two approaches 
-are orthogonal and can be combined. The result is a pruning strategy that is at least as effective
-and often more effective than either approach applied in isolation.
+A similar idea, which addresses some of the drawbacks associated with
+Persistent Sets, is Sleep Sets~\citep{godefroid93,godefroid96}. A Sleep Set is
+a set of transitions which are enabled in a state $s$ but which will not be
+executed. Sleep Sets are passed from one state to another during search. The
+idea is to avoid executing any transitions which are independent and
+interchangeable with the last transition taken in order to reach the current
+state.  For example: suppose a state $s'$ is reached by applying transition
+$t$ in a preceding state $s$.  The sleep set of $s'$ is the sleep set of $s$
+plus all enabled transitions in $s$ that are independent and interchangeable
+with $t$ and minus all transitions that are not.  Sleep Sets are sound and
+complete but less powerful than Persistent Sets. However, two approaches are
+orthogonal and can be combined. The result is a pruning strategy that is at
+least as effective and often more effective than either approach applied in
+isolation.
 

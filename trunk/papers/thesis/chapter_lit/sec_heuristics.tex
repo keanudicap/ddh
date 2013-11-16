@@ -11,62 +11,86 @@
 %A heuristic, in the context of optimal pathfinding search, is a function that 
 %estimates the distance from any given node to the goal. 
 %
-In the context of optimal search a heuristic $h$ is a lower-bound function defined over states. Its
-purpose is to estimate cost-to-go; i.e. to answer questions of the form ``how far is this node from
-the target?".  Heuristics are useful if they can be computed efficiently (i.e.  polytime or better)
-and if they are accurate.  A popular default when pathfinding in the plane is $h_{SLD}$, Also known
-as Straight Line Distance, $h_{SLD}$ is consistent, admissible and runs in constant time (cf.
-Section \ref{cha::lit::search} for a definition of these terms).  In the absence of obstacles
-$h_{SLD}$ is perfect but in more complex environments it can dramatically underestimate optimal
-distances between two arbitrary points; e.g. as seen in~\citep{goldberg05}.
+In the context of optimal search a heuristic $h$ is a lower-bound
+cost-estimation function defined over states. Its purpose is to estimate
+cost-to-go; i.e. to answer questions of the form ``how far is this node from
+the target?".  Heuristics are useful if they can be computed efficiently (i.e.
+polytime or better) and if they are accurate.  A popular default when
+pathfinding in the plane is $h_{SLD}$ or the Straight Line Distance heuristic.
+$h_{SLD}$ is consistent, admissible and runs in constant time (see  Section
+\ref{cha::lit::search} for a definition of these terms).  In the absence of
+obstacles $h_{SLD}$ is perfect but in more complex environments it can
+dramatically underestimate optimal distances between two arbitrary points;
+e.g. as seen in~\citep{goldberg05}.
 
-Many works focus on improving the accuracy of $h_{SLD}$ without negatively impacting its running
-time. This approach usually translates into faster search algorithms. However, there are limits.  A
-number of theoretical models~\citep{pohl77,helmert08} have shown that optimal search strategies
-employing even almost perfect heuristics, i.e. those having only a small additive constant for
-error, must expand, in the worst case, an exponential number of nodes before reaching the goal.  A
-similar result can also be derived for the average case~\citep{pearl84}.  The models used in these
-theoretical works often use certain simplifying assumptions.  They nevertheless align well with
-domain models that appear in pathfinding search; e.g. constant branching factor, uniform-cost edges
-and a singleton goal state.  Despite such seemingly discouraging results researchers have
-demonstrated that, in many pathfinding domains of practical interest (e.g.~\citep{sturtevant12}),
-better heuristic estimates can dramatically improve the performance of optimal search.
+Many works focus on improving the accuracy of $h_{SLD}$ without negatively
+impacting its running time. This approach usually translates into faster
+search algorithms. However, there are limits.  A number of theoretical
+models~\citep{pohl77,helmert08} have shown that optimal search strategies
+employing even almost perfect heuristics, i.e. those having only a small
+additive constant for error, must expand, in the worst case, an exponential
+number of nodes before reaching the goal.  A similar result can also be
+derived for the average case~\citep{pearl84}.  The models used in these
+theoretical works often employ certain simplifying assumptions.  They
+nevertheless align well with domain models that appear in pathfinding search;
+e.g. constant branching factor, uniform-cost edges and a singleton goal state.
+Despite such seemingly discouraging results researchers have demonstrated
+that, in many pathfinding domains of practical interest
+(e.g.~\citep{sturtevant12}), better heuristic estimates can dramatically
+improve the performance of optimal search.
 
-One idea for improving heuristic accuracy is to take into account domain specific movement rules.
-$h_{MD}$ (Manhattan Distance) and $h_{OD}$ (Diagonal or Octile Distance) are two such heuristics; they
-retain all the properties of $h_{SLD}$ but provide better lower-bound estimates when pathfinding in
-square grids. Similar domain-specific heuristics have been developed for pathfinding in hexagonal
-grids~\citep{yap02} and more broadly for optimally solving large combinatorial puzzles~\citep{korf96}.
+One idea for improving heuristic accuracy is to take into account domain
+specific movement rules.  $h_{MD}$ (Manhattan Distance) and $h_{OD}$ (Diagonal
+or Octile Distance) are two such heuristics; they retain all the properties of
+$h_{SLD}$ but provide better lower-bound estimates when pathfinding in square
+grids. $h_MD$ computes a lower-bound on the number of horizontal and vertical
+steps still needed to reach the target node. $h_OD$ computes a similar
+lower-bound but assumes that diagonal steps are also allowed.  Similar
+domain-specific heuristics have been developed for pathfinding in hexagonal
+grids~\citep{yap02} and more broadly for optimally solving large combinatorial
+puzzles~\citep{korf96}.
 
-Another approach to improving heuristic accuracy involves pre-computing distance databases.  A
-large family of related algorithms, sometimes called \emph{memory heuristics}, has been described in
-the literature~\citep{goldberg05,bjornsson06,sturtevant07,felner09,goldenberg10,anderson10}.
-ALT~\citep{goldberg05} is a typical representative. During a preprocessing step ALT selects from the
-map a set of \emph{landmark} nodes and then computes a database of optimal distances from each node
-to every landmark. Given such a database it can be shown that admissible estimates between a pair
-of nodes can be computed by subtracting the distances from the two nodes at hand to a fixed landmark.
-ALT takes as its heuristic estimate the maximum difference over all landmarks.  
-Further enhancements to this type of approach involve the combination of distance databases with
-spatial abstraction. Such examples include the Gateway Heuristic~\citep{bjornsson06} and the 
-Portal Heuristic~\citep{goldenberg10}. Memory heuristics are very fast, typically constant time, 
-and can improve the performance of optimal search by anywhere from several factors to an order of
-magnitude. Their primary disadvantages are often lengthy pre-processing times and significant space
-overheads.  This largely excludes memory heuristics from being applied in many popular pathfinding
-settings, including robotics and video games.
+Another approach to improving heuristic accuracy involves pre-computing
+distance databases.  A large family of related algorithms, sometimes called
+\emph{memory heuristics}, has been described in the
+literature~\citep{goldberg05,bjornsson06,sturtevant07,felner09,goldenberg10,anderson10}.
+ALT~\citep{goldberg05} is a typical representative. During a preprocessing
+step ALT selects from the map a set of \emph{landmark} nodes and then computes
+a database of optimal distances from each node to every landmark. Given such a
+database it can be shown that admissible estimates between a pair of nodes can
+be computed by subtracting the distances from the two nodes at hand to a fixed
+landmark.  ALT takes as its heuristic estimate the maximum difference over all
+landmarks.  Further enhancements to this type of approach involve the
+combination of distance databases with spatial abstraction. Such examples
+include the Gateway Heuristic~\citep{bjornsson06} and the Portal
+Heuristic~\citep{goldenberg10}. Memory heuristics are very fast, typically
+constant time, and can improve the performance of optimal search by anywhere
+from several factors to an order of magnitude. Their primary disadvantages are
+often lengthy pre-processing times and significant space overheads.  This
+largely excludes memory heuristics from being applied in many popular
+pathfinding settings, including robotics and computer games.
 
-A different line of work has investigated the automatic construction of memory heuristics.  In a
-recent paper~\cite{rayner11} describe a process for computing entire families of Euclidean
-heuristics. Their approach involves embedding a spatial network graph into a manifold. Computing the
-embedding requires solving a constrained optimisation problem that minimises heuristic error. The
-authors show that their approach produces very accurate results in practice but solving the
-optimisation problem can require significant preprocessing time and space.  Compressed Path
-Databases (CPDs)~\citep{sanka05,botea11,botea13} are another powerful method for automatically
-constructing memory-based heuristics; this time from spatial abstractions.  A CPD can be described as
-a highly compressed set of tables that store the first move on the optimal path between any pair of
-nodes in a graph. Through a simple process of recursive look-ups CPDs can extract any optimal path in
-near-linear-time and without employing any state-space search. Though among the fastest pathfinding
-techniques today, CPDs nevertheless require substantial amounts of memory and are thus not
-applicable in many popular pathfinding settings.
+In a recent paper~\cite{rayner11} describe a technique for computing entire
+families of Euclidean heuristics. Their approach involves
+embedding a spatial network graph into a manifold. Computing the embedding
+requires solving a constrained optimisation problem that minimises heuristic
+error. The authors show that their approach produces very accurate results in
+practice but solving the optimisation problem can require significant
+preprocessing time and space.  
+
+SILC~\citep{sanka05} and Compressed Path Databases (CPDs) are two very
+powerful memory-based techniques which are related to but which are not
+instances of memory heuristics. Rather than computing a database of distances
+between selected pairs of points however (i.e. a heuristic) these approaches
+constructs a pathfinding oracle using the results of an exact all-pairs
+shortest-path computation.  A CPD for example can be described as a highly
+compressed set of tables that store the first move on the optimal path between
+any pair of nodes in a graph. Through a simple process of recursive look-ups
+CPDs can extract any optimal path in near-linear-time and without employing
+any state-space search.  SILC and CPDs are among the fastest pathfinding
+techniques today but because they require substantial amounts of memory and
+pre-computation they are not applicable in many popular pathfinding settings,
+including games.
 
 %Pattern Databases (PDBs)~\cite{culberson96} are a powerful method for automatically constructing
 %memory-based heuristics from domain abstractions. Though often employed in solving large 

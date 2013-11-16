@@ -1,48 +1,59 @@
-\section{Spatial Abstraction}
 \label{cha::lit::abstraction}
-Spatial abstraction is a technique often employed in pathfinding to improve the efficiency of
-search. It involves decomposing an arbitrary map into a small set of connected areas. The idea is
-simple and natural: when a path is required between a pair of points on a map, begin by first
-identifying which areas the path will need to cross. Once such an \emph{abstract path} has been
-found it can be refined by solving a small set of subproblems in the original map; each involving
-the traversal of only a single area. In most cases this factored approach is much more
-efficient than searching for a path using only the original map.
+Spatial abstraction is a technique often employed in pathfinding to improve
+the efficiency of search. It involves decomposing an arbitrary map into a
+small set of connected areas. The idea is simple and natural: when a path is
+required between a pair of points on a map, begin by first identifying which
+areas the path will need to cross. Once such an \emph{abstract path} has been
+found it can be refined by solving a small set of subproblems in the original
+map; each involving the traversal of only a single area. In most cases this
+factored approach is much more efficient than searching for a path using only
+the original map.
 
-The literature is rich with works that study the effectiveness of different abstraction techniques. 
-Some of these are concerned with building small approximations of arbitrary maps.  Others works 
-are specialised for particular domains, such as road networks. We discuss both.
+The literature is rich with works that study the effectiveness of different
+abstraction techniques.  Some of these are concerned with building small
+approximations of arbitrary maps.  Others works are specialised for particular
+domains, such as road networks. We discuss both.
 
 \subsection{Approximate Abstractions}
-Often studied in the literature of Artificial Intelligence and Heuristic Search, approximate
-abstraction methods are simple but very efficient decompositions of arbitrary two dimensional maps.
-A typical example is HPA*~\citep{botea04}. This algorithm divides a given map into a set of 
-square cells, all of equal size. During a preprocessing step transitions between cells are identified
-and an abstract graph is constructed with edges added to represent intra-cell and inter-cell traversals.
-Other works proceed in an analogous manner; e.g. PRA*~\citep{sturtevant05}, MMA~\citep{sturtevant07}
-and HAA*~\citep{harabor08}.  These abstractions are attractive for several reasons: they are small and 
-efficient to search, they require little additional memory and they preserve solution existence. 
-The price for all these benefits is that, in most cases, computed
-solutions are not optimal. Additionally, the final path, once refined, may need further
-post-processing to improve its length and aesthetic appeal~\citep{pinter01,botea04}.
+Often studied in the literature of Artificial Intelligence and Heuristic
+Search, approximate abstraction methods are simple but very efficient
+decompositions of arbitrary two dimensional maps.  A typical example is
+HPA*~\citep{botea04}. This algorithm divides a given map into a set of square
+clusters, all of equal size. During a preprocessing step transitions between
+clusters are identified and an abstract graph is constructed with edges added
+to represent intra-cluster and inter-cluster traversals.  Other works proceed
+in an analogous manner; e.g. PRA*~\citep{sturtevant05},
+MMA~\citep{sturtevant07} and HAA*~\citep{harabor08}.  These abstractions are
+attractive for several reasons: they are small and efficient to search, they
+require little additional memory and they preserve solution existence.  The
+price for all these benefits is that, in most cases, computed solutions are
+not optimal. Additionally, the final path, once refined, may need further
+post-processing to improve its length and aesthetic
+appeal~\citep{pinter01,botea04}.
 
 \subsection{Road Network Hierarchies}
-Another line of work, originating in the literature of Algorithmics, is concerned with efficient 
-and optimality-preserving abstractions; usually in the context of pathfinding on road networks.
-One popular example of such a work is TRANSIT~\citep{bast06,bast07}: a pathfinding algorithm that combines
-spatial decomposition with an all-pairs database of exact costs between a distinguished set of nodes
-called \emph{transit nodes}. Identified during a preprocessing step, these nodes are interesting 
-because they form the backbone of a highway network and thus appear on a great many number of 
-shortest paths. The existence of such nodes is a well known and often exploited
-phenomenon; c.f. Highway Hierarchies~\citep{sanders05,sanders06}, Highway-Node Routing~\citep{schultes07}
-and Contraction Hierarchies~\citep{geisberger08}. 
+Another line of work, originating in the literature of Algorithmics, is
+concerned with efficient and optimality-preserving abstractions; usually in
+the context of pathfinding on road networks.  One popular example of such a
+work is TRANSIT~\citep{bast06,bast07}: a pathfinding algorithm that combines
+spatial decomposition with an all-pairs database of exact costs between a
+distinguished set of nodes called \emph{transit nodes}. Identified during a
+preprocessing step, these nodes are interesting because they form the backbone
+of a highway network and thus appear on a great many number of shortest paths.
+The existence of such nodes is a well known and often exploited phenomenon;
+cf. Highway Hierarchies~\citep{sanders05,sanders06}, Highway-Node
+Routing~\citep{schultes07} and Contraction Hierarchies~\citep{geisberger08}.
 
-Algorithms such as TRANSIT are attractive because they are typically very fast, especially when
-employed as distance oracles, and because they preserve solution optimality. Disadvantages often
-include an expensive preprocessing step, the introduction of a significant memory overhead
-(typically many times but possibly many orders larger than the space needed to store the original
-map) and degraded performance when answering shortest path rather than shortest distance queries.
-Another disadvantage is that these algorithms appear to have limited applicability. Recent
-theoretical work~\citep{abraham10} has shown that TRANSIT-like approaches are best suited to graphs
-having very low degree -- as is typically the case in road networks.  When this is not the case
-TRANSIT and other similar algorithms exhibit large increases in memory consumption and their
-performance can be strongly impacted in a negative way~\citep{antsfeld12}.
+Algorithms such as TRANSIT are attractive because they are typically very
+fast, especially when employed as distance oracles, and because they preserve
+solution optimality. Disadvantages often include an expensive preprocessing
+step, the introduction of a significant memory overhead (typically many times
+but possibly many orders larger than the space needed to store the original
+map) and degraded performance when answering shortest path rather than
+shortest distance queries.  Another disadvantage is that these algorithms
+appear to have limited applicability. Recent theoretical
+work~\citep{abraham10} has shown that TRANSIT-like approaches are best suited
+to graphs having very low degree -- as is typically the case in road networks.
+When this is not the case TRANSIT and other similar algorithms exhibit large
+increases in memory consumption and their performance can be strongly impacted
+in a negative way~\citep{antsfeld12}.
