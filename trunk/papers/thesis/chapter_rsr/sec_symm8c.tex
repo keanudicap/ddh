@@ -1,22 +1,22 @@
 \section{Symmetry Breaking In 8-Connected Grid Maps}
 \label{cha::rsr::symm8c}
-We now describe a variation of the rectangle-based symmetry breaking
-technique from Section~\ref{cha::rsr::symm4c} which is applicable to 
-8-connected grid maps.  The generalisation is more challenging than it might look
-at a first glance.  On a 4-connected map no node requires more than one
-macro-edge (to the closest node on the opposite side of the perimeter) to retain
-optimality.  Thus, it is easy to maintain a low branching factor.
-In the 8-connected case many more macro edges are needed to preserve optimality.
+We now describe a variation of the rectangle-based symmetry breaking technique
+from Section~\ref{cha::rsr::symm4c} which is applicable to 8-connected grid
+maps.  The generalisation is more challenging than it might look at a first
+glance.  On a 4-connected map no perimeter node requires more than one
+macro-edge (to the closest node on the opposite side of the perimeter) to
+retain optimality.  Thus, it is easy to maintain a low branching factor.  In
+the 8-connected case many more macro edges are needed to preserve optimality.
 
-A straightforward generalisation approach would be to add a macro-edge between any
-two nodes on the perimeter of a rectangle.  We will call the subgraph resulting
-from such an operation a \emph{perimeter clique}.
-Although the perimeter clique approach guarantees optimality, it has the
-disadvantage of creating a large branching factor and slowing down search
-(the number of necessary macro edges is quadratic in the number of 
-perimeter nodes).  We will therefore
-introduce an alternative strategy, that creates fewer macro-edges, by
-defining a \emph{dominance} relation between macro-edges.
+A straightforward generalisation approach would be to add a macro-edge between
+any two nodes on the perimeter of a rectangle.  We will call the subgraph
+resulting from such an operation a \emph{perimeter clique}.  Although the
+perimeter clique approach guarantees optimality, it has the disadvantage of
+creating a large branching factor and slowing down search (the number of
+necessary macro edges for a rectangle is quadratic in the number of perimeter
+nodes).  We will therefore introduce an alternative strategy, that creates
+fewer macro-edges, by defining a \emph{dominance} relation between
+macro-edges.
 
 \begin{definition}
 \label{def:dominance}
@@ -25,14 +25,15 @@ clique is non-dominated if all other paths between $t_1$ and $t_2$ in the
 perimeter clique have a cost strictly larger than the macro-edge at hand.
 \end{definition}
 
-By starting with a perimeter clique and applying Definition \ref{def:dominance}
-it is easy to see that the set of non-dominated macro-edges are precisely the
-ones that we identify below.  There are three cases to discuss: connections
-between nodes on the same rectangle side, connections between orthogonal
-rectangle sides, and connections between opposite rectangle sides.
-In the discussion that follows note that the length of each added macro-edge 
-is equal to the heuristic distance between its two endpoints -- as measured
-using Octile distance.
+By starting with a perimeter clique and applying Definition
+\ref{def:dominance} it is easy to see that the set of non-dominated
+macro-edges are precisely the ones that we identify below.  There are three
+cases to discuss: connections between nodes on the same rectangle side,
+connections between orthogonal rectangle sides, and connections between
+opposite rectangle sides.  In the discussion that follows note that the length
+of each added macro-edge is equal to the heuristic distance between its two
+endpoints -- as measured using $h_{OD}$ or octile distance 
+(we describe this heuristic in Chapter~\ref{cha::lit::heuristics}).
 
 The first case is simple: adjacent nodes on the same perimeter side are connected
 just as in the original grid. 
@@ -65,10 +66,10 @@ nodes on the opposite side.}
        \label{fig::rsr::macroedges}
 \end{figure}
 
-In the rest of this paper, by macro-edge we will mean a non-dominated macro-edge.
-We show next that the non-dominated macro-edges computed using our strategy are both
-necessary and sufficient to ensure optimal traversal between any two perimeter
-nodes.
+In the rest of this chapter we will use macro-edge to refer to a non-dominated
+macro-edge.  We show next that the non-dominated macro-edges computed using
+our strategy are both necessary and sufficient to ensure optimal traversal
+between any two perimeter nodes.
 
 \begin{proposition} All non-dominated macro-edges are necessary to ensure
 optimal paths in a perimeter clique.  
@@ -85,7 +86,7 @@ Then, $m$ and $n$ can be connected optimally through a path that
 contains only non-dominated macro-edges.
 \end{lemma}
 
-\begin{proof}Sketch:
+\begin{proof}
 We split the proof over the 3 cases discussed earlier: 1) {$m$ and $n$ are on
 the same side of the perimeter;} 2) {\label{lemma::rsr::rooms-step2}$m$ and $n$ are on
 orthogonal sides of the perimeter;} and 3) {\label{lemma::rsr::rooms-step3} $m$ and

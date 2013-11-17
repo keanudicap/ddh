@@ -14,50 +14,64 @@ The second is an online pruning strategy which we apply during individual node
 expansion operations.  We discuss both methods in the context of 8-connected
 grid maps however they are equally applicable to 4-connected maps.
 
-\noindent
-\textbf{Perimeter Reduction:}
-We observe that in many cases there are nodes on the perimeter of an empty
-rectangle which have no neighbours from any adjacent rectangle.  These nodes
-represent intermediate locations between entry and exit points that lead into
-and out of each empty rectangle. To speed up search we propose pruning from the
-perimeter of each rectangle all such nodes.  To preserve optimality, we will
-connect the neighbours of each pruned node directly to each other.  The weight
-of each new edge is set appropriately to the octile distance between the two
-neighbours.  Figure \ref{fig::rsr::branching} (Left) shows an example.  As we will see
-this optimisation can have a dramatic effect on the average performance of A* on
-certain types of maps.
+\subsection{Perimeter Reduction}
+\label{cha::rsr::perimeter_reduction}
 
+\begin{figure}[tb]
+	\begin{center}
+	\includegraphics[width=0.95\columnwidth, trim = 10mm 10mm 10mm 0mm]
+	{chapter_rsr/diagrams/perimeter_pruning.pdf}
+	\end{center}
+	\vspace{-3pt}
+	\caption[RSR enhancement: perimeter reduction]
+    {\small
+    (a) From each empty rectangle we prune all nodes which
+	have no neighbours in any adjacent rectangle. (b)
+	Remaining perimeter nodes are then connected directly.
+}
+\label{fig::rsr::perimeter_reduction}
+\end{figure}
+
+We observe that in many cases there are nodes on the perimeter of an empty
+rectangle which have no neighbours from any adjacent rectangle.  Such nodes
+are adjacent to obstacles and cannot lead into or out of any empty rectangle.
+Figure \ref{fig::rsr::perimeter_reduction}(a) shows an example.  We propose to prune
+all such perimeter nodes. To preserve optimality, we will connect the
+neighbours of each pruned node directly to each other.  The weight of each new
+edge is set appropriately to the octile distance between the two neighbours.
+Figure~\ref{fig::rsr::perimeter_reduction}(b) shows the result of this procedure.
+As we will see such perimeter reduction can have a dramatic effect on the
+average performance of A* on certain types of maps.
 \begin{lemma}
 Perimeter reduction preserves path optimality.
 \end{lemma}
 \begin{proof}
-Sketch: Each time we prune a node from the perimeter we add a new edge between
+Each time we prune a node from the perimeter we add a new edge between
 all its neighbours with weight equal to the distance between each pair
 of neighbours.  Thus, if a path exists between a pair of nodes before the
 application of perimeter reduction it is guaranteed to exist afterward.
 Further, the length of this path is unchanged.
 \end{proof}
 
-\begin{figure}[t]
+\subsection{Online Node Pruning}
+\label{cha::rsr::online_pruning}
+
+\begin{figure}[bt]
 	\begin{center}
-	\includegraphics[width=0.97\columnwidth, trim = 10mm 10mm 10mm 0mm]
-	{chapter_rsr/diagrams/branching_wide.png}
+	\includegraphics[width=0.5\columnwidth, trim = 10mm 10mm 10mm 0mm]
+	{chapter_rsr/diagrams/online_pruning.pdf}
 	\end{center}
 	\vspace{-3pt}
-	\caption[RSR enhancements: perimeter reduction and online pruning]
+	\caption[RSR enhancement: online pruning]
     {\small
-    (Left) From each empty rectangle we prune all (dark grey) nodes which
-	have no neighbours in any adjacent rectangle.
-	Remaining nodes are then connected directly.
-	(Right) Assume that $t_{1}$ is the parent of $t_2$. When $t_2$
-	is expanded, there is no need to generate its secondary neighbors.
-	These can be reached directly from $t_1$ on a shorter or equal-length path.
+	Assume that $t_{1}$ is the parent of $t_2$. When $t_2$
+	is expanded, there is no need to generate its secondary neighbors
+	(nodes connected to $t_2$ by grey edges). These nodes can be reached directly 
+	from $t_1$ by a shorter or equal-length path that does not involve $t_2$.
 }
-\label{fig::rsr::branching}
+\label{fig::rsr::online_pruning}
 \end{figure}
 
-\noindent
-\textbf{Online Node Pruning:}
 Given a perimeter node $n$, let us partition its macro neighbors 
 (connected to $n$ by macro-edges)
 on the perimeter into 
@@ -67,8 +81,8 @@ which are located on the opposite side of the perimeter to as compared to $n$
 
 When expanding an arbitrary node from the perimeter of a rectangle we observe
 that it is not necessary to consider any secondary neighbours if both the node
-and its predecessor belong to the same rectangle. Figure \ref{fig::rsr::branching}
-(Right) shows an example of such a situation; any path to a secondary neighbour
+and its predecessor belong to the same rectangle. Figure \ref{fig::rsr::online_pruning}
+shows an example of such a situation; any path to a secondary neighbour
 is strictly dominated by an alternative path through the predecessor. 
 We apply this observation as follows: {During
 node expansion, determine which rectangle the parent of the current node belongs
@@ -80,7 +94,7 @@ Otherwise, process only primary neighbours.}
 Online node pruning preserves path optimality.
 \end{lemma}
 \begin{proof}
-Sketch: Let $m$ be a node on the perimeter of a rectangle. Assume that its
+Let $m$ be a node on the perimeter of a rectangle. Assume that its
 parent $p$ belongs to the same rectangle.  Let $n$ be a secondary successor of
 $m$.  Recall that $n$ and $m$ are on opposite sides of the rectangle.  We argue
 below that passing through $m$ cannot possibly improve the best path between $p$

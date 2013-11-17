@@ -12,20 +12,20 @@ increases the size of the search space and forces search algorithms to waste tim
 considering variations of already known solutions.
 \par
 To deal with path symmetries RSR decomposes an arbitrary uniform-cost grid map
-into a set of empty rectangles and removes from each such
-rectangle all interior nodes.  A
-series of macro edges are then added between selected pairs of perimeter nodes
-to facilitate provably optimal traversal through each rectangle.  
-We first develop RSR in the context of 4-connected grid maps; a common
-setting in video games and one which appears often in the AI literature.
-We then generalise RSR to 8-connected grid maps where the increase in
-branching factor makes effective symmetry elimination more challenging. 
-We also develop two new pruning strategies which can signficantly
-reduce the number of nodes that need to be explored during search. 
-The first enhancement is applied offline and allows us to discard in many cases 
-nodes from the perimeter of an empty rectangle. The second enhancement is
-applied online and allows us to speed up node expansion by selectively
-evaluating either all neighbours associated with a node or only a small subset.
+into a set of empty rectangles, removes from each such rectangle all interior
+nodes and retains only nodes from along the perieter.  A series of macro edges
+are then added between selected pairs of perimeter nodes to facilitate
+provably optimal traversal through each rectangle.  We first develop RSR in
+the context of 4-connected grid maps; a common setting in video games and one
+which appears often in the AI literature.  We then generalise RSR to
+8-connected grid maps where the increase in branching factor makes effective
+symmetry elimination more challenging.  We also develop two new pruning
+strategies which can signficantly reduce the number of nodes that need to be
+explored during search.  The first enhancement is applied offline and allows
+us to discard in many cases nodes from the perimeter of an empty rectangle.
+The second enhancement is applied online and allows us to speed up node
+expansion by selectively evaluating either all neighbours associated with a
+node or only a small subset.
 
 We evaluate RSR on a range of uniform-cost grid maps from the academic literature and find
 that it can improve the running time of A* search by several factors. In certain cases the

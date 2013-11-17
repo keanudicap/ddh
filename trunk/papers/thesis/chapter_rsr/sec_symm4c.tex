@@ -5,7 +5,7 @@ As a first step, we will describe a simple technique for breaking path symmetrie
 in the context of 4-connected grid maps.
 This is a domain which appears regularly in the academic literature
 \citep{yap02,wang08,pochter10} and is often found in the pathfinding systems of
-modern video games.  Some recent examples include Square Enix's \emph{Heroes of
+modern computer games.  Some examples include Square Enix's \emph{Heroes of
 Mana} (released in 2007 for the Nintendo DS), Astraware's \emph{My Little Tank}
 (2008, iPhone) and Atari's \emph{Dragon Ball Z: Legacy of Goku} (2002, Gameboy
 Advance). We propose the following strategy:
@@ -14,9 +14,10 @@ Advance). We propose the following strategy:
 \item{Decompose the grid map into a set of empty rectangles, each of which contains no obstacles.}
 \item{Prune all nodes from the interior but not the perimeter of each rectangle.}
 \item{Add a series of \emph{macro edges} that connect each node on the perimeter of a rectangle
-with a node from the directly opposite side\footnote{We can avoid storing macro edges by 
-generating them on-the-fly during search.}.
-The cost of each edge is equal to the Manhattan distance between its two endpoints.
+with a node from the directly opposite side\footnote{We can avoid storing
+macro edges by generating them on-the-fly during search.}.  The cost of each
+edge is equal to the Manhattan distance\footnote{Defined in
+Chapter~\ref{cha::lit::heuristics}} between its two endpoints.
 }
 %\item{During search, temporarily re-insert tiles back into the map to handle cases where the
 %start or goal is a location which has been previously pruned.}
@@ -24,7 +25,7 @@ The cost of each edge is equal to the Manhattan distance between its two endpoin
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[scale=0.30, trim = 10mm 10mm 10mm 0mm]{chapter_rsr/diagrams/4c_example.png}
+\includegraphics[scale=0.30, trim = 10mm 10mm 10mm 0mm]{chapter_rsr/diagrams/4c_example.pdf}
 \end{center}
 \vspace{-3pt}
 \caption[Rectangular Symmetry Reduction on 4-connected maps]{
@@ -48,7 +49,7 @@ across any arbitrary rectangle.
 
 \begin{lemma}
 \label{thm::rsr::rectangletraversal}
-Let $R$ be an arbitrary rectangular rectangle that is free of obstacles
+Let $R$ be an arbitrary rectangle that is free of obstacles
 and $m, n$ be two locations on its perimeter.
 Then $m$ and $n$ can be connected optimally through a path that
 mentions only nodes on the perimeter of $R$ and possibly involves
@@ -113,14 +114,12 @@ For any nodes $m, n$, with $m$ a re-inserted interior node and $n$ a node on the
 it is always possible to find an optimal length path which mentions no interior nodes except for $m$.
 \end{lemma}
 \begin{proof}
-We insert $m$ into the graph and connect it to 
-$m'_{1}, m'_{2}, m'_{3}, m'_{4}$, the closest neighbours on 
-each side of the perimeter.
-The weight of each edge incident with $m$ is equal to the Manhattan distance between
-$m$ and each $m'_{i}$.
-To find an optimal path to $n$ we travel from $m$ to the node $m'_{i}$ which is 
-on the same side as $n$ on the perimeter.
-From there we travel along the perimeter of $R$ until we reach $n$.
+We insert $m$ into the graph and connect it to $m'_{1}, m'_{2}, m'_{3},
+m'_{4}$, the closest neighbours on each side of the perimeter.  The weight of
+each edge incident with $m$ is equal to the straight-line distance between $m$
+and each $m'_{i}$.  To find an optimal path to $n$ we travel from $m$ to the
+node $m'_{i}$ which is on the same side as $n$ on the perimeter.  From there
+we travel along the perimeter of $R$ until we reach $n$.
 %\par
 %Next, suppose $s, g \in N$. 
 %In this case we do not insert anything; the length of the optimal path is equal
@@ -148,13 +147,15 @@ there is an equivalent segment which mentions only nodes
 on the perimeter of that rectangle (and possibly one macro-step).
 \end{proof}
 
-A direct corollary of Theorem \ref{thm::rsr::optimality} is that optimal solutions
-pruned by our symmetry reduction can be easily reconstructed; for example to
-avoid unnatural looking paths where agents seem to hug walls.
-Consider a path fragment between $m$ and $n$, two nodes on the perimeter of an empty rectangle.
-Assume, without any generality loss, that the path fragment contains $r$ moves to the right and $u$ moves upwards.
-All optimal path fragments between $m$ and $n$ can be obtained by interleaving $r$ moves to the right
-and $u$ moves upwards in any order (e.g right-right-up, right-up-right, up-right-right)
+A direct corollary of Theorem \ref{thm::rsr::optimality} is that optimal
+solutions pruned by our symmetry reduction can be easily reconstructed; for
+example to avoid unnatural looking paths where agents seem to hug walls.
+Consider a path fragment between $m$ and $n$, two nodes on the perimeter of an
+empty rectangle.  Assume, without any generality loss, that the path fragment
+contains $r$ moves to the right and $u$ moves upwards.  All optimal path
+fragments between $m$ and $n$ can be obtained by interleaving $r$ moves to the
+right and $u$ moves upwards in any order (e.g right-right-up, right-up-right,
+up-right-right).
 
 
 \begin{figure}[t]
@@ -170,16 +171,16 @@ The algorithm only considers nodes along the perimeter of the identified rectang
 \label{fig::rsr::contrast}
 \end{figure}
 
-In Figure \ref{fig::rsr::contrast} we highlight the effectiveness of our symmetry breaking technique using
-a map that has characteristics typical of what one might expect in a modern role-playing game\footnote{
-In fact, many video game maps tend to be somewhat bigger than our example but for demonstration 
-purposes it is sufficient.};
-there are many rectangles and corridors and many entrances connecting them.
-A* running on the original grid map expands almost half the nodes
-in the state space of the shown example.
-We then apply our technique to eliminate symmetries and re-run A*.
-This time A* expands less than 15\% of all nodes (more than a three-fold
-improvement) and returns an optimal solution 3 times faster.
+In Figure \ref{fig::rsr::contrast} we highlight the effectiveness of our
+symmetry breaking technique using a map that has characteristics similar to
+what one might expect in a modern role-playing game\footnote{In fact, many
+computer game maps tend to be somewhat bigger than our example but for
+demonstration purposes it is sufficient.}; i.e. there are many rooms with
+entrances and corridors connecting them.  A* running on the original grid map
+expands almost half the nodes in the state space of the shown example.  We
+then apply our technique to eliminate symmetries and re-run A*.  This time A*
+expands less than 15\% of all nodes (more than a three-fold improvement) and
+returns an optimal solution 3 times faster.
 
 \subsection{Identifying Empty Rooms}
 \label{cha::rsr::rectangles}
