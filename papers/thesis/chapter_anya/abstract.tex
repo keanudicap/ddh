@@ -1,16 +1,17 @@
 \chapter{Any-angle Pathfinding}
 \label{cha::anya}
-In Chapters~\ref{cha::rsr}, \ref{cha::jps} and Chapter~\ref{cha::jps2}
+In Chapter~\ref{cha::rsr}, Chapter \ref{cha::jps} and Chapter~\ref{cha::jps2}
 we examined approaches for
 improving the efficiency of pathfinding search on grid maps -- a common
 setting for computer games and a domain which commonly appears in the AI
 literature. 
 In addition to minimising search time, a related problem in such settings
-is minimising travel distance. For example: characters in a computer game 
-must appear intelligent when navigating and should therefore prefer short
-realistic-looking paths. However, paths which are computed on a grid map, 
-even optimal paths, necessarily restrict movement to the fixed set of 
-locations defined by the grid. 
+is computing paths that minimise travel distance and are aesthetically
+pleasing. For example: characters in a computer game must appear intelligent
+when navigating and should therefore prefer short realistic-looking paths.
+However, paths which are computed on a grid map, even optimal paths,
+necessarily restrict movement to the fixed set of locations defined by the
+grid.
 \par
 In this chapter we describe Anya: a new algorithm which addresses this
 problem by computing \emph{any-angle} paths that do not have such constraints.
@@ -18,11 +19,13 @@ Anya operates on an input grid map but searches using intervals rather than
 the fixed points of the grid. 
 From each such interval we select a representative point for which an
 $f$-cost is computed. 
-We prove that our approach maintains $A*$ expansion order and, unlike other
+We prove that our approach maintains A{*} expansion order and, unlike other
 similar approaches, always returns the shortest possible path.
 In the process we resolve an open question in the pathfinding community which
 has been standing since at least 2007 and which has been the subject of
 studies in the game development community for much longer.
+
+The contributions in this chapter have appeared previously in~\citep{haraborG13}.
 
 %\begin{abstract}
 %Any-angle pathfinding is a common problem from robotics and computer games: it

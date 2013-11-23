@@ -6,10 +6,9 @@ time A* needs to solve an instance when running on a pruned  vs. unpruned grid.
 For example, a speedup of 2.0 is twice as fast (higher is better).
 Note that on approximately 2\% of all instances the start and goal are located
 in the same rectangle and RSR computes the optimal solution without
-search.  We exclude these instances from our results 
-even though RSR solves them in constant time. Their exclusion makes for a 
-clearer comparison between RSR and contemporary approaches from the pathfinding
-literature. 
+search.  We exclude these instances from our results even though RSR solves
+them in constant time. Their exclusion makes for a clearer comparison between
+RSR and contemporary approaches from the pathfinding literature.
 
 \par 
 \begin{figure*}[t]
@@ -45,9 +44,10 @@ of each of the ideas described in this chapter.
 symmetry breaking approach from Section~\ref{cha::rsr::symm4c}.
 4ERR+OP is the combination of 4ERR with online node pruning only and 
 4ERR+PR is the combination of 4ERR with perimeter reduction only.
-Figure \ref{fig::rsr::speedup} (A to C) presents our main result.
+Figure \ref{fig::rsr::speedup} (A to C) presents the main result of the
+chapter.
 \par
-Note that RSR shows a convincing 
+Note that RSR (== ERR+OP+PR) shows a convincing 
 speed improvement over 4ERR and all its variants across all input maps.
 This allows us to conclude that that RSR is the better choice on 4-connected maps.
 When analysing the impact of each enhancement, we note that 4ERR+PR yields the
@@ -73,8 +73,8 @@ and Swamps running on the 8-connected variants of our three benchmark problem
 sets. 
 On Adaptive Depth and Rooms, where the terrain can be naturally decomposed into
 rectangles, RSR achieves higher speedups and is shown consistently better than Swamps. 
-On Baldur's Gate, where this is not the case, Swamps-based pruning is more
-effective. 
+On Baldur's Gate, where the 45-degree orientation of maps reduces the effectiveness
+of rectangle decomposition, Swamps-based pruning is more effective. 
 \par
 Next, we scaled every map in each benchmark by a factor of 3 and randomly
 generated a new set of 100 problem instances per map.  Scaling has the effect of
@@ -87,9 +87,9 @@ those seen on the original maps we notice that the performance of Swamps
 actually decreases.
 \par
 The observed performance characteristics are not unexpected: Swamps prune out
-areas that can be avoided without introducing a detour while rectangle-based
-symmetry reduction allows for a faster exploration of areas that need to be
-searched.  Since it appears that the two algorithms are orthogonal, a natural
+\textit{areas that can be avoided} without introducing a detour while rectangle-based
+symmetry reduction allows for a faster exploration of \textit{areas that need to be
+searched}.  Since it appears that the two algorithms are orthogonal, a natural
 extension of this work would be to combine the two: first, apply 4(or 8)ERR+PR
 (as appropriate) to a grid in order to eliminate as many interior nodes as
 possible; then, apply a Swamps-based decomposition to the resultant graph.
@@ -113,8 +113,10 @@ On Rooms, both decomposition approaches are highly effective.
 On Baldur's Gate both are comparatively less effective.
 Notice however that PH-e requires up to 7 times more memory than RSR to achieve
 similar results.
-As with Swamps, we believe PH-e is entirely orthogonal to RSR and the two can be 
-easily combined. For example, PH-e could be used to more accurately guide search
-on a map pruned by RSR. Alternatively, symmetry elimination could be used to 
-speed up pathfinding between successive pairs of portals during PH-e's refinement phase.
-
+PH-e narrows the scope of search to a corridor of nodes inside which the
+optimal path can be found. This means that, like Swamps, PH-e and RSR
+are entirely orthogonal and two can be easily combined. 
+One possible combination involves using PH-e to more accurately guide search
+on a map pruned by RSR. Another possibility involves using symmetry
+elimination to speed up speed up pathfinding between successive pairs of
+portals during PH-e's refinement phase.

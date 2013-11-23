@@ -1,6 +1,6 @@
 \chapter{Jump Point Search}
 \label{cha::jps}
-In Chapter~\ref{cha::rsr} we showed that in regular domains such as grid maps
+In Chapter~\ref{cha::rsr} we showed that in regular domains, such as grid maps,
 symmetry can signficiantly impact the performance of pathfinding search.
  To address the problem we developed Rectangular Symmetry Reduction:
  an offline preprocessing strategy which decomposes the map in order to 
@@ -24,14 +24,14 @@ a range of synthetic and real-world benchmarks from the pathfinding literature.
 We find that jump points can improve the search time performance of standard A* by
 an order of magnitude and more.  We also report significant improvement over
 Swamps~\citep{pochter10}~(a recent optimality preserving pruning technique) and
-performance that is competitive with HPA*~\citep{botea04}~(a well known 
+search time performance that is competitive with HPA*~\citep{botea04}~(a well known 
 sub-optimal pathfinding algorithm).
 \par
 JPS is unique in the pathfinding literature in that it has very few
 disadvantages: it is simple, yet highly effective; it preserves optimality, yet
-requires no extra memory;  it is extremely fast, yet requires no preprocessing.
-Further, our method is completely orthogonal to and easily combined with 
-competing speedup techniques from the literature.
+requires no extra memory;  it is fast, yet requires no preprocessing.
+Further, our method is orthogonal to and easily combined with 
+many other speedup techniques from the literature.
 We are unaware of any other algorithm which has all these features.
 \\ \newline 
 The contributions in this chapter have appeared previously in~\citep{harabor11b,harabor12}.
