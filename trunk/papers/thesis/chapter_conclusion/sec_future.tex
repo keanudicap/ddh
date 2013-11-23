@@ -22,17 +22,17 @@ remaining nodes currently expanded by Jump Point Search. For example we might
 consider pruning a node $n$ if all its successors have the same $f$-value as
 $n$; i.e.  we can try to keep jumping as long as we are heading in the
 direction of the goal.  A stronger variant of this idea is to keep jumping as
-long as we are heading in the same direction (or a complementary direction) to
-the one used to reach $n$. For example, suppose we reach node $n$ by jumping
-in direction $\vec{d}$.  If all the successors of $n$ can be reached by also
-jumping in direction $\vec{d}$ or in another direction which is a component of
-$\vec{d}$ then we can consider pruning $n$ and continuing to recurse in each
-of these directions. It is likely that this procedure will increase in the 
-branching factor at $n$ but we posit that fewer node expansions are required 
-overall because we do not necessarily need to stop each time the path turns. 
-A similar idea is described in~\citep{urasKH13} where the authors also exploit
-path symmetries to speed up search -- though their approach is is offline
-only.
+long as we are heading in the same direction to the one used to reach $n$ 
+(or in a new direction which is a component of the original). For example,
+suppose we reach node $n$ by jumping in direction $\vec{d}$.  If all the
+successors of $n$ can be reached by also jumping in direction $\vec{d}$ or in
+another direction which is a component of $\vec{d}$ then we can consider
+pruning $n$ and continuing to recurse in each of these directions. It is
+likely that this procedure will increase in the branching factor at $n$ but we
+posit that fewer node expansions are required overall because we do not
+necessarily need to stop each time the path turns.  A similar idea is
+described in~\citep{urasKH13} where the authors also exploit path symmetries
+to speed up search -- though their approach is is offline only.
 
 Another interesting direction for future work is to apply Jump Point Search 
 to other types of grids, such as hexagons or texes~\citep{yap02}. We propose

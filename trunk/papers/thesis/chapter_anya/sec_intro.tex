@@ -30,7 +30,7 @@ Despite this, a number of exact solutions for the problem do exist.
 Visibility Graphs~\citep{lozanoperez79} solve a generalised form of 
 any-angle pathfinding in time $O(n^2\log_{2}n)$. Their primary disadvantage
 is that storing such a graph requires $O(n^2)$ space as each of the $n$ 
-vertices can be adjacent to every other vertex.  
+vertices can be adjacent to (i.e. visible from) every other vertex.  
 Tangent Graphs~\citep{liu92} are a particularly efficient 
 variant of this idea but space requirements remain worst-case quadratic. 
 Other exact approaches are based on the 
@@ -41,7 +41,7 @@ is a planar subdivision of the map that can be used to find a shortest path in
 just $O(\log_{2}n)$ time but only for queries originating at a fixed source.
 \\
 In this work we discuss a new approach to any-angle pathfinding which
-addresses many of the shortcomings associated with existing research.
+addresses shortcomings associated with existing research.
 Our algorithm, Anya, bears some similarity with Continuous Dijkstra: 
 instead of searching over individual states from the grid we consider
 contiguous sets of states together as an interval. From each interval we select a 

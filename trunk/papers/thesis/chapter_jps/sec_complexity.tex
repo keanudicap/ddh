@@ -12,8 +12,9 @@ are satisfied:
 In the case of a straight jump
 (i.e. one where $\vec{d}$ is one of the four cardinal directions)
 Algorithm~\ref{alg::jps::jump} will recurse at most until it reaches the edge of
-the map. In the process it will check up to $(h-1)$ or $(w-1)$ nodes 
-(depending on whether the direction of travel is horizontal or vertical).
+the map. In the process it will check up to $(h-1)$ or $(w-1)$ nodes ($h$
+being the height of the map and $w$ its width) 
+depending on whether the direction of travel is horizontal or vertical.
 In the case of a diagonal jump Algorithm~\ref{alg::jps::jump} can once again
 recurse at most until it reaches the edge of the map. However it must perform two 
 straight jumps before recursing diagonally. Assuming there are no obstacles that

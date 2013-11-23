@@ -23,22 +23,21 @@ This approach is optimal, requires very little overhead (usually a few seconds o
 up-front time and a linear amount of memory) and it can improve
 the performance of classical pathfinding algorithms such as A{*} by several factors.
 Our second contribution, Jump Point
-Search (JPS), significant improves on the performance of RSR and
-represents the current state of the art for pathfinding on grid-map domains.
+Search (JPS), significantly improves on the performance of RSR and currently 
+represents the state of the art for pathfinding on grid-map domains.
 In its online form JPS requires zero preprocessing, zero additional memory and
 always finds the shortest path. Our experiments show that JPS can consistently
 improve the performance of A{*} search by over one order of magnitude and more.
 In its offline form JPS reformulates the search space to achieve even better
 performance but requires an up-front investment of time. The algorithm has
-zero memory overheads when applied to graphs that stored as an adjacency list.
+zero memory overheads when applied to graphs that are stored as an adjacency list.
 When applied to graphs stored as an adjacency matrix, the algorithm introduces
 a linear-sized memory overhead. 
 \par
 In addition to RSR and JPS we study the related any-angle pathfinding problem.
-Recently formulated but nevertheless well studied, this problem involves finding 
-a shortest path in a grid-map domain but asks that the path
-is not constrained to the points of the grid.  Though a range of approaches have
-been suggested there are no effective techniques, to date, that are both optimal
-and online.
-As a final contribution we give a first algorithm that can provably compute 
-solutions having both of these desirable characteristics.
+Recently formulated but nevertheless well studied, this problem involves
+finding a shortest path in a grid-map domain but asks that the path is not
+constrained to the points of the grid.  Though a range of approaches have been
+suggested there are no effective techniques, to date, that are both optimal
+and online.  As a final contribution we give a first algorithm that can
+provably compute solutions having both of these desirable characteristics.

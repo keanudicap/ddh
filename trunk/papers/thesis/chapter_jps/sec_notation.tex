@@ -1,14 +1,15 @@
 \section{Notation and Terminology}
 \label{sec:notation}
-We work with undirected uniform-cost grid maps.  Each node has $\leq 8$
-neighbours and is either traversable or not.  Each straight (i.e. horizontal or
-vertical) move, from a traversable node to one of its neighbours, has a cost of
-1; diagonal moves cost $\sqrt 2$.  Moves involving non-traversable
-(obstacle) nodes are disallowed.  The notation $\vec{d}$ refers to one of the
-eight allowable movement directions (up, down, left, right etc.).  We write $y =
-x + k\vec{d}$ when node~$y$ can be reached by taking $k$ unit moves from
-node~$x$ in direction $\vec{d}$.  When $\vec{d}$ is a diagonal move, we denote
-the two straight moves at 45-degrees to $\vec{d}$ as $\vec{d_1}$ and $\vec{d_2}$.
+We work with undirected uniform-cost grid maps, as described in
+Chapter~\ref{cha::lit::graphs::grid}.  Each node has $\leq 8$ neighbours and
+is either traversable or not.  Each straight (i.e. horizontal or vertical)
+move, from a traversable node to one of its neighbours, has a cost of 1;
+diagonal moves cost $\sqrt 2$.  Moves involving non-traversable (obstacle)
+nodes are disallowed.  The notation $\vec{d}$ refers to one of the eight
+allowable movement directions (up, down, left, right etc.).  We write $y = x +
+k\vec{d}$ when node~$y$ can be reached by taking $k$ unit moves from node~$x$
+in direction $\vec{d}$.  When $\vec{d}$ is a diagonal move, we denote the two
+straight moves at 45-degrees to $\vec{d}$ as $\vec{d_1}$ and $\vec{d_2}$.
 
 A path $\pi =~\begin{pth}n_{0}, n_{1}, \ldots , n_{k}\end{pth}$ is a cycle-free
 ordered walk starting at node $n_{0}$ and ending at $n_{k}$.  We will sometimes
