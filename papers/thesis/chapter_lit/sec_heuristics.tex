@@ -43,8 +43,8 @@ One idea for improving heuristic accuracy is to take into account domain
 specific movement rules.  $h_{MD}$ (Manhattan Distance) and $h_{OD}$ (Diagonal
 or Octile Distance) are two such heuristics; they retain all the properties of
 $h_{SLD}$ but provide better lower-bound estimates when pathfinding in square
-grids. $h_MD$ computes a lower-bound on the number of horizontal and vertical
-steps still needed to reach the target node. $h_OD$ computes a similar
+grids. $h_{MD}$ computes a lower-bound on the number of horizontal and vertical
+steps still needed to reach the target node. $h_{OD}$ computes a similar
 lower-bound but assumes that diagonal steps are also allowed.  Similar
 domain-specific heuristics have been developed for pathfinding in hexagonal
 grids~\citep{yap02} and more broadly for optimally solving large combinatorial
