@@ -30,6 +30,7 @@ each benchmark set. We find that block-based jumping and pre-processing jump poi
 each improve average times by one and two orders of magnitude respectively vs. JPS 2011.
 Pruning intermediate jump points from the search tree increases the average branching 
 factor by several times but the time-per-expansion is still much better. 
+
 In Figure~\ref{fig::vs_jps2011} we give a summary of search performance, in terms
 of time and node expansions, for all GPPC instances on each of our three benchmark sets. 
 In each case and for each metric we consider relative improvement vs. JPS 2011.
@@ -102,14 +103,14 @@ JPS 2011 by several factors all while retaining
 the same advantages inherent to the original algorithm: completeness, 
 optimality and little-to-no memory overhead. Such results are remarkable as
 JPS 2011 has itself been shown to improve the performance of classical
-search algorithms such as A* by up to one order of magnitude and more.
+search algorithms such as A* by up to one order of magnitude.
 
 We have shown with JPS+ and JPS+ (P) that further improvements are also possible. 
 In our experiments we employ an offline pre-processing step together with a small 
 amount of memory (10MB or less in most cases) in order to identify apriori all jump 
 point successors of each grid node.
 The main advantage is performance: JPS+ and JPS+ (P) can improve the search times of 
-JPS 2011 by up to one order of magnitude and more.
+JPS 2011 by up to one order of magnitude.
 The main disadvantage is that if the map changes the pre-processed
 database needs to be re-computed. We have shown that each such pre-computation
 can be performed very fast -- usually on the order of tens or hundreds of 
