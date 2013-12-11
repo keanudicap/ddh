@@ -29,8 +29,8 @@ All have appeared in the 2012 Grid-based Path Planning Competition.
 
 In keeping with the rules of the competition we disallow diagonal
 corner-cutting transitions in all our experiments.  This change requires a
-slight modification the JPS algorithm.  Principally it means that it is no
-longer necessary to test for forced neighbours when jumping diagonally.
+slight modification to the JPS algorithm.  Principally it means that we no
+longer test for forced neighbours when jumping diagonally.
 Jumping straight is also simplified. In the terminolgy of our block-based
 jumping rules this change means we stop at location $B_N[b_S]$ rather than
 $B_N[b_S-1]$.  These modifications do not affect the optimality or 
