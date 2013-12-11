@@ -1,4 +1,4 @@
-\input table_expansion
+\input table_preproc
 
 \section{Comparison with JPS 2011}
 \label{sec::results}
@@ -38,12 +38,11 @@ similar length.
 We observe that any of our alternative approaches is strictly faster than the original. 
 Moreover, JPS (B) and JPS (B + P) have all the same advantages as JPS 2011: they are 
 fast, optimal, online and require, in principle at least, no extra memory vs. JPS 2011
-(recall that in practice we store a rotated copy of map twice to improve memory access
+(recall that in practice we store a rotated copy of map to improve memory access
 patterns).
 A summary of pre-processing requirements is given in Table~\ref{table::preproc}. Note
 that JPS+ and JPS+ (P) have the same requirements and are not listed separately.
 
-\input table_preproc
 
 \section{Comparison with SUB}
 SUB~\cite{urasKH13} is a recent pathfinding technique from the literature.
@@ -76,7 +75,7 @@ arise for both JPS+ and SUB-TL.
 %(c.f. 0.2 seconds pre-proc time for JPS+ and $\sim$10MB of space for SUB-TL, respectively).
 In Figure~\ref{fig::vs_sub} we compare our four JPS variants with SUB-S and SUB-TL across all
 game map instances from the 2012 GPPC. We find that JPS (B) and JPS (B + P) are both
-competitive with, and often faster than, than SUB-S. Meanwhile, JPS+ (P) appears competitive 
+competitive with, and often faster than, SUB-S. Meanwhile, JPS+ (P) appears competitive 
 with SUB-TL for a large set of instances.
 Across our three benchmarks, DA:O, DA2 and SC, we measured an improvement for 
 JPS (B + P) vs. SUB-S in 92\%, 84\% and 89\% of tested instances respectively.

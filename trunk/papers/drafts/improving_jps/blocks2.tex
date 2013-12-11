@@ -77,7 +77,7 @@ The node currently being explored is $N = \langle 2,2\rangle$
 and its parent is $P = \langle 1,1\rangle$.  
 At this stage, the horizontal and vertical axes must be scanned 
 for jump points before another diagonal move is taken.  
-As it turns out, a jump point will be found at location $\langle 6,2\rangle$.  
+As it turns out, a jump point will be found at location $\langle 5,2\rangle$.  
 When looking for a horizontal jump point on row~$2$, Jump Point Search will 
 scan the grid more or less in the order given by the numbers in red, 
 depending on the actual implementation.  
@@ -93,18 +93,24 @@ $\langle 2, 9\rangle$. In this case we have:
 B_{N} = [0,0,0,0,0,1,0,0]
 \end{equation}
 Each zero valued bit in $B_N$ represents a traversable node and each set bit
-represents an obstacle.  Note that in practice we read several bytes at one
-time and shift the returned value until the bit corresponding to location
-$\langle 2, 2\rangle$ is in the lowest position. In a similar fashion and
-using only two further memory operations we can read the values for all nodes
+represents an obstacle.
+In a similar fashion, and using only two further memory operations, we can read the values for all nodes
 immediately above and immediately below those in byte $B$:
 \begin{gather}
 B_{\uparrow} = [0, 0, 0, 0, 0, 0, 0, 0]\\
 B_{\downarrow} = [0, 0, 1, 1, 0, 0, 0, 0]
 \end{gather}
 
-\noindent Note that our implementation uses 32-bit words but for this discussion
+\noindent 
+Note that in practice we read several bytes at one time and shift the returned
+value until the bit corresponding to location $\langle 2, 2\rangle$ is in the
+lowest position \footnote{We will assume throughout this work that bytes are
+organised in little-endian format; i.e. the lowest bit is always in the
+left-most position and the highest bit is always in the right-most position.}.
+
+Note also that our implementation uses 32-bit words but for this discussion
 we will continue to use 8-bit bytes as they are easier to work with.  
+
 
 %The advantages of such an approach are immediately obvious: instead of
 %reading the individual bit-value of every grid location to test for 
@@ -114,7 +120,7 @@ When searching recursively along a given row or column
 there are three possible reasons that cause JPS to stop: 
 a forced neighbour is found in an adjacent row, a dead-end is 
 detected in the current row or the target node is detected in the
-current now.
+current row.
 We can easily test for each of these conditions via simple
 operations on the bytes $B_{N}, B_{\uparrow}$ and $B_{\downarrow}$.
 \\ \noindent
@@ -124,7 +130,7 @@ $B[i+1] = 1$. We can test for this in a variety of ways;
 CPU architectures such as the Intel x86 family for example have the native 
 instruction \texttt{ffs} (find first set). The same instruction is available as
 a built-in function of the \textsc{GCC} compiler. When we apply
-this function to $B_{N}$ we find a dead-end at position 5.
+this function to $B_{N}$ we find a dead-end at position 4.
 \\ \noindent
 \textbf{Detecting forced neighbours:}
 A potential forced neighbour exists in position $i$ of byte $B$, or simply 
@@ -132,10 +138,11 @@ $B[i]$, if there is an obstacle at position $B[i-1]$
 and no obstacle at position $B[i]$. We test for this condition with the
 following bitwise operation (assuming left-to-right travel):
 \begin{equation}
-\texttt{forced(B) = (B\ \& !(B<<1))}
+\texttt{forced(B) = ((B<<1)\ \& !B)}
 \end{equation}
-When we apply this procedure to $B_{\downarrow}$ we find a potential jump 
-point at bit position~$3$; $\texttt{forced}(B_{\uparrow})$ yields no potential jump points.
+When we apply this procedure to $B_{\downarrow}$ we find a potential forced
+neighbour at bit position~$4$; $\texttt{forced}(B_{\uparrow})$ yields no potential 
+forced neighbours.
 
 In order to minimise the number of branching instructions (important
 to prevent CPU stalling) we do not test the individual results of 
@@ -150,7 +157,7 @@ B_S &= [0,0,0,1,0,1,0,0] &
 Because $B_S \neq 0$, we know that the search has to stop.  Using the
 \texttt{ffs} command we extract the position of the first set bit in $B_S$
 (call this bit $b_S$) and compare it with the position of the first set bit
-in $B_N$ (call this bit $b_N$).  If $b_S \leq b_N$ we have discovered a jump point at
+in $B_N$ (call this bit $b_N$).  If $b_S < b_N$ we have discovered a jump point at
 location $B_N[b_S-1]$; otherwise we have hit a dead-end.  Alternatively, if
 $B_S$ evaluates to zero there is no reason to stop: we jump ahead 7 positions
 (not 8) and repeat the procedure until termination.

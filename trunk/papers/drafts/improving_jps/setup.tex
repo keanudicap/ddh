@@ -1,3 +1,5 @@
+\input table_expansion
+
 \section{Experimental Setup}
 \label{sec::setup}
 We implemented Jump Point Search and a number of variants as described
@@ -23,7 +25,16 @@ ranging 1369 to 593K nodes.
 ranging 262K to 786K nodes.
 \end{itemize}
 Instances are sampled from across all possible problem lengths on each map.
-All instances have appeared in the 2012 Grid-based Path Planning Competition. 
-%
+All have appeared in the 2012 Grid-based Path Planning Competition. 
+
+In keeping with the rules of the competition we disallow diagonal
+corner-cutting transitions in all our experiments.  This change requires a
+slight modification the JPS algorithm.  Principally it means that it is no
+longer necessary to test for forced neighbours when jumping diagonally.
+Jumping straight is also simplified. In the terminolgy of our block-based
+jumping rules this change means we stop at location $B_N[b_S]$ rather than
+$B_N[b_S-1]$.  These modifications do not affect the optimality or 
+correctness of the algorithm. The argument is identical to the one
+in~\cite{harabor11b}.
 %All maps and test instances are availble from 
 %~{\small \url{http://www.movingai.com/benchmarks/}}.
