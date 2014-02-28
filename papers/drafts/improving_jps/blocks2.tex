@@ -89,7 +89,7 @@ B_{N} = [0,0,0,0,0,1,0,0]
 Each zero valued bit in $B_N$ represents a traversable node and each set bit
 represents an obstacle.
 In a similar fashion, and using only two further memory operations, we can read the values for all nodes
-immediately above and immediately below those in byte $B$:
+immediately above and immediately below those in byte $B_N$:
 \begin{gather}
 B_{\uparrow} = [0, 0, 0, 0, 0, 0, 0, 0]\\
 B_{\downarrow} = [0, 0, 1, 1, 0, 0, 0, 0]
@@ -170,7 +170,7 @@ The procedure we have described in our running example is applicable in the case
 where JPS scans the grid left-to-right. The modification for right-to-left
 scanning is simple: we shift the current node into the most significant position
 of $B_N$ and replace \texttt{ffs} with the analogous instruction \texttt{msb}.  In the case
-of up-down travel we have found helpful to store a redundant copy of the
+of up-down travel we have found it helpful to store a redundant copy of the
 map that is rotated by 90 degrees. Other possibilities also exist that do not
 incur an overhead: for example the map may be stored as blocks of size $m
 \times n$ that each contain bits from several rows and columns. Such an
