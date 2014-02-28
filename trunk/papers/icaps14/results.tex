@@ -55,25 +55,11 @@ while the latter is not.  To evaluate SUB-S and SUB-TL we used the authors'
 original C++ implementation which we obtained from~{\small
 \url{http://gppc-2012.googlecode.com/svn/trunk/entries/SUB-a/}}.
 
-%The basic version of the algorithm, which its authors term SUB-S (S for Simple),
-%is both complete and optimal. 
-%This algorithm works by pre-computing a grid analogue of a
-%visibility graph, called a subgoal graph, which it stores and searches instead of the original grid. 
-% An improved variant termed SUB-TL (TL for Two Level)
-%further prunes the pre-processed graph by directly connecting pairs of nodes for
-%which the local heuristic is perfect (this operation is similar to graph contraction~\cite{geisberger08}
-%in that it has the effect of pruning any intermediate nodes along the way).
-%To avoid a large growth in its branching-factor SUB-TL also prunes other additional 
-%edges from the graph but this latter step makes the algorithm sub-optimal in certain cases.
-
 Table~\ref{table::preproc} compares the pre-processing requirements of 
 SUB-S and SUB-TL with JPS+ (JPS+ (P) has identical requirements and is not shown). 
 We observe that both JPS+ and SUB are able to pre-process most maps in well under a second 
 and in most cases using less than 10MB of memory. A small number of notable exceptions 
 arise for both JPS+ and SUB-TL.
-%Notable exceptions include one StarCraft map on which SUB-TL needed more than 23 seconds of 
-%pre-processing time and one DA:O map for which JPS+ required over 21MB of space 
-%(c.f. 0.2 seconds pre-proc time for JPS+ and $\sim$10MB of space for SUB-TL, respectively).
 In Figure~\ref{fig::vs_sub} we compare our four JPS variants with SUB-S and SUB-TL across all
 game map instances from the 2012 GPPC. We find that JPS (B) and JPS (B + P) are both
 competitive with, and often faster than, SUB-S. Meanwhile, JPS+ (P) appears competitive 
@@ -119,9 +105,6 @@ several time slices with JPS (B + P) employed as a fallback algorithm in
 the interim.
 
 We have compared our JPS-based approaches against two variants of SUB~\cite{urasKH13}.
-%a very fast 
-%and very recent preprocessing-based pathfinding technique which was judged to be 
-%among the most performant entrants in the 2012 Grid Based Path Planning Competition. 
 The first variant, SUB-S guarantees optimality; the second, SUB-TL, does not. 
 We find that across most benchmark instances JPS (B) and 
 JPS (B + P) are not only competitive with but faster than SUB-S. When we compare
@@ -131,36 +114,4 @@ and is faster on a majority class of tested instances; SUB-TL has low space
 requirements and quickly finds optimal or near-optimal solutions to a large class 
 of remaining instances.
 
-%JPS (B)'s improvement is over one order of magnitude to the point
-%where the additional pruning rule provides only another $10\%$ improvement.
-%JPS+ (P) gives another order of magnitude; this demonstrates that a
-%substantial amount of time of JPS is spent in finding the next jump point and
-%that any improvement in this direction is beneficial.
-%
-%The bottom part of Figure~\ref{fig::speedup} shows a nice correlation 
-%between the total runtime and the number of nodes expanded.  
-%Clearly the JPS family's performance 
-%can be explained by how it quickly identifies 
-%nodes that can be skipped.  
-%
-%%Next, we turn our attention to Figure~\ref{fig::expansion_time} which measures
-%performance in terms of the average time, in mico-seconds, needed to expand a single node.
-%It is interesting to observe that in each case the lowest values are attributed to A*. 
-%JPS (B) and JPS (B+P), which both perform online symmetry breaking, always record
-%the highest values. These figures are in stark contrast with Figure~\ref{fig::speedup} where
-%the opposite is true. These results indicate that although eliminating path symmetries can have
-%a dramatic positive effect on overall search time, individual node expansions can incur a 
-%significant overhead. Thus, if the start and goal are very close, it is sometimes possible that
-%A* will be faster than Jump Point Search. The same is also true if JPS must explore very large
-%empty areas which contain nodes that appear promising but e.g. eventually lead to a dead-end.
-%
-%Figure~\ref{fig::expansion_time} also provides 
-%interesting insights for improvement: 
-%the on-line version of JPS spends substantial time expanding a single node; 
-%any improvement on this side would result 
-%in huge performance boost.  
-%This includes pre-processing techniques lighter 
-%than JPS+.  
-%
-%
 % EOF
