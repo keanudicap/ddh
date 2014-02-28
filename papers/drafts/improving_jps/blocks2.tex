@@ -177,27 +177,5 @@ incur an overhead: for example the map may be stored as blocks of size $m
 approach would also benefit diagonal travel (which in our implementation
 remains step-by-step) but may reduce the step size during horizontal scanning.
 %
-%whether an 
-%
-%The status of the eight nodes in the blue rectangle 
-%starting from $\langle x,y\rangle = \langle 2,2\rangle$ in the figure 
-%could for instance be represented by a single byte 
-%$B = [0,0,0,0,0,1,0,0]$ 
-%whereby the $i$th bit $B[i]$ of the byte is set to $1$ 
-%iff the node $\langle x+i,y\rangle$ of the grid contains an obstacle.  
-%(Practically, the implementation uses 32-bit words, 
-%but this discussion will stick to 8-bit bytes for simplicity.)
-%In particular, it would be easy to see that the block 
-%between $\langle 2,3\rangle$ and $\langle 9,3\rangle$ 
-%is obstacle-free because the corresponding byte evaluates to $0$.  
-%
-%More generally, we can build a byte $B_S$ 
-%which will represent the list of positions 
-%at which the agent must stop.  
-%If this byte evaluates to $0$, 
-%we can jump $7$ steps (here, to $\langle 9,2\rangle$) 
-%and keep searching for the next $8$ cells.  
-%
-%
 
 %EOF 
