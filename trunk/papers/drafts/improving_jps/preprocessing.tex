@@ -22,19 +22,6 @@ directions. During this step we do not identify any jump points that
 depend on a specific target node.  However, as we will show, these 
 can be easily identified at run-time. 
 
-%For any node, 
-%the jump points of the first type and some of the last type 
-%can be identified a priori (before the target is known); 
-%they are stored in an adjacency list data structure 
-%and retrieved in constant time at runtime.  
-%The jump points of the second type and the rest of those of the last type 
-%cannot be found at pre-process, 
-%but it is easy to identify them at runtime: 
-%one just needs to check whether the current jump 
-%crosses the row or column of the target.  
-%Notice however that the jump must be attempted 
-%even if it leads to an obstacle.  
-
 The precomputation is illustrated on Figure~\ref{fig:preproc}(a).
 The left side of the figure shows the precomputed jump points 
 for node $N = \langle 4,5\rangle$.  

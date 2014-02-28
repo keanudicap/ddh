@@ -68,19 +68,6 @@ We recurse over the diagonal neighbour only if both straight neighbours produce
 failed paths. This ensures we do not miss any potential turning points of the optimal path.
 \end{example}
 
-%\begin{figure}[tb]
-%       \begin{center}
-%		   \includegraphics[width=0.95\columnwidth]
-%			{diagrams/jumping.png}
-%       \end{center}
-%	\vspace{-3pt}
-%       \caption{(a) A straight jump from $x$ to $y$; the recursion stops due to node $z$ which is forced.
-%(b) A diagonal jump from $x$ to $y$; the recursion stops due to a non-failed straight jump. Continuing 
-%would mean missing a potential turn due to $z$.}
-%       \label{fig:jumping}
-%\end{figure}
-%
-%In Figure~\ref{fig:jumping}(a) we illustrate a straight jump and in \ref{fig:jumping}(b) a diagonal jump. 
 By jumping, JPS is able to move quickly over the map 
 without inserting nodes in the A* open list.
 This is doubly beneficial as (i) it reduces the number of operations 
