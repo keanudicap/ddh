@@ -103,17 +103,17 @@ JPS 2011 by several factors all while retaining
 the same advantages inherent to the original algorithm: completeness, 
 optimality and little-to-no memory overhead. Such results are remarkable as
 JPS 2011 has itself been shown to improve the performance of classical
-search algorithms such as A* by up to one order of magnitude.
+search algorithms such as A* by up to one order of magnitude and sometimes more.
 
 We have shown with JPS+ and JPS+ (P) that further improvements are also possible. 
 In our experiments we employ an offline pre-processing step together with a small 
-amount of memory (10MB or less in most cases) in order to identify apriori all jump 
+amount of memory (10MB or less in most cases) and identify apriori all jump 
 point successors of each grid node.
 The main advantage is performance: JPS+ and JPS+ (P) can improve the search times of 
 JPS 2011 by up to one order of magnitude.
 The main disadvantage is that if the map changes the pre-processed
 database needs to be re-computed. We have shown that each such pre-computation
-can be performed very fast -- usually on the order of tens or hundreds of 
+can be performed very fast -- usually requiring only tens or hundreds of 
 milliseconds. Moreover the pre-computation can be easily parallelised over
 several time slices with JPS (B + P) employed as a fallback algorithm in
 the interim.
