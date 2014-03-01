@@ -43,8 +43,8 @@ B_{\downarrow} = [0, 0, 1, 1, 0, 0, 0, 0]
 \noindent 
 Note that in practice we read several bytes at one time and shift the returned
 value until the bit corresponding to location $\langle 2, 2\rangle$ is in the
-lowest position 
-\footnote{We will assume throughout this work that bytes are zero-indexed and
+lowest position\footnote{\noindent
+We will assume throughout this work that bytes are zero-indexed and
 organised in little-endian format; i.e. the lowest bit is always in the
 left-most position and the highest bit is always in the right-most position.
 This means that when we apply logical shift operators such as $\texttt{<<}$
@@ -54,11 +54,6 @@ the individual bits move in the opposite literal direction to the operator.}.
 Note also that our implementation uses 32-bit words but for this discussion
 we will continue to use 8-bit bytes as they are easier to work with.  
 
-
-%The advantages of such an approach are immediately obvious: instead of
-%reading the individual bit-value of every grid location to test for 
-%obstacles we can quickly test an entire set of nodes at one time by checking
-%whether the corresponding byte evaluates to zero.
 When searching recursively along a given row or column
 there are three possible reasons that cause JPS to stop: 
 a forced neighbour is found in an adjacent row, a dead-end is 
@@ -122,6 +117,5 @@ incur an overhead: for example the map may be stored as blocks of size $m
 \times n$ that each contain bits from several rows and columns. Such an
 approach would also benefit diagonal travel (which in our implementation
 remains step-by-step) but may reduce the step size during horizontal scanning.
-%
 
 %EOF 
