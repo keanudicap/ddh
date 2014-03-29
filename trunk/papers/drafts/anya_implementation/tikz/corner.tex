@@ -1,0 +1,34 @@
+\begin{tikzpicture}
+
+\creategrid{6}{5}
+
+%\drawobstacle{2}{5}
+\drawobstacle{2}{4}
+\drawobstacle{2}{3}
+\drawobstacle{3}{3}
+\drawobstacle{3}{2}
+\drawobstacle{3}{1}
+\drawobstacle{4}{3}
+\drawobstacle{4}{2}
+\drawobstacle{4}{1}
+
+\coordinate (plm1)   at (5,0);
+\coordinate (pl)     at (2,1);
+\coordinate (plp1)   at (1,5);
+\coordinate (redpathdirection) at (0,2.4); % Actually, further away
+\coordinate (actualcorner) at (3,1); 
+\path[name path=uppath] (pl) -- (plp1);
+\path[name path=shortcut] (plm1) -- (redpathdirection);
+\draw[name intersections={of=uppath and shortcut, by=plp'}];
+
+\draw[red, line width=2pt]   (plm1) -- (plp');
+\draw[blue, line width=2pt]  (plm1) -- (pl) -- (plp');
+\draw[green, line width=2pt] (plp1) -- (plp');
+
+\draw (plm1) +(0.4,0.2) node {$p_{l-1}$};
+\draw (pl) +(-0.3,-0.2)   node {$p_{l}$};
+\draw (plp1) +(-0.3,0.2) node {$p_{l+1}$};
+\draw (plp') +(-0.3,0) node {$p'_l$};
+%\draw (actualcorner) +(-0.3,0.3) node {$c$};
+
+\end{tikzpicture}
