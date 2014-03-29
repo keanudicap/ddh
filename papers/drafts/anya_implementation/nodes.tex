@@ -1,0 +1,37 @@
+\section{Search Nodes}
+The traditional way to approach grid-based pathfinding is to map the grid to a
+search graph. Often this means that every discrete point is a node and every edge
+between two adjacent points is a transition.  As we have seen Anya uses a different 
+model involving sets of points modeled as intervals.
+In particular Anya models each search node as a tuple $(I, r)$. Here $I$ is once more a 
+contiguous (i.e. no gaps) interval of traversable points drawn from a single row of the grid. Meanwhile
+$r$ is a distinguished point called the \emph{root}. 
+
+The identity of the root point in each case is always the most recent corner
+point on a path that begins at the starting location and ends with some point
+$p \in I$. 
+In the case of the starting location $s$ we construct an tuple where
+$I = [s]$ and $r = (\infty, \infty)$ is a special root point located
+off the map and visible only from $s$.
+Figure~\ref{fig::anya_example} (Left) shows seven different search nodes. Four 
+of these nodes share the common root point $r = (0, 0)$. These nodes are defined
+by the tuples $(I_2, (0, 0))$, $(I_3, (0, 0))$
+$(I_4, (0, 0))$ and $(I_5, (0, 0))$. A fifth search node is formed by the
+tuple comprising interval $I_6$ and the root point $r = (3, 3)$. 
+The sixth search node is formed by the interval $I_1$ and the root point
+$r = (0 + \epsilon, 0)$ where $\epsilon$ is a very small number. The seventh
+search node is the starting point which we have defined above.
+
+We now outline some special properties that need to exist between each pair 
+of $I$ and $r$:
+\begin{itemize}
+\item{Every point $p \in I$ is visibile from $r$.}
+\item{The root point $r$ and the interval $I$ are disjoint; i.e. $r \not\in I$.}
+\item{The path from the root point $r$ to every point $p \in I$ is \emph{taut}.
+As discussed in Example~\ref{ex::anya_example}, taut simply means that if we
+``pull'' on the ends of the path (in this case from $r$ to any $p \in I$) we cannot 
+make the path any shorter.}
+\end{itemize}
+We will revisit these properties in more detail later. For now it is
+enough to be aware of them.
+

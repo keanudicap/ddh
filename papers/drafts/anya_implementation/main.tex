@@ -1,0 +1,58 @@
+%\documentclass[letterpaper]article
+\documentclass[letterpaper]{article}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+%\usepackage{aaai/aaai}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{tikz}
+\usepackage{times}
+
+\usetikzlibrary{intersections}
+
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemm}{Lemma}
+\newtheorem{defi}{Definition}
+\newenvironment{proof}{\noindent{\bf Proof:}}{\hspace{\stretch{1}}$\Box$\vspace{0.5em}\newline}
+
+\newcommand{\intersection}[2]{\langle #1, #2\rangle}
+\newcommand{\anya}[0]{{\bf anya}}
+
+
+\input gridtikz
+\begin{document}
+
+\title{Implementing Anya}
+\author{
+Daniel Harabor \\
+NICTA and The Australian National University \\
+Email: firstname.lastname@nicta.com.au
+}
+\date{}
+
+\maketitle
+
+
+\input abstract
+\input preliminaries
+\input overview
+\input intervals
+\input nodes
+\input successors
+\input representatives
+\input optimisations
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

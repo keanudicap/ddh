@@ -1,0 +1,37 @@
+\section{Constructing Intervals}
+An interval $I$ is a contiguous (i.e. no gaps) set of pairwise visible points
+chosen s.t. all points are drawn from a single row of the grid.
+At the extremes of each interval are two endpoints: $a$ (the leftmost point in $I$) 
+and $b$ (the rightmost point in $I$).
+Each such interval has two properties:
+(i) it cannot contain any non-traversable points; (ii)
+it cannot contain any corner points except possibly $a$ or $b$.  
+Constructing an interval is easy: 
+\begin{enumerate}
+\item Begin with an empty interval $I$.
+\item Add to $I$ a single discrete or intermediate point $p$. We must ensure
+that $p$ is both traversable and drawn from one of the rows of the grid
+(i.e. it cannot be a point from the interior of a square cell).
+\item Extend the interval $I$ until its size is maximum. To achieve this we
+ simply scan the current row of the grid -- either to the left, to the right,
+or in both directions. Scanning means we move horizontally and away from $p$, 
+stepping from one discrete point of the row to the next until a termination 
+condition is reached.
+\item We stop scanning when (i) we reach a corner point or (ii) when the next
+discrete point is not visible from the previous (refer once more to
+the examples shown in Figure~\ref{fig::visibility}).
+The point where we stop is the (left or right) endpoint of the 
+interval. 
+\item If necessary, we repeat the scanning process in the remaining direction
+(either left or right).
+The procedure terminates when both endpoints of the maximal interval have been 
+identified.
+\end{enumerate}
+
+In many cases the search process will fix one of the endpoints of the candidate interval 
+at hand (either $a$ or $b$). Constructing a maximal interval in such cases only requires 
+scanning the grid in the direction of the remaining endpoint. For example if the left 
+endpoint $a$ is fixed we need only scan to the right of $a$ in order to find the location 
+of the right endpoint $b$.
+It is important to notice that all of the intervals we construct will be either (i) 
+closed at one endpoint or (ii) closed at both endpoints. 
