@@ -66,8 +66,8 @@ of this path we cannot make it any shorter.
 Recall that each time A* search generates a successor it needs to compute an $f$-value
 to prioritise its expansion. We achieve this by selecting from each interval a 
 single representative point. To ensure that the search process always returns
-an optimal path we need to select in each case the point with minimum $f$-value 
-from among all points in each set. 
+an optimal path we always choose the point with minimum $f$-value 
+from among all points in the set. 
 Figure~\ref{fig::anya_example}~(Right) shows the representative points
 for every interval in this example.
 Notice that the optimal path is not required to pass through the representative points.
@@ -79,4 +79,3 @@ Notice that the optimal path is not required to pass through the representative 
 In the next sections we will discuss (i) how to construct intervals;
 (ii) how to represent search nodes; (iii) how to generate successors; 
 (iv) how to select representative points.
-

@@ -1,3 +1,65 @@
 \section{Generating Successors}
 \label{sec::successors}
+The successors of a search node $(I, r)$ are found by computing intervals from
+the set of traversable points located on the same row of the grid as $I$ and
+on the rows immediately adjacent.  
+Whenever we generate a successor $(I', r')$ we want to guarantee that:
+\begin{enumerate}
+\item The local path from $r$ to $r'$ and then to each point $p' \in I'$ is taut.
+\item The local path from $r$ to $r'$ and then to each point $p' \in I'$  does not pass
+through any interval except $I$ and $I'$.
+\end{enumerate}
+
+We will distinguish between two kinds of successors: observable and non-observable. 
+
+\subsection{Observable Successors}
+A search node $(I', r')$ is an observable successor of $(I, r)$ if every 
+$p' \in I'$ is visible from $r$ through $I$.
+We compute observable successors as follows:
+
+\begin{itemize}
+\item If $I$ and $r$ are located on the same row of the grid, we construct a
+a new \emph{closed interval} $I'$ that begins at the endpoint of $I$ farthest from $r$.
+We extend $I'$ away from $r$ using the procedure described in in Section~\ref{sec::intervals}.
+The new successor node is formed by the tuple $I'$ and the root point $r' = r$.
+Figure~\ref{fig::anya_example} (Left) shows an example.
+\item If $I$ and $r$ are located on different rows of the grid, we project $r$ through $I$
+and construct a new \emph{closed interval} on the next row of the grid (moving away from $r$).
+The new interval, which we call $I'$, contains only points that (i) are visible from $r$ through $I$
+and that (ii) that can be reached from $r$ via a local path that is taut. 
+The new successor node is formed by the tuple $I'$ and the root point $r' = r$.
+\end{itemize}
+
+There are many ways to implement the projection of the root point $r$ though the interval $I$
+and onto the next row of the grid.
+One simple method is to compute the endpoints of the new interval $I'$ by extending the
+vectors $\vec{ra}$ and $\vec{rb}$ until they intersect the next row of the grid. 
+Here $r$ is once more the root point and $a$ and $b$ are the endpoints of $I$.
+The result of this operation is one or more observable successors, depending on whether or
+not the interval $I'$ needs to split due to internal corner points.
+Figure~\ref{fig::observable} (Middle) shows an example. 
+In some cases the extension of one 
+vector may be impeded by obstacles. When this occurs we can simply follow the contour of
+the obstacle up to the next row of the grid. Figure~\ref{fig::observable} (Right) shows
+an example.  
+
+
+\begin{figure}[tb]
+\center
+		   \includegraphics[width=\columnwidth]
+			{images/observable.pdf}
+	\vspace{-3pt}
+\caption{\small
+Examples of observable successors. In each case the current node is formed by the tuple $(I, r)$; the observable
+successor is formed by the tuple $(I', r' = r)$. \textbf{(Left)} The root and interval of the current node $(I, r)$ are on
+the same row. \textbf{(Middle)} Projecting $r$ through $I$ onto the next row of the grid. We extend the vectors $\vec{ra}$ and $\vec{rb}$
+until they intersect the next row. The points of intersection become the endpoints of the closed interval $I'$. 
+\textbf{(Right)} Alternative projection of $r$ through $I$ (due to obstacles).
+}
+\label{fig::observable}
+\end{figure}
+
+\subsection{Non-observable successors}
+
+
 Two cases: (i) the root is on the same row as the interval $I$. (ii) the root is on a different row to the interval $I$.
