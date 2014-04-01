@@ -60,6 +60,58 @@ until they intersect the next row. The points of intersection become the endpoin
 \end{figure}
 
 \subsection{Non-observable successors}
+A search node $(I', r')$ is a non-observable successor of $(I, r)$ if $r'$ is visible from $r$ but
+there exists no point $p' in I'$ which is visible from $r$ through $I$. There are two places
+where we can find non-observable successors: (i) adjacent to the interval $I$; (ii) adjacent to the 
+observable successors of $(I, r)$.
 
+The following procedure describes in broad terms how to find non-observable successors 
+among the points directly adjacent to the interval $I$.
+\begin{enumerate}
+\item Check if $I$ has at least one endpoint which is also a corner point. If
+there exists no such endpoint, there are no non-observable successors and we
+terminate. Otherwise:
+\item Let $a$ be the endpoint of $I$ which is also a corner point (repeat the
+following process if the other endpoint of $I$ is also a corner point).
+\item If $r$ and $a$ are on the same row, follow the contour of the obstacle;
+moving away from $a$ until we reach the next row. Starting from this point
+(call it $a'$) we now construct a set of adjacent and closed intervals which
+are all fully visible from $a$.  The combination of each of these intervals,
+together with the common root point $r' = a$, form a set of non-observable
+successors of $(I,r$). Figure~\ref{fig::non-observable} (Left) shows an
+example.
+\item If $r$ and $a$ are not on the same row, construct a new interval $I' =
+(a, b]$ where $b$ is the next corner point or obstacle. Notice that $I'$ is
+open at the endpoint $a$.  Look for other intervals among the points adjacent
+to $I'$. Each one of these intervals (if any) must be constructed s.t. they
+are closed at both ends.  The combination of each of these intervals,
+together with the common root point $r' = a$, form a set of non-observable
+successors of $(I,r$). Figure~\ref{fig::non-observable} (Middle) shows an
+example.
+\end{enumerate}
 
-Two cases: (i) the root is on the same row as the interval $I$. (ii) the root is on a different row to the interval $I$.
+Thus far we have only discussed how to identify non-observable successors for
+the node $(I, r)$ by searching among the points directly adjacent to the
+interval $I$. We may also find non-observable successors by searching among
+the points directly adjacent to some of the observable successors of $(I, r)$.
+This procedure is identical Step 3 above. Simply substitute $I$ with the
+approrpriate interval from an observable successor.
+Figure~\ref{fig::non-observable} (Right) shows an example.
+
+\begin{figure}[tb]
+\center
+		   \includegraphics[width=\columnwidth]
+			{images/non_observable.pdf}
+	\vspace{-3pt}
+\caption{\small
+Examples of non-observable successors. In each case the current node
+is formed by the tuple $(I, r)$; the non-observable successor 
+is formed by the tuple $(I', r')$. If there is more than one 
+non-observable successor we use a subscript index to distinguish them.
+\textbf{(Left)} Non-observable successors when both $I$ and $r$ are on
+the same row. \textbf{(Middle)} Non-observable successors among the 
+points adjacent to $I$. \textbf{(Right)} Non-observable successors
+adjacent to the points visible from $r$ through $I$.
+}
+\label{fig::non-observable}
+\end{figure}
