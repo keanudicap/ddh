@@ -1,13 +1,6 @@
 \section{Optimisations}
 \label{sec::optimisations}
 
-\subsection{Lazy Node Generation}
-When generating non-observable successors Anya constructs a maximal-size
-interval of non-observable points and slices it up into smaller intervals
-by dividing them at the corner points. This does not seem necessary.
-We could just extend an interval to the first corner point and wait
-for it to be expanded before generating other intervals further along
-the current row. 
 
 
 \subsection{Jumping}
@@ -28,8 +21,8 @@ as $I_2$, $I_3$, $I_4$ and $I_5$ are not interesting.
 This idea has some similarities with Jump Point Search~\cite{harabor11b}
 and other related algorithms~\cite{haraborG14}.
 
-\subsection{Other redundant nodes}
-Anya seems to allow projecting an interval to the next row when the interval and the root are
-on the same row. This seems redundant. There should already be an interval generated previously.
-We should clean this up and avoid generating such nodes.
-
+%\subsection{Other redundant nodes}
+%Anya seems to allow projecting an interval to the next row when the interval and the root are
+%on the same row. This seems redundant. There should already be an interval generated previously.
+%We should clean this up and avoid generating such nodes.
+%
