@@ -63,10 +63,11 @@ until they intersect the next row. The points of intersection become the endpoin
 A search node $(I', r')$ is a non-observable successor of $(I, r)$ if $r'$ is visible from $r$ but
 there exists no point $p' in I'$ which is visible from $r$ through $I$. There are two places
 where we can find non-observable successors: (i) adjacent to the interval $I$; (ii) adjacent to the 
-observable successors of $(I, r)$.
+observable successors of $(I, r)$. In both cases every successor $(I', r')$ will have a root point
+$r'$ which is always a corner point and which belongs to $I$.
 
 The following procedure describes in broad terms how to find non-observable successors 
-among the points directly adjacent to the interval $I$.
+among the points directly adjacent to the interval $I$. 
 \begin{enumerate}
 \item Check if $I$ has at least one endpoint which is also a corner point. If
 there exists no such endpoint, there are no non-observable successors and we
