@@ -31,16 +31,17 @@ employing even almost perfect heuristics, i.e. those having only a small
 additive constant for error, must expand, in the worst case, an exponential
 number of nodes before reaching the goal.  A similar result can also be
 derived for the average case~\citep{pearl84}.  The models used in these
-theoretical works often employ certain simplifying assumptions.  They
-nevertheless align well with domain models that appear in pathfinding search;
-e.g. constant branching factor, uniform-cost edges and a singleton goal state.
+theoretical works often employ certain simplifying assumptions which
+nevertheless align well with domain models that appear in pathfinding
+search; e.g.  constant branching factor, uniform-cost edges and a singleton 
+goal state.
 Despite such seemingly discouraging results researchers have demonstrated
 that, in many pathfinding domains of practical interest
 (e.g.~\citep{sturtevant12}), better heuristic estimates can dramatically
 improve the performance of optimal search.
 
-One idea for improving heuristic accuracy is to take into account domain
-specific movement rules.  $h_{MD}$ (Manhattan Distance) and $h_{OD}$ (Diagonal
+One idea for improving heuristic accuracy is to take into account 
+domain-specific movement rules.  $h_{MD}$ (Manhattan Distance) and $h_{OD}$ (Diagonal
 or Octile Distance) are two such heuristics; they retain all the properties of
 $h_{SLD}$ but provide better lower-bound estimates when pathfinding in square
 grids. $h_{MD}$ computes a lower-bound on the number of horizontal and vertical
@@ -53,7 +54,8 @@ puzzles~\citep{korf96}.
 Another approach to improving heuristic accuracy involves pre-computing
 distance databases.  A large family of related algorithms, sometimes called
 \emph{memory heuristics}, has been described in the
-literature~\citep{goldberg05,bjornsson06,sturtevant07,felner09,goldenberg10,anderson10}.
+literature~\citep{goldberg05,bjornsson06,sturtevant07,felner09,goldenberg10,
+anderson10,yap11}.
 ALT~\citep{goldberg05} is a typical representative. During a preprocessing
 step ALT selects from the map a set of \emph{landmark} nodes and then computes
 a database of optimal distances from each node to every landmark. Given such a
@@ -66,12 +68,11 @@ include the Gateway Heuristic~\citep{bjornsson06} and the Portal
 Heuristic~\citep{goldenberg10}. Memory heuristics are very fast, typically
 constant time, and can improve the performance of optimal search by anywhere
 from several factors to an order of magnitude. Their primary disadvantages are
-often lengthy pre-processing times and significant space overheads.  This
-largely excludes memory heuristics from being applied in many popular
-pathfinding settings, including robotics and computer games.
+often lengthy pre-processing times and significant space overheads. 
 
 In a recent paper~\cite{rayner11} describe a technique for computing entire
-families of Euclidean heuristics. Their approach involves
+families of Euclidean heuristics. Their approach, which generalises the 
+ALT technique, involves
 embedding a spatial network graph into a manifold. Computing the embedding
 requires solving a constrained optimisation problem that minimises heuristic
 error. The authors show that their approach produces very accurate results in

@@ -20,8 +20,10 @@ There exist several popular strategies for finding a path in a search graph:
 advantages and disadvantages. Blind Search methods, for example, unfold a
 search graph into a tree and explore the nodes in a fixed order. Under certain
 conditions these algorithms are guaranteed to find a path (including the
-optimal path). However, they require an amount of time, or space, that is
-exponential in the length of the returned solution.  Local Search algorithms,
+optimal path) though they are typically not very efficient. In some cases,
+for example in exponential domains,  blind search methods require an amount of 
+time, or space, that is exponential in the length of the returned solution.  
+Local Search algorithms,
 by comparison, use simple rules-of-thumb to find a path.  They are fast (in
 the sense that they can consider many nodes very quickly) and they are memory
 efficient but they are not guaranteed to find the optimal path or indeed any

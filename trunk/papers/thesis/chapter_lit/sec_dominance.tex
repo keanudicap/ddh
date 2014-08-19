@@ -25,7 +25,9 @@ Both rely on an offline preprocessing phase that decomposes a given map into
 obstacle-free areas.  During online search each of these two algorithms
 consults the decomposed map in order to identify areas that are relevant for
 the instance at hand and areas that can be ignored entirely because exploring
-them could not improve the length of any path.
+them could not improve the length of any path. Recent work shows that a limited 
+type of Swamp detection can also be performed online however that algorithm 
+prunes fewer nodes than its offline counterpart~\cite{DBLP:conf/socs/SharonSF13}.
 %It can be seen as a technique for detecting areas that don't have to be searched
 %in the instance at hand and, as before, is complementary to our work.
 

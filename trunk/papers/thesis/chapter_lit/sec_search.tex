@@ -47,22 +47,28 @@ algorithm returns failure.
 
 \subsection{Blind Search}
 \label{cha::lit::search::blind}
-Blind search is a systematic search strategy that expands nodes from the graph
-in a fixed order. Two classical examples are Breadth-First Search
+Blind Search is a systematic search strategy that expands nodes according to 
+a fixed order. Often applied to search problems involving small graphs and trees, 
+Blind Search algorithms can sometimes find good paths, even optimal paths, much 
+faster than more sophisticated search strategies.
+ Two classical examples from the literature and Breath First Search 
 (BFS)~\citep{moore59} and Depth-First Search (DFS)~\citep{russel03}.  Both of
 these algorithms construct a search \emph{tree} which has the start node $s$
 at its root. BFS proceeds by expanding all nodes at a given level of the tree
 before moving down to the next level. DFS meanwhile expands a node and
 immediately recurses down the tree by choosing one of its successors to
-explore next.  \footnote{The selection strategy is usually fixed.}
+explore next\footnote{The selection strategy is usually fixed.}.
 
-BFS is a complete and optimal search strategy but it is not very efficient; it
-requires an amount of space and time which increases exponentially with the
-depth of the search tree.  DFS, by comparison, requires just linear time and
+Though BFS is a complete and optimal search strategy it requires an amount of 
+space and time which increases exponentially with the
+depth of the search tree. This means that on challenging real-world problems,
+for example involving large graphs and long paths, BFS will often run out 
+of time or out of memory well before any solution can be found.  
+DFS, by comparison, requires just linear time and
 space but lacks any optimality or completeness guarantees. In the worst case
 DFS will explore all possible paths in the tree. This means that if the depth
 of the tree is unbounded, or if the tree contains repeated nodes, DFS may not
-terminate.
+terminate. 
 
 \subsection{Informed Search}
 \label{cha::lit::search::informed}
@@ -85,33 +91,62 @@ The function $g(n)$ represents the sum of edge costs along the path from the
 starting node $s$ to $n$. The function $h(n)$ is a heuristic that estimates the
 cost of the path from $n$ to the target node $t$.  Taken together these two
 values, $g(n)$ and $h(n)$, provide an estimate of the total cost of a path from
-$s$ to $t$ via $n$.  
-
-A{*} can be shown to be complete, optimal and optimally
+$s$ to $t$ via $n$.  A{*} can be shown to be complete, optimal and optimally
 efficient~\citep{dechter85} but only if the heuristic function is both
-\emph{admissible} and \emph{monotonic}. Admissible means that $h(n)$ always
-lower-bounds the cost of the path from $n$ to $t$. Monotonic means that $h(n)$
-never decreases along any particular path. Optimally efficient means that no
+\emph{admissible} and \emph{consistent}. 
+\begin{itemize}
+\item Admissible means that $h(n)$ always
+lower-bounds the cost of the path from $n$ to $t$. 
+\item Consistent means the estimated $f$-cost values computed at each node $n$ and at 
+each successor $n'$ are non-decreasing when using the heuristic function $h$; 
+i.e.  $h(n) \le c(n, n') + h(n')$. A direct corollary arising from the consistency
+property is that along every path the $f$-value of each subsequent node is never 
+smaller than its predecessor.
+\item Optimally efficient means that no
 algorithm which has access to the same information as A{*} can possibly
-expand fewer nodes than A{*}
+expand fewer nodes than A{*}.
+\end{itemize}
 In terms of complexity, A{*} requires $O(|V|)$ space and computes a solution in 
 worst-case time $O(|V|\log_2{|V|})$.
 
 \subsection{Local Search}
 \label{cha::lit::search::local}
-Local search is the name given to a family of non-systematic search algorithms.
+Local search is the name given to a broad class of non-systematic search algorithms.
 The central idea is to employ heuristic decision-making to drive search but 
-without the memory and time overheads associated with blind or informed strategies.
+avoid the memory and time overheads associated with blind or informed strategies.
+In the case of pathfinding, local search algorithms are typically strategies where:
+(i) search is limited to nodes in the immediate vicinity of the agent; 
+(ii) search returns only a partial path toward the goal.  Local search
+algorithms are often used in real-time settings where pathfinding agents
+operate in dynamic or limited information environments, may be subject to
+limited computing resources and are expected to react within a constant
+time-bound.  Such agents typically apply local search in an iterated manner,
+interleaving very short path planning episodes with path executions steps.
+
 Bug algorithms~\citep{choset05} are prototypical examples of local search
-applied to pathfinding.
-Inspired by insects from the natural world, these methods navigate in a straight 
-line toward the goal until an obstacle is encountered. They then circumnavigate 
-the obstacle (either partially or entirely) in order to find the best ``leave'' 
-point from which to continue toward the goal.
-Though they are incomplete and suboptimal, bug algorithms can be surprisingly
+applied to pathfinding.  Inspired by insects from
+the natural world, these methods navigate in a straight line toward the goal
+until an obstacle is encountered. They then circumnavigate the obstacle
+(either partially or entirely) in order to find the best ``leave'' point from
+which to continue toward the goal.  Bug algorithms are very fast, require
+little memory and, though incomplete and suboptimal, are surprisingly
 effective on a range of problems (e.g. search spaces containing only convex
-obstacles). They require little memory (typically a constant amount) and
-are attractive in cases where computational resources are limited.
+obstacles).
+
+More sophisticated examples of localised search techniques can be found among
+the members of a large family of algorithms based on
+LRTA{*}~\citep{DBLP:journals/ai/Korf90}. Such methods employ a variation of 
+informed search that typically expands only a fixed number of
+nodes or all nodes up to some fixed $f$-value threshold.  Developed with
+iterated execution in mind, these techniques re-use information (e.g. heuristic
+values) from previous path planning episodes to improve decision making during
+the current episode. Though not usually optimal (in a global sense) algorithms 
+based on LRTA{*} are, with few caveats, guaranteed to find a path if one exists. 
+Recent works of this type includes:
+RIBS~\citep{DBLP:conf/atal/SturtevantBB10},
+kNN-LRTA{*}~\citep{DBLP:journals/jair/BulitkoBL10}, 
+LRTA{*}+sub~\citep{DBLP:conf/aips/HernandezB11} and 
+f-LRTA{*}~\citep{DBLP:conf/ijcai/SturtevantB11}.
 
 \subsection{Performance Enhancements}
 \label{cha::lit::search::impl}
