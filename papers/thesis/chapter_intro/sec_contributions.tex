@@ -53,7 +53,7 @@ literature and in real-life computer games.
 In addition to the basic algorithm we also develop two pruning strategies
 which can significantly reduce the number of nodes that need to be explored
 during search.  The first enhancement is applied offline and allows us to
-discard in many cases nodes from the perimeter of an empty rectangle. The
+discard, in many cases, nodes from the perimeter of an empty rectangle. The
 second enhancement is applied online and allows us to speed up node expansion
 by selectively evaluating either all neighbours associated with a node or only
 a small subset.
@@ -74,12 +74,12 @@ certain nodes on a grid map which we call \emph{jump points}.  Moving from one
 jump point to the next involves travelling in a fixed direction while
 repeatedly applying a set of simple neighbour pruning rules until either an
 obstacle or a jump point is reached.  Because we do not expand any
-intermediate nodes can improve the search time performance of standard A{*} by
+intermediate nodes we can improve the search time performance of standard A{*} by
 an order of magnitude and more.  JPS is unique in the pathfinding literature
 in that it has very few disadvantages: it is simple, yet highly effective; it
-preserves optimality, yet requires no extra memory;  it is extremely fast, yet
-requires no pre-processing.  Further, our method is completely orthogonal to
-and easily combined with competing speedup techniques from the literature.  We
+preserves optimality, yet requires no extra memory;  it is fast, yet
+requires no pre-processing.  Further, our method is orthogonal to
+and easily combined with many speedup techniques from the literature.  We
 are unaware of any other algorithm which has all these features.
 
 In Chapter~\ref{cha::jps2} we extend the ideas of JPS in order to make three

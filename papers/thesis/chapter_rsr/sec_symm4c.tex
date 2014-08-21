@@ -172,15 +172,15 @@ The algorithm only considers nodes along the perimeter of the identified rectang
 \end{figure}
 
 In Figure \ref{fig::rsr::contrast} we highlight the effectiveness of our
-symmetry breaking technique using a map that has characteristics similar to
-what one might expect in a modern role-playing game\footnote{In fact, many
-computer game maps tend to be somewhat bigger than our example but for
-demonstration purposes it is sufficient.}; i.e. there are many rooms with
-entrances and corridors connecting them.  A* running on the original grid map
-expands almost half the nodes in the state space of the shown example.  We
-then apply our technique to eliminate symmetries and re-run A*.  This time A*
-expands less than 15\% of all nodes (more than a three-fold improvement) and
-returns an optimal solution 3 times faster.
+symmetry breaking technique using a map, due to Vadim Bulitko, that has
+characteristics similar to what one might expect in a modern role-playing
+game\footnote{In fact, many computer game maps tend to be somewhat bigger than
+our example but for demonstration purposes it is sufficient.}; i.e. there are
+many rooms with entrances and corridors connecting them.  A* running on the
+original grid map expands almost half the nodes in the state space of the
+shown example.  We then apply our technique to eliminate symmetries and re-run
+A*.  This time A* expands less than 15\% of all nodes (more than a three-fold
+improvement) and returns an optimal solution 3 times faster.
 
 \subsection{Identifying Empty Rooms}
 \label{cha::rsr::rectangles}
