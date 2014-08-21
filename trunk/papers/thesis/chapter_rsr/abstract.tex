@@ -1,15 +1,16 @@
 \chapter{Rectangular Symmetry Reduction}
 \label{cha::rsr} 
-In this chapter we present Rectangular Symmetry Reduction (RSR): a graph pruning
-algorithm for undirected uniform-cost grid maps which is fast, memory efficient,
-optimality preserving and which can, in some cases, eliminate entirely the need
-to search.  The central idea that we will explore involves the identification
-and elimination of \emph{path symmetries} from the search space. 
-Symmetry appears in many domains; for example in planning~\citep{fox99}, constraint 
-programming \citep{walsh07} and combinatorial optimisation~\citep{fukunaga08}. 
-Unless it is handled properly, symmetry almost always 
-increases the size of the search space and forces search algorithms to waste time
-considering variations of already known solutions.
+In this chapter we present Rectangular Symmetry Reduction (RSR): a graph
+pruning algorithm for undirected uniform-cost grid maps which is fast, memory
+efficient, optimality preserving and which can, in some cases, eliminate
+entirely the need to search.  The central idea that we will explore involves
+the identification and elimination of \emph{path symmetries} from the search
+space.  Symmetry appears in many domains; for example in
+planning~\citep{fox99}, constraint programming \citep{walsh07} and
+combinatorial optimisation~\citep{fukunaga08}.  Unless it is handled properly,
+symmetry almost always increases the size of the search space and forces
+search algorithms to waste time considering variations of already known
+solutions.
 \par
 To deal with path symmetries RSR decomposes an arbitrary uniform-cost grid map
 into a set of empty rectangles, removes from each such rectangle all interior
@@ -22,18 +23,18 @@ which appears often in the AI literature.  We then generalise RSR to
 symmetry elimination more challenging.  We also develop two new pruning
 strategies which can signficantly reduce the number of nodes that need to be
 explored during search.  The first enhancement is applied offline and allows
-us to discard in many cases nodes from the perimeter of an empty rectangle.
+us to discard, in many cases, nodes from the perimeter of an empty rectangle.
 The second enhancement is applied online and allows us to speed up node
 expansion by selectively evaluating either all neighbours associated with a
 node or only a small subset.
 
-We evaluate RSR on a range of uniform-cost grid maps from the academic literature and find
-that it can improve the running time of A* search by several factors. In certain cases the
-speedup can be as much as one order of magnitude. We then compare RSR to 
-Swamps~\citep{pochter10}, a recent state-of-the-art
-pruning technique. We find that the two algorithms have complementary strengths and that they
-could be easily combined. We also identify a range of benchmark problems on which RSR 
-dominates convincingly.  
+We evaluate RSR on a range of uniform-cost grid maps from the academic
+literature and find that it can improve the running time of A* search by
+several factors. In certain cases the speedup can be as much as one order of
+magnitude. We then compare RSR to Swamps~\citep{pochter10}, a recent
+state-of-the-art pruning technique. We find that the two algorithms have
+complementary strengths and that they could be easily combined. We also
+identify a range of benchmark problems on which RSR dominates convincingly.
 \par
 
 The contributions described in this chapter have been presented previously in

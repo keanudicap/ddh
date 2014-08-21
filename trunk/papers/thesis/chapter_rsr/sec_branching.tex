@@ -32,16 +32,21 @@ grid maps however they are equally applicable to 4-connected maps.
 \label{fig::rsr::perimeter_reduction}
 \end{figure}
 
-We observe that in many cases there are nodes on the perimeter of an empty
-rectangle which have no neighbours from any adjacent rectangle.  Such nodes
-are adjacent to obstacles and cannot lead into or out of any empty rectangle.
-Figure \ref{fig::rsr::perimeter_reduction}(a) shows an example.  We propose to prune
-all such perimeter nodes. To preserve optimality, we will connect the
-neighbours of each pruned node directly to each other.  The weight of each new
-edge is set appropriately to the octile distance between the two neighbours.
-Figure~\ref{fig::rsr::perimeter_reduction}(b) shows the result of this procedure.
-As we will see such perimeter reduction can have a dramatic effect on the
-average performance of A* on certain types of maps.
+We observe that in both 4-connected and 8-connected maps there are many cases
+where nodes on the perimeter of an empty rectangle have no neighbours from any
+adjacent rectangle.  Such nodes are adjacent to obstacles and cannot lead into
+or out of any empty rectangle.  Figure \ref{fig::rsr::perimeter_reduction}(a)
+shows an example.  We propose to prune all such perimeter nodes. To preserve
+optimality, we will connect the neighbours of each pruned node directly to
+each other.  The weight of each new edge is set appropriately to the octile
+distance between the two neighbours\footnote{This operation shares some similarity
+to Contraction Hierarchies; a well known and very fast algorithm for finding
+shortest paths in road networks. Like RSR, this work creates an abstract
+(but multi-level) representation of the graph in which single edges are replaced 
+by equivalent-cost ``shortcuts'' (i.e macro-edges).~\cite{geisberger08}}.
+Figure~\ref{fig::rsr::perimeter_reduction}(b) shows the result of this
+procedure.  As we will see such perimeter reduction can have a dramatic effect
+on the average performance of A* on certain types of maps.
 \begin{lemma}
 Perimeter reduction preserves path optimality.
 \end{lemma}

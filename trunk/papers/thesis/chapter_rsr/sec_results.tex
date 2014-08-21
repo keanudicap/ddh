@@ -7,20 +7,21 @@ For example, a speedup of 2.0 is twice as fast (higher is better).
 Note that on approximately 2\% of all instances the start and goal are located
 in the same rectangle and RSR computes the optimal solution without
 search.  We exclude these instances from our results even though RSR solves
-them in constant time. Their exclusion makes for a clearer comparison between
+them in constant time. 
+Their exclusion makes for a clearer comparison between
 RSR and contemporary approaches from the pathfinding literature.
 
-\par 
-\begin{figure*}[t]
+%\par 
+\begin{sidewaysfigure*}[p]
 \begin{center}
-   \includegraphics[width=0.97\columnwidth, trim = 10mm 10mm 10mm 0mm]{chapter_rsr/diagrams/speedup.pdf}
+   \includegraphics[width=0.85\columnwidth, trim = 0mm 0mm 0mm 0mm]{chapter_rsr/diagrams/speedup.pdf}
 \end{center}
 \caption[Search time speedup: RSR]
 {\small 
-Average A* speedup on each of our three benchmarks. 
-Results are given in terms of relative improvement to A* search time (i.e. speedup).}
+Average search-time performance. 
+Results are given in terms of relative improvement vs. A* (i.e. speedup).}
 \label{fig::rsr::speedup}
-\end{figure*}
+\end{sidewaysfigure*}
 
 
 \textbf{Pre-processing Times: } 
