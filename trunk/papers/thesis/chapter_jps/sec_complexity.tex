@@ -1,4 +1,5 @@
 \section{Time and Space Requirements}
+\label{cha::jps::complexity}
 Jump Point Search performs on-the-fly symmetry breaking by recursively travelling
 along the map in a given direction and checking each node it encounters for the
 presence of forced neighbours. 
@@ -25,10 +26,14 @@ amount of time. Moreover, since JPS does not cache the results of these operatio
 the same node can be checked multiple times during the course of solving single 
 pathfinding problem. 
 
-We will show in Section~\ref{cha::jps::results}
-that although JPS performs a large number of forced neighbour checks, much more than
-the number of nodes expanded, each of these operations can be performed much more 
-quickly than expanding a node. The reason for this efficiency is due to the fact that
-our search space (i.e. the grid at hand) is defined explicitly and can be stored
-in memory. These characteristics are common to pathfinding benchmarks but uncommon 
-to other areas of the Search literature e.g. AI Planning. 
+We will see in Section~\ref{cha::jps::results} JPS is efficient despite needing to
+perform many forced neighbour checks. The reason for this efficiency is due to the 
+fact that our search space (i.e. the grid at hand) is defined explicitly and can be 
+stored in memory. Because the grid is readily available each forced neighbour check 
+is equivalent to a small handful of memory operations. 
+By comparison, expanding a node is much more expensive. In addition to reading
+values to and from memory we also need to invoke the heuristic function $h$ and push 
+and pop values to and from the open list (using a binary heap open list operation 
+takes $O(log_2{n})$ time).
+We explore these issues in more depth in Chapter~\ref{cha::jps2} wherein we suggest 
+a number of enhancements to JPS that make forced-neighbour checks cheaper still.

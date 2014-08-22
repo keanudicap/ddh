@@ -7,22 +7,20 @@ We term these important nodes \emph{jump points} and give an example of the
 basic idea in Figure \ref{fig::jps::jumppoints}(a).
 
 When expanding $x$ we may notice that there is little point to evaluating any
-neighbour reachable by a dashed line as such a move is always
-dominated by (i.e. no better than) an alternative path which mentions 
-$p(x)$ but not $x$.
-We will make this idea more precise in Section~\ref{cha::jps::pruning} but for now it is 
-sufficient to observe that the only non-dominated neighbour of $x$ 
-lies immediately to the right.
-Rather than generating this neighbour and adding it to the open list,
-as in the classical A* algorithm, we propose 
-to simply step to the right and continue moving in this direction until we
+neighbour reachable by a dashed line as such a move is always dominated by
+(i.e. no better than) an alternative path which mentions node $p(x)$ (i.e. the 
+parent of node $x$) but does not mention node $x$ itself.
+We will make this idea more precise in Section~\ref{cha::jps::pruning} but for
+now it is sufficient to observe that the only non-dominated neighbour of $x$
+lies immediately to the right.  Rather than generating this neighbour and
+adding it to the open list, as in the classical A* algorithm, we propose to
+simply step to the right and continue moving in this direction until we
 encounter a node such as $y$; which has at least one other non-dominated
-neighbour (here $z$). 
-If we find a node such as $y$ (a jump point) we generate it as a successor 
-of $x$ and assign it a $g$-value (or cost-so-far) of $g(y) = g(x) + dist(x,
-y)$.
-Alternatively, if we reach an obstacle we conclude that further search in this
-direction is fruitless and generate nothing.
+neighbour (here $z$).  If we find a node such as $y$ (a jump point) we
+generate it as a successor of $x$ and assign it a $g$-value (or cost-so-far)
+of $g(y) = g(x) + dist(x, y)$.  Alternatively, if we reach an obstacle we
+conclude that further search in this direction is fruitless and generate
+nothing.
 \par
 Figure~\ref{fig::jps::jumppoints}(a) is an example of a jump that is based
 only on straight moves. In the remainder of this chapter we will develop  
