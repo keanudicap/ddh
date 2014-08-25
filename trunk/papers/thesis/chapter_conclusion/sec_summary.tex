@@ -17,6 +17,8 @@ challenges in Chapter~\ref{cha::rsr}, Chapter~\ref{cha::jps} and
 Chapter~\ref{cha::jps2}.  We address the second of these challenges in
 Chapter~\ref{cha::anya}.
 
+\subsection{Contributions to Symmetry Breaking in Pathfinding Search}
+
 In Chapter~\ref{cha::rsr} we identify one significant factor that makes
 pathfinding in grids challenging: the existence of equivalent permutations 
 (i.e. symmetries) for many shortest paths in a grid. We formalise this idea by defining concretely
@@ -60,6 +62,19 @@ breaks path symmetries but only during an offline pre-processing step. We find
 that JPS and SUB have complementary strengths and we identify many instances
 where one or more of our enhanced JPS variants are faster.
 
+\input chapter_conclusion/table_overview
+
+Table~\ref{table::conclusion::overview} gives a summary comparison for
+each of the algorithms presented in Chapter~\ref{cha::rsr}, Chapter~\ref{cha::jps} 
+and Chapter~\ref{cha::jps2}. The main features in each case is an emphasis
+on improving the running time of pathfinding search while requiring little
+(and in some cases no) preprocessing and additional memory, beyond what is 
+necessary to store the search graph. We have shown throughout this thesis 
+that in empirical comparisons RSR, JPS and their variants are competitive 
+with and often better than competing algorithms appearing contemporaneously 
+in the literature.
+
+\subsection{Contributions to Any-Angle Pathfinding}
 In Chapter~\ref{cha::anya} we turn our attention to Any-angle pathfinding.
 This is a problem that takes as input two points from a grid and asks for a
 Euclidean-optimal path connecting them. We describe Anya: a novel approach to
