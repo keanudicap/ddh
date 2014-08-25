@@ -3,45 +3,48 @@
 \section{Comparison with JPS 2011}
 \label{sec::results}
 
+We first analyse the impact on JPS search performance for various combinations
+of our optimisation techniques: JPS (B), which adds block-based jumping, JPS
+(B + P) which combines block-based jumping with improved pruning, JPS+ which
+adds pre-processing and JPS+ (P) which combines pre-processing with improved
+pruning.  To avoid confusion we will denote the original algorithm as JPS
+2011.
 
-We first analyse the impact on JPS search performance for various combinations of our 
-optimisation techniques: JPS (B), which adds block-based 
-jumping, JPS (B + P) which combines block-based jumping with improved pruning, JPS+
-which adds pre-processing and JPS+ (P) which combines pre-processing with improved pruning.
-To avoid confusion we will denote the original algorithm as JPS 2011.
-
-\begin{figure*}[tb] 
+\begin{sidewaysfigure*}[p] 
 \begin{center}
 		   \includegraphics[width=\columnwidth, trim = 0mm 0mm 0mm 0mm]
 			{chapter_jps2/diagrams/improvement_vs_jps.pdf}
        \end{center}
 \caption[Performance of improved JPS variants vs. original JPS] 
-{\small We measure the relative performance (or improvement factor) of each of our new JPS variants 
-against the original. We consider two metrics: nodes expanded and search time. An improvement factor of 2 
-for search time means twice as fast; for node expansions it means half as many nodes expanded. 
+{\small We measure the relative performance (or improvement factor) of each of
+our new JPS variants against the original. We consider two metrics: nodes
+expanded and search time. An improvement factor of 2 for search time means
+twice as fast; for node expansions it means half as many nodes expanded.
 Higher values are always better.}
 \label{fig::jps2::vs_jps2011}
-\end{figure*}
+\end{sidewaysfigure*}
 
-We have previously observed that the bottleneck of the JPS 2011 algorithm is individual node
-expansion operations. In Table~\ref{table::jps2::expansion} we give results for the average
-time required to expand one million random starting nodes from each input map in
-each benchmark set. We find that block-based jumping and pre-processing jump points
-each improve average times by one and two orders of magnitude respectively vs. JPS 2011.
-Pruning intermediate jump points from the search tree increases the average branching 
-factor by several times but the time-per-expansion is still much better. 
-In Figure~\ref{fig::jps2::vs_jps2011} we give a summary of search performance, in terms
-of time and node expansions, for all GPPC instances on each of our three benchmark sets. 
-In each case and for each metric we consider relative improvement vs. JPS 2011.
-We show the spread of results after having assigned all test instances into buckets of 
-similar length.
-We observe that any of our alternative approaches is strictly faster than the original. 
-Moreover, JPS (B) and JPS (B + P) have all the same advantages as JPS 2011: they are 
-fast, optimal, online and require, in principle at least, no extra memory vs. JPS 2011
-(recall that in practice we store a rotated copy of map twice to improve memory access
-patterns).
-A summary of pre-processing requirements is given in Table~\ref{table::jps2::preproc}. Note
-that JPS+ and JPS+ (P) have the same requirements and are not listed separately.
+We have previously observed that the bottleneck of the JPS 2011 algorithm is
+individual node expansion operations. In Table~\ref{table::jps2::expansion} we
+give results for the average time required to expand (i.e. generate all
+successors of) one million random starting nodes from each input map in each
+benchmark set. We find that block-based jumping and pre-processing jump points
+each improve average times by one and two orders of magnitude respectively vs.
+JPS 2011.  Pruning intermediate jump points from the search tree increases the
+average branching factor by several times but the time-per-expansion is still
+much better.  In Figure~\ref{fig::jps2::vs_jps2011} we give a summary of
+search performance, in terms of time and node expansions, for all GPPC
+instances on each of our three benchmark sets.  In each case and for each
+metric we consider relative improvement vs. JPS 2011.  We show the spread of
+results after having assigned all test instances into buckets of similar
+length.  We observe that any of our alternative approaches is strictly faster
+than the original.  Moreover, JPS (B) and JPS (B + P) have all the same
+advantages as JPS 2011: they are fast, optimal, online and require, in
+principle at least, no extra memory vs. JPS 2011 (recall that in practice we
+store a rotated copy of map twice to improve memory access patterns).  A
+summary of pre-processing requirements is given in
+Table~\ref{table::jps2::preproc}. Note that JPS+ and JPS+ (P) have the same
+requirements and are not listed separately.
 
 \input chapter_jps2/table_preproc
 
@@ -83,23 +86,23 @@ JPS (B + P) vs. SUB-S in 92\%, 84\% and 89\% of tested instances respectively.
 For JPS+ (P) vs. SUB-TL we measured an improvement in 43\%, 77\% and 68\% of 
 tested instances respectively.
 
-\begin{figure*}[tb] 
+\begin{sidewaysfigure*}[p] 
 \begin{center}
 		   \includegraphics[width=\columnwidth, trim = 0mm 0mm 0mm 0mm]
 			{chapter_jps2/diagrams/jps_vs_sub_boxplot.pdf}
        \end{center}
 \caption[Search time performance: JPS+ vs. SUB] 
 {\small
-We compare the raw search time performance of our improved JPS variants (both online
-and offline) with two recent and very performant algorithms: simple subgoal graphs (SUB-S) 
-and two-level subgoal graphs with local edge pruning (SUB-TL). All JPS variants and SUB-S 
-are provably optimal. SUB-TL is not.}
+We compare the raw search time performance of our improved JPS variants (both
+online and offline) with two recent and very performant algorithms: simple
+subgoal graphs (SUB-S) and two-level subgoal graphs with local edge pruning
+(SUB-TL). All JPS variants and SUB-S are provably optimal. SUB-TL is not.}
 \label{fig::jps2::vs_sub}
-\end{figure*}
+\end{sidewaysfigure*}
 
 \section{Analysis}
 The results demonstrate the superiority of the approaches presented in this
-paper. In JPS (B) and JPS (B + P) we have improved the performance of
+chapter. In JPS (B) and JPS (B + P) we have improved the performance of
 JPS 2011 by several factors all while retaining
 the same advantages inherent to the original algorithm: completeness, 
 optimality and little-to-no memory overhead. Such results are remarkable as
