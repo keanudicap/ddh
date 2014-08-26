@@ -59,16 +59,17 @@ before moving down to the next level. DFS meanwhile expands a node and
 immediately recurses down the tree by choosing one of its successors to
 explore next\footnote{The selection strategy is usually fixed.}.
 
-Though BFS is a complete and optimal search strategy it requires an amount of 
-space and time which increases exponentially with the
-depth of the search tree. This means that on challenging real-world problems,
-for example involving large graphs and long paths, BFS will often run out 
-of time or out of memory well before any solution can be found.  
-DFS, by comparison, requires just linear time and
-space but lacks any optimality or completeness guarantees. In the worst case
-DFS will explore all possible paths in the tree. This means that if the depth
-of the tree is unbounded, or if the tree contains repeated nodes, DFS may not
-terminate. 
+Though BFS is a complete and optimal search strategy it requires an amount of
+space and time which increases very quickly; in some domains size of the
+search tree is exponentially related to branching factor and depth.  This
+means that on challenging real-world problems, for example involving large
+graphs and long paths, BFS will often run out of time or out of memory well
+before any solution can be found.  DFS, by comparison, requires an amount
+space that is only linear in the length of the longest branch of the search
+tree; however this strategy does not have any optimality or completeness
+guarantees.  In the worst case DFS will explore all possible paths in the
+tree. This means that if the depth of the tree is unbounded, or if the tree
+contains repeated nodes, DFS may not terminate.
 
 \subsection{Informed Search}
 \label{cha::lit::search::informed}
