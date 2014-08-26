@@ -7,7 +7,7 @@ The idea is simple and natural: by representing each area as a single location
 (or as a small set of points) one can quickly identify an \emph{abstract path} 
 that begins in the same area as the starting location and terminates in the
 same area as the target location.  Once such a path has
-been found it can be refined by solving a small set of subproblems in the
+been found it can be refined by solving a small set of sub-problems in the
 original map; each one involving the traversal of only a single area. In most
 cases this factored approach is much more efficient than searching for a path
 using only the original map. Another advantage, important in many realistic 
@@ -62,7 +62,7 @@ fast; query times do not typically depend the number of nodes in the graph but s
 other parameter such as the number of access nodes.
 Disadvantages include an often expensive preprocessing
 step to compute the set of access nodes (exponential time in the optimal case 
-and polytime otherwise~\cite{abrahamDFGW13}), the introduction of a 
+and poly-time otherwise~\cite{abrahamDFGW13}), the introduction of a 
 significant memory overhead (e.g. TRANSIT requires an amount of space quadratic 
 in the number of access nodes) and degraded performance when answering certain
 types of queries (e.g. shortest path rather than shortest distance queries and
