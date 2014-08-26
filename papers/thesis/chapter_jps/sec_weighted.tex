@@ -12,7 +12,7 @@ the fact that some areas on a map can be easier (or more difficult) to
 traverse than others.  In this section we will discuss a simple modification
 to  Jump Point Search which allows it to identify symmetries in such settings.
 
-Since we are unware of any standard approach for representing weighted grids
+Since we are unaware of any standard approach for representing weighted grids
 we propose the following simple cost model:
 We assume the input map is an undirected grid where each tile is either
 traversable or not.  Each traversable tile is associated with a particular
@@ -41,7 +41,7 @@ A node $n \in neighbours(x)$ is \emph{forced} if: \\
 3. $terrain(x) \neq terrain(n)$
 \end{definition}
 
-Clauses 1 and 2 are identical to Definition~\ref{def::jps::forced}; they gurantee that JPS will continue 
+Clauses 1 and 2 are identical to Definition~\ref{def::jps::forced}; they guarantee that JPS will continue 
 to break uniform-cost symmetries when Algorithm~\ref{alg::jps::jump} is recursing in a region where all tiles
 have the same terrain type. Clause 3 is newly introduced; its purpose is to terminate the recursion
 whenever Algorithm~\ref{alg::jps::jump} encounters a node $n$ that has a different terrain type to the current
