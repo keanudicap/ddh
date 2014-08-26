@@ -25,12 +25,12 @@ Results are given in terms of relative improvement vs. A* (i.e. speedup).}
 
 
 \textbf{Pre-processing Times: } 
-Table 1 presents a summary of average pre-processing times for
-each of our three (non-scaled) benchmarks. We also give the average number of
-nodes and edges as an indication of map size.
-We notice that RSR takes very little time to pre-process all input maps. 
-We did not encounter any that took longer than a second, and most required 
-significantly less than that. 
+Table~\ref{table::rsr::preproc} presents a summary of average pre-processing
+times for each of our three (non-scaled) benchmarks. We also give the average
+number of nodes and edges as an indication of map size.  We notice that RSR
+takes very little time to pre-process all input maps.  We did not encounter
+any that took longer than a second, and most required significantly less than
+that.
 %An interesting implication from this result is that RSR appears well suited to
 %pathfinding in dynamic environments as outlined in Section \ref{sec:memory}.
 
@@ -45,7 +45,7 @@ of each of the ideas described in this chapter.
 symmetry breaking approach from Section~\ref{cha::rsr::symm4c}.
 4ERR+OP is the combination of 4ERR with online node pruning only and 
 4ERR+PR is the combination of 4ERR with perimeter reduction only.
-Figure \ref{fig::rsr::speedup} (A to C) presents the main result of the
+Figure~\ref{fig::rsr::speedup} (A to C) presents the main result of the
 chapter.
 \par
 Note that RSR (== ERR+OP+PR) shows a convincing 
@@ -69,7 +69,7 @@ algorithm~\citep{pochter10}.  To evaluate Swamps we used the authors' source
 code, including their own implementation of A*.  We then ran all experiments
 using their recommended running parameters: a swamp seed radius of 6 and ``no
 change limit'' of 2.
-Figure \ref{fig::rsr::speedup} (D to F) gives search time speedup results for both RSR
+Figure~\ref{fig::rsr::speedup} (D to F) gives search time speedup results for both RSR
 and Swamps running on the 8-connected variants of our three benchmark problem
 sets. 
 On Adaptive Depth and Rooms, where the terrain can be naturally decomposed into
@@ -80,7 +80,7 @@ of rectangle decomposition, Swamps-based pruning is more effective.
 Next, we scaled every map in each benchmark by a factor of 3 and randomly
 generated a new set of 100 problem instances per map.  Scaling has the effect of
 producing larger open areas and allows us to measure the impact of this variable
-on search time speedup.  We present our findings in  Figure \ref{fig::rsr::speedup} (G
+on search time speedup.  We present our findings in  Figure~\ref{fig::rsr::speedup} (G
 to I).  We observe that while the maximum speedup achieved by both algorithms
 has increased, the gain for Swamps is very small while RSR shows dramatic
 improvement.  Infact, if we limit our attention to problems of similar length to
@@ -104,7 +104,7 @@ Although we did not have access to a working implementation of this method we
 will discuss its performance vs. RSR based on published results obtained by the
 original authors. As in \citep{goldenberg10} we focus on the 4-connected variants 
 of the Baldur's Gate and Rooms benchmarks.
-Table 2 summarises the main result.
+Table~\ref{table::rsr::phe-comparison} summarises the main result.
 \par
 PH-e performs well when it can decompose the map into areas of similar size with
 few transitionary nodes connecting them.

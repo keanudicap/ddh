@@ -30,7 +30,7 @@ We will exploit the fact that memory entries are organised into fixed-size
 lines of contiguous bytes. Thus, when we scan the grid to read the value of 
 location $N = \langle 2, 2\rangle$ we would like to be returned a byte $B_N$
 that contains other bit-values too, such as those for locations up to
-$\langle 2, 9\rangle$. In this case we have:
+$\langle 9, 2\rangle$. In this case we have:
 \begin{equation}
 B_{N} = [0,0,0,0,0,1,0,0]
 \end{equation}
