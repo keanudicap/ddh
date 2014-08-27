@@ -43,7 +43,7 @@ distance between the two neighbours\footnote{This operation shares some similari
 to Contraction Hierarchies; a well known and very fast algorithm for finding
 shortest paths in road networks. Like RSR, this work creates an abstract
 (but multi-level) representation of the graph in which single edges are replaced 
-by equivalent-length ``shortcuts'' (i.e macro-edges).~\cite{geisberger08}}.
+by equivalent-cost ``shortcuts'' (i.e macro-edges).~\cite{geisberger08}}.
 Figure~\ref{fig::rsr::perimeter_reduction}(b) shows the result of this
 procedure.  As we will see such perimeter reduction can have a dramatic effect
 on the average performance of A* on certain types of maps.
@@ -55,7 +55,7 @@ Each time we prune a node from the perimeter we add a new edge between
 all its neighbours with weight equal to the distance between each pair
 of neighbours.  Thus, if a path exists between a pair of nodes before the
 application of perimeter reduction it is guaranteed to exist afterward.
-Further, the length of this path is unchanged.
+Further, the cost of this path is unchanged.
 \end{proof}
 
 \subsection{Online Node Pruning}
@@ -72,7 +72,7 @@ Further, the length of this path is unchanged.
 	Assume that $t_{1}$ is the parent of $t_2$. When $t_2$
 	is expanded, there is no need to generate its secondary neighbors
 	(nodes connected to $t_2$ by grey edges). These nodes can be reached directly 
-	from $t_1$ by a shorter or equal-length path that does not involve $t_2$.
+	from $t_1$ by a shorter or equal-cost path that does not involve $t_2$.
 }
 \label{fig::rsr::online_pruning}
 \end{figure}

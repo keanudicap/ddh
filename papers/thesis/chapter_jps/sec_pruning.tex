@@ -5,7 +5,7 @@ In this section we develop two simple rules for recursively pruning the set of
 nodes immediately adjacent to some node $x$ from the grid.  The objective is
 to identify from each set of such neighbours, i.e. $neighbours(x)$, any nodes
 $n$ that do not need to be evaluated in order to reach the goal optimally. We
-achieve this by comparing the length of two paths: $\pi$, which begins with
+achieve this by comparing the cost of two paths: $\pi$, which begins with
 node $p(x)$ visits $x$ and ends with $n$ and another path $\pi'$ which also
 begins at node $p(x)$ and ends with $n$ but does not mention $x$.
 Additionally, each node mentioned by either $\pi$ or $\pi'$ must belong to
