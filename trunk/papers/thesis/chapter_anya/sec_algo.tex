@@ -96,7 +96,7 @@ We compute:
 \label{eq::f}
 f(p) = g(r) + d(r, p) + h(p, t)
 \end{equation}
-where $g(r)$ is the length of the optimal path from the start point to 
+where $g(r)$ is the cost of the optimal path from the start point to 
 the root, $d(r, p)$ is the straight line distance from $r$ to $p$
 and $h(p, t)$ is an admissible heuristic function that lower-bounds the cost of reaching $t$ from $p$; here, we choose $h(p,t) = d(p,t)$.
 
@@ -195,7 +195,7 @@ $t_4$ where the mirrored target $t'_4$ must be used.
 % a point $x$ at the intersection of $t \rightarrow t'$ with $R$. 
 % For any $p \in I$ we can now form two adjacent right-angle
 % triangles: $p, x, t$ and $p, x, t'$. The opposide and adjacent 
-% sides of both triangles have the same length and in both cases 
+% sides of both triangles have the same cost and in both cases 
 % meet at an angle of 90 degrees. We conclude the triangles are
 % congruent and that 
 % $\forall p \in I: p \rightarrow t \equiv p \rightarrow t'$.

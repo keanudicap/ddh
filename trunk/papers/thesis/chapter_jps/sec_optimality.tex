@@ -1,6 +1,6 @@
 \section{Optimality}
-In this section we prove that for each optimal length path in a grid map there
-exists an equivalent length path which can be found by only expanding jump
+In this section we prove that for each optimal cost path in a grid map there
+exists an equivalent cost path which can be found by only expanding jump
 point nodes during search (Theorem \ref{theorem::jps::jumping}).  Our result is
 derived by identifying for each optimal path a symmetric alternative which we
 split into contiguous segments. We then prove that each \emph{turning point}
@@ -27,18 +27,18 @@ sub-optimal and not considered here (they are pruned by the rules we developed
 earlier; see again Figure \ref{fig::jps::pruning}).
 
 We are now ready to develop an equivalence relation between
-jump points and the turning points that appear along certain optimal length 
+jump points and the turning points that appear along certain optimal cost 
 symmetric paths which we term \emph{diagonal-first}.
  
 \begin{definition}
 A path $\pi$ is diagonal-first if and only if it contains no
 straight-to-diagonal turning point $\begin{pth}n_{k-1}, n_k, n_{k+1}\end{pth}$
 which could be replaced by a diagonal-to-straight turning point $\begin{pth}
-n_{k-1}, n_{k}', n_{k+1}\end{pth}$ s.t.  the length of $\pi$ remains
+n_{k-1}, n_{k}', n_{k+1}\end{pth}$ s.t.  the cost of $\pi$ remains
 unchanged.
 \end{definition}
 
-Given an arbitrary optimal length path $\pi$, we can always derive a symmetric
+Given an arbitrary optimal cost path $\pi$, we can always derive a symmetric
 diagonal-first path $\pi'$ by applying Algorithm \ref{alg::jps::dfirst} to $\pi$.
 Note that this is merely as a conceptual device.
 

@@ -22,7 +22,7 @@ macro-edges.
 \label{def:dominance}
 A macro-edge connecting two arbitrary nodes $t_1$ and $t_2$ in a perimeter
 clique is non-dominated if all other paths between $t_1$ and $t_2$ in the
-perimeter clique have a length strictly larger than the macro-edge at hand.
+perimeter clique have a cost strictly larger than the macro-edge at hand.
 \end{definition}
 
 By starting with a perimeter clique and applying Definition
@@ -30,7 +30,7 @@ By starting with a perimeter clique and applying Definition
 macro-edges are precisely the ones that we identify below.  There are three
 cases to discuss: connections between nodes on the same rectangle side,
 connections between orthogonal rectangle sides, and connections between
-opposite rectangle sides.  In the discussion that follows note that the length
+opposite rectangle sides.  In the discussion that follows note that the cost
 of each added macro-edge is equal to the heuristic distance between its two
 endpoints -- as measured using $h_{OD}$ or octile distance 
 (we describe this heuristic in Chapter~\ref{cha::lit::heuristics}).
@@ -122,7 +122,7 @@ these neighbours could be generated on the fly.
 \label{lemma::rsr::insertion}
 Let $R$ be an empty rectangle in an 8-connected grid map.  For any
 nodes $m$, $n$, with $m$ a re-inserted interior node and $n$ a node on the
-perimeter, it is always possible to find an optimal length path which mentions
+perimeter, it is always possible to find an optimal cost path which mentions
 no interior nodes except for $m$.
 \end{lemma}
 \begin{proof}
@@ -139,14 +139,14 @@ preserves the completeness and the solution optimality:
 \begin{theorem}
 For every optimal path $\pi$ on an original grid, there exists an optimal path
 $\pi'$ on the modified graph with the property that $\pi$ and $\pi'$ have the
-same length.
+same cost.
 \end{theorem}
 \begin{proof}
 Consider an optimal path $\pi$ on the original map and a rectangle $R$ that is
 crossed by $\pi$.  Let $m$ and $n$ be the two perimeter points along $\pi$.
 According to Lemma~\ref{lemma::rsr::rooms}, there is a way to connect $m$ and $n$
 optimally in the modified graph. Thus, we can replace the original segment $[m
-\dots n]$ in $\pi$ with the length-wise equivalent segment that corresponds to the
+\dots n]$ in $\pi$ with the cost-wise equivalent segment that corresponds to the
 modified graph.  The case when $m$ (or $n$) is the start or goal node is
 addressed similarly using Lemma~\ref{lemma::rsr::insertion}.  By performing such a
 path segment replacement for all rectangles intersected by $\pi$, we obtain a

@@ -15,7 +15,7 @@ Advance). We propose the following strategy:
 \item{Prune all nodes from the interior but not the perimeter of each rectangle.}
 \item{Add a series of \emph{macro edges} that connect each node on the perimeter of a rectangle
 with a node from the directly opposite side\footnote{We can avoid storing
-macro edges by generating them on-the-fly during search.}.  The length of each
+macro edges by generating them on-the-fly during search.}.  The cost of each
 edge is equal to the Manhattan distance\footnote{Defined in
 Chapter~\ref{cha::lit::heuristics}} between its two endpoints.
 }
@@ -65,7 +65,7 @@ Case 2 is when $m$ and $n$ are placed on opposite sides of the perimeter.
 To obtain an optimal path we can simply follow the macro edge at $m$ 
 and navigate directly to a node $m'$ located on
 the same side of the perimeter as $n$. Then, go from $m'$ to $n$ along the perimeter.
-The resultant path is optimal as its length is equal to the Manhattan distance between $m$ and $n$.
+The resultant path is optimal as its cost is equal to the Manhattan distance between $m$ and $n$.
 \end{proof}
 
 A direct corollary to Lemma \ref{thm::rsr::rectangletraversal} is that we can prune from consideration
@@ -85,7 +85,7 @@ We use the following procedure (highlighted in Figure \ref{fig::rsr::insertion})
 \item{If the start and goal are in the same rectangle no insertion is required.
  Since it is guaranteed that there are no obstacles between the two locations, an optimal 
  path is trivially available. This case will be ignored in the rest of our discussion.}
-% take the Manhattan distance between them as the length of the optimal path. }
+% take the Manhattan distance between them as the cost of the optimal path. }
 \item{If the start and goal are not in the same rectangle, connect each of them
 to the closest neighbours on each side of the perimeter of the empty rectangle.}
 \end{enumerate}
@@ -111,7 +111,7 @@ We insert $m$ into the graph and connect it to neighbours on each side of the em
 \label{thm::rsr::insertion}
 Let $R$ be an empty rectangular rectangle.
 For any nodes $m, n$, with $m$ a re-inserted interior node and $n$ a node on the perimeter,
-it is always possible to find an optimal length path which mentions no interior nodes except for $m$.
+it is always possible to find an optimal cost path which mentions no interior nodes except for $m$.
 \end{lemma}
 \begin{proof}
 We insert $m$ into the graph and connect it to $m'_{1}, m'_{2}, m'_{3},
@@ -122,7 +122,7 @@ node $m'_{i}$ which is on the same side as $n$ on the perimeter.  From there
 we travel along the perimeter of $R$ until we reach $n$.
 %\par
 %Next, suppose $s, g \in N$. 
-%In this case we do not insert anything; the length of the optimal path is equal
+%In this case we do not insert anything; the cost of the optimal path is equal
 %to the Manhattan distance between $s$ and $g$.
 \end{proof}
 
@@ -136,12 +136,12 @@ will always return an optimal solution if one exists.
 
 \begin{theorem}
 \label{thm::rsr::optimality}
-For every optimal length path $\pi^*(s, g)$ in a 4-connected grid map there exists
-an equivalent length path in the pruned version of the grid map.
+For every optimal cost path $\pi^*(s, g)$ in a 4-connected grid map there exists
+an equivalent cost path in the pruned version of the grid map.
 \end{theorem}
 \begin{proof}
 Follows from Lemma \ref{thm::rsr::rectangletraversal} and Lemma \ref{thm::rsr::insertion}.
-For every optimal length segment of $\pi^{*}(s, g)$ which traverses
+For every optimal cost segment of $\pi^{*}(s, g)$ which traverses
 through an empty rectangle, from a perimeter node $m$ to a perimeter node $n$, 
 there is an equivalent segment which mentions only nodes
 on the perimeter of that rectangle (and possibly one macro-step).
