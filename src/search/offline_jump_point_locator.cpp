@@ -3,6 +3,7 @@
 #include "online_jump_point_locator.h"
 #include "offline_jump_point_locator.h"
 
+#include <cstring>
 #include <inttypes.h>
 #include <stdio.h>
 

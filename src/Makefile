@@ -8,14 +8,14 @@ D_INCLUDES = -I/usr/include -I/opt/local/include $(D_WARTHOG_INCLUDES)
 D_LIBS = -L/usr/local/lib -L./lib
 
 CC = g++
-CFLAGS = -ansi  -pedantic -Wall -Wno-long-long -Wno-deprecated -Wno-deprecated-declarations -Werror
+CFLAGS = -std=c++0x -pedantic -Wall -Wno-long-long -Wno-deprecated -Wno-deprecated-declarations -Werror
 FAST_CFLAGS = -O3 -DNDEBUG
 DEV_CFLAGS = -g -ggdb -O0
 PROFILE_CFLAGS = -g -ggdb -O0 -DNDEBUG
 
 ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
   CFLAGS += -DOS_MAC
-  D_LIBS += -framework CoreServices
+ # D_LIBS += -framework CoreServices
 else
   ifeq ("$(findstring Linux, "$(shell uname -s)")", "Linux")
     D_LIBS += -lrt

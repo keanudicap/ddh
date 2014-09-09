@@ -19,7 +19,7 @@ class manhattan_heuristic
 {
 	public:
 		manhattan_heuristic(unsigned int mapwidth, unsigned int mapheight)
-		 : mapwidth_(mapwidth), mapheight_(mapheight_) {}
+		 : mapwidth_(mapwidth), mapheight_(mapheight) {}
 		~manhattan_heuristic() {}
 
 		inline double

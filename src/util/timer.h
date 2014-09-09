@@ -13,7 +13,7 @@
 #define WARTHOG_TIMER_H
 
 #ifdef OS_MAC
-#include <CoreServices/CoreServices.h>
+//#include <CoreServices/CoreServices.h>
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
@@ -30,6 +30,7 @@ class timer
 #ifdef OS_MAC
   uint64_t start_time;
   uint64_t stop_time;
+  mach_timebase_info_data_t timebase;
 #else
 	timespec stop_time;
 	timespec start_time;
