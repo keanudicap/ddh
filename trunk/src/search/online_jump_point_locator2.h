@@ -16,7 +16,7 @@
 
 #include "jps.h"
 
-class warthog::gridmap;
+//class warthog::gridmap;
 namespace warthog
 {
 

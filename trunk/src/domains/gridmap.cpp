@@ -2,6 +2,7 @@
 #include "gridmap.h"
 
 #include <cassert>
+#include <cstring>
 
 warthog::gridmap::gridmap(unsigned int h, unsigned int w)
 	: header_(h, w, "octile")
