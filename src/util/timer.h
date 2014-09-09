@@ -3,6 +3,9 @@
 // A cross-platform monotonic wallclock timer.
 // Currently supports nanoseconds resolution.
 //
+// Reference doco for timers on OSX:
+// https://developer.apple.com/library/mac/qa/qa1398/_index.html
+// https://developer.apple.com/library/mac/technotes/tn2169/_index.html#//apple_ref/doc/uid/DTS40013172-CH1-TNTAG5000
 //
 // @author: dharabor
 //
