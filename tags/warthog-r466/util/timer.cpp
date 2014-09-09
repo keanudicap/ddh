@@ -6,6 +6,8 @@ warthog::timer::timer()
 
 #ifdef OS_MAC
 	start_time = stop_time = 0;
+    mach_timebase_info(&timebase);
+
 #else
 	start_time.tv_sec = 0;
 	start_time.tv_nsec = 0;
@@ -20,8 +22,7 @@ warthog::timer::get_time_nano()
 {
 #ifdef OS_MAC
 	uint64_t raw_time = mach_absolute_time();
-	Nanoseconds nanosecs = AbsoluteToNanoseconds(*(AbsoluteTime*)&raw_time);
-	return (double) UnsignedWideToUInt64(nanosecs);
+    return (double)(raw_time * timebase.numer / timebase.denom);
 #else
 	timespec raw_time;
 	clock_gettime(CLOCK_MONOTONIC , &raw_time);
@@ -54,8 +55,10 @@ double warthog::timer::elapsed_time_nano()
 {
 #ifdef OS_MAC
 	uint64_t elapsed_time = stop_time - start_time;
-	Nanoseconds nanosecs = AbsoluteToNanoseconds(*(AbsoluteTime*)&elapsed_time);
-	return (double) UnsignedWideToUInt64(nanosecs) ;
+    return (double)(elapsed_time * timebase.numer / timebase.denom);
+	//Nanoseconds nanosecs = AbsoluteToNanoseconds(*(AbsoluteTime*)&elapsed_time);
+	//return (double) UnsignedWideToUInt64(nanosecs) ;
+
 #else
 	if ((stop_time.tv_nsec-start_time.tv_nsec)<0)
 		return (double)(1000000000+stop_time.tv_nsec-start_time.tv_nsec);

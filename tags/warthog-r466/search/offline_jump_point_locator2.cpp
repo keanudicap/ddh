@@ -4,6 +4,7 @@
 #include "offline_jump_point_locator2.h"
 
 #include <assert.h>
+#include <cstring>
 #include <inttypes.h>
 #include <stdio.h>
 

@@ -3,6 +3,9 @@
 // A cross-platform monotonic wallclock timer.
 // Currently supports nanoseconds resolution.
 //
+// Reference doco for timers on OSX:
+// https://developer.apple.com/library/mac/qa/qa1398/_index.html
+// https://developer.apple.com/library/mac/technotes/tn2169/_index.html#//apple_ref/doc/uid/DTS40013172-CH1-TNTAG5000
 //
 // @author: dharabor
 //
@@ -13,7 +16,7 @@
 #define WARTHOG_TIMER_H
 
 #ifdef OS_MAC
-#include <CoreServices/CoreServices.h>
+//#include <CoreServices/CoreServices.h>
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
@@ -30,6 +33,7 @@ class timer
 #ifdef OS_MAC
   uint64_t start_time;
   uint64_t stop_time;
+  mach_timebase_info_data_t timebase;
 #else
 	timespec stop_time;
 	timespec start_time;
