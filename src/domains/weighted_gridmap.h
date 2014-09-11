@@ -51,8 +51,8 @@ class weighted_gridmap
 		get_costs(uint32_t db_id, double costs[9])
 		{
             // calculate ids of all adjacent neighbours
-            uint32_t e_id = db_id-1;
-            uint32_t w_id = db_id+1;
+            uint32_t e_id = db_id+1;
+            uint32_t w_id = db_id-1;
             uint32_t n_id = db_id - this->padded_width_;
             uint32_t s_id = db_id + this->padded_width_;
             uint32_t nw_id = w_id - this->padded_width_;
