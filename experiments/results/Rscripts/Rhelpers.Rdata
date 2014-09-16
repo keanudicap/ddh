@@ -15,6 +15,25 @@ loadTable <- function(filename, tnames, tclasses, sepchar="\t")
         results 
 }
 
+loadCSV <- function(filenames_, dec_=".", header_=FALSE)
+{
+    retval <- data.frame()
+    for(i in filenames_) 
+    {
+        print(i)
+        tmp <- read.csv(i, sep="", header=header_, dec=dec_)
+        if(nrow(retval) == 0)
+        {
+            retval <- tmp
+        }
+        else
+        {
+            retval <- rbind(retval, tmp)
+        }
+    }
+    retval
+}
+
 basename <- function(x)
 {
 	tmp <- gsub("[a-z|A-Z|0-9|-|.]*[/]+", "", x)
