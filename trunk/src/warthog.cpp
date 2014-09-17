@@ -14,6 +14,7 @@
 #include "jps2plus_expansion_policy.h"
 #include "octile_heuristic.h"
 #include "scenario_manager.h"
+#include "weighted_gridmap.h"
 
 #include "getopt.h"
 
@@ -30,11 +31,11 @@ bool verbose = false;
 void
 help()
 {
-	std::cerr << "Valid options:\n"
-	<< "--alg [jps | jps2 | jps+ | jps2+ | astar]\n"
+	std::cerr << "valid parameters:\n"
+	<< "--alg [astar | jps | jps2 | jps+ | jps2+ | wastar | wjps ]\n"
 	<< "--scen [scenario filename]\n"
-	<< "--gen [map filename]\n"
-	<< "--map [map filename] (optional)\n"
+	//<< "--gen [map filename]\n"
+	//<< "--map [map filename] (optional)\n"
 	<< "--checkopt (optional)\n"
 	<< "--verbose (optional)\n";
 }
@@ -86,8 +87,9 @@ check_optimality(double len, warthog::experiment* exp)
 }
 
 void
-run_jpsplus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_jpsplus(warthog::scenario_manager& scenmgr, const char* mfile)
 {
+	warthog::gridmap map(mfile);
 	warthog::jpsplus_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
@@ -125,8 +127,9 @@ run_jpsplus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 }
 
 void
-run_jps2plus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_jps2plus(warthog::scenario_manager& scenmgr, const char* mfile)
 {
+    warthog::gridmap map(mfile);
 	warthog::jps2plus_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
@@ -164,8 +167,9 @@ run_jps2plus(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 }
 
 void
-run_jps2(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_jps2(warthog::scenario_manager& scenmgr, const char* mfile)
 {
+    warthog::gridmap map(mfile);
 	warthog::jps2_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
@@ -203,8 +207,9 @@ run_jps2(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 }
 
 void
-run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_jps(warthog::scenario_manager& scenmgr, const char* mfile)
 {
+    warthog::gridmap map(mfile);
 	warthog::jps_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
@@ -242,8 +247,9 @@ run_jps(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 }
 
 void
-run_astar(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
+run_astar(warthog::scenario_manager& scenmgr, const char* mfile)
 {
+    warthog::gridmap map(mfile);
 	warthog::gridmap_expansion_policy expander(&map);
 	warthog::octile_heuristic heuristic(map.width(), map.height());
 
@@ -281,6 +287,18 @@ run_astar(warthog::scenario_manager& scenmgr, warthog::gridmap& map)
 	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
 }
 
+void
+run_wastar(warthog::scenario_manager& scenmgr, const char* mfile)
+{
+    warthog::weighted_gridmap map(mfile);
+}
+
+void
+run_wjps(warthog::scenario_manager& scenmgr, const char* mfile)
+{
+    warthog::weighted_gridmap map(mfile);
+}
+
 int 
 main(int argc, char** argv)
 {
@@ -289,7 +307,7 @@ main(int argc, char** argv)
 	{
 		{"scen",  required_argument, 0, 0},
 		{"alg",  required_argument, 0, 1},
-		{"map",  optional_argument, 0, 2},
+		{"map",  required_argument, 0, 2},
 		{"checkopt",  no_argument, 0, 3},
 		{"verbose",  no_argument, 0, 4},
 		{"gen", required_argument, 0, 5}
@@ -329,6 +347,7 @@ main(int argc, char** argv)
 		help();
 		exit(0);
 	}
+
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario(sfile.c_str());
 	
@@ -337,7 +356,6 @@ main(int argc, char** argv)
 	{
 		mfile  = scenmgr.get_experiment(0)->map();
 	}
-	warthog::gridmap map(mfile.c_str());
 
 	// run the target algorithm
 	if(alg == "")
@@ -346,29 +364,46 @@ main(int argc, char** argv)
 		exit(0);
 	}
 
+    // weighted grid + jps
+    if(alg == "wjps")
+    {
+        run_wjps(scenmgr, mfile.c_str());
+    }
+
+    // weighted grid + A*
+    if(alg == "wastar")
+    {
+        run_wastar(scenmgr, mfile.c_str());
+    }
+
 	if(alg == "jps")
 	{
-		run_jps(scenmgr, map);
+		run_jps(scenmgr, mfile.c_str());
 	}
 
 	if(alg == "jps+")
 	{
-		run_jpsplus(scenmgr, map);
+		run_jpsplus(scenmgr, mfile.c_str());
 	}
 
 	if(alg == "jps2")
 	{
-		run_jps2(scenmgr, map);
+		run_jps2(scenmgr, mfile.c_str());
 	}
 
 	if(alg == "jps2+")
 	{
-		run_jps2plus(scenmgr, map);
+		run_jps2plus(scenmgr, mfile.c_str());
 	}
+
+    if(alg == "wjps")
+    {
+        run_wjps(scenmgr, mfile.c_str());
+    }
 
 	if(alg == "astar")
 	{
-		run_astar(scenmgr, map);
+		run_astar(scenmgr, mfile.c_str());
 	}
 }
 
