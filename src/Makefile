@@ -48,10 +48,9 @@ clean:
 	@-$(RM) ./lib/*
 
 .PHONY: main
-main: makedirs warthog
+main: makedirs warthog 
 	$(CC) warthog.cpp -o ./bin/warthog -lwarthog $(CFLAGS) $(D_LIBS) $(D_INCLUDES)
 	$(CC) tests.cpp -o ./bin/tests -lwarthog $(CFLAGS) $(D_LIBS) $(D_INCLUDES)
-	#$(CC) warthog.cpp -o ./bin/warthog $(WARTHOG_SRC)  $(CFLAGS) $(D_LIBS) $(D_INCLUDES)
 
 .PHONY: warthog
 warthog: $(WARTHOG_SRC) 
