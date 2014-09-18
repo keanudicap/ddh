@@ -12,27 +12,20 @@ void
 warthog::util::cfg::parse_args(int argc, char** argv, warthog::util::param params[])
 {
 	int current_opt;
-	int c = getopt_long(argc, argv, "", params, &current_opt );
-	while(c != -1)
+	for(    int c = getopt_long(argc, argv, "", params, &current_opt) ;
+            c != -1 ; 
+            c = getopt_long(argc, argv, "", params, &current_opt) )
 	{
-        if(!opterr)
+        if(c == '?') break;
+        if(params[current_opt].has_arg == 0)
         {
-            if(params[current_opt].has_arg == 0)
-            {
-                params_[params[current_opt].name] = "1";
-            }
-            else if(!(optarg == 0))
-            {
-                    params_[params[current_opt].name] = optarg;
-            }
+            params_[params[current_opt].name] = "1";
         }
-		c = getopt_long(argc, argv, "", params, &current_opt );	
+        else if(!(optarg == 0))
+        {
+                params_[params[current_opt].name] = optarg;
+        }
 	}
-
-	//for(int index = optind; index < argc; index++)
-	//{
-	//	std::cerr << "Unrecognised parameter: " << argv[index] << std::endl;
-	//}
 }
 
 std::string
