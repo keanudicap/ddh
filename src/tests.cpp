@@ -378,4 +378,3 @@ void gridmap_access_test()
 	}
 	std::cout << "gridmap_access_test..."<<std::endl;
 }
-
