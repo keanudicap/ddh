@@ -301,10 +301,10 @@ run_wastar(warthog::scenario_manager& scenmgr)
 		warthog::octile_heuristic,
 	   	warthog::wgridmap_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
-    // cheapest terrain (movingai benchmarks) has ascii value '.'
-    // we adjust all heuristic values accordingly
+    // cheapest terrain (movingai benchmarks) has ascii value '.'; we scale
+    // all heuristic values accordingly (otherwise the heuristic doesn't 
+    // impact f-values much and search starts to behave like dijkstra)
     astar.set_hscale('.');  
-
 
 	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
