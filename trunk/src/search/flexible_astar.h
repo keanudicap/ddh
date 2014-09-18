@@ -4,7 +4,7 @@
 // flexible_astar.h
 //
 // A* implementation that allows arbitrary combinations of 
-// heuristic functions and node expansion policies.
+// (weighted) heuristic functions and node expansion policies.
 // This implementation uses a binary heap for the open_ list
 // and a bit array for the closed_ list.
 //
@@ -40,6 +40,7 @@ class flexible_astar
 		{
 			open_ = new warthog::pqueue(1024, true);
 			verbose_ = false;
+            hscale_ = 1.0;
 		}
 
 		~flexible_astar()
@@ -96,7 +97,7 @@ class flexible_astar
 				{
 					warthog::search_node* n = path.top();
 					uint32_t x, y;
-					y = (n->get_id() / expander_->mapwidth())-2;
+					y = (n->get_id() / expander_->mapwidth());
 					x = n->get_id() % expander_->mapwidth();
 					std::cerr << "final path: ("<<x<<", "<<y<<")...";
 					n->print(std::cerr);
@@ -141,6 +142,13 @@ class flexible_astar
 		inline void
 		set_verbose(bool verbose) { verbose_ = verbose; } 
 
+        inline double
+        get_hscale() { return hscale_; } 
+
+        inline void
+        set_hscale(double hscale) { hscale_ = hscale; } 
+
+
 
 	private:
 		H* heuristic_;
@@ -152,6 +160,7 @@ class flexible_astar
 		uint32_t nodes_generated_;
 		uint32_t nodes_touched_;
 		double search_time_;
+        double hscale_; // heuristic scaling factor
 
 		// no copy
 		flexible_astar(const flexible_astar& other) { } 
@@ -184,7 +193,7 @@ class flexible_astar
 			warthog::search_node* start = expander_->generate(startid);
 			start->reset(instance.get_searchid());
 			start->set_g(0);
-			start->set_f(heuristic_->h(startid, goalid));
+			start->set_f(heuristic_->h(startid, goalid) * hscale_);
 			open_->push(start);
 
 			while(open_->size())
@@ -197,7 +206,7 @@ class flexible_astar
 					{
 						uint32_t x, y;
 						warthog::search_node* current = open_->peek();
-						y = (current->get_id() / expander_->mapwidth())-2;
+						y = (current->get_id() / expander_->mapwidth());
 						x = current->get_id() % expander_->mapwidth();
 						std::cerr << "goal found ("<<x<<", "<<y<<")...";
 						current->print(std::cerr);
@@ -214,7 +223,7 @@ class flexible_astar
 				if(verbose_)
 				{
 					uint32_t x, y;
-					y = (current->get_id() / expander_->mapwidth())-2;
+					y = (current->get_id() / expander_->mapwidth());
 					x = current->get_id() % expander_->mapwidth();
 					std::cerr << "expanding ("<<x<<", "<<y<<")...";
 					current->print(std::cerr);
@@ -250,7 +259,7 @@ class flexible_astar
 							if(verbose_)
 							{
 								uint32_t x, y;
-								y = (n->get_id() / expander_->mapwidth())-2;
+								y = (n->get_id() / expander_->mapwidth());
 								x = n->get_id() % expander_->mapwidth();
 								std::cerr << "  updating ("<<x<<", "<<y<<")...";
 								n->print(std::cerr);
@@ -264,7 +273,7 @@ class flexible_astar
 							if(verbose_)
 							{
 								uint32_t x, y;
-								y = (n->get_id() / expander_->mapwidth())-2;
+								y = (n->get_id() / expander_->mapwidth());
 								x = n->get_id() % expander_->mapwidth();
 								std::cerr << "  updating ("<<x<<", "<<y<<")...";
 								n->print(std::cerr);
@@ -278,14 +287,14 @@ class flexible_astar
 						// add a new node to the fringe
 						warthog::cost_t gval = current->get_g() + cost_to_n;
 						n->set_g(gval);
-						n->set_f(gval + heuristic_->h(n->get_id(), goalid));
+						n->set_f(gval + heuristic_->h(n->get_id(), goalid) * hscale_);
 					   	n->set_parent(current);
 						open_->push(n);
 						#ifndef NDEBUG
 						if(verbose_)
 						{
 							uint32_t x, y;
-							y = (n->get_id() / expander_->mapwidth())-2;
+							y = (n->get_id() / expander_->mapwidth());
 							x = n->get_id() % expander_->mapwidth();
 							std::cerr << "  generating ("<<x<<", "<<y<<")...";
 							n->print(std::cerr);
@@ -299,7 +308,7 @@ class flexible_astar
 				if(verbose_)
 				{
 					uint32_t x, y;
-					y = (current->get_id() / expander_->mapwidth())-2;
+					y = (current->get_id() / expander_->mapwidth());
 					x = current->get_id() % expander_->mapwidth();
 					std::cerr <<"closing ("<<x<<", "<<y<<")...";
 					current->print(std::cerr);

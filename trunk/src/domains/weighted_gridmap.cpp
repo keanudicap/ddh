@@ -23,13 +23,15 @@ warthog::weighted_gridmap::weighted_gridmap(const char* filename)
 		char c = parser.get_tile_at(i);
 		switch(c)
 		{
-			case '@': // explicit obstacle; highest cost
-				this->set_label(to_padded_id(i), 255); 
-				assert(this->get_label(to_padded_id(i)) == 255);
+            // explicit obstacle
+			case '@':  
+				this->set_label(to_padded_id(i), 0);
+				assert(this->get_label(to_padded_id(i)) == 0);
 				break;
-			default: // other tiles have cost equal to their ascii value
-				this->set_label(to_padded_id(i), c % 128); 
-				assert(this->get_label(to_padded_id(i)) == c % 128);
+            // other tiles have terrain cost equal to their ascii value
+			default: 
+				this->set_label(to_padded_id(i), c);
+				assert(this->get_label(to_padded_id(i)) == c);
 				break;
 		}
 	}
@@ -41,8 +43,8 @@ warthog::weighted_gridmap::init_db()
 	// when storing the grid we pad the edges of the map.
 	// this eliminates the need for bounds checking when
 	// fetching the neighbours of a node. 
-	this->padded_rows_before_first_row_ = 1;
-	this->padded_rows_after_last_row_ = 1;
+	this->padded_rows_before_first_row_ = 2;
+	this->padded_rows_after_last_row_ = 2;
 	this->padding_per_row_ = 1;
 
 	this->padded_width_ = this->header_.width_ + this->padding_per_row_;
@@ -56,7 +58,7 @@ warthog::weighted_gridmap::init_db()
 	this->db_ = new warthog::dbword[db_size_];
 	for(unsigned int i=0; i < db_size_; i++)
 	{
-		db_[i] = 255;
+		db_[i] = 0; 
 	}
 }
 
@@ -79,7 +81,7 @@ warthog::weighted_gridmap::print(std::ostream& out)
 		for(unsigned int x=0; x < this->width(); x++)
 		{
             warthog::dbword c = this->get_label(y*this->width()+x);
-			out << (c == 255 ? '@': (char)c);
+			out << (c == 0 ? '@': (char)c);
 		}
 		out << std::endl;
 	}	

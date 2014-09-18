@@ -43,38 +43,35 @@ class weighted_gridmap
 				(node_id / header_.width_) * padding_per_row_;
 		}
 
-		// read the 3x3 block of tiles centered at @param db_id
-        // and calculate the cost to reach each one from @param db_id
-        // values are written to @param costs in top-to-bottom and
-        // left-to-right order. 
+        // read all tiles in the 3x3 square centred on @param db_id
+        // return: 
+        //  @param ids stores the ids of all tiles
+        //  @param costs stores the terrain cost of all tiles
 		inline void
-		get_costs(uint32_t db_id, double costs[9])
+		get_neighbours(uint32_t db_id, uint32_t ids[9], warthog::dbword costs[9])
 		{
             // calculate ids of all adjacent neighbours
-            uint32_t e_id = db_id+1;
-            uint32_t w_id = db_id-1;
-            uint32_t n_id = db_id - this->padded_width_;
-            uint32_t s_id = db_id + this->padded_width_;
-            uint32_t nw_id = w_id - this->padded_width_;
-            uint32_t ne_id = e_id - this->padded_width_;
-            uint32_t sw_id = w_id + this->padded_width_;
-            uint32_t se_id = e_id + this->padded_width_;
+            ids[4] = db_id;
+            ids[3] = db_id-1; // west
+            ids[5] = db_id+1; // east
+            ids[1] = db_id - this->padded_width_; // north
+            ids[7] = db_id + this->padded_width_; // south
+            ids[0] = ids[3] - this->padded_width_; // northwest
+            ids[2] = ids[5] - this->padded_width_; // northeast
+            ids[6] = ids[3] + this->padded_width_; // southwest
+            ids[8] = ids[5] + this->padded_width_; // southeast
 
-            // cost to each neighbour is taken as an average over
-            // all tiles the agent touches during the transition 
-            costs[0] = (db_[nw_id] + db_[w_id] + db_[db_id]) * 0.25;
-            costs[1] = (db_[n_id] + db_[db_id]) * 0.5;
-            costs[2] = (db_[ne_id] + db_[e_id] + db_[db_id]) * 0.25;
-
-            costs[3] = (db_[w_id] + db_[db_id]) * 0.5;
-            costs[4] = 0;
-            costs[5] = (db_[e_id] + db_[db_id]) * 0.5;
-
-            costs[6] = (db_[sw_id] + db_[w_id] + db_[db_id]) * 0.25;
-            costs[7] = (db_[s_id] + db_[db_id]) * 0.5;
-            costs[8] = (db_[se_id] + db_[e_id] + db_[db_id]) * 0.25;
+            // read terrain costs
+            costs[0] = db_[ids[0]];
+            costs[1] = db_[ids[1]];
+            costs[2] = db_[ids[2]];
+            costs[3] = db_[ids[3]];
+            costs[4] = db_[ids[4]];
+            costs[5] = db_[ids[5]];
+            costs[6] = db_[ids[6]];
+            costs[7] = db_[ids[7]];
+            costs[8] = db_[ids[8]];
 		}
-
 
 		// get the label associated with the padded coordinate pair (x, y)
 		inline warthog::dbword
