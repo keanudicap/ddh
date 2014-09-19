@@ -1,7 +1,8 @@
 WARTHOG_SRC = $(wildcard domains/*.cpp) $(wildcard util/*.cpp) $(wildcard search/*.cpp) \
 $(wildcard experimental/*.cpp) $(wildcard heuristics/*.cpp)
 
-WARTHOG_OBJ = $(subst .cpp,.o, $(addprefix obj/, $(notdir $(WARTHOG_SRC))))
+#WARTHOG_OBJ = $(subst .cpp,.o, $(addprefix obj/, $(notdir $(WARTHOG_SRC))))
+WARTHOG_OBJ = $(WARTHOG_SRC:.cpp=.o)
 
 D_WARTHOG_INCLUDES = -I./domains -I./util -I./search -I./experimental -I./heuristics
 D_INCLUDES = -I/usr/include -I/opt/local/include $(D_WARTHOG_INCLUDES)
@@ -15,12 +16,12 @@ PROFILE_CFLAGS = -g -ggdb -O0 -DNDEBUG
 
 ifeq ("$(findstring Darwin, "$(shell uname -s)")", "Darwin")
   CFLAGS += -DOS_MAC
- # D_LIBS += -framework CoreServices
 else
   ifeq ("$(findstring Linux, "$(shell uname -s)")", "Linux")
     D_LIBS += -lrt
   endif
 endif
+
 
 .PHONY: all
 all: dev
@@ -32,6 +33,7 @@ fast: main
 .PHONY: dev
 dev: CFLAGS += $(DEV_CFLAGS) $(D_INCLUDES) 
 dev: main
+	@echo "dev here"
 
 .PHONY: profile
 profile: CFLAGS += $(PROFILE_CFLAGS) $(D_INCLUDES) 
@@ -46,17 +48,14 @@ clean:
 	@rm -rf ./bin/*
 	@-$(RM) ./obj/*
 	@-$(RM) ./lib/*
+	@-$(RM) $(WARTHOG_OBJ:.o=.d)
+	@-$(RM) $(WARTHOG_OBJ)
 
 .PHONY: main
 main: makedirs warthog 
+	@echo "linking..."
 	$(CC) warthog.cpp -o ./bin/warthog -lwarthog $(CFLAGS) $(D_LIBS) $(D_INCLUDES)
 	$(CC) tests.cpp -o ./bin/tests -lwarthog $(CFLAGS) $(D_LIBS) $(D_INCLUDES)
-
-.PHONY: warthog
-warthog: $(WARTHOG_SRC) 
-	@echo "###  Archiving object files ###"
-	@echo "sources "$(WARTHOG_SRC)
-	ar -crs lib/lib$(@).a $(WARTHOG_OBJ)
 
 .PHONY: makedirs
 makedirs:
@@ -65,8 +64,16 @@ makedirs:
 	@$(shell mkdir ./lib)
 	@$(shell mkdir ./obj)
 
-.PHONY: $(WARTHOG_SRC)
-$(WARTHOG_SRC):
+.PHONY: warthog
+warthog: $(WARTHOG_OBJ)
+	@echo "###  Archiving object files ###"
+	@echo "sources "$(WARTHOG_SRC)
+	ar -crs lib/lib$(@).a $(WARTHOG_OBJ)
+
+-include $(WARTHOG_OBJ:.o=.d)
+
+$(WARTHOG_OBJ): 
 	@echo "compiling..."
-	$(CC) -c $(@) -o $(subst .cpp,.o, $(addprefix obj/, $(notdir $(@)))) $(CFLAGS)
+	$(CC) -c $(@:.o=.cpp) -MM -MP -MT $(dir $(@))$(notdir $(@)) -MF $(@:.o=.d) $(CFLAGS) 
+	$(CC) -c $(@:.o=.cpp) -o $(@) $(CFLAGS)
 
