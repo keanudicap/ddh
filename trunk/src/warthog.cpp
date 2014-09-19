@@ -30,15 +30,17 @@ int checkopt = 0;
 int verbose = 0;
 // display program help on startup
 int print_help = 0;
+// treat the map as a weighted-cost grid
+int wgm = 0;
 
 void
 help()
 {
 	std::cerr << "valid parameters:\n"
-	<< "--alg [astar | jps | jps2 | jps+ | jps2+ | wastar | wjps ]\n"
+	<< "--alg [astar | jps | jps2 | jps+ | jps2+ | wgm_astar | wjps ]\n"
 	<< "--scen [scenario filename]\n"
-	//<< "--gen [map filename]\n"
-	//<< "--map [map filename] (optional)\n"
+	<< "--gen [map filename]\n"
+	<< "--wgm (optional)\n"
 	<< "--checkopt (optional)\n"
 	<< "--verbose (optional)\n";
 }
@@ -101,7 +103,7 @@ run_jpsplus(warthog::scenario_manager& scenmgr)
 	   	warthog::jpsplus_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
-	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tcost\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{
 		warthog::experiment* exp = scenmgr.get_experiment(i);
@@ -141,7 +143,7 @@ run_jps2plus(warthog::scenario_manager& scenmgr)
 	   	warthog::jps2plus_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
-	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tcost\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{
 		warthog::experiment* exp = scenmgr.get_experiment(i);
@@ -181,7 +183,7 @@ run_jps2(warthog::scenario_manager& scenmgr)
 	   	warthog::jps2_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
-	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tcost\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{
 		warthog::experiment* exp = scenmgr.get_experiment(i);
@@ -221,7 +223,7 @@ run_jps(warthog::scenario_manager& scenmgr)
 	   	warthog::jps_expansion_policy> astar(&heuristic, &expander);
 	astar.set_verbose(verbose);
 
-	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tcost\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{
 		warthog::experiment* exp = scenmgr.get_experiment(i);
@@ -262,7 +264,7 @@ run_astar(warthog::scenario_manager& scenmgr)
 	astar.set_verbose(verbose);
 
 
-	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tcost\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{
 		warthog::experiment* exp = scenmgr.get_experiment(i);
@@ -291,7 +293,7 @@ run_astar(warthog::scenario_manager& scenmgr)
 }
 
 void
-run_wastar(warthog::scenario_manager& scenmgr)
+run_wgm_astar(warthog::scenario_manager& scenmgr)
 {
     warthog::weighted_gridmap map(scenmgr.get_experiment(0)->map().c_str());
 	warthog::wgridmap_expansion_policy expander(&map);
@@ -306,7 +308,7 @@ run_wastar(warthog::scenario_manager& scenmgr)
     // impact f-values much and search starts to behave like dijkstra)
     astar.set_hscale('.');  
 
-	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tlen\tsfile\n";
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tcost\tsfile\n";
 	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
 	{
 		warthog::experiment* exp = scenmgr.get_experiment(i);
@@ -321,7 +323,7 @@ run_wastar(warthog::scenario_manager& scenmgr)
 			len = 0;
 		}
 
-		std::cout << i<<"\t" << "wastar" << "\t" 
+		std::cout << i<<"\t" << "astar" << "\t" 
 		<< astar.get_nodes_expanded() << "\t" 
 		<< astar.get_nodes_generated() << "\t"
 		<< astar.get_nodes_touched() << "\t"
@@ -351,7 +353,8 @@ main(int argc, char** argv)
 		{"gen", required_argument, 0, 3},
 		{"help", no_argument, &print_help, 1},
 		{"checkopt",  no_argument, &checkopt, 1},
-		{"verbose",  no_argument, &verbose, 1}
+		{"verbose",  no_argument, &verbose, 1},
+		{"wgm",  no_argument, &wgm, 1}
 	};
 
 	warthog::util::cfg cfg;
@@ -386,23 +389,7 @@ main(int argc, char** argv)
 
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario(sfile.c_str());
-
-    // weighted grid + jps
-    if(alg == "wjps")
-    {
-        run_wjps(scenmgr);
-    }
-
-    // weighted grid + A*
-    if(alg == "wastar")
-    {
-        run_wastar(scenmgr);
-    }
-
-	if(alg == "jps")
-	{
-		run_jps(scenmgr);
-	}
+    std::cerr << "wgm: " << (wgm ? "true" : "false") << std::endl;
 
 	if(alg == "jps+")
 	{
@@ -419,14 +406,28 @@ main(int argc, char** argv)
 		run_jps2plus(scenmgr);
 	}
 
-    if(alg == "wjps")
+    if(alg == "jps")
     {
-        run_wjps(scenmgr);
+        if(wgm)
+        {
+            run_wjps(scenmgr);
+        }
+        else
+        {
+            run_jps(scenmgr);
+        }
     }
 
 	if(alg == "astar")
 	{
-		run_astar(scenmgr);
+        if(wgm) 
+        { 
+            run_wgm_astar(scenmgr); 
+        }
+        else 
+        { 
+            run_astar(scenmgr); 
+        }
 	}
 }
 
