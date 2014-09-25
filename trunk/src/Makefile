@@ -1,7 +1,6 @@
 WARTHOG_SRC = $(wildcard domains/*.cpp) $(wildcard util/*.cpp) $(wildcard search/*.cpp) \
 $(wildcard experimental/*.cpp) $(wildcard heuristics/*.cpp)
 
-#WARTHOG_OBJ = $(subst .cpp,.o, $(addprefix obj/, $(notdir $(WARTHOG_SRC))))
 WARTHOG_OBJ = $(WARTHOG_SRC:.cpp=.o)
 
 D_WARTHOG_INCLUDES = -I./domains -I./util -I./search -I./experimental -I./heuristics
@@ -46,7 +45,6 @@ tags:
 .PHONY: clean
 clean:
 	@rm -rf ./bin/*
-	@-$(RM) ./obj/*
 	@-$(RM) ./lib/*
 	@-$(RM) $(WARTHOG_OBJ:.o=.d)
 	@-$(RM) $(WARTHOG_OBJ)
@@ -62,7 +60,6 @@ makedirs:
 	@echo "### Creating output directories ###"
 	@$(shell mkdir ./bin)
 	@$(shell mkdir ./lib)
-	@$(shell mkdir ./obj)
 
 .PHONY: warthog
 warthog: $(WARTHOG_OBJ)
