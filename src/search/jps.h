@@ -40,35 +40,30 @@ typedef enum
 // from a given location (x, y). 
 // A neighbour is forced if it cannot be proven that there is at least one 
 // alternative optimal path that does not pass through the node (x, y).
-//
-// @param d: the direction of travel used to reach (x, y) -- from its parent.
-// @param tiles: the 3x3 square of tiles having (x, y) at its centre.
-//
-// @return an integer representing the set of forced directions.
-// Each of the first 8 bits of the returned value, when set, correspond to a direction, 
-// as defined in warthog::jps::direction
-//
 uint32_t
 compute_forced(warthog::jps::direction d, uint32_t tiles);
 
 // Computes the set of "natural" neighbours for a given location
 // (x, y).
-//
-// @param d: the direction of travel used to reach (x, y)
-// @param tiles: the square of cells having (x, y) at its centre.
 uint32_t 
 compute_natural(warthog::jps::direction d, uint32_t tiles);
 
-// Computes all successors (forced \union natural) of a node (x, y)
+// Computes all successors (forced \union natural) of a node (x, y).
+// This function is specialised for uniform cost grid maps.
 //
 // @param d: the direction of travel used to reach (x, y)
-// @param tiles: the square of cells having (x, y) at its centre.
+// @param tiles: the 3x3 square of cells having (x, y) at its centre.
+//
+// @return an integer representing the set of forced directions.
+// Each of the first 8 bits of the returned value, when set, correspond to a
+// direction, as defined in warthog::jps::direction
 inline uint32_t
 compute_successors(warthog::jps::direction d, uint32_t tiles)
 {
 	return warthog::jps::compute_forced(d, tiles) |
 	   	warthog::jps::compute_natural(d, tiles);
 }
+
 
 }
 }

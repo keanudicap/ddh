@@ -43,6 +43,20 @@ class weighted_gridmap
 				(node_id / header_.width_) * padding_per_row_;
 		}
 
+		inline uint32_t
+		to_padded_id(uint32_t x, uint32_t y)
+		{
+			return to_padded_id(y * this->header_width() + x);
+		}
+
+		inline void
+		to_unpadded_xy(uint32_t padded_id, uint32_t& x, uint32_t& y)
+		{
+			padded_id -= padded_rows_before_first_row_* padded_width_;
+			y = padded_id / padded_width_;
+			x = padded_id % padded_width_;
+		}
+
         // read all tiles in the 3x3 square centred on @param db_id
         // return: 
         //  @param ids stores the ids of all tiles
