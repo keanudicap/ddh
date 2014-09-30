@@ -61,49 +61,73 @@ warthog::jps::compute_forced_wgm(warthog::jps::direction d,
         warthog::dbword tiles[9])
 {
     uint32_t retval = 0;
+    uint32_t tmp = 0;
     switch(d)
     {
         case warthog::jps::NORTH:
-            retval |= (!tiles[8] && tiles[5]) << 2; // E is forced
-            retval |= (!tiles[6] && tiles[3]) << 3; // W is forced
+            // check for forced neighbours adjacent to the parent
+            tmp = ((tiles[8] + tiles[5] + 
+                    tiles[7] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp << 2; // E is forced
+            retval |= tmp << 4; // NE is forced
+            retval |= tmp << 6; // SE is forced
+            tmp = ((tiles[6] + tiles[3] + 
+                    tiles[7] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp << 3; // W is forced
+            retval |= tmp << 5; // NW is forced
+            retval |= tmp << 7; // SW is forced
+            // check for other forced neighbours (ahead)
+            retval |= (tiles[4] != tiles[2]) << 4; // NE is forced
+            retval |= (tiles[4] != tiles[0]) << 5; // NW is forced
             break;
         case warthog::jps::SOUTH:
-            retval |= (!tiles[2] && tiles[5]) << 2; // E is forced
-            retval |= (!tiles[0] && tiles[3]) << 3; // W is forced
+            // check for forced neighbours adjacent to the parent
+            tmp = ((tiles[2] + tiles[5] +
+                    tiles[1] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp << 2; // E is forced
+            retval |= tmp << 4; // NE is forced
+            retval |= tmp << 6; // SE is forced
+            tmp = ((tiles[0] + tiles[3] +
+                    tiles[1] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp << 3; // W is forced
+            retval |= tmp << 5; // NW is forced
+            retval |= tmp << 7; // SW is forced
+            // check for other forced neighbours (ahead)
+            retval |= (tiles[4] != tiles[8]) << 6; // SE is forced
+            retval |= (tiles[4] != tiles[6]) << 7; // SW is forced
             break;
         case warthog::jps::EAST:
-            retval |= (!tiles[0] && tiles[1]); // N is forced
-            retval |= (!tiles[6] && tiles[7]) << 1; // S is forced
+            tmp = ((tiles[0] + tiles[1] +
+                    tiles[3] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp; // N is forced
+            retval |= tmp << 4; // NE is forced
+            retval |= tmp << 5; // NW is forced
+            tmp = ((tiles[6] + tiles[7] +
+                    tiles[3] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp << 1; // S is forced
+            retval |= tmp << 6; // SE is forced
+            retval |= tmp << 7; // SW is forced
+            // extra checks incase terrain ahead differs
+            retval |= (tiles[4] != tiles[2]) << 4; // NE is forced
+            retval |= (tiles[4] != tiles[8]) << 6; // SE is forced
             break;
         case warthog::jps::WEST:
-            retval |= (!tiles[2] && tiles[1]); // N is forced
-            retval |= (!tiles[8] && tiles[7]) << 1; // S is forced
+            tmp = ((tiles[2] + tiles[1] + 
+                    tiles[5] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp; // N is forced
+            retval |= tmp << 4; // NE is forced
+            retval |= tmp << 5; // NW is forced
+            tmp = ((tiles[8] + tiles[7] +
+                    tiles[5] + tiles[4]) >> 2) != tiles[4];
+            retval |= tmp << 1; // S is forced
+            retval |= tmp << 6; // SE is forced
+            retval |= tmp << 7; // SE is forced
+            // extra checks incase terrain ahead differs
+            retval |= (tiles[4] != tiles[0]) << 5; // NW is forced
+            retval |= (tiles[4] != tiles[6]) << 7; // SW is forced
             break;
         default:
             break;
     }
-    return retval;
-}
-
-uint32_t 
-warthog::jps::compute_forced_wgm_terrain(warthog::jps::direction d,
-        warthog::dbword tiles[9])
-{
-    uint32_t retval = 0;
-
-    retval |= !(tiles[1] == tiles[4]); // N is forced
-    retval |= !(tiles[7] == tiles[4]) << 1; // S is forced
-    retval |= !(tiles[5] == tiles[4]) << 2; // E is forced
-    retval |= !(tiles[3] == tiles[4]) << 3; // W is forced
-
-    // NE is forced 
-    retval |= ((tiles[1] && tiles[5]) && !(tiles[2] == tiles[4])) << 4;
-    // NW is forced
-    retval |= ((tiles[1] && tiles[3]) && !(tiles[0] == tiles[4])) << 5;
-    // SE is forced
-    retval |= ((tiles[7] && tiles[5]) && !(tiles[8] == tiles[4])) << 6;
-    // SW is forced
-    retval |= ((tiles[7] && tiles[3]) && !(tiles[6] == tiles[4])) << 7;
-
     return retval;
 }
