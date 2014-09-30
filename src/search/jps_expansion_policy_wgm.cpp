@@ -36,7 +36,6 @@ warthog::jps_expansion_policy_wgm::expand(
 	// look for jump points in the direction of each natural 
 	// and forced neighbour
 	uint32_t succ_dirs = warthog::jps::compute_successors_wgm(dir_c, c_tiles);
-	succ_dirs |= warthog::jps::compute_forced_wgm_terrain(dir_c, c_tiles);
 
     // jump in the direction of each forced or natural neighbour, generating
     // any jump points we find.
