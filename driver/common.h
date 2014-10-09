@@ -69,7 +69,7 @@ struct recContext
 	GLuint boldFontList;
 	GLuint regFontList;
 	EventLoopTimerRef timer;
-	DMExtendedNotificationUPP  windowEDMUPP;
+	//DMExtendedNotificationUPP  windowEDMUPP;
 	AbsoluteTime time;
 #endif
 

@@ -450,8 +450,8 @@ EmptyCluster::addInterEdges()
 		graph* g = map->getAbstractGraph(0);
 		graph* absg = map->getAbstractGraph(1);
 
-		edge_iterator it = n->getEdgeIter();
-		for(edge* e = n->edgeIterNext(it); e != 0; e = n->edgeIterNext(it))
+		edge_iterator edge_it = n->getEdgeIter();
+		for(edge* e = n->edgeIterNext(edge_it); e != 0; e = n->edgeIterNext(edge_it))
 		{
 			double edgeweight = e->getWeight();
 			ClusterNode* nb = dynamic_cast<ClusterNode*>(
