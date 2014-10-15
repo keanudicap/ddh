@@ -8,7 +8,6 @@
 #include "jps_expansion_policy.h"
 #include "pqueue.h"
 #include "octile_heuristic.h"
-#include "rle.h"
 #include "search_node.h"
 #include "scenario_manager.h"
 
@@ -29,12 +28,11 @@ void gridmap_expansion_policy_test();
 void flexible_astar_test();
 void test_alloc();
 void online_jps_test();
-void rle_compression_test();
 
 int main(int argc, char** argv)
 {
 	//flexible_astar_test();
-    rle_compression_test();
+	online_jps_test();
 }
 
 void test_alloc()
@@ -379,20 +377,4 @@ void gridmap_access_test()
 		//std::cout << i << "\r" << std::flush;
 	}
 	std::cout << "gridmap_access_test..."<<std::endl;
-}
-
-void rle_compression_test()
-{
-    std::string str("ffffooooobbbar");
-    warthog::arraylist<warthog::rle::rle_run>* str_rle =
-        warthog::rle::compress(str.c_str(), str.length());
-
-    for(uint32_t i = 0; i < str_rle.size(); i++)
-    {
-        std::cerr << "(" << str_rle[i]->get_run_index() << ", "
-            << (char)str_rle[i]->get_run_label() << ") ";
-
-    }
-    std::cerr << std::endl;
-    delete str_rle;
 }
