@@ -428,6 +428,7 @@ main(int argc, char** argv)
 
 	warthog::scenario_manager scenmgr;
 	scenmgr.load_scenario(sfile.c_str());
+    std::cerr << "wgm: " << (wgm ? "true" : "false") << std::endl;
 
 	if(alg == "jps+")
 	{
