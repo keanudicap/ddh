@@ -211,70 +211,64 @@ warthog::online_jump_point_locator_wgm::__jump_west(uint32_t node_id,
 		uint32_t goal_id, uint32_t& jumpnode_id, warthog::cost_t& jumpcost, 
 		warthog::weighted_gridmap* mymap)
 {
-    warthog::dbword tiles[9];
-    uint32_t tile_ids[9];
     uint32_t rawjumpcost = 0;
-    uint32_t next_id = node_id;
 
-    // blockjump
-    bool terrain_change = false;
-    while(true) 
+    // scan ahead for obstacles or changes in terrain
+    warthog::dbword* next_label = mymap->get_label_ptr(node_id);
+    warthog::dbword* dn_label = mymap->get_label_ptr(node_id + mymap->width());
+    warthog::dbword* up_label = mymap->get_label_ptr(node_id - mymap->width());
+    
+    // early termination; obstacle ahead
+    if(*(next_label-1) == 0)
     {
-        // scan ahead for obstacles or changes in terrain
-        warthog::dbword* next_label = mymap->get_label_ptr(next_id);
-        for(uint32_t i = 0; i < 8; i++)
-        {
-           terrain_change |= (*(next_label-i) == 0) | (*(next_label-i) != *next_label);
-        }
-        warthog::dbword* dn_label = mymap->get_label_ptr(next_id + mymap->width());
-        warthog::dbword* up_label = mymap->get_label_ptr(next_id - mymap->width());
-
-        // scan for terrain changes in the row above or below
-        terrain_change |= *((uint64_t*)(up_label-7)) != *((uint64_t*)(next_label-7));
-        terrain_change |= *((uint64_t*)(dn_label-7)) != *((uint64_t*)(next_label-7));
-
-        // jump ahead if no changes detected
-        if(terrain_change) { break; }
-        next_id -= 7;
+        jumpnode_id = warthog::INF;
+        return;
     }
-    rawjumpcost = ((mymap->get_label(node_id)*(node_id - next_id)) << 1);
+    // early termination; adjacent terrains not all same
+    // NB: we should check for obstacles as a special case;
+    // (i.e jump if all obstacles above or below)
+    if(*next_label != *(next_label-1) ||
+       ((*up_label + *(up_label-1) + *dn_label + *(dn_label-1)) >> 2) 
+            != *next_label) 
+                
+    {
+       jumpnode_id = node_id - 1; 
+       rawjumpcost = *next_label + *(next_label-1);
+       jumpcost = (rawjumpcost * warthog::ONE) >> 1;
+       return;
+    }
 
-    // test for the goal (possible early termination)
-    if(next_id <= goal_id && node_id > goal_id)
+    // scan ahead; stop when terrain changes
+    // NB: already confirmed first step is OK 
+    // (i.e. terrains above and below match)
+    bool terrain_change = false;
+    uint32_t num_steps = 1; 
+    // maybe init three char arrays with 8x next_label and blockjump?
+    while(!terrain_change)
+    {
+       num_steps++;
+       terrain_change =
+           (*next_label != *(next_label-num_steps)) |
+           (*up_label != *(up_label-num_steps)) |
+           (*dn_label != *(dn_label-num_steps));
+    }
+    // stop just before the terrain-changing transition
+    // (there might be a diagonal forced neighbour)
+    jumpnode_id = node_id - (num_steps - 1); 
+    rawjumpcost = (*next_label * (num_steps-1)) << 1;
+
+    // test for the goal 
+    if(node_id > goal_id && jumpnode_id <= goal_id)
     {
         jumpnode_id = goal_id;
-        rawjumpcost = ((mymap->get_label(node_id)*(node_id - goal_id)) << 1);
-    }
-    else
-    // proceed step by step
-    {
-        mymap->get_neighbours(next_id,  tile_ids, tiles);
-        while(true)
-        {
-            // step straight
-            if(!(tiles[4] && tiles [3]))
-            {
-                jumpnode_id = warthog::INF; // invalid step
-                break;
-            }
-            rawjumpcost += (tiles[4] + tiles[3]); 
-            next_id--;
-            mymap->get_neighbours(next_id,  tile_ids, tiles);
-
-            uint32_t forced = warthog::jps::compute_forced_wgm(
-                    warthog::jps::WEST, tiles);
-
-            if(forced || next_id == goal_id)
-            {
-                jumpnode_id = next_id;        
-                break;
-            }
-        }
+        num_steps = node_id - goal_id;
+        rawjumpcost = ((*next_label) * num_steps) << 1;
     }
 
     rawjumpcost *= warthog::ONE;
     rawjumpcost >>= 1;
     jumpcost += rawjumpcost;
+
 }
 
 void
