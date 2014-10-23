@@ -17,6 +17,7 @@
 #include "scenario_manager.h"
 #include "weighted_gridmap.h"
 #include "wgridmap_expansion_policy.h"
+#include "zero_heuristic.h"
 
 #include "getopt.h"
 
@@ -38,7 +39,7 @@ void
 help()
 {
 	std::cerr << "valid parameters:\n"
-	<< "--alg [astar | jps | jps2 | jps+ | jps2+ | astar | jps ]\n"
+	<< "--alg [astar | jps | jps2 | jps+ | jps2+ | astar | jps | sssp ]\n"
 	<< "--scen [scenario filename]\n"
 	<< "--gen [map filename]\n"
 	<< "--wgm (optional)\n"
@@ -338,6 +339,36 @@ run_wgm_astar(warthog::scenario_manager& scenmgr)
 }
 
 void
+run_wgm_sssp(warthog::scenario_manager& scenmgr)
+{
+    warthog::weighted_gridmap map(scenmgr.get_experiment(0)->map().c_str());
+	warthog::wgridmap_expansion_policy expander(&map);
+	warthog::zero_heuristic heuristic(map.width(), map.height());
+
+	warthog::flexible_astar<
+		warthog::zero_heuristic,
+	   	warthog::wgridmap_expansion_policy> astar(&heuristic, &expander);
+	astar.set_verbose(verbose);
+
+	std::cout << "id\talg\texpd\tgend\ttouched\ttime\tsfile\n";
+	for(unsigned int i=0; i < scenmgr.num_experiments(); i++)
+	{
+		warthog::experiment* exp = scenmgr.get_experiment(i);
+
+		int startid = exp->starty() * exp->mapwidth() + exp->startx();
+		astar.get_length(map.to_padded_id(startid), warthog::INF);
+
+		std::cout << i<<"\t" << "sssp_wgm" << "\t" 
+		<< astar.get_nodes_expanded() << "\t" 
+		<< astar.get_nodes_generated() << "\t"
+		<< astar.get_nodes_touched() << "\t"
+		<< astar.get_search_time()  << "\t"
+		<< scenmgr.last_file_loaded() << std::endl;
+	}
+	std::cerr << "done. total memory: "<< astar.mem() + scenmgr.mem() << "\n";
+}
+
+void
 run_jps_wgm(warthog::scenario_manager& scenmgr)
 {
     warthog::weighted_gridmap map(scenmgr.get_experiment(0)->map().c_str());
@@ -465,6 +496,18 @@ main(int argc, char** argv)
         else 
         { 
             run_astar(scenmgr); 
+        }
+	}
+
+	if(alg == "sssp")
+	{
+        if(wgm) 
+        { 
+            run_wgm_sssp(scenmgr); 
+        }
+        else 
+        { 
+            //run_astar(scenmgr); 
         }
 	}
 }
