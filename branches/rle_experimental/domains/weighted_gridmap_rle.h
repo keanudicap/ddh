@@ -24,12 +24,15 @@
 
 #include <climits>
 #include <stdint.h>
+#include <cassert>
+#include <cstring>
 
 namespace warthog
 {
 
 class weighted_gridmap_rle
 {
+    typedef warthog::arraylist< warthog::rle::rle_run > rle_row;
 	public:
 		weighted_gridmap_rle(uint32_t height, unsigned int width);
 		weighted_gridmap_rle(const char* filename);
@@ -61,36 +64,6 @@ class weighted_gridmap_rle
 			x = padded_id % padded_width_;
 		}
 
-        // read all tiles in the 3x3 square centred on @param db_id
-        // return: 
-        //  @param ids stores the ids of all tiles
-        //  @param costs stores the terrain cost of all tiles
-		inline void
-		get_neighbours(uint32_t db_id, uint32_t ids[9], warthog::dbword costs[9])
-		{
-            // calculate ids of all adjacent neighbours
-            ids[4] = db_id;
-            ids[3] = db_id-1; // west
-            ids[5] = db_id+1; // east
-            ids[1] = db_id - this->padded_width_; // north
-            ids[7] = db_id + this->padded_width_; // south
-            ids[0] = ids[3] - this->padded_width_; // northwest
-            ids[2] = ids[5] - this->padded_width_; // northeast
-            ids[6] = ids[3] + this->padded_width_; // southwest
-            ids[8] = ids[5] + this->padded_width_; // southeast
-
-            // read terrain costs
-            costs[0] = db_[ids[0]];
-            costs[1] = db_[ids[1]];
-            costs[2] = db_[ids[2]];
-            costs[3] = db_[ids[3]];
-            costs[4] = db_[ids[4]];
-            costs[5] = db_[ids[5]];
-            costs[6] = db_[ids[6]];
-            costs[7] = db_[ids[7]];
-            costs[8] = db_[ids[8]];
-		}
-
 		// get the label associated with the padded coordinate pair (x, y)
 		inline warthog::dbword
 		get_label(uint32_t x, unsigned int y)
@@ -101,7 +74,42 @@ class weighted_gridmap_rle
 		inline warthog::dbword
 		get_label(uint32_t padded_id)
 		{
-            return db_[padded_id];
+            return get_label_raw(padded_id)->get_run_label();
+        }
+
+		inline warthog::rle::rle_run*
+		get_label_raw(uint32_t padded_id)
+		{
+            // binary search to find the run that contains
+            // @param padded_id
+            uint32_t target = padded_id % padded_width_;
+            rle_row* comp_row = map_->at(padded_id / padded_width_);
+            assert(comp_row->at(0).get_run_index() == 0);
+
+            uint32_t first = 0; 
+            uint32_t last = comp_row->size() - 1;
+            if(first == last) { return &comp_row->at(0); }
+
+            uint32_t i = first + ((last - first) >> 1);
+            while(last - first > 1)
+            {
+                if(target <= comp_row->at(i).get_run_index())
+                {
+                    last = i;
+                    i = first + ((last - first) >> 1);
+                }
+                else
+                {
+                    first = i;
+                    i = first + ((last - first) >> 1);
+                }
+            }
+
+            if(target < comp_row->at(i+1).get_run_index())
+            {
+                return &comp_row->at(i);
+            }
+            return &comp_row->at(i+1);
 		}
 
 //////////////////////////////// CURRENTLY DISABLED /////////////////////////
@@ -155,17 +163,26 @@ class weighted_gridmap_rle
 		uint32_t 
 		mem()
 		{
-			return sizeof(*this) +
-			sizeof(warthog::dbword) * db_size_ +
-            map_->size();
+			uint32_t sz = sizeof(*this) + map_->size() * sizeof(rle_row*);
+            for(uint32_t i = 0; i < map_->size(); i++)
+            {
+                sz += map_->at(i)->size() * sizeof(warthog::rle::rle_run);
+            }
+            return sz;
 		}
 
 
 	private:
 		char filename_[256];
 		warthog::gm_header header_;
-        warthog::arraylist<warthog::rle::rle_run>* map_;
-        uint32_t* rowheads_;
+        warthog::arraylist< rle_row* >* map_;
+
+		uint32_t padded_width_;
+		uint32_t padded_height_;
+		uint32_t padding_per_row_;
+		uint32_t padded_rows_before_first_row_;
+		uint32_t padded_rows_after_last_row_;
+        bool padded_width_is_odd_;
 
 		weighted_gridmap_rle(const warthog::weighted_gridmap_rle& other) {}
 		weighted_gridmap_rle& 

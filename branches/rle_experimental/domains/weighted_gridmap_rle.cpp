@@ -1,8 +1,4 @@
-#include "gm_parser.h"
 #include "weighted_gridmap_rle.h"
-
-#include <cassert>
-#include <cstring>
 
 warthog::weighted_gridmap_rle::weighted_gridmap_rle(unsigned int h, unsigned int w)
 	: header_(h, w, "octile")
@@ -16,25 +12,57 @@ warthog::weighted_gridmap_rle::weighted_gridmap_rle(const char* filename)
 	warthog::gm_parser parser(filename);
 	this->header_ = parser.get_header();
 
-	init_db();
-	// populate matrix
+    init_db();
+    if(padded_width_ % 2) { padded_width_is_odd_ = 1; }
+
+    map_ = new warthog::arraylist< rle_row* >(padded_height_); 
+
+    // add some rows of padding before the real data begins
+    for(uint32_t i = 0; i < this->padded_rows_before_first_row_; i++)
+    {
+        rle_row* comp_row = new rle_row();
+        comp_row->push_back(warthog::rle::rle_run(0, 0));
+        map_->push_back(comp_row);
+    }
+
+    // read in the map, row by row
+    char* row_ = new char[header_.width_];
 	for(unsigned int i = 0; i < parser.get_num_tiles(); i++)
+            
 	{
 		char c = parser.get_tile_at(i);
 		switch(c)
 		{
             // explicit obstacle
 			case '@':  
-				this->set_label(to_padded_id(i), 0);
-				assert(this->get_label(to_padded_id(i)) == 0);
+                row_[i % header_.width_] = 0;
 				break;
             // other tiles have terrain cost equal to their ascii value
 			default: 
-				this->set_label(to_padded_id(i), c);
-				assert(this->get_label(to_padded_id(i)) == c);
+                row_[i % header_.width_] = c;
 				break;
 		}
+        
+        // (i) compress each row; 
+        // (ii) pad the end with an extra obstacle element;
+        // (iii) add it to the compressed map
+        if(((i+1) % header_.width_) == 0)
+        {
+            rle_row* comp_row = warthog::rle::compress(row_, header_.width_);
+            comp_row->push_back(warthog::rle::rle_run(header_.width_, 0));
+            map_->push_back(comp_row);
+        }
 	}
+    delete row_;
+
+    // add some rows of padding after the last bit of real data
+    for(uint32_t i = map_->size(); i < padded_height_; i++)
+    {
+        rle_row* comp_row = new rle_row();
+        comp_row->push_back(warthog::rle::rle_run(0, 0));
+        comp_row->push_back(warthog::rle::rle_run(0, 0));
+        map_->push_back(comp_row);
+    }
 }
 
 void
@@ -51,21 +79,15 @@ warthog::weighted_gridmap_rle::init_db()
 	this->padded_height_ = this->header_.height_ + 
 		this->padded_rows_after_last_row_ +
 		this->padded_rows_before_first_row_;
-
-	this->db_size_ = this->padded_height_ * padded_width_;
-
-	// create a one dimensional dbword array to store the grid
-	this->db_ = new warthog::dbword[db_size_];
-	for(unsigned int i=0; i < db_size_; i++)
-	{
-		db_[i] = 0; 
-	}
 }
 
 warthog::weighted_gridmap_rle::~weighted_gridmap_rle()
 {
+    for(uint32_t i = 0; i < map_->size(); i++)
+    {
+        delete map_->at(i);
+    }
     delete map_;
-    delete rowheads_;
 }
 
 void 

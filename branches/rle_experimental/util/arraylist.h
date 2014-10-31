@@ -21,9 +21,7 @@ namespace warthog
 	class arraylist
 	{
 		public:
-			typedef T* iterator;
-
-			arraylist(size_t size=100) : max_size_(size), terminator_(0)
+			arraylist(size_t size=100) : max_size_(size)
 			{
 				collection_ = new T[max_size_];	
 				next_ = 0;
@@ -34,17 +32,27 @@ namespace warthog
 				delete [] collection_;
 			}
 
-			inline T
+			inline T&
 			at(uint32_t index)
 			{
 				return collection_[index];
 			}
 
-			inline T
+			inline T&
 			operator[](uint32_t index)
 			{
 				return collection_[index];
 			}
+
+            inline void
+            append(warthog::arraylist<T>& other)
+            {
+                grow(size() + other.size());
+                for(uint32_t i = 0; i < other.size(); i++)
+                {
+                    this->push_back(other.at(i));
+                }
+            }
 
 			inline void
 			push_back(T element)
@@ -91,7 +99,6 @@ namespace warthog
 			T* collection_;
 			size_t next_;
 			uint32_t max_size_;
-			const typename warthog::arraylist<T>::iterator terminator_;
 
 			inline void 
 			grow(size_t newsize)
