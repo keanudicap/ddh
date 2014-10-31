@@ -100,6 +100,12 @@ class weighted_gridmap
             return db_[padded_id];
 		}
 
+        inline warthog::dbword*
+        get_label_ptr(uint32_t padded_id)
+        {
+            return &db_[padded_id];
+        }
+
 		// set the label associated with the padded coordinate pair (x, y)
 		inline void
 		set_label(uint32_t x, unsigned int y, warthog::dbword label)

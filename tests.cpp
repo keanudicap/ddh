@@ -8,9 +8,9 @@
 #include "jps_expansion_policy.h"
 #include "pqueue.h"
 #include "octile_heuristic.h"
-#include "rle.h"
 #include "search_node.h"
 #include "scenario_manager.h"
+#include "weighted_gridmap_rle.h"
 
 #include "getopt.h"
 
@@ -30,11 +30,12 @@ void flexible_astar_test();
 void test_alloc();
 void online_jps_test();
 void rle_compression_test();
+void weighted_gridmap_rle_test();
 
 int main(int argc, char** argv)
 {
 	//flexible_astar_test();
-    rle_compression_test();
+   weighted_gridmap_rle_test();
 }
 
 void test_alloc()
@@ -387,12 +388,25 @@ void rle_compression_test()
     warthog::arraylist<warthog::rle::rle_run>* str_rle =
         warthog::rle::compress(str.c_str(), str.length());
 
-    for(uint32_t i = 0; i < str_rle.size(); i++)
+    for(uint32_t i = 0; i < str_rle->size(); i++)
     {
-        std::cerr << "(" << str_rle[i]->get_run_index() << ", "
-            << (char)str_rle[i]->get_run_label() << ") ";
+        std::cerr << "(" << str_rle->at(i).get_run_index() << ", "
+            << (char)str_rle->at(i).get_run_label() << ") ";
 
     }
     std::cerr << std::endl;
     delete str_rle;
+}
+
+void weighted_gridmap_rle_test()
+{
+	std::cout << "weighted_gridmap_rle test..."<<std::endl;
+	//const char* file = "orz700d.map";
+	const char* file = "CSC2F.map";
+	std::cout << "loading map..."<<file<<std::endl;
+	warthog::weighted_gridmap_rle mymap(file);
+	std::cout << "map\n";
+	mymap.print(std::cout);
+	std::cout << "done."<<std::endl;
+	return;
 }
