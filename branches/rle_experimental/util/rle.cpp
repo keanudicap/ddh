@@ -1,7 +1,7 @@
 #include "rle.h"
 #include <iostream>
 
-warthog::arraylist<warthog::rle::rle_run>*
+warthog::arraylist< warthog::rle::rle_run >*
 warthog::rle::compress(const char* str, uint32_t strlen)
 {
     if(strlen >= (1 << 24))
@@ -10,8 +10,8 @@ warthog::rle::compress(const char* str, uint32_t strlen)
         exit(EXIT_FAILURE);
     }
 
-    warthog::arraylist<warthog::rle::rle_run>* str_rle = new
-        warthog::arraylist<warthog::rle::rle_run>();
+    warthog::arraylist< warthog::rle::rle_run >* str_rle = new
+        warthog::arraylist< warthog::rle::rle_run >();
     for(uint32_t i = 0, j = 0; i < strlen; i = j) 
     {
         while(str[i] == str[++j]) {}

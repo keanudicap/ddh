@@ -21,6 +21,7 @@ namespace warthog
 	class arraylist
 	{
 		public:
+            typedef T* iterator;
 			arraylist(size_t size=100) : max_size_(size)
 			{
 				collection_ = new T[max_size_];	
@@ -38,6 +39,12 @@ namespace warthog
 				return collection_[index];
 			}
 
+            inline iterator
+            begin() { return &collection_[0]; }
+
+            inline iterator
+            end() { return &collection_[next_]; }
+
 			inline T&
 			operator[](uint32_t index)
 			{
@@ -51,6 +58,18 @@ namespace warthog
                 for(uint32_t i = 0; i < other.size(); i++)
                 {
                     this->push_back(other.at(i));
+                }
+            }
+
+            // appends to the end of the list all elements in the
+            // range [first, last)
+            inline void
+            append(T* first, T* last)
+            {
+                while(first != last)
+                {
+                    push_back(*first);
+                    first++;
                 }
             }
 
