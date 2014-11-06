@@ -13,6 +13,7 @@
 
 #include "arraylist.h"
 #include <cassert>
+#include <vector>
 
 namespace warthog
 {
@@ -63,7 +64,7 @@ class rle_run
 //
 // Note that we store the start of the run and its label
 // (not the length and its label)
-warthog::arraylist<warthog::rle::rle_run>*
+warthog::arraylist< warthog::rle::rle_run >*
 compress(const char* str, uint32_t strlen);
 
 }
