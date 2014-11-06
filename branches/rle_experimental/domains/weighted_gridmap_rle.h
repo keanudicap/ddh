@@ -64,6 +64,25 @@ class weighted_gridmap_rle
 			x = padded_id % padded_width_;
 		}
 
+        // read all tiles in the 3x3 square centred on @param db_id
+        // @param costs: stores the terrain cost of all tiles
+        // in the 3x3 square
+		inline void
+		get_neighbours(uint32_t db_id, warthog::dbword costs[9])
+		{
+            costs[0] = get_label_raw((db_id-1) - this->padded_width_)->get_run_label(); // northwest
+            costs[1] = get_label_raw(db_id - this->padded_width_)->get_run_label(); // north
+            costs[2] = get_label_raw((db_id+1) - this->padded_width_)->get_run_label(); // northeast
+
+            costs[3] = get_label_raw(db_id-1)->get_run_label(); // west
+            costs[4] = get_label_raw(db_id)->get_run_label();
+            costs[5] = get_label_raw(db_id+1)->get_run_label(); // east
+
+            costs[6] = get_label_raw((db_id-1) + this->padded_width_)->get_run_label(); // southwest
+            costs[7] = get_label_raw(db_id + this->padded_width_)->get_run_label(); // south
+            costs[8] = get_label_raw((db_id+1) + this->padded_width_)->get_run_label(); // southeast
+		}
+
 		// get the label associated with the padded coordinate pair (x, y)
 		inline warthog::dbword
 		get_label(uint32_t x, unsigned int y)
@@ -112,20 +131,55 @@ class weighted_gridmap_rle
             return &comp_row->at(i+1);
 		}
 
-//////////////////////////////// CURRENTLY DISABLED /////////////////////////
-//		// set the label associated with the padded coordinate pair (x, y)
-//		inline void
-//		set_label(uint32_t x, unsigned int y, warthog::dbword label)
-//		{
-//			this->set_label(y*padded_width_+x, label);
-//		}
-//
-//		inline void 
-//		set_label(uint32_t padded_id, warthog::dbword label)
-//		{
-//            db_[padded_id] = label;
-//		}
-//////////////////////////////////////////////////////////////////////////////
+		// set the label associated with the padded coordinate pair (x, y)
+		inline void
+		set_label(uint32_t x, unsigned int y, warthog::dbword label)
+		{
+			this->set_label(y*padded_width_+x, label);
+		}
+
+		inline void 
+		set_label(uint32_t padded_id, warthog::dbword label)
+		{
+            uint32_t rowid = padded_id / padded_width_;
+            rle_row* oldrow = map_->at(rowid);
+            warthog::rle::rle_run* first = oldrow->begin();
+            warthog::rle::rle_run* current = get_label_raw(padded_id);
+
+            if(current->get_run_label() == label) { return; }
+
+            rle_row* newrow = new rle_row();
+            if(first != current)
+            {
+               newrow->append(first, current);
+            }
+
+            // split the run containing padded_id
+            uint32_t first_seg_len  =  padded_id - current->get_run_index();
+            if(first_seg_len > 0)
+            {
+                newrow->push_back(warthog::rle::rle_run(current->get_run_index(), first_seg_len));
+            }
+           
+            // insert a new run or possibly merge padded_id with the next 
+            // run in the row  (depending on its label value)
+            if((current+1)->get_run_label() == label)
+            {
+                (current+1)->update(padded_id, label);    
+
+            }
+            else
+            {
+                newrow->push_back(warthog::rle::rle_run(padded_id, label));
+                uint32_t last_seg_len = (current+1)->get_run_index() - (padded_id + 1);
+                if(last_seg_len > 0)
+                {
+                    newrow->push_back(warthog::rle::rle_run(padded_id+1, last_seg_len));
+                }
+            }
+            map_->at(rowid) = newrow;
+            delete oldrow;
+		}
 
 		inline uint32_t 
 		height() const
